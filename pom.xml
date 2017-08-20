@@ -11,7 +11,6 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <spring.version>4.3.10.RELEASE</spring.version>
         <hibernate.version>5.2.10.Final</hibernate.version>
-
     </properties>
     
     <name>Vicente SaaS Framwork</name>

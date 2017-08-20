@@ -6,6 +6,7 @@
         <artifactId>vicente</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
+    <name>Vicente Core</name>
     <groupId>br.com.munif.framework.vicente</groupId>
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
