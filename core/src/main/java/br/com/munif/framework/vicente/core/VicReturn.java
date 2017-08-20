@@ -11,11 +11,11 @@ import java.util.List;
  *
  * @author munif
  */
-public class Resposta<T> {
+public class VicReturn<T> {
 
     private final List<T> values;
 
-    public Resposta(List<T> values) {
+    public VicReturn(List<T> values) {
         this.values = values;
     }
 

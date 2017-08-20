@@ -30,7 +30,7 @@ public class BaseEntity {
     protected String gi;
 
     protected String ui;
-    
+
     protected Integer rights;
 
     protected String extra;
@@ -41,6 +41,8 @@ public class BaseEntity {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     protected Date ud;
 
+    protected Boolean active;
+
     @Version
     private Integer version;
 
@@ -48,10 +50,12 @@ public class BaseEntity {
         this.id = UIDHelper.getUID();
         this.gi = VicThreadScope.gi.get();
         this.ui = VicThreadScope.ui.get();
-        this.rights=RightsHelper.getDefault();
-        this.extra="Framework";
+        this.rights = RightsHelper.getDefault();
+        this.extra = "Framework";
         this.cd = new Date();
         this.ud = new Date();
+        active=true;
+        //version=0; TODO Pesquisar
     }
 
     public String getId() {
@@ -110,6 +114,14 @@ public class BaseEntity {
         this.ud = ud;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
     public Integer getVersion() {
         return version;
     }
@@ -149,12 +161,7 @@ public class BaseEntity {
 
     @Override
     public String toString() {
-        return getClass().getName()+"{" + "id=" + id + '}';
+        return getClass().getName() + "{" + "id=" + id + '}';
     }
-    
-    
-
-    
-    
 
 }
