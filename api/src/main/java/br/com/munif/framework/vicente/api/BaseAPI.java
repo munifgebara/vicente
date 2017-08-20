@@ -6,9 +6,12 @@
 package br.com.munif.framework.vicente.api;
 
 import br.com.munif.framework.vicente.application.BaseService;
+import br.com.munif.framework.vicente.core.Utils;
 import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -77,13 +80,8 @@ public class BaseAPI<T extends BaseEntity> {
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     public T initialState() {
-        return newEntity();
+        return service.newEntity();
     }
 
-    protected T newEntity() {
-        return null;
-    }
-
-
-
+   
 }

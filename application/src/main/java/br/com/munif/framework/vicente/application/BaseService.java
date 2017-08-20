@@ -5,8 +5,11 @@
  */
 package br.com.munif.framework.vicente.application;
 
+import br.com.munif.framework.vicente.core.Utils;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -75,5 +78,26 @@ public abstract class BaseService<T> {
     public Long quantidade() {
         return repository.count();
     }
+    
+     public T newEntity() {
+        try {
+            return clazz().newInstance();
+        } catch (InstantiationException ex) {
+            Logger.getLogger(BaseService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(BaseService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Class<T> clazz() {
+        return (Class<T>) Utils.inferGenericType(getClass());
+    }
+
 
 }
+
+
+//88B797E428E850E5494404A5 
+//88B797E428E850E5494404A5

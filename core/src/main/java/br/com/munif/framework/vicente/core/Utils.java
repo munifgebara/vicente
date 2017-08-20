@@ -1,6 +1,8 @@
 package br.com.munif.framework.vicente.core;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +33,16 @@ public class Utils {
             }
         }
 
+    }
+
+    public static Class<?> inferGenericType(Class<?> clazz) {
+        return inferGenericType(clazz, 0);
+    }
+
+
+    public static Class<?> inferGenericType(Class<?> clazz, int index) {
+        Type superClass = clazz.getGenericSuperclass();
+        return (Class<?>) ((ParameterizedType) superClass).getActualTypeArguments()[index];
     }
 
     public static void main(String args[]) {
