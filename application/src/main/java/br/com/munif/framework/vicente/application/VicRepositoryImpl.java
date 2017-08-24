@@ -201,10 +201,10 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, String> impleme
         Query createQuery = entityManager.createQuery("FROM " + domainClass.getSimpleName()+ " obj where \n"
                   // 123456789012345678901234567890
                 + "   (obj.ui=:ui and mod(obj.rights/64,8)/4>=1) \n"
-                + "or (obj.gi=:gi and mod(obj.rights/8,8)/4>=1) \n"
+                + "or (:gi like concat('%',obj.gi,',%') and mod(obj.rights/8,8)/4>=1) \n"
                 + "or (1=1        and mod(obj.rights  ,8)/4>=1)");
         createQuery.setParameter("ui", VicThreadScope.ui.get());
-        createQuery.setParameter("gi", VicThreadScope.gi.get());
+        createQuery.setParameter("gi", VicThreadScope.gi.get()+",");
         return createQuery.getResultList();
     }
 

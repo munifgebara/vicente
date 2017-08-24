@@ -104,4 +104,15 @@ public class VicRepositoryTest {
         assertEquals(1, findAll.size());
     }
 
+    @Test
+    @Transactional
+    public void findALl6() {
+        VicThreadScope.ui.set("U1001");
+        VicThreadScope.gi.set("G11,G15");
+        List<Pessoa> findAll = pessoaService.findAll();
+        System.out.println("---->" + findAll);
+        assertEquals(21, findAll.size());
+    }
+
+
 }
