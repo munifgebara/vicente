@@ -22,6 +22,10 @@ public class DataUtil {
     private static DateFormatSymbols dfs = new DateFormatSymbols(new Locale("pt", "BR"));
     public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     private static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy_MM_dd");
+    
+    private static String homeFolder(){
+        return System.getProperty("user.home");
+    }
 
     public static Date getDataHoraMinutoSegundoZerado(Date valorData) {
         Calendar c = Calendar.getInstance();

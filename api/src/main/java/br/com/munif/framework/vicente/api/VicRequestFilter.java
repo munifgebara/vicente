@@ -25,8 +25,8 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        VicThreadScope.gi.set("PUBLICO");
-        VicThreadScope.ui.set("PUBLICO");
+        VicThreadScope.gi.set("G1");
+        VicThreadScope.ui.set("U1");
         VicThreadScope.ip.set(request.getRemoteAddr());
         HandlerMethod hm;
 
@@ -34,7 +34,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS,HEAD");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, gumgaToken, Connection, userRecognition");
 
-        System.out.println("---->" + handler.getClass() + " " + handler);
+        //System.out.println("---->" + handler.getClass() + " " + handler);
 
         if (handler instanceof HandlerMethod) {
             hm = (HandlerMethod) handler;
@@ -46,7 +46,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
             apiName = apiName.substring(0, apiName.indexOf("$$"));
         }
         String operationKey = apiName + "_" + hm.getMethod().getName();
-        System.out.println("----->" + operationKey);
+        //System.out.println("----->" + operationKey);
 
         return true;
     }

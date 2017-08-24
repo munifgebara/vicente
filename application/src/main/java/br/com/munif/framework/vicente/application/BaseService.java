@@ -7,6 +7,7 @@ package br.com.munif.framework.vicente.application;
 
 import br.com.munif.framework.vicente.core.Utils;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,18 +27,24 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope("prototype")
 public abstract class BaseService<T> {
 
-    protected final JpaRepository<T, String> repository;
+    protected final VicRepository<T> repository;
 
     @PersistenceContext
     protected EntityManager em;
 
-    public BaseService(JpaRepository<T, String> repository) {
+    public BaseService(VicRepository<T> repository) {
         this.repository = repository;
     }
 
     @Transactional(readOnly = true)
     public List<T> findAll() {
-        List<T> result = repository.findAll();
+        Iterable<T> findAll = repository.findAll();
+        
+        List<T> result = new ArrayList<T>();
+        for (T r:findAll){
+            result.add(r);
+        }
+        
         return result;
     }
 
@@ -59,7 +66,7 @@ public abstract class BaseService<T> {
     }
 
     public void forceFlush() {
-        repository.flush();
+//        repository.flush();
     }
 
     @Transactional(readOnly = true)

@@ -161,7 +161,8 @@ public class BaseEntity {
 
     @Override
     public String toString() {
-        return getClass().getName() + "{" + "id=" + id + '}';
+        return getClass().getSimpleName()+"{" + "id=" + id + ", gi=" + gi + ", ui=" + ui + ", rights=" + rights + ", extra=" + extra + ", cd=" + cd + ", ud=" + ud + ", active=" + active + ", version=" + version + '}';
     }
+
 
 }

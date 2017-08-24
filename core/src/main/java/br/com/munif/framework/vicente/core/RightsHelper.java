@@ -27,5 +27,10 @@ public class RightsHelper {
     public static int getDefault(){
         return OWNER_READ+OWNER_UPDATE+OWNER_DELETE+GROUP_READ;
     }
+
+    public static int getNOT_READT(){
+        return OWNER_UPDATE+OWNER_DELETE;
+    }
+
     
 }
