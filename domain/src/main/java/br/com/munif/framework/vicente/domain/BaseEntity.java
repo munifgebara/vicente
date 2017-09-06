@@ -158,6 +158,10 @@ public class BaseEntity {
         }
         return true;
     }
+    
+    public String getClassName(){
+        return this.getClass().getSimpleName();
+    }
 
     @Override
     public String toString() {

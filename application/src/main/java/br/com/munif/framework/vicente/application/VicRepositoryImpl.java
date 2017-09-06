@@ -5,12 +5,21 @@
  */
 package br.com.munif.framework.vicente.application;
 
+import br.com.munif.framework.vicente.core.Utils;
 import br.com.munif.framework.vicente.core.VicThreadScope;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import org.hibernate.Hibernate;
+import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -149,7 +158,25 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, String> impleme
     @Override
     public <S extends T> S findOne(Example<S> example) {
         System.out.println("----> super.findOne(example) ");
-        return super.findOne(example); //To change body of generated methods, choose Tools | Templates.
+        S findOne = super.findOne(example); //To change body of generated methods, choose Tools | Templates.
+        Class<T> domainClass = this.getDomainClass();
+        List<Field> allFields = Utils.getAllFields(domainClass);
+        for (Field f:allFields){
+            f.setAccessible(true);
+            if (f.isAnnotationPresent(OneToMany.class)||f.isAnnotationPresent(ManyToMany.class)){
+                try {
+                    Hibernate.initialize(f.get(findOne));
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(VicRepositoryImpl.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(VicRepositoryImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        
+        
+        
+        return findOne;
     }
 
     @Override
@@ -229,7 +256,22 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, String> impleme
     @Override
     public T findOne(String id) {
         System.out.println("----> super.findOne(id) ");
-        return super.findOne(id); //To change body of generated methods, choose Tools | Templates.
+        T findOne = super.findOne(id); //To change body of generated methods, choose Tools | Templates.
+        Class<T> domainClass = this.getDomainClass();
+        List<Field> allFields = Utils.getAllFields(domainClass);
+        for (Field f:allFields){
+            f.setAccessible(true);
+            if (f.isAnnotationPresent(OneToMany.class)||f.isAnnotationPresent(ManyToMany.class)){
+                try {
+                    Hibernate.initialize(f.get(findOne));
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(VicRepositoryImpl.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(VicRepositoryImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return findOne;
     }
 
     @Override

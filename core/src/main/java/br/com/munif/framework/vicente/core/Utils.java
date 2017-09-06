@@ -3,10 +3,22 @@ package br.com.munif.framework.vicente.core;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Utils {
+    
+    public static List<Field>  getAllFields(Class c){
+        ArrayList<Field> arrayList = new ArrayList<Field>();
+        if (c.getSuperclass()!=Object.class){
+            arrayList.addAll(getAllFields(c.getSuperclass()));
+        }
+        arrayList.addAll(Arrays.asList(c.getDeclaredFields()));
+        return arrayList;
+    }
 
     public static String removeNaoNumeros(String numero) {
         if (numero == null) {
@@ -15,7 +27,7 @@ public class Utils {
         return numero.replaceAll("[\\D]", "");
     }
 
-    public static void removeNumerosDosAtributos(Object obj, String... atributos) {
+    public static void removeNumerosDosAtributosa(Object obj, String... atributos) {
         Class clazz = obj.getClass();
         for (String atributo : atributos) {
             try {

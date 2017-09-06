@@ -18,3 +18,4 @@ nbbuild/
 dist/
 nbdist/
 
+/core/nbproject/
