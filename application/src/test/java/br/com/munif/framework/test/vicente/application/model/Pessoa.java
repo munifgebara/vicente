@@ -2,11 +2,12 @@ package br.com.munif.framework.test.vicente.application.model;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import org.hibernate.envers.Audited;
-
 /**
  *
  * @author munif
@@ -15,6 +16,8 @@ import org.hibernate.envers.Audited;
 @Audited
 public class Pessoa extends BaseEntity {
 
+    @NotNull
+    @Column( nullable = false)
     private String nome;
     private String apelido;
     private String documento;

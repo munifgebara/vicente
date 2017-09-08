@@ -114,5 +114,14 @@ public class VicRepositoryTest {
         assertEquals(21, findAll.size());
     }
 
+    @Test(expected = org.springframework.dao.DataIntegrityViolationException.class)
+    @Transactional
+    public void saveNull(){
+        VicThreadScope.ui.set("XXX");
+        VicThreadScope.gi.set("XXXXX");
+        Pessoa p=new Pessoa();
+        p.setNome(null);
+        pessoaService.save(p);
+    }
 
 }
