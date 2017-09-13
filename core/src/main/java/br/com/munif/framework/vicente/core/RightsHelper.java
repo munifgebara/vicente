@@ -32,5 +32,16 @@ public class RightsHelper {
         return OWNER_UPDATE+OWNER_DELETE;
     }
 
+    public static String getMainGi() {
+        String get = VicThreadScope.gi.get();
+        if (get==null){
+            return null;
+        }
+        if (get.contains(",")){
+            return get.substring(0, get.indexOf(','));
+        }
+        return get;
+    }
+
     
 }

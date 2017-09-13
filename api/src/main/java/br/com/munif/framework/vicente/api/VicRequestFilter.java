@@ -34,8 +34,6 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS,HEAD");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, gumgaToken, Connection, userRecognition");
 
-        //System.out.println("---->" + handler.getClass() + " " + handler);
-
         if (handler instanceof HandlerMethod) {
             hm = (HandlerMethod) handler;
         } else {
@@ -46,7 +44,6 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
             apiName = apiName.substring(0, apiName.indexOf("$$"));
         }
         String operationKey = apiName + "_" + hm.getMethod().getName();
-        //System.out.println("----->" + operationKey);
 
         return true;
     }

@@ -9,11 +9,11 @@ import javax.persistence.TemporalType;
  *
  * @author munif
  */
-public class Token extends BaseEntity{
+public class VicToken extends BaseEntity{
     
     private String value;
     
-    private User user;
+    private VicUser user;
     
     @Temporal(TemporalType.TIMESTAMP)
     private Date expires;
@@ -26,11 +26,11 @@ public class Token extends BaseEntity{
         this.value = value;
     }
 
-    public User getUser() {
+    public VicUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(VicUser user) {
         this.user = user;
     }
 

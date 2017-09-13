@@ -10,6 +10,6 @@ import org.springframework.data.repository.Repository;
  * @author munif
  */
 @NoRepositoryBean
-public interface VicRepository<T>  extends JpaRepository<T, String>{
+public interface VicRepository<T>  extends JpaRepository<T, Serializable>{
     
 }

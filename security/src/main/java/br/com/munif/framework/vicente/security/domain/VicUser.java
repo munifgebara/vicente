@@ -11,7 +11,7 @@ import br.com.munif.framework.vicente.domain.BaseEntity;
  *
  * @author munif
  */
-public class User extends BaseEntity{
+public class VicUser extends BaseEntity{
     
     private String login;
     private String password;

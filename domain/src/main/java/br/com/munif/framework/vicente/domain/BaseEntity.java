@@ -48,8 +48,9 @@ public class BaseEntity {
 
     public BaseEntity() {
         this.id = UIDHelper.getUID();
-        this.gi = VicThreadScope.gi.get();
+        this.gi = RightsHelper.getMainGi();
         this.ui = VicThreadScope.ui.get();
+        
         this.rights = RightsHelper.getDefault();
         this.extra = "Framework";
         this.cd = new Date();

@@ -7,7 +7,9 @@ package br.com.munif.framework.vicente.application;
 
 import br.com.munif.framework.vicente.core.Utils;
 import br.com.munif.framework.vicente.core.VicThreadScope;
+import br.com.munif.framework.vicente.domain.BaseEntity;
 import java.beans.PropertyDescriptor;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -31,14 +33,13 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
-public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, String> implements VicRepository<T> {
+public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> implements VicRepository<T> {
 
     private final EntityManager entityManager;
 
     public VicRepositoryImpl(JpaEntityInformation entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
         this.entityManager = entityManager;
-        System.out.println("--------------->VicRepositoryImpl");
     }
 
     @Override
@@ -216,7 +217,7 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, String> impleme
     }
 
     @Override
-    public List<T> findAll(Iterable<String> ids) {
+    public List<T> findAll(Iterable<Serializable> ids) {
         System.out.println("----> super.findAll(ids) ");
         return super.findAll(ids); //To change body of generated methods, choose Tools | Templates.
     }
@@ -225,6 +226,11 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, String> impleme
     public List<T> findAll() {
         System.out.println("----> super.findAll() ");
         Class<T> domainClass = this.getDomainClass();
+        boolean assignableFrom2 = BaseEntity.class.isAssignableFrom(domainClass);
+        if (!assignableFrom2){
+            return super.findAll();
+        }
+        
         Query createQuery = entityManager.createQuery("FROM " + domainClass.getSimpleName()+ " obj where \n"
                   // 123456789012345678901234567890
                 + "   (obj.ui=:ui and mod(obj.rights/64,8)/4>=1) \n"
@@ -236,13 +242,13 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, String> impleme
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(Serializable id) {
         System.out.println("----> super.exists(id) ");
         return super.exists(id); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public T getOne(String id) {
+    public T getOne(Serializable id) {
         System.out.println("----> super.getOne(id) ");
         return super.getOne(id); //To change body of generated methods, choose Tools | Templates.
     }
@@ -254,7 +260,7 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, String> impleme
     }
 
     @Override
-    public T findOne(String id) {
+    public T findOne(Serializable id) {
         System.out.println("----> super.findOne(id) ");
         T findOne = super.findOne(id); //To change body of generated methods, choose Tools | Templates.
         Class<T> domainClass = this.getDomainClass();
@@ -305,7 +311,7 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, String> impleme
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(Serializable id) {
         System.out.println("----> super.delete(id) ");
         super.delete(id); //To change body of generated methods, choose Tools | Templates.
     }

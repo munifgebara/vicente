@@ -6,6 +6,7 @@
 package br.com.munif.framework.vicente.application;
 
 import br.com.munif.framework.vicente.core.Utils;
+import br.com.munif.framework.vicente.domain.BaseEntity;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
