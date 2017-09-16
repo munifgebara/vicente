@@ -25,6 +25,9 @@ public class RightsHelper {
     public static final int OTHER_DELETE=0b000000001;
     
     public static int getDefault(){
+        if (VicThreadScope.defaultRights.get()!=null){
+            return VicThreadScope.defaultRights.get();
+        }
         return OWNER_READ+OWNER_UPDATE+OWNER_DELETE+GROUP_READ;
     }
 
@@ -41,6 +44,10 @@ public class RightsHelper {
             return get.substring(0, get.indexOf(','));
         }
         return get;
+    }
+    
+    public static void main(String []args){
+        System.out.println("ALL---->"+0b111111111);
     }
 
     

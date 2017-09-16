@@ -38,15 +38,14 @@ public abstract class BaseService<T> {
     }
 
     @Transactional(readOnly = true)
+    public List<T> findAllNoTenancy() {
+        return repository.findAllNoTenancy();
+    }
+    
+    
+    @Transactional(readOnly = true)
     public List<T> findAll() {
-        Iterable<T> findAll = repository.findAll();
-        
-        List<T> result = new ArrayList<T>();
-        for (T r:findAll){
-            result.add(r);
-        }
-        
-        return result;
+        return repository.findAll();
     }
 
     @Transactional(readOnly = true)

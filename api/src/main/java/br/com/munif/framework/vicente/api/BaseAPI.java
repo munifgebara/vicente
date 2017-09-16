@@ -69,6 +69,7 @@ public class BaseAPI<T extends BaseEntity> {
     @Transactional
     @RequestMapping(value = "", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<T> update2(@RequestBody @Valid T model) {
+        try{
         HttpStatus ht=HttpStatus.OK;
         if (service.view(model.getId())!=null){
             model = update(model.getId(), model);
@@ -77,6 +78,12 @@ public class BaseAPI<T extends BaseEntity> {
             ht=HttpStatus.CREATED;
         }
         return new ResponseEntity(model, ht);
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+        
    }
 
     protected void beforeSave(T model) {

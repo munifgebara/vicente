@@ -163,6 +163,26 @@ public class BaseEntity {
     public String getClassName(){
         return this.getClass().getSimpleName();
     }
+    
+    public String getStringRights(){
+        if (rights==null){
+            return "--- --- ---";
+        }
+        String toReturn="";
+        toReturn+=(RightsHelper.OWNER_READ & rights)>0?"R":"-";
+        toReturn+=(RightsHelper.OWNER_UPDATE & rights)>0?"U":"-";
+        toReturn+=(RightsHelper.OWNER_DELETE & rights)>0?"D":"-";
+        toReturn+=" ";
+        toReturn+=(RightsHelper.GROUP_READ & rights)>0?"R":"-";
+        toReturn+=(RightsHelper.GROUP_UPDATE & rights)>0?"U":"-";
+        toReturn+=(RightsHelper.GROUP_DELETE & rights)>0?"D":"-";
+        toReturn+=" ";
+        toReturn+=(RightsHelper.OTHER_READ & rights)>0?"R":"-";
+        toReturn+=(RightsHelper.OTHER_UPDATE & rights)>0?"U":"-";
+        toReturn+=(RightsHelper.OTHER_DELETE & rights)>0?"D":"-";
+        
+        return toReturn;
+    }
 
     @Override
     public String toString() {
