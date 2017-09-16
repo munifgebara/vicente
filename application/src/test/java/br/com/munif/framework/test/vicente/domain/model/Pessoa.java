@@ -3,6 +3,7 @@ package br.com.munif.framework.test.vicente.domain.model;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.typings.VicAddress;
 import br.com.munif.framework.vicente.domain.typings.VicEmail;
+import br.com.munif.framework.vicente.domain.typings.VicPhone;
 import org.hibernate.annotations.Columns;
 import org.hibernate.envers.Audited;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @Audited
 public class Pessoa extends BaseEntity {
 
-//    @NotNull
+    //    @NotNull
     @Column(nullable = false)
     private String nome;
     private String apelido;
@@ -25,7 +26,7 @@ public class Pessoa extends BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date nascimento;
     @Columns(columns = {
-            @Column(name = "description"),
+            @Column(name = "email_description"),
             @Column(name = "social")
     })
     private VicEmail vicEmail;
@@ -46,11 +47,21 @@ public class Pessoa extends BaseEntity {
     })
     private VicAddress endereco;
 
+    @Columns(columns = {
+            @Column(name = "phone_description"),
+            @Column(name = "type")
+    })
+    private VicPhone telefone;
+
+
     @OneToMany
     private List<Endereco> outrosEnderecos;
 
     @OneToMany
     private List<Email> outrosEmails;
+
+    @OneToMany
+    private List<Telefone> outrosTelefones;
 
     public Pessoa() {
     }
@@ -117,5 +128,21 @@ public class Pessoa extends BaseEntity {
 
     public void setOutrosEmails(List<Email> outrosEmails) {
         this.outrosEmails = outrosEmails;
+    }
+
+    public VicPhone getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(VicPhone telefone) {
+        this.telefone = telefone;
+    }
+
+    public List<Telefone> getOutrosTelefones() {
+        return outrosTelefones;
+    }
+
+    public void setOutrosTelefones(List<Telefone> outrosTelefones) {
+        this.outrosTelefones = outrosTelefones;
     }
 }

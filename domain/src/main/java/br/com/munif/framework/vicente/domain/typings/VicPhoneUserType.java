@@ -84,7 +84,7 @@ public class VicPhoneUserType implements CompositeUserType {
                 return new VicPhone(description, resultSet.getString(1));
             }
         }
-        return new VicEmail();
+        return new VicPhone();
     }
 
     @Override
