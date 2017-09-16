@@ -22,7 +22,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @Configuration
 @ComponentScan(basePackages =         {"br.com.munif.framework.test.vicente.application"})
-@EnableJpaRepositories(basePackages = {"br.com.munif.framework.test.vicente.application"}, repositoryBaseClass = VicRepositoryImpl.class)
+@EnableJpaRepositories(basePackages = {"br.com.munif.framework.test.vicente"}, repositoryBaseClass = VicRepositoryImpl.class)
 @EnableTransactionManagement(proxyTargetClass = true)
 @EnableAsync
 public class MySQLSpringConfig {
@@ -62,7 +62,7 @@ public class MySQLSpringConfig {
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("br.com.munif.framework.vicente.domain", "br.com.munif.framework.test.vicente.application.model");
+        factory.setPackagesToScan("br.com.munif.framework.vicente.domain", "br.com.munif.framework.test.vicente.domain");
 
         factory.setDataSource(dataSource);
         factory.setJpaProperties(properties);
