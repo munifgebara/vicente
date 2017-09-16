@@ -1,6 +1,7 @@
 package br.com.munif.framework.test.vicente.application;
 
-import br.com.munif.framework.test.vicente.application.model.Pessoa;
+
+import br.com.munif.framework.test.vicente.domain.model.Pessoa;
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
 import org.springframework.stereotype.Service;

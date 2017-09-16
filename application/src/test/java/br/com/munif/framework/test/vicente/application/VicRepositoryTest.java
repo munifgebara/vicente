@@ -1,20 +1,21 @@
 package br.com.munif.framework.test.vicente.application;
 
-import br.com.munif.framework.test.vicente.application.model.Pessoa;
+import br.com.munif.framework.test.vicente.domain.model.Pessoa;
 import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-import java.util.List;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
-import org.junit.Test;
 
 /**
- *
  * @author munif
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -116,10 +117,10 @@ public class VicRepositoryTest {
 
     @Test(expected = org.springframework.dao.DataIntegrityViolationException.class)
     @Transactional
-    public void saveNull(){
+    public void saveNull() {
         VicThreadScope.ui.set("XXX");
         VicThreadScope.gi.set("XXXXX");
-        Pessoa p=new Pessoa();
+        Pessoa p = new Pessoa();
         p.setNome(null);
         pessoaService.save(p);
     }

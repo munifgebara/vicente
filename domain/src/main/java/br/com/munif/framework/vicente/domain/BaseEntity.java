@@ -14,6 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.Version;
+
+import br.com.munif.framework.vicente.domain.typings.*;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.envers.Audited;
 
 /**
@@ -21,7 +25,11 @@ import org.hibernate.envers.Audited;
  * @author munif
  */
 @MappedSuperclass
-@Audited
+@TypeDefs({
+        @TypeDef(name = "vicaddress", defaultForType = VicAddress.class, typeClass = VicAddressUserType.class),
+        @TypeDef(name = "vicemail", defaultForType = VicEmail.class, typeClass = VicEmailUserType.class),
+        @TypeDef(name = "vicphone", defaultForType = VicPhone.class, typeClass = VicPhoneUserType.class)
+})
 public class BaseEntity {
 
     @Id
