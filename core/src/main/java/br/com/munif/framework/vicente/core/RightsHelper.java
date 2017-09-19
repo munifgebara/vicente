@@ -47,7 +47,7 @@ public class RightsHelper {
     }
     
     public static void main(String []args){
-        System.out.println("ALL---->"+0b111111111);
+        //System.out.println("ALL---->"+0b111111111);
     }
 
     

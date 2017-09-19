@@ -35,9 +35,9 @@ public class Utils {
                 att.setAccessible(true);
                 att.set(obj, removeNaoNumeros((String) att.get(obj)));
             } catch (NoSuchFieldException ex) {
-                System.out.println("--->Atributo não existe");
+                Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SecurityException ex) {
-                ex.printStackTrace();
+                Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalArgumentException ex) {
                 Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {

@@ -28,7 +28,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class MySQLSpringConfig {
 
     public MySQLSpringConfig() {
-        System.out.println("---->" + this.getClass().getCanonicalName());
+        //System.out.println("---->" + this.getClass().getCanonicalName());
     }
 
     @Bean

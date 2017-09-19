@@ -237,7 +237,7 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
                 + "or (:gi like concat('%',obj.gi,',%') and mod(obj.rights/8,8)/4>=1) \n"
                 + "or (1=1        and mod(obj.rights  ,8)/4>=1)";
         //System.out.println("---->"+hql);
-        System.out.println("---->" + hql.replaceAll(":gi", "'" + VicThreadScope.gi.get() + "," + "'").replaceAll(":ui", "'" + VicThreadScope.ui.get() + "'").replaceAll("\n", ""));
+       //System.out.println("---->" + hql.replaceAll(":gi", "'" + VicThreadScope.gi.get() + "," + "'").replaceAll(":ui", "'" + VicThreadScope.ui.get() + "'").replaceAll("\n", ""));
 
         Query createQuery = entityManager.createQuery(hql);
         createQuery.setParameter("ui", VicThreadScope.ui.get());

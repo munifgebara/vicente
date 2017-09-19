@@ -60,7 +60,7 @@ public class VicRepositoryTest {
         VicThreadScope.ui.set("U1");
         VicThreadScope.gi.set("G1");
         List<Pessoa> findAll = pessoaService.findAll();
-        System.out.println("---->" + findAll);
+        //System.out.println("---->" + findAll);
         assertEquals(11, findAll.size());
 
     }
@@ -71,7 +71,7 @@ public class VicRepositoryTest {
         VicThreadScope.ui.set("U11");
         VicThreadScope.gi.set("G1");
         List<Pessoa> findAll = pessoaService.findAll();
-        System.out.println("---->" + findAll);
+        //System.out.println("---->" + findAll);
         assertEquals(1, findAll.size());
     }
 
@@ -81,7 +81,7 @@ public class VicRepositoryTest {
         VicThreadScope.ui.set("U11");
         VicThreadScope.gi.set("G19");
         List<Pessoa> findAll = pessoaService.findAll();
-        System.out.println("---->" + findAll);
+        //System.out.println("---->" + findAll);
         assertEquals(11, findAll.size());
     }
 
@@ -91,7 +91,7 @@ public class VicRepositoryTest {
         VicThreadScope.ui.set("U00");
         VicThreadScope.gi.set("G11");
         List<Pessoa> findAll = pessoaService.findAll();
-        System.out.println("---->" + findAll);
+        //System.out.println("---->" + findAll);
         assertEquals(11, findAll.size());
     }
 
@@ -101,7 +101,7 @@ public class VicRepositoryTest {
         VicThreadScope.ui.set("UZ");
         VicThreadScope.gi.set("GZZ");
         List<Pessoa> findAll = pessoaService.findAll();
-        System.out.println("---->" + findAll);
+        //System.out.println("---->" + findAll);
         assertEquals(1, findAll.size());
     }
 
@@ -111,7 +111,7 @@ public class VicRepositoryTest {
         VicThreadScope.ui.set("U1001");
         VicThreadScope.gi.set("G11,G15");
         List<Pessoa> findAll = pessoaService.findAll();
-        System.out.println("---->" + findAll);
+        //System.out.println("---->" + findAll);
         assertEquals(21, findAll.size());
     }
 

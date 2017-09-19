@@ -120,7 +120,7 @@ public class DataUtil {
         Date dataMaior = cal.getTime();
 
         for (Calendar m : mesesEntreDatas(dataMenor, dataMaior)) {
-            System.out.println(nomeDoMes(m.get(Calendar.MONTH)));
+            //System.out.println(nomeDoMes(m.get(Calendar.MONTH)));
         }
     }
 
