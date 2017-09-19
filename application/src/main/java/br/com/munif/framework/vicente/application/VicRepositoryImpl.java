@@ -160,20 +160,20 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
     public <S extends T> S findOne(Example<S> example) {
         //System.out.println("----> super.findOne(example) ");
         S findOne = super.findOne(example); //To change body of generated methods, choose Tools | Templates.
-        Class<T> domainClass = this.getDomainClass();
-        List<Field> allFields = Utils.getAllFields(domainClass);
-        for (Field f : allFields) {
-            f.setAccessible(true);
-            if (f.isAnnotationPresent(OneToMany.class) || f.isAnnotationPresent(ManyToMany.class)) {
-                try {
-                    Hibernate.initialize(f.get(findOne));
-                } catch (IllegalArgumentException ex) {
-                    Logger.getLogger(VicRepositoryImpl.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalAccessException ex) {
-                    Logger.getLogger(VicRepositoryImpl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
+//        Class<T> domainClass = this.getDomainClass();
+//        List<Field> allFields = Utils.getAllFields(domainClass);
+//        for (Field f : allFields) {
+//            f.setAccessible(true);
+//            if (f.isAnnotationPresent(OneToMany.class) || f.isAnnotationPresent(ManyToMany.class)) {
+//                try {
+//                    Hibernate.initialize(f.get(findOne));
+//                } catch (IllegalArgumentException ex) {
+//                    Logger.getLogger(VicRepositoryImpl.class.getName()).log(Level.SEVERE, null, ex);
+//                } catch (IllegalAccessException ex) {
+//                    Logger.getLogger(VicRepositoryImpl.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        }
 
         return findOne;
     }
@@ -264,26 +264,26 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
     }
 
     @Override
-    public T findOne(Serializable id) {
+    public T findOne(Serializable id) {  //TODO ARRUMAR
         //System.out.println("----> super.findOne(id) ");
         T findOne = super.findOne(id); //To change body of generated methods, choose Tools | Templates.
-        if (findOne==null){
-            return null;
-        }
-        Class<T> domainClass = this.getDomainClass();
-        List<Field> allFields = Utils.getAllFields(domainClass);
-        for (Field f : allFields) {
-            f.setAccessible(true);
-            if (f.isAnnotationPresent(OneToMany.class) || f.isAnnotationPresent(ManyToMany.class)) {
-                try {
-                    Hibernate.initialize(f.get(findOne));
-                } catch (IllegalArgumentException ex) {
-                    Logger.getLogger(VicRepositoryImpl.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalAccessException ex) {
-                    Logger.getLogger(VicRepositoryImpl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
+//        if (findOne==null){
+//            return null;
+//        }
+//        Class<T> domainClass = this.getDomainClass();
+//        List<Field> allFields = Utils.getAllFields(domainClass);
+//        for (Field f : allFields) {
+//            f.setAccessible(true);
+//            if (f.isAnnotationPresent(OneToMany.class) || f.isAnnotationPresent(ManyToMany.class)) {
+//                try {
+//                    Hibernate.initialize(f.get(findOne));
+//                } catch (IllegalArgumentException ex) {
+//                    Logger.getLogger(VicRepositoryImpl.class.getName()).log(Level.SEVERE, null, ex);
+//                } catch (IllegalAccessException ex) {
+//                    Logger.getLogger(VicRepositoryImpl.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        }
         return findOne;
     }
 
