@@ -16,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.Version;
 
 import br.com.munif.framework.vicente.domain.typings.*;
+import java.text.SimpleDateFormat;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.hibernate.envers.Audited;
@@ -26,8 +27,10 @@ import org.hibernate.envers.Audited;
  */
 @MappedSuperclass
 @TypeDefs({
-        @TypeDef(name = "vicaddress", defaultForType = VicAddress.class, typeClass = VicAddressUserType.class),
-        @TypeDef(name = "vicemail", defaultForType = VicEmail.class, typeClass = VicEmailUserType.class),
+    @TypeDef(name = "vicaddress", defaultForType = VicAddress.class, typeClass = VicAddressUserType.class)
+    ,
+        @TypeDef(name = "vicemail", defaultForType = VicEmail.class, typeClass = VicEmailUserType.class)
+    ,
         @TypeDef(name = "vicphone", defaultForType = VicPhone.class, typeClass = VicPhoneUserType.class)
 })
 public class BaseEntity {
@@ -58,12 +61,12 @@ public class BaseEntity {
         this.id = UIDHelper.getUID();
         this.gi = RightsHelper.getMainGi();
         this.ui = VicThreadScope.ui.get();
-        
+
         this.rights = RightsHelper.getDefault();
         this.extra = "Framework";
         this.cd = new Date();
         this.ud = new Date();
-        active=true;
+        active = true;
         //version=0; TODO Pesquisar
     }
 
@@ -101,6 +104,11 @@ public class BaseEntity {
 
     public String getExtra() {
         return extra;
+    }
+    
+    public BaseEntity extra(String e){
+        this.extra=e;
+        return this;
     }
 
     public void setExtra(String extra) {
@@ -167,35 +175,51 @@ public class BaseEntity {
         }
         return true;
     }
-    
-    public String getClassName(){
+
+    public String getClassName() {
         return this.getClass().getSimpleName();
     }
-    
-    public String getStringRights(){
-        if (rights==null){
-            return "--- --- ---";
-        }
-        String toReturn="";
-        toReturn+=(RightsHelper.OWNER_READ & rights)>0?"R":"-";
-        toReturn+=(RightsHelper.OWNER_UPDATE & rights)>0?"U":"-";
-        toReturn+=(RightsHelper.OWNER_DELETE & rights)>0?"D":"-";
-        toReturn+=" ";
-        toReturn+=(RightsHelper.GROUP_READ & rights)>0?"R":"-";
-        toReturn+=(RightsHelper.GROUP_UPDATE & rights)>0?"U":"-";
-        toReturn+=(RightsHelper.GROUP_DELETE & rights)>0?"D":"-";
-        toReturn+=" ";
-        toReturn+=(RightsHelper.OTHER_READ & rights)>0?"R":"-";
-        toReturn+=(RightsHelper.OTHER_UPDATE & rights)>0?"U":"-";
-        toReturn+=(RightsHelper.OTHER_DELETE & rights)>0?"D":"-";
-        
+
+    public String getStringRights() {
+        Integer rights = this.rights != null ? this.rights : 0;
+        String toReturn = "";
+        toReturn += "ui:" + ui+"(";
+        toReturn += (RightsHelper.OWNER_READ & rights) > 0 ? "R" : "-";
+        toReturn += (RightsHelper.OWNER_UPDATE & rights) > 0 ? "U" : "-";
+        toReturn += (RightsHelper.OWNER_DELETE & rights) > 0 ? "D" : "-";
+        toReturn += ") ";
+        toReturn += "gi:" + gi+"(";
+        toReturn += (RightsHelper.GROUP_READ & rights) > 0 ? "R" : "-";
+        toReturn += (RightsHelper.GROUP_UPDATE & rights) > 0 ? "U" : "-";
+        toReturn += (RightsHelper.GROUP_DELETE & rights) > 0 ? "D" : "-";
+        toReturn += ") ";
+        toReturn += "o(";
+        toReturn += (RightsHelper.OTHER_READ & rights) > 0 ? "R" : "-";
+        toReturn += (RightsHelper.OTHER_UPDATE & rights) > 0 ? "U" : "-";
+        toReturn += (RightsHelper.OTHER_DELETE & rights) > 0 ? "D" : "-";
+        toReturn += ") ";
+        toReturn +="cd:"+format(cd)+" ";
+        toReturn +="up:"+format(ud);
+
         return toReturn;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName()+"{" + "id=" + id + ", gi=" + gi + ", ui=" + ui + ", rights=" + rights + ", extra=" + extra + ", cd=" + cd + ", ud=" + ud + ", active=" + active + ", version=" + version + '}';
+        return getClass().getSimpleName() + "{" + "id=" + id + ", gi=" + gi + ", ui=" + ui + ", rights=" + rights + ", extra=" + extra + ", cd=" + cd + ", ud=" + ud + ", active=" + active + ", version=" + version + '}';
     }
-
+    
+    public static SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+    
+    public String format(Date d){
+        if (d==null){
+            return "null";
+        }
+        else{
+            return sdf.format(d);
+        }
+    }
+    
+    
 
 }

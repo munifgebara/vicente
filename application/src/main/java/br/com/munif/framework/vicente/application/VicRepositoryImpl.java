@@ -6,6 +6,7 @@
 package br.com.munif.framework.vicente.application;
 
 import br.com.munif.framework.vicente.core.Utils;
+import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import java.beans.PropertyDescriptor;
@@ -339,6 +340,31 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
     public void setRepositoryMethodMetadata(CrudMethodMetadata crudMethodMetadata) {
         //System.out.println("----> super.setRepositoryMethodMetadata(crudMethodMetadata) ");
         super.setRepositoryMethodMetadata(crudMethodMetadata); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<T> findByHql(VicQuery query) {
+        Class<T> domainClass = this.getDomainClass();
+        boolean assignableFrom2 = BaseEntity.class.isAssignableFrom(domainClass);
+        if (!assignableFrom2) {
+            return super.findAll();
+        }
+        String hql = "FROM " + domainClass.getSimpleName() + " obj where \n"
+                +"("+ (query.getHql()!=null?query.getHql():"1=1")+") and "
+                + "("
+                + "   (obj.ui=:ui and mod(obj.rights/64,8)/4>=1) \n"
+                + "or (:gi like concat('%',obj.gi,',%') and mod(obj.rights/8,8)/4>=1) \n"
+                + "or (1=1        and mod(obj.rights  ,8)/4>=1)"
+                + ")";
+        //System.out.println("---->"+hql);
+       //System.out.println("---->" + hql.replaceAll(":gi", "'" + VicThreadScope.gi.get() + "," + "'").replaceAll(":ui", "'" + VicThreadScope.ui.get() + "'").replaceAll("\n", ""));
+
+        Query createQuery = entityManager.createQuery(hql);
+        createQuery.setFirstResult(query.getFirstResult());
+        createQuery.setMaxResults(query.getMaxResults());
+        createQuery.setParameter("ui", VicThreadScope.ui.get());
+        createQuery.setParameter("gi", VicThreadScope.gi.get() + ",");
+        return createQuery.getResultList();
     }
 
 }

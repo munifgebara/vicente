@@ -6,6 +6,7 @@
 package br.com.munif.framework.vicente.application;
 
 import br.com.munif.framework.vicente.core.Utils;
+import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,6 +43,11 @@ public abstract class BaseService<T> {
         return repository.findAllNoTenancy();
     }
     
+    @Transactional(readOnly = true)
+    public List<T> findByHql(VicQuery query) {
+        return repository.findByHql(query);
+    }
+
     
     @Transactional(readOnly = true)
     public List<T> findAll() {

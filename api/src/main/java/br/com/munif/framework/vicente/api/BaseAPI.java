@@ -7,11 +7,13 @@ package br.com.munif.framework.vicente.api;
 
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.core.Utils;
+import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
@@ -94,14 +96,22 @@ public class BaseAPI<T extends BaseEntity> {
 
     }
 
+//    @Transactional
+//    @RequestMapping(method = RequestMethod.GET)
+//    public VicReturn<T> findAll() {
+//        List<T> findAll = service.findAll();
+//        return new VicReturn<T>(findAll);
+//    }
+    
     @Transactional
     @RequestMapping(method = RequestMethod.GET)
-    public VicReturn<T> findAll() {
-        List<T> findAll = service.findAll();
-        return new VicReturn<T>(findAll);
+    public VicReturn<T> findHQL(HttpServletRequest request, VicQuery query) {
+        query.setHql(query.getHql().replace("\"", ""));
+        List<T> result = service.findByHql(query);
+        return new VicReturn<T>(result);
     }
-    
 
+    
     @Transactional
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public T load(@PathVariable String id) {

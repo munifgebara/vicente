@@ -2,6 +2,7 @@ package br.com.munif.framework.test.vicente.application;
 
 import br.com.munif.framework.test.vicente.domain.model.Pessoa;
 import br.com.munif.framework.vicente.core.RightsHelper;
+import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import org.junit.Before;
 import org.junit.Test;
@@ -114,6 +115,31 @@ public class VicRepositoryTest {
         //System.out.println("---->" + findAll);
         assertEquals(21, findAll.size());
     }
+
+    @Test
+    @Transactional
+    public void findByHql() {
+        VicThreadScope.ui.set("U1001");
+        VicThreadScope.gi.set("G11,G15");
+        List<Pessoa> findAll = pessoaService.findByHql(new VicQuery());
+        //System.out.println("---->" + findAll);
+        assertEquals(21, findAll.size());
+    }
+
+        @Test
+    @Transactional
+    public void findByHql2() {
+        VicThreadScope.ui.set("U1001");
+        VicThreadScope.gi.set("G11,G15");
+        VicQuery q=new VicQuery();
+        q.setMaxResults(2);
+        q.setHql("obj.nome like '%'");
+        List<Pessoa> findAll = pessoaService.findByHql(q);
+        //System.out.println("---->" + findAll);
+        assertEquals(2, findAll.size());
+    }
+
+    
 
     @Test(expected = org.springframework.dao.DataIntegrityViolationException.class)
     @Transactional
