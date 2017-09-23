@@ -19,6 +19,9 @@ public class ItemPedido extends BaseEntity {
 
     @ManyToOne
     private Produto produto;
+    
+    @ManyToOne
+    private Pedido pedido;
 
     public ItemPedido() {
     }

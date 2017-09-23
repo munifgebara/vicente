@@ -18,6 +18,9 @@ public class Cliente extends BaseEntity {
 
     @Column(name = "cidade")
     private String cidade;
+    
+    @OneToMany(mappedBy = "cliente")
+    private List<Pedido> pedidos;
 
     @ManyToMany()
     private List<GrupoClientes> grupoClientes;

@@ -47,7 +47,13 @@ public class VicSmartSearchTest {
     @Test
     @Transactional
     public void teste() {
-        vss.smartSearch("Cliente", "Categora", "nome=s");
+        vss.smartSearch("Cliente", "Categoria", "nome=s");
+    }
+
+    @Test
+    @Transactional
+    public void teste2() {
+        vss.normalSearch();
     }
 
     

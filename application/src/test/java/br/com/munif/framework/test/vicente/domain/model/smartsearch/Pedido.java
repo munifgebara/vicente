@@ -13,7 +13,7 @@ import java.util.List;
 @Audited
 public class Pedido extends BaseEntity {
 
-    @OneToMany
+    @OneToMany(mappedBy = "pedido")
     private List<ItemPedido> itens;
 
     @ManyToOne

@@ -2,6 +2,7 @@ package br.com.munif.framework.test.vicente.domain.model.smartsearch;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import java.math.BigDecimal;
+import java.util.List;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -20,6 +21,9 @@ public class Produto extends BaseEntity {
 
     @ManyToOne
     private Categoria categoria;
+    
+    @OneToMany(mappedBy = "produto")
+    private List<ItemPedido> itens;
 
     public Produto() {
     }
