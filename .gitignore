@@ -19,3 +19,4 @@ dist/
 nbdist/
 
 /core/nbproject/
+/api/nbproject/
