@@ -5,6 +5,7 @@
  */
 package br.com.munif.framework.vicente.application;
 
+import br.com.munif.framework.vicente.application.search.VicSmartSearch;
 import br.com.munif.framework.vicente.core.Utils;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicThreadScope;
@@ -366,5 +367,6 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
         createQuery.setParameter("gi", VicThreadScope.gi.get() + ",");
         return createQuery.getResultList();
     }
+    
 
 }

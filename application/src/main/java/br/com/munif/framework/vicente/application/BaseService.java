@@ -42,13 +42,12 @@ public abstract class BaseService<T> {
     public List<T> findAllNoTenancy() {
         return repository.findAllNoTenancy();
     }
-    
+
     @Transactional(readOnly = true)
     public List<T> findByHql(VicQuery query) {
         return repository.findByHql(query);
     }
 
-    
     @Transactional(readOnly = true)
     public List<T> findAll() {
         return repository.findAll();
@@ -91,8 +90,8 @@ public abstract class BaseService<T> {
     public Long quantidade() {
         return repository.count();
     }
-    
-     public T newEntity() {
+
+    public T newEntity() {
         try {
             return clazz().newInstance();
         } catch (InstantiationException ex) {
@@ -108,9 +107,12 @@ public abstract class BaseService<T> {
         return (Class<T>) Utils.inferGenericType(getClass());
     }
 
+    public void teste() {
+        em.getMetamodel().getEntities();
+
+    }
 
 }
-
 
 //88B797E428E850E5494404A5 
 //88B797E428E850E5494404A5
