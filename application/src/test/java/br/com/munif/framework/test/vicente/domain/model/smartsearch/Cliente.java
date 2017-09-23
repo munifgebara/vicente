@@ -58,4 +58,12 @@ public class Cliente extends BaseEntity {
         this.grupoClientes = grupoClientes;
     }
 
+    @Override
+    public String toString() {
+        return "Cliente{" + "nome=" + nome + '}';
+    }
+
+    
+    
+
 }

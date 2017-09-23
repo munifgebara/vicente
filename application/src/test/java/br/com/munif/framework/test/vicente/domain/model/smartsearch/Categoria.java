@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class Categoria extends BaseEntity {
 
     private String nome;
-    
+
     @OneToMany(mappedBy = "categoria")
     private List<Produto> produtos;
 
@@ -31,6 +31,11 @@ public class Categoria extends BaseEntity {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    @Override
+    public String toString() {
+        return "Categoria{" + "nome=" + nome + '}';
     }
 
 }

@@ -17,4 +17,18 @@ public class GrupoClientes extends BaseEntity {
     public GrupoClientes() {
     }
 
+    public GrupoClientes(String nomeGrupo) {
+        this.nomeGrupo = nomeGrupo;
+    }
+
+    public String getNomeGrupo() {
+        return nomeGrupo;
+    }
+
+    public void setNomeGrupo(String nomeGrupo) {
+        this.nomeGrupo = nomeGrupo;
+    }
+    
+    
+
 }

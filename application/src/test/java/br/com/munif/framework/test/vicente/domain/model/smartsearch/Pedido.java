@@ -38,4 +38,9 @@ public class Pedido extends BaseEntity {
         this.cliente = cliente;
     }
 
+    @Override
+    public String toString() {
+        return "Pedido{" + cliente.getNome() + ',' + id + '}';
+    }
+
 }

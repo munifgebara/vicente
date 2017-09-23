@@ -59,5 +59,12 @@ public class Produto extends BaseEntity {
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
+
+    @Override
+    public String toString() {
+        return "Produto{" + "nome=" + nome + ", quantidade=" + quantidade + ", valor=" + valor + '}';
+    }
+    
+    
     
 }

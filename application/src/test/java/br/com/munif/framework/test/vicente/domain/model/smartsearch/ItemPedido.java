@@ -19,11 +19,19 @@ public class ItemPedido extends BaseEntity {
 
     @ManyToOne
     private Produto produto;
-    
+
     @ManyToOne
     private Pedido pedido;
 
     public ItemPedido() {
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     public Integer getQuantidade() {
@@ -48,6 +56,11 @@ public class ItemPedido extends BaseEntity {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    @Override
+    public String toString() {
+        return "ItemPedido{" +pedido.getId()+ " quantidade=" + quantidade + ", valorUnitario=" + valorUnitario + '}';
     }
 
 }
