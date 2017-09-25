@@ -10,10 +10,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Utils {
-    
-    public static List<Field>  getAllFields(Class c){
+
+    public static List<Field> getAllFields(Class c) {
         ArrayList<Field> arrayList = new ArrayList<Field>();
-        if (c.getSuperclass()!=Object.class){
+        if (c.getSuperclass() != Object.class) {
             arrayList.addAll(getAllFields(c.getSuperclass()));
         }
         arrayList.addAll(Arrays.asList(c.getDeclaredFields()));
@@ -51,13 +51,20 @@ public class Utils {
         return inferGenericType(clazz, 0);
     }
 
-
     public static Class<?> inferGenericType(Class<?> clazz, int index) {
         Type superClass = clazz.getGenericSuperclass();
         return (Class<?>) ((ParameterizedType) superClass).getActualTypeArguments()[index];
     }
 
+    public static String primeiraMinuscula(String s) {
+        String first = s.substring(0, 1).toLowerCase();
+        return first + s.substring(1);
+
+    }
+
     public static void main(String args[]) {
+        
+        System.out.println(primeiraMinuscula("ABC"));
 
     }
 

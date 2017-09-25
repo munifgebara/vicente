@@ -5,6 +5,7 @@
  */
 package br.com.munif.framework.vicente.application.search;
 
+import br.com.munif.framework.vicente.core.Utils;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,12 +17,28 @@ import org.hibernate.transform.ResultTransformer;
  * @author munif
  */
 public class VicResultTransformer implements ResultTransformer {
+    
 
     @Override
     public Object transformTuple(Object[] os, String[] strings) {
         Map<String,Object> r=new HashMap<>();
+        Map<String,Integer> contadores=new HashMap<>();
         for (int i=0;i<os.length;i++){
-            r.put(strings[i]!=null?strings[i]:"field "+i, os[i]);
+            String fieldName="field"+i;
+            if (strings==null || strings[i]==null){
+                String className=os[i].getClass().getSimpleName();
+                if (!contadores.containsKey(className)){
+                    contadores.put(className, 0);
+                }
+                int v=contadores.get(className);
+                fieldName=Utils.primeiraMinuscula(className)+(v>0?v:"");
+                v++;
+                contadores.put(className, v);
+            }
+            else{
+                fieldName=strings[i];
+            }
+            r.put(fieldName, os[i]);
         }
         return r;
     }

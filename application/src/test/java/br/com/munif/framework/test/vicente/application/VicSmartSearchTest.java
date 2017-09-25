@@ -87,16 +87,33 @@ public class VicSmartSearchTest {
 
     @Test
     @Transactional
-    public void teste() {
-        List<Map<String, Object>> smartSearch = vss.smartSearch("Cliente", "Categoria", "select cliente.nome as nome,categoria.nome as cat,count(categoria.nome) as quantidade","where categoria.nome='egg'  group by cliente.nome,categoria.nome order by categoria.nome");
+    public void teste0() {
+        List result = vss.normalSearch();
+        assertTrue(!result.isEmpty());
+    }
+
+    @Test
+    @Transactional
+    public void teste1() {
+        List<Map<String, Object>> smartSearch = vss.smartSearch("Cliente", "Categoria", "", "",10);
+        //"select cliente.nome as nomCliente,categoria.nome as cat,count(categoria.nome) as quantidade",
+        //"where categoria.nome='egg'  group by cliente.nome,categoria.nome order by categoria.nome");
+        for (Object obj : smartSearch) {
+            System.out.println(obj.toString());
+        }
         assertTrue(!smartSearch.isEmpty());
     }
 
     @Test
     @Transactional
     public void teste2() {
-        vss.normalSearch();
+        List<Map<String, Object>> smartSearch = vss.smartSearch("Cliente", "Categoria", "select cliente.nome as nomCliente,categoria.nome as cat,count(categoria.nome) as quantidade", "where categoria.nome='egg'  group by cliente.nome,categoria.nome order by categoria.nome");
+        for (Object obj : smartSearch) {
+            System.out.println(obj.toString());
+        }
+        assertTrue(!smartSearch.isEmpty());
     }
+
 
     @Transactional
     public void loadSeedCategoria() throws IOException {

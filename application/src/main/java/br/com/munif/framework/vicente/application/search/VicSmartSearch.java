@@ -46,14 +46,15 @@ public class VicSmartSearch {
     }
 
     public List<Object[]> normalSearch() {
-        Query createQuery = em.createQuery("select cliente.nome,categoria.nome,count(categoria.nome) from Cliente cliente inner join cliente.pedidos as pedido inner join pedido.itens as item inner join item.produto as produto inner join produto.categoria as categoria "
+        Query createQuery = em.createQuery("select cliente.nome,categoria.nome,count(categoria.nome)"
+                + " from Cliente cliente inner join cliente.pedidos as pedido inner join pedido.itens as item inner join item.produto as produto inner join produto.categoria as categoria "
                 + " where categoria.nome='egg'  group by cliente.nome,categoria.nome order by categoria.nome");
         List<Object[]> resultList = createQuery.getResultList();
         return resultList;
 
     }
 
-    public List<Map<String, Object>> smartSearch(String e1, String e2, String antes, String depois) {
+    public List<Map<String, Object>> smartSearch(String e1, String e2, String antes, String depois,int maxResults) {
         init();
         initDijkstra();
         Graph graph = new Graph();
@@ -88,6 +89,7 @@ public class VicSmartSearch {
             hql += " as " + e2.toLowerCase() + " " + depois;
             QueryImpl query = (QueryImpl) em.createQuery(hql);
             query.setResultTransformer(new VicResultTransformer());
+            query.setMaxResults(maxResults);
             List resultList = query.getResultList();
             return resultList;
         }
@@ -96,6 +98,10 @@ public class VicSmartSearch {
     //FROM Cliente as cliente inner join cliente.pedidos as pedido inner join pedido.itens as itempedido inner join itempedido.produto as produto inner join produto.categoria
     //from Cliente as cliente inner join cliente.pedidos as pedido inner join pedido.itens as itempedido inner join itempedido.produto as produto inner join produto.categoria as categoria "
 //                + " where categoria.nome='egg'  group by cliente.nome,categoria.nome order by categoria.nome");
+
+    public List<Map<String, Object>> smartSearch(String e1, String e2, String antes, String depois) {
+        return smartSearch(e1, e2, antes, depois,Integer.MAX_VALUE);
+    }
 
     private int peso(String multiplicidade) {
         switch (multiplicidade) {
