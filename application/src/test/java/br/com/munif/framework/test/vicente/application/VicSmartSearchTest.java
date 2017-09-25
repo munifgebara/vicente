@@ -95,7 +95,7 @@ public class VicSmartSearchTest {
     @Test
     @Transactional
     public void teste1() {
-        List<Map<String, Object>> smartSearch = vss.smartSearch("Cliente", "Categoria", "", "",10);
+        List<Map<String, Object>> smartSearch = vss.smartSearch("Cliente", "Categoria", "", "", 10);
         //"select cliente.nome as nomCliente,categoria.nome as cat,count(categoria.nome) as quantidade",
         //"where categoria.nome='egg'  group by cliente.nome,categoria.nome order by categoria.nome");
         for (Object obj : smartSearch) {
@@ -107,7 +107,21 @@ public class VicSmartSearchTest {
     @Test
     @Transactional
     public void teste2() {
-        List<Map<String, Object>> smartSearch = vss.smartSearch("Cliente", "Categoria", "select cliente.nome as nomCliente,categoria.nome as cat,count(categoria.nome) as quantidade", "where categoria.nome='egg'  group by cliente.nome,categoria.nome order by categoria.nome");
+        List<Map<String, Object>> smartSearch = vss.smartSearch("Cliente", "Categoria",
+                "select cliente.nome as nomCliente,categoria.nome as cat,count(categoria.nome) as quantidade",
+                "where categoria.nome='egg'  group by cliente.nome,categoria.nome order by quantidade");
+        for (Object obj : smartSearch) {
+            System.out.println(obj.toString());
+        }
+        assertTrue(!smartSearch.isEmpty());
+    }
+
+    @Test
+    @Transactional
+    public void teste3() {
+        List<Map<String, Object>> smartSearch = vss.smartSearch("Categoria", "Cliente",
+                "select cliente.nome as nomCliente,categoria.nome as cat,count(categoria.nome) as quantidade",
+                "where categoria.nome='egg'  group by cliente.nome,categoria.nome order by quantidade");
         for (Object obj : smartSearch) {
             System.out.println(obj.toString());
         }
@@ -115,8 +129,23 @@ public class VicSmartSearchTest {
     }
 
 
+    @Test
+    @Transactional
+    public void teste4() {
+        List<Map<String, Object>> smartSearch = vss.smartSearch("Categoria", "GrupoClientes",
+                "select grupoclientes.nomeGrupo as nomeCliente,categoria.nome as cat,count(categoria.nome) as quantidade",
+                "where categoria.nome='egg'  group by grupoclientes.nomeGrupo,categoria.nome order by quantidade");
+        for (Object obj : smartSearch) {
+            System.out.println(obj.toString());
+        }
+        assertTrue(!smartSearch.isEmpty());
+    }
+
     @Transactional
     public void loadSeedCategoria() throws IOException {
+        if (categoriaRepository.count() > 0) {
+            return;
+        }
         List<Categoria> inteligentInstances = VicAutoSeed.getInteligentInstances(new Categoria(), 10);
         for (Categoria cat : inteligentInstances) {
             categoriaRepository.saveAndFlush(cat);
@@ -125,6 +154,9 @@ public class VicSmartSearchTest {
 
     @Transactional
     public void loadSeedProduto() throws IOException {
+        if (produtoRepository.count() > 0) {
+            return;
+        }
         Produto exProduto = new Produto();
         exProduto.setCategoria(new Categoria());
         List<Produto> inteligentInstances = VicAutoSeed.getInteligentInstances(exProduto, 100);
@@ -139,6 +171,9 @@ public class VicSmartSearchTest {
 
     @Transactional
     public void loadSeedPedido() throws IOException {
+        if (pedidoRepository.count() > 0) {
+            return;
+        }
 
         List<Cliente> clientes = clienteRepository.findAll();
         List<Produto> produtos = produtoRepository.findAll();
@@ -162,6 +197,9 @@ public class VicSmartSearchTest {
 
     @Transactional
     public void loadSeedCliente() throws IOException {
+        if (clienteRepository.count() > 0) {
+            return;
+        }
         List<GrupoClientes> grupoClientes = grupoClientesRepository.findAll();
         List<List> subLists = VicAutoSeed.subLists(1, 2, grupoClientes);
         Cliente example = new Cliente();
@@ -177,6 +215,9 @@ public class VicSmartSearchTest {
 
     @Transactional
     public void loadSeedGrupoClientes() throws IOException {
+        if (grupoClientesRepository.count() > 0) {
+            return;
+        }
 
         grupoClientesRepository.save(new GrupoClientes("TI"));
         grupoClientesRepository.save(new GrupoClientes("ELETRO"));

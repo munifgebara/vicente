@@ -77,6 +77,7 @@ public class VicSmartSearch {
             caminho.add(e2);
 
             String hql = antes + " FROM " + e1;
+            
             for (int i = 0; i < caminho.size() - 1; i++) {
                 String nomeEntidade = caminho.get(i);
                 String proximaEntidade = caminho.get(i + 1);
@@ -87,6 +88,7 @@ public class VicSmartSearch {
 
             }
             hql += " as " + e2.toLowerCase() + " " + depois;
+            System.out.println("---->"+hql);
             QueryImpl query = (QueryImpl) em.createQuery(hql);
             query.setResultTransformer(new VicResultTransformer());
             query.setMaxResults(maxResults);
