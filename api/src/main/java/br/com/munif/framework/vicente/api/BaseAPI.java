@@ -52,10 +52,10 @@ public class BaseAPI<T extends BaseEntity> {
     @ResponseStatus(HttpStatus.CREATED)
     public T save(@RequestBody @Valid T model) {
         beforeSave(model);
-        if (service.view(model.getId())!=null){
-            throw new VicenteCreateWithExistingIdException("create With Existing Id="+model.getId());
+        if (service.view(model.getId()) != null) {
+            throw new VicenteCreateWithExistingIdException("create With Existing Id=" + model.getId());
         }
-        
+
         T entity = service.save(model);
         return entity;
     }
@@ -71,22 +71,21 @@ public class BaseAPI<T extends BaseEntity> {
     @Transactional
     @RequestMapping(value = "", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<T> update2(@RequestBody @Valid T model) {
-        try{
-        HttpStatus ht=HttpStatus.OK;
-        if (service.view(model.getId())!=null){
-            model = update(model.getId(), model);
-        } else {
-            model = service.save(model);
-            ht=HttpStatus.CREATED;
-        }
-        return new ResponseEntity(model, ht);
-        }
-        catch(Exception ex){
+        try {
+            HttpStatus ht = HttpStatus.OK;
+            if (service.view(model.getId()) != null) {
+                model = update(model.getId(), model);
+            } else {
+                model = service.save(model);
+                ht = HttpStatus.CREATED;
+            }
+            return new ResponseEntity(model, ht);
+        } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }
-        
-   }
+
+    }
 
     protected void beforeSave(T model) {
 
@@ -102,16 +101,26 @@ public class BaseAPI<T extends BaseEntity> {
 //        List<T> findAll = service.findAll();
 //        return new VicReturn<T>(findAll);
 //    }
-    
     @Transactional
     @RequestMapping(method = RequestMethod.GET)
     public VicReturn<T> findHQL(HttpServletRequest request, VicQuery query) {
+        if (query.getHql()==null || query.getHql().trim().isEmpty()){
+            query.setHql(VicQuery.DEFAULT_QUERY);
+        }
+        if (query.getMaxResults()==-1){
+            query.setMaxResults(this.getDefaultSize());
+        }
+        int maxResults = query.getMaxResults();
+        query.setMaxResults(maxResults + 1);
         query.setHql(query.getHql().replace("\"", ""));
         List<T> result = service.findByHql(query);
-        return new VicReturn<T>(result);
+        boolean hasMore = result.size() > maxResults;
+        if (hasMore) {
+            result.remove(maxResults);
+        }
+        return new VicReturn<T>(result, result.size(), query.getFirstResult(), hasMore);
     }
 
-    
     @Transactional
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public T load(@PathVariable String id) {
@@ -125,6 +134,10 @@ public class BaseAPI<T extends BaseEntity> {
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     public T initialState() {
         return service.newEntity();
+    }
+
+    public int getDefaultSize() {
+        return 20;
     }
 
 }

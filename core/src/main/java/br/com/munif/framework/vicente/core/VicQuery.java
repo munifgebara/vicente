@@ -2,11 +2,37 @@ package br.com.munif.framework.vicente.core;
 
 public class VicQuery {
 
-    private String hql = "1=1";
+    public static final int DEFAULT_QUERY_SIZE = 1000000000;
+
+    public static final String DEFAULT_QUERY = "1=1";
+
+    public static final String DEFAULT_ORDER_BY = "id";
+
+    private String hql = DEFAULT_QUERY;
 
     private int firstResult = 0;
 
-    private int maxResults = Integer.MAX_VALUE;
+    private int maxResults = -1;
+
+    private String orderBy = DEFAULT_ORDER_BY;
+
+    public VicQuery() {
+    }
+
+    public VicQuery(String hql, int firstResult, int maxResults, String orderBy) {
+        this.hql = hql;
+        this.firstResult = firstResult;
+        this.maxResults = maxResults;
+        this.orderBy = orderBy;
+    }
+
+    public String getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
 
     public String getHql() {
         return hql;
@@ -31,7 +57,10 @@ public class VicQuery {
     public void setMaxResults(int maxResults) {
         this.maxResults = maxResults;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "VicQuery{" + "hql=" + hql + ", firstResult=" + firstResult + ", maxResults=" + maxResults + ", orderBy=" + orderBy + '}';
+    }
 
 }
