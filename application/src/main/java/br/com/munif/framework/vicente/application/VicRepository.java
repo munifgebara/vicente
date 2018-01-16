@@ -16,6 +16,8 @@ public interface VicRepository<T> extends JpaRepository<T, Serializable> {
 
     List<T> findAllNoTenancy();
     
+    List<T> findAllNoPublic();
+    
     List<T> findByHql(VicQuery query);
 
 }

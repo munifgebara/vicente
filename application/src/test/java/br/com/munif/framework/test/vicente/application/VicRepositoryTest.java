@@ -29,6 +29,7 @@ public class VicRepositoryTest {
     @Before
     @Transactional
     public void setUp() {
+        System.out.println("Setup of Test class "+this.getClass().getSimpleName()+" "+pessoaService.quantidade());
         if (pessoaService.findAll().size() > 0) {
             return;
         }
@@ -38,6 +39,7 @@ public class VicRepositoryTest {
             Pessoa p = new Pessoa();
             p.setNome("Pessoa " + i);
             pessoaService.save(p);
+            
         }
         VicThreadScope.ui.set("UZ");
         VicThreadScope.gi.set("GZ");
@@ -54,6 +56,19 @@ public class VicRepositoryTest {
         pessoaService.save(p2);
 
     }
+
+
+    @Test
+    @Transactional
+    public void findALNoPublic() {
+        VicThreadScope.ui.set("U1");
+        VicThreadScope.gi.set("G1");
+        List<Pessoa> findAllNoPublic = pessoaService.findAllNoPublic();
+        //System.out.println("---->" + findAll);
+        assertEquals(10, findAllNoPublic.size());
+
+    }
+
 
     @Test
     @Transactional

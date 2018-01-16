@@ -66,6 +66,7 @@ public class VicSmartSearchTest {
     @Transactional
     public void setUp() {
         try {
+            System.out.println("Setup of Test class "+this.getClass().getSimpleName()+" ");
             VicThreadScope.ui.set("U1");
             VicThreadScope.gi.set("G1");
             loadSeedCategoria();
@@ -143,6 +144,7 @@ public class VicSmartSearchTest {
 
     @Transactional
     public void loadSeedCategoria() throws IOException {
+        System.out.println("---->loadSeedCategoria()"+categoriaRepository.count());
         if (categoriaRepository.count() > 0) {
             return;
         }
@@ -154,6 +156,7 @@ public class VicSmartSearchTest {
 
     @Transactional
     public void loadSeedProduto() throws IOException {
+        System.out.println("---->loadSeedProduto()"+produtoRepository.count());
         if (produtoRepository.count() > 0) {
             return;
         }
@@ -171,6 +174,7 @@ public class VicSmartSearchTest {
 
     @Transactional
     public void loadSeedPedido() throws IOException {
+        System.out.println("---->loadSeedPedido() "+pedidoRepository.count());
         if (pedidoRepository.count() > 0) {
             return;
         }
@@ -197,6 +201,7 @@ public class VicSmartSearchTest {
 
     @Transactional
     public void loadSeedCliente() throws IOException {
+        System.out.println("---->loadSeedCliente() "+clienteRepository.count());
         if (clienteRepository.count() > 0) {
             return;
         }
@@ -215,6 +220,7 @@ public class VicSmartSearchTest {
 
     @Transactional
     public void loadSeedGrupoClientes() throws IOException {
+        System.out.println("---->loadSeedGrupoClientes() "+grupoClientesRepository.count());
         if (grupoClientesRepository.count() > 0) {
             return;
         }

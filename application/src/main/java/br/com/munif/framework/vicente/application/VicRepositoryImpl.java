@@ -69,6 +69,24 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
         return createQuery.getResultList();
     }
 
+    public List<T> findAllNoPublic() {
+        Class<T> domainClass = this.getDomainClass();
+        boolean assignableFrom2 = BaseEntity.class.isAssignableFrom(domainClass);
+        if (!assignableFrom2) {
+            return super.findAll();
+        }
+        String hql = "FROM " + domainClass.getSimpleName() + " obj where \n"
+                + "   (obj.ui=:ui and mod(obj.rights/64,8)/4>=1) \n"
+                + "or (:gi like concat('%',obj.gi,',%') and mod(obj.rights/8,8)/4>=1) \n";
+
+        //System.out.println("---->"+hql);
+       //System.out.println("---->" + hql.replaceAll(":gi", "'" + VicThreadScope.gi.get() + "," + "'").replaceAll(":ui", "'" + VicThreadScope.ui.get() + "'").replaceAll("\n", ""));
+
+        Query createQuery = entityManager.createQuery(hql);
+        createQuery.setParameter("ui", VicThreadScope.ui.get());
+        createQuery.setParameter("gi", VicThreadScope.gi.get() + ",");
+        return createQuery.getResultList();
+    }
 
     @Override
     public List<T> findByHql(VicQuery query) {

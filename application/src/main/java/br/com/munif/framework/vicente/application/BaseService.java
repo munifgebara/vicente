@@ -5,9 +5,14 @@
  */
 package br.com.munif.framework.vicente.application;
 
+import br.com.munif.framework.vicente.application.victenancyfields.VicFieldRepository;
+import br.com.munif.framework.vicente.application.victenancyfields.VicFieldValueRepository;
 import br.com.munif.framework.vicente.core.Utils;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.domain.tenancyfields.VicField;
+import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldValue;
+import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +21,7 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -30,6 +36,10 @@ import org.springframework.transaction.annotation.Transactional;
 public abstract class BaseService<T> {
 
     protected final VicRepository<T> repository;
+    @Autowired
+    protected VicFieldValueRepository vicFieldValueRepository;
+    @Autowired
+    protected VicFieldRepository vicFieldRepository;
 
     @PersistenceContext
     protected EntityManager em;
@@ -38,35 +48,64 @@ public abstract class BaseService<T> {
         this.repository = repository;
     }
 
-    @Transactional(readOnly = true)
-    public List<T> findAllNoTenancy() {
-        return repository.findAllNoTenancy();
+    public VicRepository<T> getRepository() {
+        return repository;
+    }
+
+    public EntityManager getEm() {
+        return em;
     }
 
     @Transactional(readOnly = true)
+    public List<T> findAllNoTenancy() {
+        List<T> result = repository.findAllNoTenancy();
+        readVicTenancyFields(result);
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    public List<T> findAllNoPublic() {
+        List<T> result = repository.findAllNoPublic();
+        readVicTenancyFields(result);
+        return result;
+    }
+
+
+    @Transactional(readOnly = true)
     public List<T> findByHql(VicQuery query) {
-        return repository.findByHql(query);
+        List<T> result = repository.findByHql(query);
+        readVicTenancyFields(result);
+        return result;
     }
 
     @Transactional(readOnly = true)
     public List<T> findAll() {
-        return repository.findAll();
+        List<T> result = repository.findAll();
+        readVicTenancyFields(result);
+        return result;
     }
 
     @Transactional(readOnly = true)
     public T view(String id) {
         T entity = repository.findOne(id);
+        readVicTenancyFields(entity);
         return entity;
     }
 
     @Transactional
     public void delete(T resource) {
+        if (resource instanceof VicTenancyFieldsBaseEntity) {
+            //deleteVicTenancyFields(resource);
+        }
         repository.delete(resource);
     }
 
     @Transactional
     public T save(T resource) {
         T entity = repository.save(resource);
+        if (entity instanceof VicTenancyFieldsBaseEntity) {
+            saveVicTenancyFields(resource);
+        }
         return entity;
     }
 
@@ -79,7 +118,9 @@ public abstract class BaseService<T> {
         String q = "from " + classe.getSimpleName() + " obj where " + hql;
         Query query = em.createQuery(q);
         query.setMaxResults(maxResults);
-        return query.getResultList();
+        List resultList = query.getResultList();
+        readVicTenancyFields(resultList);
+        return resultList;
     }
 
     @Transactional(readOnly = true)
@@ -110,6 +151,42 @@ public abstract class BaseService<T> {
     public void teste() {
         em.getMetamodel().getEntities();
 
+    }
+
+    private void saveVicTenancyFields(T resource) {
+        VicTenancyFieldsBaseEntity r = (VicTenancyFieldsBaseEntity) resource;
+        for (String s : r.getVicTenancyFields().keySet()) {
+            VicFieldValue vfv = r.getVicTenancyFields().get(s);
+            vfv.setEntityId(r.getId());
+            vicFieldValueRepository.save(vfv);
+        }
+    }
+
+    private void deleteVicTenancyFields(T resource) {
+        VicTenancyFieldsBaseEntity r = (VicTenancyFieldsBaseEntity) resource;
+        for (String s : r.getVicTenancyFields().keySet()) {
+            VicFieldValue vfv = r.getVicTenancyFields().get(s);
+            System.out.println("DDD "+vfv);
+            vicFieldValueRepository.delete(vfv);
+        }
+    }
+
+    private void readVicTenancyFields(List<T> resources) {
+        for (T r : resources) {
+            readVicTenancyFields(r);
+        }
+    }
+
+    private void readVicTenancyFields(T resource) {
+        if (!(resource instanceof VicTenancyFieldsBaseEntity)) {
+            return;
+        }
+        VicTenancyFieldsBaseEntity r = (VicTenancyFieldsBaseEntity) resource;
+        List<VicFieldValue> res = vicFieldValueRepository.findByHql(new VicQuery("obj.entityId='" + r.getId() + "'", 0, 1000000, "id"));
+        r.getVicTenancyFields().clear();
+        for (VicFieldValue v : res) {
+            r.getVicTenancyFields().put(v.getVicField().getName(), v);
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package br.com.munif.framework.test.vicente.domain.model;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
 import br.com.munif.framework.vicente.domain.typings.VicAddress;
 import br.com.munif.framework.vicente.domain.typings.VicEmail;
 import br.com.munif.framework.vicente.domain.typings.VicPhone;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 @Entity
 @Audited
-public class Pessoa extends BaseEntity {
+public class Pessoa extends VicTenancyFieldsBaseEntity {
 
     //    @NotNull
     @Column(nullable = false)
