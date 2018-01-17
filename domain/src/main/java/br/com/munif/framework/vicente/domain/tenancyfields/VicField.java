@@ -2,9 +2,11 @@ package br.com.munif.framework.vicente.domain.tenancyfields;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Table;
 import org.hibernate.envers.Audited;
 
 /**
@@ -13,22 +15,37 @@ import org.hibernate.envers.Audited;
  */
 @Entity
 @Audited
+@Table(name = "vic_field")
 public class VicField extends BaseEntity {
 
+    @Column(name = "clazz")
     private String clazz;
+    @Column(name = "name")
     private String name;
+    @Column(name = "description")
     private String description;
     @Enumerated(EnumType.STRING)
+    @Column(name = "field_type")
     private VicFieldType fieldType;
+    @Column(name = "validation_description")
     private String validationDescription;
+    @Column(name = "validation_script")
     private String validationScript;
+    @Column(name = "default_value_script")
     private String defaultValueScript;
+    @Column(name = "options")
     private String options;
+    @Column(name = "option_value_field")
     private String optionValueField;
+    @Column(name = "option_label_field")
     private String optionLabelField;
+    @Column(name = "options_collection")
     private String optionsCollection;
+    @Column(name = "visualization_order")
     private Double visualizationOrder;
+    @Column(name = "field_group")
     private String fieldGroup;
+    @Column(name = "translateKey")
     private String translateKey;
 
     public VicField() {

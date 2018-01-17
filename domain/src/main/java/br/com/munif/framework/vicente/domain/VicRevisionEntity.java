@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
@@ -14,6 +15,7 @@ import org.hibernate.envers.RevisionTimestamp;
 
 @Entity
 @RevisionEntity(VicRevisionListener.class)
+@Table(name = "vic_revision_entity")
 public class VicRevisionEntity implements Serializable{
     
     @RevisionNumber

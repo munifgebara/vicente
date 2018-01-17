@@ -3,8 +3,10 @@ package br.com.munif.framework.vicente.domain.tenancyfields;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import java.math.BigDecimal;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import org.hibernate.envers.Audited;
 
@@ -14,17 +16,21 @@ import org.hibernate.envers.Audited;
  */
 @Entity
 @Audited
+@Table(name = "vic_field_value")
 public class VicFieldValue extends BaseEntity {
 
     @ManyToOne
     private VicField vicField;
-
+    @Column(name = "entity_id")
     private String entityId;
-
+    @Column(name = "text_value")
     private String textValue;
+    @Column(name = "number_value")
     private BigDecimal numberValue;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Column(name = "date_value")
     private Date dateValue;
+    @Column(name = "logic_value")
     private Boolean logicValue;
 
     public VicFieldValue() {
@@ -33,7 +39,7 @@ public class VicFieldValue extends BaseEntity {
     public VicFieldValue(VicField vicField) {
         this.vicField = vicField;
     }
-    
+
     public VicFieldValue(VicField vicField, String entityId, Object value) {
         this.vicField = vicField;
         this.entityId = entityId;
