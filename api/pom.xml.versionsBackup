@@ -4,14 +4,13 @@
     <parent>
         <groupId>br.com.munif.framework</groupId>
         <artifactId>vicente</artifactId>
-        <version>0.4.0-SNAPSHOT</version>
+        <version>0.3.0-SNAPSHOT</version>
     </parent>
-    <name>Vicente Security</name>
+    <name>Vicente Api</name>
     <groupId>br.com.munif.framework.vicente</groupId>
-    <artifactId>security</artifactId>
+    <artifactId>api</artifactId>
     <packaging>jar</packaging>
-    
-      <dependencies>
+    <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>core</artifactId>
@@ -72,7 +71,16 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-envers</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.0.Final</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-    
-    
 </project>

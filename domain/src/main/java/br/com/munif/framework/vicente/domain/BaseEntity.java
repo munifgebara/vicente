@@ -8,6 +8,8 @@ package br.com.munif.framework.vicente.domain;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.UIDHelper;
+import br.com.munif.framework.vicente.core.VicTenancyPolicy;
+import br.com.munif.framework.vicente.core.VicTenancyType;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Id;
@@ -38,6 +40,8 @@ public class BaseEntity {
     @Id
     protected String id;
 
+    protected String oi;
+    
     protected String gi;
 
     protected String ui;
@@ -61,7 +65,7 @@ public class BaseEntity {
         this.id = UIDHelper.getUID();
         this.gi = RightsHelper.getMainGi();
         this.ui = VicThreadScope.ui.get();
-
+        this.oi = VicThreadScope.oi.get()!=null?VicThreadScope.oi.get():"";
         this.rights = RightsHelper.getDefault();
         this.extra = "Framework";
         this.cd = new Date();
@@ -94,6 +98,14 @@ public class BaseEntity {
         this.ui = ui;
     }
 
+    public String getOi() {
+        return oi;
+    }
+
+    public void setOi(String oi) {
+        this.oi = oi;
+    }
+    
     public Integer getRights() {
         return rights;
     }
@@ -206,7 +218,7 @@ public class BaseEntity {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" + "id=" + id + ", gi=" + gi + ", ui=" + ui + ", rights=" + rights + ", extra=" + extra + ", cd=" + cd + ", ud=" + ud + ", active=" + active + ", version=" + version + '}';
+        return getClass().getSimpleName() + "{" + "id=" + id + ", oi=" + oi +", gi=" + gi + ", ui=" + ui + ", rights=" + rights + ", extra=" + extra + ", cd=" + cd + ", ud=" + ud + ", active=" + active + ", version=" + version + '}';
     }
     
     public static SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
@@ -218,6 +230,17 @@ public class BaseEntity {
         else{
             return sdf.format(d);
         }
+    }
+    
+    public VicTenancyType getTencyPolicy(){
+        VicTenancyPolicy vtp = this.getClass().getAnnotation(VicTenancyPolicy.class);
+        
+        if (vtp==null){
+            System.out.println("----> "+this.getClassName()+" "+VicTenancyType.GROUPS);
+            return VicTenancyType.GROUPS;
+        }
+        System.out.println("----> "+this.getClassName()+" "+vtp.value());
+        return vtp.value();
     }
     
     

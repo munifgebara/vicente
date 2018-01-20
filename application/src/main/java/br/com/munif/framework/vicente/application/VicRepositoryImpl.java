@@ -5,31 +5,17 @@
  */
 package br.com.munif.framework.vicente.application;
 
-import br.com.munif.framework.vicente.application.search.VicSmartSearch;
-import br.com.munif.framework.vicente.core.Utils;
 import br.com.munif.framework.vicente.core.VicQuery;
+import br.com.munif.framework.vicente.core.VicTenancyPolicy;
+import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Set;
 import javax.persistence.EntityManager;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.Parameter;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import org.hibernate.Hibernate;
-import org.springframework.cglib.core.ReflectUtils;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.support.CrudMethodMetadata;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -44,6 +30,62 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
         this.entityManager = entityManager;
     }
 
+    public String geTenancyHQL(boolean publics) {
+        Class<T> domainClass = this.getDomainClass();
+        boolean assignableFrom2 = BaseEntity.class.isAssignableFrom(domainClass);
+        if (!assignableFrom2) {
+            return "(1=1)";
+        }
+        VicTenancyType vtt = getPolicy(domainClass);
+        StringBuilder sb = new StringBuilder("(\n");
+        sb.append("   (obj.ui=:ui and mod(obj.rights/64,8)/4>=1) \n");
+
+        if (vtt.equals(VicTenancyType.GROUPS) || vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
+            sb.append("or (:gi like concat('%',obj.gi,',%') and mod(obj.rights/8,8)/4>=1) \n");
+        }
+
+        if (vtt.equals(VicTenancyType.HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.ORGANIZATIONAL) || vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
+            sb.append("or (obj.oi like :oi)\n");
+        }
+        if (publics) {
+            sb.append("or (1=1    and    mod(obj.rights  ,8)/4>=1)\n");
+        }
+
+        sb.append(
+                ")");
+        return sb.toString();
+    }
+
+    public VicTenancyType getPolicy(Class<T> domainClass) {
+        VicTenancyPolicy vtp = domainClass.getAnnotation(VicTenancyPolicy.class);
+        VicTenancyType vtt = vtp == null ? VicTenancyType.GROUPS : vtp.value();
+        return vtt;
+    }
+
+    public void setTenancyParameters(Query query) {
+        Set<Parameter<?>> parameters = query.getParameters();
+        for (Parameter p : parameters) {
+            if ("ui".equals(p.getName())) {
+                query.setParameter("ui", VicThreadScope.ui.get());
+            }
+            if ("gi".equals(p.getName())) {
+                query.setParameter("gi", VicThreadScope.gi.get() + ",");
+            }
+            if ("oi".equals(p.getName())) {
+                VicTenancyType vtt = getPolicy(getDomainClass());
+                String oi = VicThreadScope.oi.get();
+                if (oi==null){
+                    oi=".";
+                }
+                if (vtt.equals(VicTenancyType.ORGANIZATIONAL) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
+                    query.setParameter("oi", oi.substring(0,oi.indexOf('.')+1) + "%");
+                } else {
+                    query.setParameter("oi", oi + "%");
+                }
+            }
+
+        }
+    }
 
     public List<T> findAllNoTenancy() {
         return super.findAll();
@@ -51,73 +93,39 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
 
     @Override
     public List<T> findAll() {
-        Class<T> domainClass = this.getDomainClass();
-        boolean assignableFrom2 = BaseEntity.class.isAssignableFrom(domainClass);
-        if (!assignableFrom2) {
-            return super.findAll();
-        }
-        String hql = "FROM " + domainClass.getSimpleName() + " obj where \n"
-                + "   (obj.ui=:ui and mod(obj.rights/64,8)/4>=1) \n"
-                + "or (:gi like concat('%',obj.gi,',%') and mod(obj.rights/8,8)/4>=1) \n"
-                + "or (1=1        and mod(obj.rights  ,8)/4>=1)";
-        //System.out.println("---->"+hql);
-       //System.out.println("---->" + hql.replaceAll(":gi", "'" + VicThreadScope.gi.get() + "," + "'").replaceAll(":ui", "'" + VicThreadScope.ui.get() + "'").replaceAll("\n", ""));
-
-        Query createQuery = entityManager.createQuery(hql);
-        createQuery.setParameter("ui", VicThreadScope.ui.get());
-        createQuery.setParameter("gi", VicThreadScope.gi.get() + ",");
-        return createQuery.getResultList();
+        String hql = "FROM " + getDomainClass().getSimpleName() + " obj where \n" + geTenancyHQL(true);
+        Query query = entityManager.createQuery(hql);
+        setTenancyParameters(query);
+        return query.getResultList();
     }
 
     public List<T> findAllNoPublic() {
-        Class<T> domainClass = this.getDomainClass();
-        boolean assignableFrom2 = BaseEntity.class.isAssignableFrom(domainClass);
-        if (!assignableFrom2) {
-            return super.findAll();
-        }
-        String hql = "FROM " + domainClass.getSimpleName() + " obj where \n"
-                + "   (obj.ui=:ui and mod(obj.rights/64,8)/4>=1) \n"
-                + "or (:gi like concat('%',obj.gi,',%') and mod(obj.rights/8,8)/4>=1) \n";
-
-        //System.out.println("---->"+hql);
-       //System.out.println("---->" + hql.replaceAll(":gi", "'" + VicThreadScope.gi.get() + "," + "'").replaceAll(":ui", "'" + VicThreadScope.ui.get() + "'").replaceAll("\n", ""));
-
-        Query createQuery = entityManager.createQuery(hql);
-        createQuery.setParameter("ui", VicThreadScope.ui.get());
-        createQuery.setParameter("gi", VicThreadScope.gi.get() + ",");
-        return createQuery.getResultList();
+        String hql = "FROM " + getDomainClass().getSimpleName() + " obj where \n" + geTenancyHQL(false);
+        Query query = entityManager.createQuery(hql);
+        setTenancyParameters(query);
+        return query.getResultList();
     }
 
     @Override
-    public List<T> findByHql(VicQuery query) {
-        if (query.getMaxResults()==-1){
-            query.setMaxResults(VicQuery.DEFAULT_QUERY_SIZE);
+    public List<T> findByHql(VicQuery vicQuery) {
+        if (vicQuery.getMaxResults() == -1) {
+            vicQuery.setMaxResults(VicQuery.DEFAULT_QUERY_SIZE);
         }
-        
-        Class<T> domainClass = this.getDomainClass();
-        boolean assignableFrom2 = BaseEntity.class.isAssignableFrom(domainClass);
-        if (!assignableFrom2) {
-            return super.findAll();
-        }
-        String hql = "FROM " + domainClass.getSimpleName() + " obj where \n"
-                +"("+ (query.getHql()!=null?query.getHql():"1=1")+") and "
-                + "("
-                + "   (obj.ui=:ui and mod(obj.rights/64,8)/4>=1) \n"
-                + "or (:gi like concat('%',obj.gi,',%') and mod(obj.rights/8,8)/4>=1) \n"
-                + "or (1=1        and mod(obj.rights  ,8)/4>=1)"
-                + ") "
-                + " ORDER BY obj."+query.getOrderBy()+" , obj.id asc";
-        
-        //System.out.println("---->"+hql);
-       //System.out.println("---->" + hql.replaceAll(":gi", "'" + VicThreadScope.gi.get() + "," + "'").replaceAll(":ui", "'" + VicThreadScope.ui.get() + "'").replaceAll("\n", ""));
 
-        Query createQuery = entityManager.createQuery(hql);
-        createQuery.setFirstResult(query.getFirstResult());
-        createQuery.setMaxResults(query.getMaxResults());
-        createQuery.setParameter("ui", VicThreadScope.ui.get());
-        createQuery.setParameter("gi", VicThreadScope.gi.get() + ",");
-        return createQuery.getResultList();
+        String hql = "FROM " + getDomainClass().getSimpleName() + " obj where \n"
+                + "(" + (vicQuery.getHql() != null ? vicQuery.getHql() : "1=1") + ") and "
+                + "("
+                + geTenancyHQL(true)
+                + ") "
+                + " ORDER BY obj." + vicQuery.getOrderBy() + " , obj.id asc";
+
+        //System.out.println("---->"+hql);
+        //System.out.println("---->" + hql.replaceAll(":gi", "'" + VicThreadScope.gi.get() + "," + "'").replaceAll(":ui", "'" + VicThreadScope.ui.get() + "'").replaceAll("\n", ""));
+        Query query = entityManager.createQuery(hql);
+        query.setFirstResult(vicQuery.getFirstResult());
+        query.setMaxResults(vicQuery.getMaxResults());
+        setTenancyParameters(query);
+        return query.getResultList();
     }
-    
 
 }
