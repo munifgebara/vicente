@@ -31,6 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.hasItem;
+import org.junit.Assert;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -42,7 +45,7 @@ public class BookApiTest {
     public static final String DEAFAULT_NAME = "The Book";
 
     @Autowired
-    private BookRepository repository;
+    private BookRepository bookRepository;
 
     @Autowired
     private BookService service;
@@ -90,7 +93,7 @@ public class BookApiTest {
     }
 
     private List<Book> findAll() {
-        Iterable<Book> findAll = repository.findAll();
+        Iterable<Book> findAll = bookRepository.findAll();
 
         List<Book> result = new ArrayList<>();
         for (Book r : findAll) {
@@ -101,7 +104,7 @@ public class BookApiTest {
     }
 
     private int count() {
-        return (int) repository.count();
+        return (int) bookRepository.count();
     }
 
     @Before
@@ -131,7 +134,7 @@ public class BookApiTest {
     @Test
     @Transactional
     public void createWithExistingId() throws Exception {
-        repository.saveAndFlush(book);
+        bookRepository.saveAndFlush(book);
         int databaseSizeBeforeCreate = findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
@@ -140,9 +143,110 @@ public class BookApiTest {
                 .content(TestUtil.convertObjectToJsonBytes(book)))
                 .andExpect(status().isBadRequest());
 
-        // Validate the Cargo in the database
         List<Book> list = findAll();
         assertThat(list).hasSize(databaseSizeBeforeCreate);
+    }
+
+    @Test
+    @Transactional
+    public void getAll() throws Exception {
+        // Initialize the database
+        bookRepository.saveAndFlush(book);
+
+        restMockMvc.perform(get("/api/books?sort=id,desc"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.values.[*].id").value(hasItem(book.getId())))
+                .andExpect(jsonPath("$.values.[*].name").value(hasItem(DEAFAULT_NAME)));
+
+    }
+
+    @Test
+    @Transactional
+    public void getOne() throws Exception {
+        // Initialize the database
+        bookRepository.saveAndFlush(book);
+
+        restMockMvc.perform(get("/api/books/{id}", book.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.id").value(book.getId()))
+                .andExpect(jsonPath("$.name").value(DEAFAULT_NAME));
+    }
+
+    @Test
+    @Transactional
+    public void getNonExisting() throws Exception {
+        restMockMvc.perform(get("/api/books/{id}", Long.MAX_VALUE))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Transactional
+    public void update() throws Exception {
+        // Initialize the database
+        bookRepository.saveAndFlush(book);
+        int databaseSizeBeforeUpdate = findAll().size();
+
+        // Update the book
+        Book updatedBook = bookRepository.findOne(book.getId());
+        updatedBook.setName("NEW NAME");
+        restMockMvc.perform(put("/api/books/" + book.getId())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(updatedBook)))
+                .andExpect(status().isOk());
+
+        List<Book> bookList = findAll();
+        assertThat(bookList).hasSize(databaseSizeBeforeUpdate);
+        Book Book = bookList.get(bookList.size() - 1);
+        assertThat(Book.getName()).isEqualTo("NEW NAME");
+    }
+
+    @Test
+    @Transactional
+    public void updateNonExisting() throws Exception {
+        int databaseSizeBeforeUpdate = findAll().size();
+
+        restMockMvc.perform(put("/api/books")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(book)))
+                .andExpect(status().isCreated());
+
+        // Validate the Cargo in the database
+        List<Book> bookList = findAll();
+        assertThat(bookList).hasSize(databaseSizeBeforeUpdate + 1);
+    }
+
+    @Test
+    @Transactional
+    public void deleteCargo() throws Exception {
+        // Initialize the database
+        bookRepository.saveAndFlush(book);
+        int databaseSizeBeforeDelete = findAll().size();
+
+        // Get the book
+        restMockMvc.perform(delete("/api/books/{id}", book.getId())
+                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
+        // Validate the database is empty
+        List<Book> bookList = findAll();
+        assertThat(bookList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(Book.class);
+        Book book1 = new Book();
+        book1.setId("1L");
+        Book book2 = new Book();
+        book2.setId(book1.getId());
+        assertThat(book1).isEqualTo(book2);
+        book2.setId("2L");
+        assertThat(book1).isNotEqualTo(book2);
+        book1.setId(null);
+        assertThat(book1).isNotEqualTo(book2);
     }
 
 }
