@@ -50,8 +50,13 @@ public class VicTenancyPolicyTest {
             Consultor c = new Consultor();
             c.setNome("Consultor " + i);
             consultorService.save(c);
-
         }
+
+        VicThreadScope.oi.set("A.B.C.");
+        Funcionario f = new Funcionario();
+        f.setNome("Funcionario ABC");
+        funcionarioService.save(f);
+
     }
 
     @Test
@@ -66,6 +71,17 @@ public class VicTenancyPolicyTest {
     public void otherPolicy() {
         Funcionario f = new Funcionario();
         assertEquals(VicTenancyType.HIERARCHICAL_TOP_DOWN, f.getTencyPolicy());
+    }
+
+
+    @Test
+    @Transactional
+    public void findAllFromMainLevelHierarchicalTopDownAndOwner() {
+        VicThreadScope.ui.set("USUARIO");
+        VicThreadScope.gi.set("G1");
+        VicThreadScope.oi.set("1.");
+        List<Funcionario> findAllNoPublic = funcionarioService.findAllNoPublic();
+        assertEquals(1001, findAllNoPublic.size());
     }
 
     @Test
