@@ -5,14 +5,21 @@
  */
 package br.com.munif.framework.vicente.api.test.apptest;
 
+import br.com.munif.framework.vicente.api.VicAutoSeed;
 import br.com.munif.framework.vicente.api.test.apptest.Book;
 import br.com.munif.framework.vicente.api.test.apptest.BookApi;
 import br.com.munif.framework.vicente.api.test.apptest.BookRepository;
 import br.com.munif.framework.vicente.api.test.apptest.BookService;
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
+import br.com.munif.framework.vicente.api.test.Carro;
 import br.com.munif.framework.vicente.api.test.apptest.LibaryApp;
 import br.com.munif.framework.vicente.api.test.apptest.TestUtil;
+import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.core.VicThreadScope;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.io.IOException;
 import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,9 +37,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
 import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -78,6 +88,10 @@ public class BookApiTest {
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setControllerAdvice(exceptionTranslator)
                 .setMessageConverters(jacksonMessageConverter).build();
+
+        Book b = new Book();
+        bookRepository.save(VicAutoSeed.getInteligentInstances(b, 10));
+
     }
 
     public static Book createEntity(EntityManager em) {
@@ -125,7 +139,6 @@ public class BookApiTest {
 
         // Validate the Contato in the database
         List<Book> bookList = findAll();
-        System.out.println("--->" + bookList);
         assertThat(bookList).hasSize(databaseSizeBeforeCreate + 1);
         Book testBook = bookList.get(bookList.size() - 1);
         assertThat(testBook.getName()).isEqualTo(DEAFAULT_NAME);
@@ -158,6 +171,21 @@ public class BookApiTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.values.[*].id").value(hasItem(book.getId())))
                 .andExpect(jsonPath("$.values.[*].name").value(hasItem(DEAFAULT_NAME)));
+
+    }
+
+    @Test
+    @Transactional
+    public void getAll2() throws Exception {
+
+        ResultActions r = restMockMvc.perform(get("/api/books?sort=id,desc")).andExpect(status().isOk());
+        String toString = r.andReturn().getResponse().getContentAsString();
+        VicReturn vr = TestUtil.convertStringVicReturn(toString);
+//        for (Object o : vr.getValues()) {
+//            Map m = (Map) o;
+//            System.out.println("--->" + m.get("id") + " " + m.get("name"));
+//        }
+        assertNotNull(toString);
 
     }
 
@@ -237,7 +265,8 @@ public class BookApiTest {
     @Test
     @Transactional
     public void equalsVerifier() throws Exception {
-        TestUtil.equalsVerifier(Book.class);
+        TestUtil.equalsVerifier(Book.class
+        );
         Book book1 = new Book();
         book1.setId("1L");
         Book book2 = new Book();

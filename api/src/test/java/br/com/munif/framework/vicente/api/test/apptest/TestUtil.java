@@ -1,5 +1,6 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
+import br.com.munif.framework.vicente.core.VicReturn;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,6 +44,22 @@ public class TestUtil {
         mapper.registerModule(module);
 
         return mapper.writeValueAsBytes(object);
+    }
+
+    public static VicReturn convertStringVicReturn(String s) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        JavaTimeModule module = new JavaTimeModule();
+        mapper.registerModule(module);
+        return mapper.readValue(s, VicReturn.class);
+    }
+
+    public static Map<String, Object> convertStringToMap(String s) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        JavaTimeModule module = new JavaTimeModule();
+        mapper.registerModule(module);
+        return mapper.readValue(s, Map.class);
     }
 
     /**

@@ -13,13 +13,16 @@ import java.util.List;
  */
 public class VicReturn<T> {
 
-    private final List<T> values;
+    private List<T> values;
 
-    private final Integer quantity;
+    private Integer quantity;
 
-    private final Integer firstResult;
+    private Integer firstResult;
 
-    private final Boolean hasMore;
+    private Boolean hasMore;
+
+    public VicReturn() {
+    }
 
     public VicReturn(List<T> values, Integer quantity, Integer firstResult, Boolean hasMore) {
         this.values = values;
