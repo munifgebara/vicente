@@ -1,4 +1,4 @@
-package br.com.munif.framework.vicente.api.test.apptest;
+package br.com.munif.framework.vicente.api.errors;
 
 import java.util.HashMap;
 import java.util.Map;

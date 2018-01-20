@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author munif
  */
 @RestController
+@Scope("prototype")
 public class BaseAPI<T extends BaseEntity> {
 
     private final BaseService<T> service;

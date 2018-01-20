@@ -17,7 +17,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-@ComponentScan(basePackages = {"br.com.munif.framework.vicente.api.test.apptest","br.com.munif.framework.vicente.application.victenancyfields"})
+@ComponentScan(basePackages = {"br.com.munif.framework.vicente.api.test.apptest",
+    "br.com.munif.framework.vicente.api",
+    "br.com.munif.framework.vicente.application.victenancyfields",
+    "br.com.munif.framework.vicente.application"
+})
 @EnableAutoConfiguration( exclude = {MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class})
 @EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
 @EntityScan(basePackages = {"br.com.munif.framework.vicente.domain","br.com.munif.framework.vicente.api.test.apptest"})

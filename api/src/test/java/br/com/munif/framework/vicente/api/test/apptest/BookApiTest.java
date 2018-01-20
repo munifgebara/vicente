@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.munif.framework.vicente.api.test;
+package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.test.apptest.Book;
 import br.com.munif.framework.vicente.api.test.apptest.BookApi;
 import br.com.munif.framework.vicente.api.test.apptest.BookRepository;
 import br.com.munif.framework.vicente.api.test.apptest.BookService;
-import br.com.munif.framework.vicente.api.test.apptest.ExceptionTranslator;
+import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
 import br.com.munif.framework.vicente.api.test.apptest.LibaryApp;
 import br.com.munif.framework.vicente.api.test.apptest.TestUtil;
 import br.com.munif.framework.vicente.core.VicThreadScope;
@@ -38,14 +38,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = LibaryApp.class)
 public class BookApiTest {
-    
-    public static final String DEAFAULT_NAME="The Book";
+
+    public static final String DEAFAULT_NAME = "The Book";
 
     @Autowired
-    private BookRepository bookRepository;
+    private BookRepository repository;
 
     @Autowired
-    private BookService bookService;
+    private BookService service;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -59,7 +59,7 @@ public class BookApiTest {
     @Autowired
     private ExceptionTranslator exceptionTranslator;
 
-    private MockMvc restContatoMockMvc;
+    private MockMvc restMockMvc;
 
     private Book book;
 
@@ -70,8 +70,8 @@ public class BookApiTest {
         VicThreadScope.oi.set("1.");
         VicThreadScope.ip.set("127.0.0.1");
         MockitoAnnotations.initMocks(this);
-        final BookApi bookAPi = new BookApi(bookService);
-        this.restContatoMockMvc = MockMvcBuilders.standaloneSetup(bookAPi)
+        final BookApi bookAPi = new BookApi(service);
+        this.restMockMvc = MockMvcBuilders.standaloneSetup(bookAPi)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setControllerAdvice(exceptionTranslator)
                 .setMessageConverters(jacksonMessageConverter).build();
@@ -90,7 +90,7 @@ public class BookApiTest {
     }
 
     private List<Book> findAll() {
-        Iterable<Book> findAll = bookRepository.findAll();
+        Iterable<Book> findAll = repository.findAll();
 
         List<Book> result = new ArrayList<>();
         for (Book r : findAll) {
@@ -101,7 +101,7 @@ public class BookApiTest {
     }
 
     private int count() {
-        return (int) bookRepository.count();
+        return (int) repository.count();
     }
 
     @Before
@@ -111,22 +111,38 @@ public class BookApiTest {
 
     @Test
     @Transactional
-    public void createBook() throws Exception {
+    public void create() throws Exception {
         int databaseSizeBeforeCreate = count();
 
         // Create the Book
-        restContatoMockMvc.perform(post("/api/books")
+        restMockMvc.perform(post("/api/books")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(createEntity())))
                 .andExpect(status().isCreated());
 
         // Validate the Contato in the database
         List<Book> bookList = findAll();
-        System.out.println("--->"+bookList);
+        System.out.println("--->" + bookList);
         assertThat(bookList).hasSize(databaseSizeBeforeCreate + 1);
         Book testBook = bookList.get(bookList.size() - 1);
         assertThat(testBook.getName()).isEqualTo(DEAFAULT_NAME);
     }
 
+    @Test
+    @Transactional
+    public void createWithExistingId() throws Exception {
+        repository.saveAndFlush(book);
+        int databaseSizeBeforeCreate = findAll().size();
+
+        // An entity with an existing ID cannot be created, so this API call must fail
+        restMockMvc.perform(post("/api/books")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(book)))
+                .andExpect(status().isBadRequest());
+
+        // Validate the Cargo in the database
+        List<Book> list = findAll();
+        assertThat(list).hasSize(databaseSizeBeforeCreate);
+    }
 
 }

@@ -1,4 +1,4 @@
-package br.com.munif.framework.vicente.api.test.apptest;
+package br.com.munif.framework.vicente.api.errors;
 
 import java.io.Serializable;
 import java.util.ArrayList;
