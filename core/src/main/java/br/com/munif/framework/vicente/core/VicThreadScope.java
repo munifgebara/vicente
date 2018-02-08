@@ -17,5 +17,7 @@ public class VicThreadScope {
     
     public static final ThreadLocal<String> ip = new ThreadLocal<>();
     
+    public static final ThreadLocal<String> oi = new ThreadLocal<>();
+    
     public static final ThreadLocal<Integer> defaultRights = new ThreadLocal<>();
 }

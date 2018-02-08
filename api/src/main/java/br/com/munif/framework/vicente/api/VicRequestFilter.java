@@ -27,6 +27,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         VicThreadScope.gi.set("G1");
         VicThreadScope.ui.set("U1");
+        VicThreadScope.oi.set("1.");
         VicThreadScope.ip.set(request.getRemoteAddr());
         HandlerMethod hm;
 

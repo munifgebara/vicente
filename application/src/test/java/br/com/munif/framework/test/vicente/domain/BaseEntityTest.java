@@ -22,6 +22,12 @@ public class BaseEntityTest {
     }
 
     @Test
+    public void oiOnNewNotNull() {
+        assertNotNull(entity.getOi());
+    }
+
+
+    @Test
     public void UIDHelperOnNewNotNull() {
         assertNotNull(entity.getId());
     }
