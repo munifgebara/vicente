@@ -277,5 +277,20 @@ public class BookApiTest {
         book1.setId(null);
         assertThat(book1).isNotEqualTo(book2);
     }
+    
+    @Test
+    @Transactional
+    public void getHQL() throws Exception {
+        // Initialize the database
+        bookRepository.saveAndFlush(book);
+
+        restMockMvc.perform(get("/api/books?hql=name like '%'&sort=id,desc"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.values.[*].id").value(hasItem(book.getId())))
+                .andExpect(jsonPath("$.values.[*].name").value(hasItem(DEAFAULT_NAME)));
+
+    }
+
 
 }
