@@ -12,14 +12,14 @@ public enum ComparisonOperator {
     IN(" in "),
     IN_ELEMENTS(" in elements "),
     IS(" is "),
-    BETWEEN(" between ");
-//    NOT_EQUAL(" <> "),
-//    NOT_STARTS_WITH(" not like "),
-//    NOT_ENDS_WITH(" not like "),
-//    NOT_CONTAINS(" = "),
-//    NOT_IN(" = "),
-//    NOT_IS(" = "),
-//    NOT_BETWEEN(" = ");
+    BETWEEN(" between "),
+    NOT_EQUAL(" <> "),
+    NOT_STARTS_WITH(" not like "),
+    NOT_ENDS_WITH(" not like "),
+    NOT_CONTAINS(" not like "),
+    NOT_IN(" not in "),
+    NOT_IS(" not is "),
+    NOT_BETWEEN(" not between ");
 
     public final String comparator;
 
@@ -54,7 +54,7 @@ public enum ComparisonOperator {
                 toReturn.append(",");
             }
             int lastVirgula = toReturn.lastIndexOf(",");
-            toReturn.replace(lastVirgula, lastVirgula+1, "");
+            toReturn.replace(lastVirgula, lastVirgula + 1, "");
             toReturn.append(")");
         } else {
             toReturn.append(value);
@@ -64,7 +64,9 @@ public enum ComparisonOperator {
     private String prefixString() {
         switch (this) {
             case ENDS_WITH:
+            case NOT_ENDS_WITH:
             case CONTAINS:
+            case NOT_CONTAINS:
                 return "%";
             default:
                 return "";
@@ -74,7 +76,9 @@ public enum ComparisonOperator {
     private String posfixString() {
         switch (this) {
             case STARTS_WITH:
+            case NOT_STARTS_WITH:
             case CONTAINS:
+            case NOT_CONTAINS:
                 return "%";
             default:
                 return "";

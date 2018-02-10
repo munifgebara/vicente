@@ -116,7 +116,9 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
                 .concat(" and ")
                 .concat((vicQuery.getQuery() != null ? vicQuery.getQuery().toString(): "1=1"));
 
-        String hql = "FROM " + getDomainClass().getSimpleName() + " obj where \n"
+        String joins = (vicQuery.getQuery() != null) ? vicQuery.getQuery().getJoins() : "";
+
+        String hql = "select obj FROM " + getDomainClass().getSimpleName() + " obj "+ joins +" where \n"
                 + "(" + clause + ") and "
                 + "("
                 + geTenancyHQL(true)
