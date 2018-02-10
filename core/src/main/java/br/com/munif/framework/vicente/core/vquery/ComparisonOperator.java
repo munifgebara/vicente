@@ -1,5 +1,8 @@
 package br.com.munif.framework.vicente.core.vquery;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public enum ComparisonOperator {
     EQUAL(" = "),
     LOWER(" < "),
@@ -46,16 +49,24 @@ public enum ComparisonOperator {
             toReturn.append(((CriteriaField) value).getField());
         } else if (value instanceof String) {
             toReturn.append("'" + prefixString()).append(value).append(posfixString() + "'");
+        } else if (value instanceof Date) {
+            toReturn.append("'").append(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(value)).append( "'");
         } else if (value instanceof Object[]) {
-            toReturn.append("(");
-            Object[] v = (Object[]) value;
-            for (int i = 0; i < v.length; i++) {
-                mount(v[i], toReturn);
-                toReturn.append(",");
+            if (this.equals(ComparisonOperator.BETWEEN)) {
+                mount(((Object[])value)[0], toReturn);
+                toReturn.append(" and ");
+                mount(((Object[])value)[1], toReturn);
+            } else {
+                toReturn.append("(");
+                Object[] v = (Object[]) value;
+                for (int i = 0; i < v.length; i++) {
+                    mount(v[i], toReturn);
+                    toReturn.append(",");
+                }
+                int lastVirgula = toReturn.lastIndexOf(",");
+                toReturn.replace(lastVirgula, lastVirgula + 1, "");
+                toReturn.append(")");
             }
-            int lastVirgula = toReturn.lastIndexOf(",");
-            toReturn.replace(lastVirgula, lastVirgula + 1, "");
-            toReturn.append(")");
         } else {
             toReturn.append(value);
         }

@@ -4,6 +4,7 @@ import br.com.munif.framework.vicente.core.vquery.*;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -157,6 +158,20 @@ public class VQueryTest {
                         new CriteriaField("teste")
                 }));
         assertEquals("(((sexo in ('M','F')) AND (idade in (1,2,3))) OR (elementos in (ola,teste)))", vQuery.toString());
+    }
+
+    @Test
+    public void between() {
+        vQuery = new VQuery(new Criteria("idade", ComparisonOperator.BETWEEN, new Integer[]{1,2}))
+            .or(new Criteria("nome", ComparisonOperator.BETWEEN, new String[]{"a","c"}));
+        assertEquals("((idade between 1 and 2) OR (nome between 'a' and 'c'))", vQuery.toString());
+    }
+
+    @Test
+    public void testDate() {
+        vQuery = new VQuery(new Criteria("dataCadastro", ComparisonOperator.BETWEEN, new Date[]{new Date(1518291786286l),new Date(1519299799286l)}))
+                .or(new Criteria("nome", ComparisonOperator.BETWEEN, new String[]{"a","c"}));
+        assertEquals("((dataCadastro between '2018/02/10 17:43:06' and '2018/02/22 08:43:19') OR (nome between 'a' and 'c'))", vQuery.toString());
     }
 
     @Test
