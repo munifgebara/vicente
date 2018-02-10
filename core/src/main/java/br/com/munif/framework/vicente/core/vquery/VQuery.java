@@ -183,7 +183,7 @@ public class VQuery implements Quereable<VQuery> {
     public static void main(String[] args) {
         VQuery vQuery = new VQuery(new Criteria("idade", ComparisonOperator.GREATER, 1))
                 .and(new VQuery(new Criteria("id", ComparisonOperator.IN, new VEntityQuery("Willian", "wmf",
-                        new Criteria("cu", ComparisonOperator.EQUAL, "grande"),
+                        new Criteria("teste123123", ComparisonOperator.EQUAL, "werwerww"),
                         "teste"))))
                 .or(new VQuery())
                 .join(new Join("teste", JoinType.INNER))

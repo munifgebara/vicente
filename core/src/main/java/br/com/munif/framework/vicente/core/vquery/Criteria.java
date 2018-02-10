@@ -37,7 +37,7 @@ public class Criteria {
     }
 
     public Object getField() {
-        return fieldFn != null ? String.format(fieldFn, field) : field;
+        return (fieldFn != null ? String.format(fieldFn, field) : field);
     }
 
     public void setField(Object field) {

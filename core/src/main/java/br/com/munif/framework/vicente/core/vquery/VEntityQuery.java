@@ -65,6 +65,11 @@ public class VEntityQuery extends VQuery {
 
     @Override
     public String toString() {
-        return String.format("(select %s from %s %s where %s)", getFieldsWithAlias() , entity, alias, super.toString());
+        String where;
+        if (null != getLogicalOperator()) {
+            where = getLogicalOperator().getOperation(this);
+        }
+        where = LogicalOperator.defaultOperation(this);
+        return String.format("(select %s from %s %s where %s)", getFieldsWithAlias() , entity, alias, where);
     }
 }
