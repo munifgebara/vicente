@@ -27,6 +27,10 @@ public class VEntityQuery extends VQuery {
         return entity;
     }
 
+    public Object getEntityName() {
+        return (entity instanceof String) ? entity : entity.getClass().getSimpleName();
+    }
+
     public void setEntity(Object entity) {
         this.entity = entity;
     }
@@ -68,8 +72,9 @@ public class VEntityQuery extends VQuery {
         String where;
         if (null != getLogicalOperator()) {
             where = getLogicalOperator().getOperation(this);
+        } else {
+            where = LogicalOperator.defaultOperation(this);
         }
-        where = LogicalOperator.defaultOperation(this);
-        return String.format("(select %s from %s %s where %s)", getFieldsWithAlias() , entity, alias, where);
+        return String.format("(select %s from %s %s where %s)", getFieldsWithAlias(), getEntityName(), alias, where);
     }
 }

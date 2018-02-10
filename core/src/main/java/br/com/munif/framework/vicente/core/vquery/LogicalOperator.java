@@ -12,9 +12,16 @@ public enum LogicalOperator {
             case OR:
             case AND:
                 if (vQuery.getSubQuerys() == null || vQuery.getSubQuerys().isEmpty()) {
-                    return "1 = 1";
+                    return vQuery.getCriteria().toString();
                 }
-                StringBuilder toReturn = new StringBuilder("(" + vQuery.getSubQuerys().get(0));
+                StringBuilder toReturn = new StringBuilder();
+                if (vQuery.getCriteria() != null) {
+                    toReturn.append("(" + vQuery.getCriteria().toString())
+                            .append(") ")
+                            .append(vQuery.getLogicalOperator().toString())
+                            .append(" ");
+                }
+                toReturn.append("(" + vQuery.getSubQuerys().get(0));
                 for (int i = 1; i < vQuery.getSubQuerys().size(); i++) {
                     toReturn.append(" ")
                             .append(vQuery.getLogicalOperator().toString())

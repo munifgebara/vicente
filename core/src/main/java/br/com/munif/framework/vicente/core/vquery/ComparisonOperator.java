@@ -32,18 +32,38 @@ public enum ComparisonOperator {
     }
 
     public String getComparation(Object field, Object value) {
-        StringBuilder toReturn =  new StringBuilder();
+        StringBuilder toReturn = new StringBuilder();
 
         toReturn = toReturn.append(field).append(this.getComparator());
 
         if (value instanceof CriteriaField) {
-             toReturn.append(((CriteriaField) value).getField());
+            toReturn.append(((CriteriaField) value).getField());
         } else if (value instanceof String) {
-            toReturn.append("'").append(value).append("'");
+            toReturn.append("'"+prefixString()).append(value).append(posfixString()+"'");
         } else {
             toReturn.append(value);
         }
 
         return toReturn.toString();
+    }
+
+    private String prefixString() {
+        switch (this) {
+            case ENDS_WITH:
+            case CONTAINS:
+                return "%";
+            default:
+                return "";
+        }
+    }
+
+    private String posfixString() {
+        switch (this) {
+            case STARTS_WITH:
+            case CONTAINS:
+                return "%";
+            default:
+                return "";
+        }
     }
 }

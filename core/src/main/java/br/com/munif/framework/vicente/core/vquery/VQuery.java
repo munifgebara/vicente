@@ -8,7 +8,7 @@ public class VQuery implements Quereable<VQuery> {
 
     private Criteria criteria;
 
-    private List<Quereable> subQuerys;
+    private List<Quereable> subQuerys = new LinkedList<>();
 
     private List<Joinable> joins = new LinkedList<>();
 
@@ -130,7 +130,10 @@ public class VQuery implements Quereable<VQuery> {
             this.subQuerys.add(other);
             return this;
         }
-        return new VQuery(LogicalOperator.OR, Arrays.asList(new VQuery[]{this, other}));
+
+        VQuery vQuery = new VQuery(LogicalOperator.OR, Arrays.asList(new VQuery[]{this, other}));
+
+        return vQuery;
     }
 
     @Override
@@ -177,19 +180,5 @@ public class VQuery implements Quereable<VQuery> {
             return logicalOperator.getOperation(this);
         }
         return LogicalOperator.defaultOperation(this);
-    }
-
-
-    public static void main(String[] args) {
-        VQuery vQuery = new VQuery(new Criteria("idade", ComparisonOperator.GREATER, 1))
-                .and(new VQuery(new Criteria("id", ComparisonOperator.IN, new VEntityQuery("Willian", "wmf",
-                        new Criteria("teste123123", ComparisonOperator.EQUAL, "werwerww"),
-                        "teste"))))
-                .or(new VQuery())
-                .join(new Join("teste", JoinType.INNER))
-                .join(new Join("ola", JoinType.INNER).on(new Criteria("a", ComparisonOperator.GREATER, 2)));
-
-        System.out.println(vQuery);
-        System.out.println(vQuery.getJoins());
     }
 }
