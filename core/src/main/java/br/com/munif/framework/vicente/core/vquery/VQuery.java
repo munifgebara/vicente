@@ -2,13 +2,13 @@ package br.com.munif.framework.vicente.core.vquery;
 
 import java.util.*;
 
-public class VQuery implements Quereable<VQuery> {
+public class VQuery implements Queryable<VQuery> {
 
     private LogicalOperator logicalOperator = LogicalOperator.SIMPLE;
 
     private Criteria criteria;
 
-    private List<Quereable> subQuerys = new LinkedList<>();
+    private List<Queryable> subQuerys = new LinkedList<>();
 
     private List<Joinable> joins = new LinkedList<>();
 
@@ -19,7 +19,7 @@ public class VQuery implements Quereable<VQuery> {
         this.criteria = new Criteria();
     }
 
-    public VQuery(LogicalOperator logicalOperator, Criteria criteria, List<Quereable> subQuerys) {
+    public VQuery(LogicalOperator logicalOperator, Criteria criteria, List<Queryable> subQuerys) {
         this.logicalOperator = logicalOperator;
         this.criteria = criteria;
         this.subQuerys = subQuerys;
@@ -34,7 +34,7 @@ public class VQuery implements Quereable<VQuery> {
         this.criteria = criteria;
     }
 
-    public VQuery(LogicalOperator logicalOperator, List<Quereable> subQuerys) {
+    public VQuery(LogicalOperator logicalOperator, List<Queryable> subQuerys) {
         this.logicalOperator = logicalOperator;
         this.subQuerys = subQuerys;
         adjustJoins(this);
@@ -66,11 +66,11 @@ public class VQuery implements Quereable<VQuery> {
         this.criteria = criteria;
     }
 
-    public List<Quereable> getSubQuerys() {
+    public List<Queryable> getSubQuerys() {
         return subQuerys;
     }
 
-    public void setSubQuerys(List<Quereable> subQuerys) {
+    public void setSubQuerys(List<Queryable> subQuerys) {
         this.subQuerys = subQuerys;
     }
 
@@ -91,7 +91,7 @@ public class VQuery implements Quereable<VQuery> {
         this.joins = joins;
     }
 
-    private void searchUseDistinct(Quereable vQuery, Map<String, Boolean> map) {
+    private void searchUseDistinct(Queryable vQuery, Map<String, Boolean> map) {
         if (!map.get("useDistinct")) {
             map.put("useDistinct", vQuery.getUseDistinct());
         }
@@ -100,9 +100,9 @@ public class VQuery implements Quereable<VQuery> {
             for (Object query : vQuery.getSubQuerys()) {
 
                 if (!map.get("useDistinct")) {
-                    map.put("useDistinct", ((Quereable) query).getUseDistinct());
+                    map.put("useDistinct", ((Queryable) query).getUseDistinct());
                 }
-                searchUseDistinct(((Quereable) query), map);
+                searchUseDistinct(((Queryable) query), map);
             }
         }
     }
@@ -171,7 +171,7 @@ public class VQuery implements Quereable<VQuery> {
 
     public void addIgnoreCase() {
         Optional.ofNullable(criteria).ifPresent(Criteria::addIgnoreCase);
-        Optional.ofNullable(subQuerys).ifPresent(sub -> sub.forEach(Quereable::addIgnoreCase));
+        Optional.ofNullable(subQuerys).ifPresent(sub -> sub.forEach(Queryable::addIgnoreCase));
     }
 
     @Override

@@ -1,9 +1,6 @@
 package br.com.munif.framework.vicente.core;
 
-import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
-import br.com.munif.framework.vicente.core.vquery.Criteria;
-import br.com.munif.framework.vicente.core.vquery.LogicalOperator;
-import br.com.munif.framework.vicente.core.vquery.VQuery;
+import br.com.munif.framework.vicente.core.vquery.*;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -46,11 +43,10 @@ public class VQueryTest {
         vQuery = new VQuery(LogicalOperator.AND, new Criteria("nome", ComparisonOperator.EQUAL, "Willian"));
         assertEquals("nome = 'Willian'", vQuery.toString());
         vQuery = new VQuery(LogicalOperator.AND, new Criteria("nome", ComparisonOperator.EQUAL, "Willian"))
-            .and(new Criteria("idade", ComparisonOperator.GREATER, 80))
-            .or(new Criteria("sexo", ComparisonOperator.EQUAL, "MASCULINO"));
+                .and(new Criteria("idade", ComparisonOperator.GREATER, 80))
+                .or(new Criteria("sexo", ComparisonOperator.EQUAL, "MASCULINO"));
         assertEquals("((nome = 'Willian') AND ((idade > 80)) OR (sexo = 'MASCULINO'))", vQuery.toString());
     }
-
 
     @Test
     public void constructorCriteria() {
@@ -59,7 +55,8 @@ public class VQueryTest {
                 .and(new Criteria("idade", ComparisonOperator.GREATER, 80))
                 .or(new Criteria("sexo", ComparisonOperator.EQUAL, "MASCULINO"));
 
-        assertEquals("(((nome = 'Willian') AND (idade > 80)) OR (sexo = 'MASCULINO'))", vQuery.toString());vQuery = new VQuery(new Criteria("nome", ComparisonOperator.EQUAL, "Willian"))
+        assertEquals("(((nome = 'Willian') AND (idade > 80)) OR (sexo = 'MASCULINO'))", vQuery.toString());
+        vQuery = new VQuery(new Criteria("nome", ComparisonOperator.EQUAL, "Willian"))
                 .and(new Criteria("idade", ComparisonOperator.GREATER, 80))
                 .or(new Criteria("sexo", ComparisonOperator.EQUAL, "MASCULINO"))
                 .or(new Criteria("sexo", ComparisonOperator.EQUAL, "FEMININO"))
@@ -67,7 +64,7 @@ public class VQueryTest {
                 .or(new Criteria("sexo", ComparisonOperator.EQUAL, "TESTE"));
         assertEquals("(((nome = 'Willian') AND (idade > 80)) OR (sexo = 'MASCULINO') OR (sexo = 'FEMININO') OR (sexo = 'OUTRO') OR (sexo = 'TESTE'))", vQuery.toString());
 
-       vQuery = new VQuery(new Criteria("nome", ComparisonOperator.EQUAL, "Willian"))
+        vQuery = new VQuery(new Criteria("nome", ComparisonOperator.EQUAL, "Willian"))
                 .and(new Criteria("idade", ComparisonOperator.GREATER, 80))
                 .and(new Criteria("idade", ComparisonOperator.LOWER, 70))
                 .or(new Criteria("sexo", ComparisonOperator.EQUAL, "MASCULINO"))
@@ -75,6 +72,39 @@ public class VQueryTest {
                 .or(new Criteria("sexo", ComparisonOperator.EQUAL, "OUTRO"))
                 .or(new Criteria("sexo", ComparisonOperator.EQUAL, "TESTE"));
         assertEquals("(((nome = 'Willian') AND (idade > 80) AND (idade < 70)) OR (sexo = 'MASCULINO') OR (sexo = 'FEMININO') OR (sexo = 'OUTRO') OR (sexo = 'TESTE'))", vQuery.toString());
+    }
+
+    @Test
+    public void testJoin() {
+        vQuery = new VQuery(new Criteria("nome", ComparisonOperator.EQUAL, "willian"))
+                .join(new Join("Endereco", JoinType.INNER)
+                        .on(new Criteria("pessoa.id", ComparisonOperator.EQUAL, new CriteriaField("id"))));
+        assertEquals("(nome = 'willian')", vQuery.toString());
+        assertEquals(" inner join Endereco on pessoa.id = id", vQuery.getJoins());
+        vQuery = vQuery.join(new Join("Telefone", JoinType.LEFT));
+        assertEquals(" inner join Endereco on pessoa.id = id left join Telefone", vQuery.getJoins());
+        vQuery = vQuery.join(new Join("Historico", JoinType.SIMPLE)
+            .on(new Criteria("id", ComparisonOperator.EQUAL, new CriteriaField("id")))
+            .and(new Criteria("descricao", ComparisonOperator.CONTAINS, "teste")));
+        assertEquals(" inner join Endereco on pessoa.id = id left join Telefone join Historico on id = id and descricao like '%teste%'", vQuery.getJoins());
+        vQuery = vQuery.join(new Join("Historico", JoinType.SIMPLE)
+                .on(new Criteria("id", ComparisonOperator.EQUAL, new CriteriaField("id")))
+                .and(new Criteria("descricao", ComparisonOperator.CONTAINS, "teste"))
+                .or(new Criteria("descricao", ComparisonOperator.CONTAINS, "willinha")));
+        assertEquals(" inner join Endereco on pessoa.id = id left join Telefone join Historico on id = id and descricao like '%teste%' join Historico on id = id and descricao like '%teste%' or descricao like '%willinha%'", vQuery.getJoins());
+    }
+
+    @Test
+    public void testVEntityQuery() {
+        vQuery = new VEntityQuery(Aluno.class, new Criteria("nome", ComparisonOperator.CONTAINS, "Willian"));
+        assertEquals("(select obj from Aluno obj where (nome like '%Willian%'))", vQuery.toString());
+    }
+
+    @Test
+    public void testVEntityQueryIn() {
+        vQuery = new VEntityQuery(Aluno.class, new Criteria("nome", ComparisonOperator.CONTAINS, "Willian"));
+        System.out.println(vQuery);
+        assertEquals("(select obj from Aluno obj where (nome like '%Willian%'))", vQuery.toString());
     }
 
     @Test

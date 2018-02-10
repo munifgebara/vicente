@@ -2,7 +2,7 @@ package br.com.munif.framework.vicente.core.vquery;
 
 import java.util.List;
 
-public interface Quereable<T> {
+public interface Queryable<T> {
     T or(Criteria criteria);
     T and(Criteria criteria);
     T or(T criteria);
@@ -18,7 +18,7 @@ public interface Quereable<T> {
 
     default void addIgnoreCase() {}
 
-    default List<Quereable> getSubQuerys() {
+    default List<Queryable> getSubQuerys() {
         return null;
     }
 }

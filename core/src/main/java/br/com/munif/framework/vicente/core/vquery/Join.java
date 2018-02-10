@@ -3,7 +3,7 @@ package br.com.munif.framework.vicente.core.vquery;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Join implements Quereable<Join>, Joinable<Join> {
+public class Join implements Queryable<Join>, Joinable<Join> {
 
     /**
      * Tipo de Junção

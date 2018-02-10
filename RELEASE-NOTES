@@ -1,0 +1,18 @@
+==========================================
+Vicente - Framework Java
+
+0.4.0-SNAPSHOT
+
+    - Inclusão de pesquisa O.O com VQuery
+      * ComparisonOperator
+        Criteria
+        CriteriaField
+        CriteriaJoin
+        CriteriaJoinOperator
+        Join
+        Joinable
+        JoinType
+        LogicalOperator
+        Queryable
+        VEntityQuery
+        VQuery

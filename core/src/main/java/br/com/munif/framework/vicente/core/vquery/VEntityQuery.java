@@ -5,6 +5,15 @@ public class VEntityQuery extends VQuery {
     private String alias;
     private String[] fields;
 
+    public VEntityQuery(Object entity) {
+        this.entity = entity;
+    }
+
+    public VEntityQuery(Object entity, Criteria criteria) {
+        this.entity = entity;
+        this.setCriteria(criteria);
+    }
+
     public VEntityQuery(Object entity, String alias) {
         this.entity = entity;
         this.alias = alias;
@@ -28,7 +37,7 @@ public class VEntityQuery extends VQuery {
     }
 
     public Object getEntityName() {
-        return (entity instanceof String) ? entity : entity.getClass().getSimpleName();
+        return (entity instanceof String) ? entity : ((Class) entity).getSimpleName();
     }
 
     public void setEntity(Object entity) {
@@ -37,7 +46,7 @@ public class VEntityQuery extends VQuery {
 
     @Override
     public String getAlias() {
-        return alias;
+        return alias == null ? "obj" : alias;
     }
 
     public String getAliasWithDot() {
@@ -60,7 +69,7 @@ public class VEntityQuery extends VQuery {
             }
             return toReturn;
         }
-        return alias;
+        return getAlias();
     }
 
     public void setFields(String[] fields) {
@@ -75,6 +84,6 @@ public class VEntityQuery extends VQuery {
         } else {
             where = LogicalOperator.defaultOperation(this);
         }
-        return String.format("(select %s from %s %s where %s)", getFieldsWithAlias(), getEntityName(), alias, where);
+        return String.format("(select %s from %s %s where %s)", getFieldsWithAlias(), getEntityName(), getAlias(), where);
     }
 }
