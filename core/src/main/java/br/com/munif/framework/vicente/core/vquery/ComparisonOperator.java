@@ -36,15 +36,29 @@ public enum ComparisonOperator {
 
         toReturn = toReturn.append(field).append(this.getComparator());
 
+        mount(value, toReturn);
+
+        return toReturn.toString();
+    }
+
+    private void mount(Object value, StringBuilder toReturn) {
         if (value instanceof CriteriaField) {
             toReturn.append(((CriteriaField) value).getField());
         } else if (value instanceof String) {
-            toReturn.append("'"+prefixString()).append(value).append(posfixString()+"'");
+            toReturn.append("'" + prefixString()).append(value).append(posfixString() + "'");
+        } else if (value instanceof Object[]) {
+            toReturn.append("(");
+            Object[] v = (Object[]) value;
+            for (int i = 0; i < v.length; i++) {
+                mount(v[i], toReturn);
+                toReturn.append(",");
+            }
+            int lastVirgula = toReturn.lastIndexOf(",");
+            toReturn.replace(lastVirgula, lastVirgula+1, "");
+            toReturn.append(")");
         } else {
             toReturn.append(value);
         }
-
-        return toReturn.toString();
     }
 
     private String prefixString() {
