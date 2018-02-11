@@ -13,7 +13,7 @@ public enum ComparisonOperator {
     ENDS_WITH(" like "),
     CONTAINS(" like "),
     IN(" in "),
-    IN_ELEMENTS(" in elements "),
+    IN_ELEMENTS(" in elements"),
     IS(" is "),
     BETWEEN(" between "),
     NOT_EQUAL(" <> "),
@@ -37,11 +37,18 @@ public enum ComparisonOperator {
     public String getComparation(Object field, Object value) {
         StringBuilder toReturn = new StringBuilder();
 
-        toReturn = toReturn.append(field).append(this.getComparator());
+        String startsValue = (ComparisonOperator.IN_ELEMENTS.equals(this)) ? "(" : "";
+        String endsValue = (ComparisonOperator.IN_ELEMENTS.equals(this)) ? ")" : "";
+        if (ComparisonOperator.IN_ELEMENTS.equals(this)) {
+            mount(field, toReturn);
+            toReturn.append(this.getComparator()).append(startsValue);
+        } else {
+            toReturn = toReturn.append(field).append(this.getComparator()).append(startsValue);
+        }
 
         mount(value, toReturn);
 
-        return toReturn.toString();
+        return toReturn.toString().concat(endsValue);
     }
 
     private void mount(Object value, StringBuilder toReturn) {
@@ -50,12 +57,12 @@ public enum ComparisonOperator {
         } else if (value instanceof String) {
             toReturn.append("'" + prefixString()).append(value).append(posfixString() + "'");
         } else if (value instanceof Date) {
-            toReturn.append("'").append(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(value)).append( "'");
+            toReturn.append("'").append(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(value)).append("'");
         } else if (value instanceof Object[]) {
-            if (this.equals(ComparisonOperator.BETWEEN)) {
-                mount(((Object[])value)[0], toReturn);
+            if (this.equals(ComparisonOperator.BETWEEN) || this.equals(ComparisonOperator.NOT_BETWEEN)) {
+                mount(((Object[]) value)[0], toReturn);
                 toReturn.append(" and ");
-                mount(((Object[])value)[1], toReturn);
+                mount(((Object[]) value)[1], toReturn);
             } else {
                 toReturn.append("(");
                 Object[] v = (Object[]) value;
