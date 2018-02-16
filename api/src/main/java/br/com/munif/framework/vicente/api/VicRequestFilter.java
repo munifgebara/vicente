@@ -33,7 +33,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
 
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS,HEAD");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, gumgaToken, Connection, userRecognition");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, authorization, Connection, userRecognition");
 
         if (handler instanceof HandlerMethod) {
             hm = (HandlerMethod) handler;

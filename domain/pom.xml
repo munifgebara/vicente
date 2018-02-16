@@ -45,12 +45,5 @@
             <version>LATEST</version>
         </dependency>
         
-        <!-- https://mvnrepository.com/artifact/info.leadinglight/jdot -->
-        <dependency>
-            <groupId>info.leadinglight</groupId>
-            <artifactId>jdot</artifactId>
-            <version>1.0</version>
-        </dependency>
-
     </dependencies>
 </project>

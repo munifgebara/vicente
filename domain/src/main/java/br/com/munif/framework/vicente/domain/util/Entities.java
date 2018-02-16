@@ -39,7 +39,7 @@ public class Entities {
         new File(pastaDestino).mkdir();
     }
 
-    private List<Class> onlyEntities(List<Class> scanClasses) {
+    public static List<Class> onlyEntities(List<Class> scanClasses) {
         List<Class> toReturn = new ArrayList<>();
         for (Class c : scanClasses) {
             if (c.isAnnotationPresent(Entity.class)) {
