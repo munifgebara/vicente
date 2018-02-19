@@ -112,8 +112,14 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
             vicQuery.setMaxResults(VicQuery.DEFAULT_QUERY_SIZE);
         }
 
-        String hql = "FROM " + getDomainClass().getSimpleName() + " obj where \n"
-                + "(" + (vicQuery.getHql() != null ? vicQuery.getHql() : "1=1") + ") and "
+        String clause = (vicQuery.getHql() != null ? vicQuery.getHql() : "1=1")
+                .concat(" and ")
+                .concat((vicQuery.getQuery() != null ? vicQuery.getQuery().toString(): "1=1"));
+
+        String joins = (vicQuery.getQuery() != null) ? vicQuery.getQuery().getJoins() : "";
+
+        String hql = "select obj FROM " + getDomainClass().getSimpleName() + " obj "+ joins +" where \n"
+                + "(" + clause + ") and "
                 + "("
                 + geTenancyHQL(true)
                 + ") "

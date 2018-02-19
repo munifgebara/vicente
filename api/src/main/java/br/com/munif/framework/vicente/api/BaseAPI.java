@@ -15,6 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
@@ -106,6 +108,17 @@ public class BaseAPI<T extends BaseEntity> {
     @Transactional
     @RequestMapping(method = RequestMethod.GET)
     public VicReturn<T> findHQL(HttpServletRequest request, VicQuery query) {
+        return getVicReturnByQuery(query);
+    }
+
+    @Transactional
+    @RequestMapping(value = "/vquery", method = RequestMethod.POST)
+    public VicReturn<T> findVQuery(@RequestBody VicQuery query) {
+        return getVicReturnByQuery(query);
+    }
+
+    @Transactional
+    public VicReturn<T> getVicReturnByQuery(@RequestBody VicQuery query) {
         if (query.getHql()==null || query.getHql().trim().isEmpty()){
             query.setHql(VicQuery.DEFAULT_QUERY);
         }
