@@ -236,7 +236,7 @@ public class BaseEntity {
         VicTenancyPolicy vtp = this.getClass().getAnnotation(VicTenancyPolicy.class);
         
         if (vtp==null){
-            System.out.println("----> "+this.getClassName()+" "+VicTenancyType.GROUPS);
+            //System.out.println("----> "+this.getClassName()+" "+VicTenancyType.GROUPS);
             return VicTenancyType.GROUPS;
         }
         System.out.println("----> "+this.getClassName()+" "+vtp.value());
