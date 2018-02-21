@@ -15,6 +15,7 @@ import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldValue;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -102,6 +103,10 @@ public abstract class BaseService<T> {
 
     @Transactional
     public T save(T resource) {
+        if (resource instanceof BaseEntity){
+            BaseEntity baseEntity = (BaseEntity) resource;
+            baseEntity.setUd(new Date());
+        }
         T entity = repository.save(resource);
         if (entity instanceof VicTenancyFieldsBaseEntity) {
             saveVicTenancyFields(resource);

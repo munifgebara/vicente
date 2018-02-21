@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.ConcurrencyFailureException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
@@ -25,6 +26,15 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 public class ExceptionTranslator {
 
     private final Logger log = LoggerFactory.getLogger(ExceptionTranslator.class);
+    
+//TODO        
+//    @ExceptionHandler( org.springframework.dao.DataIntegrityViolationException )
+//    @ResponseStatus(HttpStatus.CONFLICT)
+//    @ResponseBody
+//    public ErrorVM dataIntegrityViolationException(DataIntegrityViolationException ex) {
+//        return new ErrorVM(ErrorConstants.ERR_DATA_INTEGRITY_VIOLATION);
+//    }
+
 
     @ExceptionHandler(ConcurrencyFailureException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -83,6 +93,7 @@ public class ExceptionTranslator {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorVM> processException(Exception ex) {
+        System.out.println("--->"+ex.getClass()+" "+ex.getMessage()+" "+ex.getCause());
         if (log.isDebugEnabled()) {
             log.debug("An unexpected error occurred: {}", ex.getMessage(), ex);
         } else {
