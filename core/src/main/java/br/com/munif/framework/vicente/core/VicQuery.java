@@ -1,5 +1,7 @@
 package br.com.munif.framework.vicente.core;
 
+import br.com.munif.framework.vicente.core.vquery.VQuery;
+
 public class VicQuery {
 
     public static final int DEFAULT_QUERY_SIZE = 1000000000;
@@ -9,6 +11,8 @@ public class VicQuery {
     public static final String DEFAULT_ORDER_BY = "id";
 
     private String hql = DEFAULT_QUERY;
+
+    private VQuery query;
 
     private int firstResult = 0;
 
@@ -40,6 +44,14 @@ public class VicQuery {
 
     public void setHql(String hql) {
         this.hql = hql;
+    }
+
+    public VQuery getQuery() {
+        return query;
+    }
+
+    public void setQuery(VQuery query) {
+        this.query = query;
     }
 
     public int getFirstResult() {
