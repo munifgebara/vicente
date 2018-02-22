@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.munif.framework</groupId>
     <artifactId>vicente</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <spring.version>4.3.10.RELEASE</spring.version>
-        <hibernate.version>5.2.10.Final</hibernate.version>
+        <hibernate.version>5.2.13.Final</hibernate.version>
     </properties>
     
     <name>Vicente SaaS Framwork</name>
@@ -101,17 +101,17 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>5.2.10.Final</version>
+                <version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
-                <version>5.2.10.Final</version>
+                <version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate.javax.persistence</groupId>
-                <artifactId>hibernate-jpa-2.1-api</artifactId>
-                <version>1.0.0.Final</version>
+                <artifactId>hibernate-jpa-2.2-api</artifactId>
+                <version>1.0.0.Beta1</version>
             </dependency>
 
             <dependency>
@@ -175,7 +175,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-hibernate5</artifactId>
-                <version>2.9.0</version>
+                <version>2.9.4</version>
             </dependency>
             
             <dependency>
@@ -220,6 +220,13 @@
             </dependency>
             
             <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>15.0</version>
+            </dependency>
+
+            
+            <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.5</version>
@@ -227,7 +234,7 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-envers</artifactId>
-                <version>5.2.10.Final</version>
+                <version>${hibernate.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

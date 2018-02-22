@@ -1,4 +1,5 @@
 /*
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -18,6 +19,7 @@ import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -83,6 +85,7 @@ public class BookApiTest {
         VicThreadScope.oi.set("1.");
         VicThreadScope.ip.set("127.0.0.1");
         MockitoAnnotations.initMocks(this);
+        
         final BookApi bookAPi = new BookApi(service);
         this.restMockMvc = MockMvcBuilders.standaloneSetup(bookAPi)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
