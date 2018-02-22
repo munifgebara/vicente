@@ -15,14 +15,21 @@ import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
 import br.com.munif.framework.vicente.api.test.Carro;
 import br.com.munif.framework.vicente.api.test.apptest.LibaryApp;
 import br.com.munif.framework.vicente.api.test.apptest.TestUtil;
+import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.core.VicThreadScope;
+import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
+import br.com.munif.framework.vicente.core.vquery.Criteria;
+import br.com.munif.framework.vicente.core.vquery.VQuery;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,13 +45,18 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
+
 import org.junit.Assert;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -85,7 +97,7 @@ public class BookApiTest {
         VicThreadScope.oi.set("1.");
         VicThreadScope.ip.set("127.0.0.1");
         MockitoAnnotations.initMocks(this);
-        
+
         final BookApi bookAPi = new BookApi(service);
         this.restMockMvc = MockMvcBuilders.standaloneSetup(bookAPi)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
@@ -280,7 +292,7 @@ public class BookApiTest {
         book1.setId(null);
         assertThat(book1).isNotEqualTo(book2);
     }
-    
+
     @Test
     @Transactional
     public void getHQL() throws Exception {
@@ -293,6 +305,27 @@ public class BookApiTest {
                 .andExpect(jsonPath("$.values.[*].id").value(hasItem(book.getId())))
                 .andExpect(jsonPath("$.values.[*].name").value(hasItem(DEAFAULT_NAME)));
 
+    }
+
+
+    @Test
+    @Transactional
+    public void getVQuery() throws Exception {
+        // Initialize the database
+        bookRepository.saveAndFlush(book);
+
+        VicQuery v = new VicQuery();
+        VQuery vQuery = new VQuery(new Criteria("name", ComparisonOperator.CONTAINS, "The Book"))
+                .or(new Criteria("name", ComparisonOperator.CONTAINS, "books"));
+        v.setQuery(vQuery);
+        ResultActions perform = restMockMvc.perform(post("/api/books/vquery")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(v)));
+
+        perform.andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.values.[*].id").value(hasItem(book.getId())))
+                .andExpect(jsonPath("$.values.[*].name").value(hasItem(DEAFAULT_NAME)));
     }
 
 

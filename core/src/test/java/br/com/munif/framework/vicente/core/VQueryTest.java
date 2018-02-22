@@ -35,14 +35,14 @@ public class VQueryTest {
     @Test
     public void constructorLogicalOperatorCriteriaSubQuerys2() {
         vQuery = new VQuery(LogicalOperator.AND, new Criteria(), Arrays.asList(new VQuery(new Criteria("nome", ComparisonOperator.EQUAL, "Willian"))));
-        assertEquals("(1 = 1) AND ((nome = 'Willian'))", vQuery.toString());
+        assertEquals("((nome = 'Willian'))", vQuery.toString());
     }
 
     @Test
     public void constructorLogicalOperatorCriteriaSubQuerys3() {
         vQuery = new VQuery(LogicalOperator.AND, new Criteria(), Arrays.asList(new VQuery(new Criteria("nome", ComparisonOperator.EQUAL, "Willian"))));
         vQuery = vQuery.and(new Criteria("idade", ComparisonOperator.GREATER, 20));
-        assertEquals("(1 = 1) AND ((nome = 'Willian') AND (idade > 20))", vQuery.toString());
+        assertEquals("((nome = 'Willian') AND (idade > 20))", vQuery.toString());
     }
 
     @Test
@@ -116,6 +116,13 @@ public class VQueryTest {
                         .on(new Criteria("pessoa.id", ComparisonOperator.EQUAL, new CriteriaField("id"))));
         vQuery = vQuery.join(new Join("Telefone", JoinType.LEFT));
         assertEquals(" inner join Endereco on pessoa.id = id left join Telefone", vQuery.getJoins());
+    }
+
+    @Test
+    public void testJoin22() {
+        VQuery vQuery = new VQuery(new Criteria("name", ComparisonOperator.CONTAINS, "The book"))
+                .or(new Criteria("name", ComparisonOperator.CONTAINS, "books"));
+        System.out.println(vQuery);
     }
 
 
