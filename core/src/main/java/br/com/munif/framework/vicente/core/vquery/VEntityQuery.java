@@ -44,7 +44,6 @@ public class VEntityQuery extends VQuery {
         this.entity = entity;
     }
 
-    @Override
     public String getAlias() {
         return alias == null ? "obj" : alias;
     }
