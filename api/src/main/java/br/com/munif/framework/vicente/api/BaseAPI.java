@@ -119,10 +119,10 @@ public class BaseAPI<T extends BaseEntity> {
 
     @Transactional
     public VicReturn<T> getVicReturnByQuery(@RequestBody VicQuery query) {
-        if (query.getHql()==null || query.getHql().trim().isEmpty()){
+        if (query.getHql() == null || query.getHql().trim().isEmpty()) {
             query.setHql(VicQuery.DEFAULT_QUERY);
         }
-        if (query.getMaxResults()==-1){
+        if (query.getMaxResults() == -1) {
             query.setMaxResults(this.getDefaultSize());
         }
         int maxResults = query.getMaxResults();
@@ -143,6 +143,7 @@ public class BaseAPI<T extends BaseEntity> {
         if (view == null) {
             throw new VicenteNotFoundException("Not found");
         };
+        beforeReturnOne(view);
         return view;
     }
 
@@ -153,6 +154,10 @@ public class BaseAPI<T extends BaseEntity> {
 
     public int getDefaultSize() {
         return 20;
+    }
+
+    protected void beforeReturnOne(T view) {
+
     }
 
 }
