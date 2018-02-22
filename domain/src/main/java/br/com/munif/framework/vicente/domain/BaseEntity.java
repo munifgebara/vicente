@@ -41,7 +41,7 @@ public class BaseEntity {
     protected String id;
 
     protected String oi;
-    
+
     protected String gi;
 
     protected String ui;
@@ -65,7 +65,7 @@ public class BaseEntity {
         this.id = UIDHelper.getUID();
         this.gi = RightsHelper.getMainGi();
         this.ui = VicThreadScope.ui.get();
-        this.oi = VicThreadScope.oi.get()!=null?VicThreadScope.oi.get():"";
+        this.oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";
         this.rights = RightsHelper.getDefault();
         this.extra = "Framework";
         this.cd = new Date();
@@ -105,7 +105,7 @@ public class BaseEntity {
     public void setOi(String oi) {
         this.oi = oi;
     }
-    
+
     public Integer getRights() {
         return rights;
     }
@@ -117,9 +117,9 @@ public class BaseEntity {
     public String getExtra() {
         return extra;
     }
-    
-    public BaseEntity extra(String e){
-        this.extra=e;
+
+    public BaseEntity extra(String e) {
+        this.extra = e;
         return this;
     }
 
@@ -195,12 +195,12 @@ public class BaseEntity {
     public String getStringRights() {
         Integer rights = this.rights != null ? this.rights : 0;
         String toReturn = "";
-        toReturn += "ui:" + ui+"(";
+        toReturn += "ui:" + ui + "(";
         toReturn += (RightsHelper.OWNER_READ & rights) > 0 ? "R" : "-";
         toReturn += (RightsHelper.OWNER_UPDATE & rights) > 0 ? "U" : "-";
         toReturn += (RightsHelper.OWNER_DELETE & rights) > 0 ? "D" : "-";
         toReturn += ") ";
-        toReturn += "gi:" + gi+"(";
+        toReturn += "gi:" + gi + "(";
         toReturn += (RightsHelper.GROUP_READ & rights) > 0 ? "R" : "-";
         toReturn += (RightsHelper.GROUP_UPDATE & rights) > 0 ? "U" : "-";
         toReturn += (RightsHelper.GROUP_DELETE & rights) > 0 ? "D" : "-";
@@ -210,39 +210,36 @@ public class BaseEntity {
         toReturn += (RightsHelper.OTHER_UPDATE & rights) > 0 ? "U" : "-";
         toReturn += (RightsHelper.OTHER_DELETE & rights) > 0 ? "D" : "-";
         toReturn += ") ";
-        toReturn +="cd:"+format(cd)+" ";
-        toReturn +="up:"+format(ud);
+        toReturn += "cd:" + format(cd) + " ";
+        toReturn += "up:" + format(ud);
 
         return toReturn;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" + "id=" + id + ", oi=" + oi +", gi=" + gi + ", ui=" + ui + ", rights=" + rights + ", extra=" + extra + ", cd=" + cd + ", ud=" + ud + ", active=" + active + ", version=" + version + '}';
+        return getClass().getSimpleName() + "{" + "id=" + id + ", oi=" + oi + ", gi=" + gi + ", ui=" + ui + ", rights=" + rights + ", extra=" + extra + ", cd=" + cd + ", ud=" + ud + ", active=" + active + ", version=" + version + '}';
     }
-    
-    public static SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-    
-    public String format(Date d){
-        if (d==null){
+
+    public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+
+    public String format(Date d) {
+        if (d == null) {
             return "null";
-        }
-        else{
+        } else {
             return sdf.format(d);
         }
     }
-    
-    public VicTenancyType getTencyPolicy(){
+
+    public VicTenancyType getTencyPolicy() {
         VicTenancyPolicy vtp = this.getClass().getAnnotation(VicTenancyPolicy.class);
-        
-        if (vtp==null){
+
+        if (vtp == null) {
             //System.out.println("----> "+this.getClassName()+" "+VicTenancyType.GROUPS);
             return VicTenancyType.GROUPS;
         }
-        System.out.println("----> "+this.getClassName()+" "+vtp.value());
+        System.out.println("----> " + this.getClassName() + " " + vtp.value());
         return vtp.value();
     }
-    
-    
 
 }
