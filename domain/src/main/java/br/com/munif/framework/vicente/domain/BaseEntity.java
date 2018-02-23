@@ -18,7 +18,18 @@ import javax.persistence.Temporal;
 import javax.persistence.Version;
 
 import br.com.munif.framework.vicente.domain.typings.*;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeId;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.hibernate.envers.Audited;
@@ -27,6 +38,7 @@ import org.hibernate.envers.Audited;
  *
  * @author munif
  */
+
 @MappedSuperclass
 @TypeDefs({
     @TypeDef(name = "vicaddress", defaultForType = VicAddress.class, typeClass = VicAddressUserType.class)
@@ -40,22 +52,29 @@ public class BaseEntity {
     @Id
     protected String id;
 
+    @JsonIgnore
     protected String oi;
 
+    @JsonIgnore
     protected String gi;
 
+    @JsonIgnore
     protected String ui;
 
+    @JsonIgnore
     protected Integer rights;
 
     protected String extra;
 
+    @JsonIgnore
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     protected Date cd;
 
+    @JsonIgnore
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     protected Date ud;
 
+    @JsonIgnore
     protected Boolean active;
 
     @Version
@@ -72,6 +91,8 @@ public class BaseEntity {
         this.ud = new Date();
         active = true;
         //version=0; TODO Pesquisar
+
+        //track();
     }
 
     public String getId() {
@@ -241,5 +262,48 @@ public class BaseEntity {
         System.out.println("----> " + this.getClassName() + " " + vtp.value());
         return vtp.value();
     }
+
+//    public static Map<String, Long> instances = new HashMap<>();
+//
+//    public static boolean trackBaseEntities = true;
+//
+//    @Override
+//    protected void finalize() throws Throwable {
+//        Long l = instances.get(this.getClass().getCanonicalName());
+//        instances.put(this.getClass().getCanonicalName(), new Long(l - 1));
+//    }
+//
+//    private void track() {
+//        Long l = instances.get(this.getClass().getCanonicalName());
+//        if (l == null) {
+//            l = new Long(0);
+//        }
+//        instances.put(this.getClass().getCanonicalName(), new Long(l+1));
+//    }
+//
+//    public static void printStatistics() {
+//        System.out.println("\n\n--------------------------------------");
+//        System.out.println("   VICStatistics  " + System.currentTimeMillis());
+//        System.out.println("--------------------------------------");
+//
+//        for (String k : instances.keySet()) {
+//            System.out.println(k + "" + instances.get(k));
+//        }
+//        System.out.println("--------------------------------------\n\n");
+//    }
+//    private static Timer t;
+//
+//    public synchronized static void printStatisticsInInterval() {
+//        if (t != null) {
+//            return;
+//        }
+//        Timer t = new Timer();
+//        t.scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                printStatistics();
+//            }
+//        }, 60000, 60000);
+//    }
 
 }

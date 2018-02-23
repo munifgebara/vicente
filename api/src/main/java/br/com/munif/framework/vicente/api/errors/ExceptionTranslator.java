@@ -20,13 +20,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 /**
- * Controller advice to translate the server side exceptions to client-friendly json structures.
+ * Controller advice to translate the server side exceptions to client-friendly
+ * json structures.
  */
 @ControllerAdvice
 public class ExceptionTranslator {
 
     private final Logger log = LoggerFactory.getLogger(ExceptionTranslator.class);
-    
+
 //TODO        
 //    @ExceptionHandler( org.springframework.dao.DataIntegrityViolationException )
 //    @ResponseStatus(HttpStatus.CONFLICT)
@@ -34,8 +35,6 @@ public class ExceptionTranslator {
 //    public ErrorVM dataIntegrityViolationException(DataIntegrityViolationException ex) {
 //        return new ErrorVM(ErrorConstants.ERR_DATA_INTEGRITY_VIOLATION);
 //    }
-
-
     @ExceptionHandler(ConcurrencyFailureException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
@@ -93,7 +92,8 @@ public class ExceptionTranslator {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorVM> processException(Exception ex) {
-        System.out.println("--->"+ex.getClass()+" "+ex.getMessage()+" "+ex.getCause());
+        System.out.println("--->" + ex.getClass() + " " + ex.getMessage() + " " + ex.getCause());
+        ex.printStackTrace();
         if (log.isDebugEnabled()) {
             log.debug("An unexpected error occurred: {}", ex.getMessage(), ex);
         } else {

@@ -8,8 +8,12 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -111,6 +115,27 @@ public class Utils {
             }
         }
         return toReturn;
+    }
+
+    public static void fillColectionsWithEmpty(Object obj) {
+        try {
+            List<Field> fields = getAllFields(obj.getClass());
+            for (Field f : fields) {
+                if (List.class.isAssignableFrom(f.getType())) {
+                    f.setAccessible(true);
+                    f.set(obj, Collections.EMPTY_LIST);
+                } else if (Set.class.isAssignableFrom(f.getType())) {
+                    f.setAccessible(true);
+                    f.set(obj, Collections.EMPTY_SET);
+                } else if (Map.class.isAssignableFrom(f.getType())) {
+                    f.setAccessible(true);
+                    f.set(obj, Collections.EMPTY_MAP);
+                }
+
+            }
+        } catch (Exception ex) {
+        }
+
     }
 
 }

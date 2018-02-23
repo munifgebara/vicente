@@ -139,7 +139,9 @@ public abstract class BaseService<T> {
 
     public T newEntity() {
         try {
-            return clazz().newInstance();
+            T newInstance = clazz().newInstance();
+            fillCollections(newInstance);
+            return newInstance;
         } catch (InstantiationException ex) {
             Logger.getLogger(BaseService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
@@ -192,6 +194,11 @@ public abstract class BaseService<T> {
         for (VicFieldValue v : res) {
             r.getVicTenancyFields().put(v.getVicField().getName(), v);
         }
+    }
+
+    private void fillCollections(T newinstance) {
+        Utils.fillColectionsWithEmpty(newinstance);
+        
     }
 
 }

@@ -28,6 +28,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         VicThreadScope.gi.set("G1");
         VicThreadScope.ui.set("U1");
         VicThreadScope.oi.set("1.");
+        VicThreadScope.defaultRights.set(511);
         VicThreadScope.ip.set(request.getRemoteAddr());
         HandlerMethod hm;
 
