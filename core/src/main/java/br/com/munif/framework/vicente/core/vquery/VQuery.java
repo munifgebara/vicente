@@ -10,7 +10,7 @@ public class VQuery {
 
     private List<VQuery> subQuerys = new LinkedList<>();
 
-    private List<Joinable> joins = new LinkedList<>();
+    private List<Join> joins = new LinkedList<>();
 
     private Boolean useDistinct = Boolean.FALSE;
 
@@ -87,7 +87,7 @@ public class VQuery {
         return joinStr.toString();
     }
 
-    public void setJoins(List<Joinable> joins) {
+    public void setJoins(List<Join> joins) {
         this.joins = joins;
     }
 

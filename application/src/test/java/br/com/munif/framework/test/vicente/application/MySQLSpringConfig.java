@@ -50,7 +50,7 @@ public class MySQLSpringConfig {
         Properties properties = new Properties();
         properties.put("eclipselink.weaving", "false");
         properties.put("hibernate.hbm2ddl.auto", "create");
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect"); //TODO ATUALIZAR DIALETO
         properties.put("hibernate.ejb.naming_strategy", "org.hibernate.cfg.EJB3NamingStrategy");
         properties.put("hibernate.show_sql", "false");
         properties.put("hibernate.format_sql", "false");
