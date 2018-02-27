@@ -123,19 +123,25 @@ public class Utils {
             for (Field f : fields) {
                 if (List.class.isAssignableFrom(f.getType())) {
                     f.setAccessible(true);
-                    f.set(obj, Collections.EMPTY_LIST);
+                    if (f.get(obj) == null) {
+                        f.set(obj, Collections.EMPTY_LIST);
+                    }
                 } else if (Set.class.isAssignableFrom(f.getType())) {
                     f.setAccessible(true);
-                    f.set(obj, Collections.EMPTY_SET);
+                    if (f.get(obj) == null) {
+                        f.set(obj, Collections.EMPTY_SET);
+                    }
                 } else if (Map.class.isAssignableFrom(f.getType())) {
                     f.setAccessible(true);
-                    f.set(obj, Collections.EMPTY_MAP);
+                    if (f.get(obj) == null) {
+                        f.set(obj, Collections.EMPTY_MAP);
+                    }
                 }
 
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
-
     }
 
 }
