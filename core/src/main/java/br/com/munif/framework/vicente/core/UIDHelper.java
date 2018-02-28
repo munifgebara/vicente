@@ -8,6 +8,15 @@ public class UIDHelper {
     private static long lastTime;
 
     private static String myMac;
+    
+    private static long simpleId=0;
+
+    public static synchronized String getSimpleID(Class c) {
+        String prefixo=c.getSimpleName().substring(0,3);
+        simpleId++;
+        return String.format("%s%09d", prefixo,simpleId);
+    }
+
 
     public static synchronized String getUID() {
         if (myMac==null){

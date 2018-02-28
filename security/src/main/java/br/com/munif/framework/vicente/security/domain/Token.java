@@ -1,5 +1,7 @@
 package br.com.munif.framework.vicente.security.domain;
 
+import br.com.munif.framework.vicente.core.VicTenancyPolicy;
+import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.typings.VicEmail;
 import java.time.ZonedDateTime;
@@ -12,6 +14,7 @@ import org.hibernate.envers.Audited;
 
 @Entity
 @Audited
+@VicTenancyPolicy(VicTenancyType.COMMUM)
 public class Token extends BaseEntity {
 
     private String token;

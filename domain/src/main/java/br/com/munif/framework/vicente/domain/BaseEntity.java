@@ -38,7 +38,6 @@ import org.hibernate.envers.Audited;
  *
  * @author munif
  */
-
 @MappedSuperclass
 @TypeDefs({
     @TypeDef(name = "vicaddress", defaultForType = VicAddress.class, typeClass = VicAddressUserType.class)
@@ -48,6 +47,8 @@ import org.hibernate.envers.Audited;
         @TypeDef(name = "vicphone", defaultForType = VicPhone.class, typeClass = VicPhoneUserType.class)
 })
 public class BaseEntity {
+
+    public static boolean simpleId = false;
 
     @Id
     protected String id;
@@ -81,7 +82,7 @@ public class BaseEntity {
     private Integer version;
 
     public BaseEntity() {
-        this.id = UIDHelper.getUID();
+        this.id = (simpleId ? UIDHelper.getSimpleID(this.getClass()) : UIDHelper.getUID());
         this.gi = RightsHelper.getMainGi();
         this.ui = VicThreadScope.ui.get();
         this.oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";
@@ -252,6 +253,23 @@ public class BaseEntity {
         }
     }
 
+    /**
+     * Sobrescreve apenas o atributos com json ignore, optei por copiar na "mão"
+     * pis são poucos.
+     */
+    public void overwriteJsonIgnoreFields(BaseEntity old) {
+        if (old==null){
+            return;
+        }
+        this.oi = old.oi;
+        this.gi = old.gi;
+        this.ui = old.ui;
+        this.rights = old.rights;
+        this.cd = old.cd;
+        this.ud = new Date();
+        this.active = old.active;
+    }
+
     public VicTenancyType getTencyPolicy() {
         VicTenancyPolicy vtp = this.getClass().getAnnotation(VicTenancyPolicy.class);
 
@@ -305,5 +323,4 @@ public class BaseEntity {
 //            }
 //        }, 60000, 60000);
 //    }
-
 }

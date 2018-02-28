@@ -68,6 +68,8 @@ public class BaseAPI<T extends BaseEntity> {
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
     public T update(@PathVariable("id") String id, @RequestBody @Valid T model) {
         beforeUpdate(id, model);
+        T oldEntity = service.view(id);
+        model.overwriteJsonIgnoreFields(oldEntity);
         T entity = service.save(model);
         return entity;
     }
