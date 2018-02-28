@@ -3,11 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.munif.framework.vicente.api;
+package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.core.VicThreadScope;
+import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.security.domain.Grupo;
+import br.com.munif.framework.vicente.security.domain.Token;
+import br.com.munif.framework.vicente.security.domain.Usuario;
+import br.com.munif.framework.vicente.security.service.TokenService;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -22,14 +29,30 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
     public VicRequestFilter(String software) {
         this.software = software;
     }
+    @Autowired
+    private TokenService tokenService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        VicThreadScope.gi.set("G1");
-        VicThreadScope.ui.set("U1");
-        VicThreadScope.oi.set("1.");
-        VicThreadScope.defaultRights.set(511);
         VicThreadScope.ip.set(request.getRemoteAddr());
+        String tokenValue = request.getHeader("Authorization");
+        System.out.println("---->" + tokenValue);
+        if (tokenValue != null) {
+            Token token = tokenService.findUserByToken(tokenValue);
+            if (token != null) {
+                Usuario u = token.getUsuario();
+                VicThreadScope.gi.set(u.stringGrupos());
+                VicThreadScope.ui.set(u.getId());
+                VicThreadScope.oi.set(u.getStringOrganizacao());
+                System.out.println("-----> Autorizado " + u);
+            }
+        } else {
+            VicThreadScope.gi.set(null);
+            VicThreadScope.ui.set(null);
+            VicThreadScope.oi.set(null);
+            System.out.println("-----> Nao Autorizado ");
+        }
+
         HandlerMethod hm;
 
         response.setHeader("Access-Control-Allow-Origin", "*");
