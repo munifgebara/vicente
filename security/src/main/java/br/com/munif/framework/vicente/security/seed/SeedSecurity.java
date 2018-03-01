@@ -5,6 +5,7 @@
  */
 package br.com.munif.framework.vicente.security.seed;
 
+import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.security.domain.Grupo;
 import br.com.munif.framework.vicente.security.domain.Organizacao;
@@ -40,13 +41,18 @@ public class SeedSecurity {
             return;
         }
 
-        VicThreadScope.gi.set("GS");
-        VicThreadScope.ui.set("US");
-        VicThreadScope.oi.set("OS.");
+        VicThreadScope.gi.set("SEED");
+        VicThreadScope.ui.set("SEED");
+        VicThreadScope.oi.set("SEED.");
         VicThreadScope.ip.set("127.0.0.1");
-        VicThreadScope.defaultRights.set(511);
+        VicThreadScope.defaultRights.set(RightsHelper.OWNER_ALL + RightsHelper.GROUP_READ_UPDATE + RightsHelper.OTHER_READ);
 
         log.info("Inserting Security Data");
+
+        Grupo g0 = new Grupo();
+        g0.setCodigo("SEED");
+        g0.setNome("SEED");
+        grupoRepository.save(g0);
 
         Grupo g1 = new Grupo();
         g1.setCodigo("G1");
@@ -70,6 +76,7 @@ public class SeedSecurity {
 
         Usuario admin = new Usuario("admin@munif.com.br", "qwe123");
         admin.setGrupos(new HashSet<>());
+        admin.getGrupos().add(g0);
         admin.getGrupos().add(g2);
         admin.setOrganizacao(o1);
         usuarioRepository.save(admin);

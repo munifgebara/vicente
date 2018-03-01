@@ -73,7 +73,7 @@ public class Usuario extends BaseEntity {
         if (this.getGrupos() == null) {
             return null;
         }
-        String s = "";
+        String s = ",";
         for (Grupo g : this.getGrupos()) {
             s += g.getCodigo() + ",";
         }

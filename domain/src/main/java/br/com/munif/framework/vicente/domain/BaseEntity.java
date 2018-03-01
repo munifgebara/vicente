@@ -6,7 +6,7 @@
 package br.com.munif.framework.vicente.domain;
 
 import br.com.munif.framework.vicente.core.VicThreadScope;
-import br.com.munif.framework.vicente.core.RightsHelper;
+import static br.com.munif.framework.vicente.core.RightsHelper.*;
 import br.com.munif.framework.vicente.core.UIDHelper;
 import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.persistence.Transient;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.hibernate.envers.Audited;
@@ -83,10 +84,10 @@ public class BaseEntity {
 
     public BaseEntity() {
         this.id = (simpleId ? UIDHelper.getSimpleID(this.getClass()) : UIDHelper.getUID());
-        this.gi = RightsHelper.getMainGi();
+        this.gi = getMainGi();
         this.ui = VicThreadScope.ui.get();
         this.oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";
-        this.rights = RightsHelper.getDefault();
+        this.rights = getDefault();
         this.extra = "Framework";
         this.cd = new Date();
         this.ud = new Date();
@@ -218,19 +219,19 @@ public class BaseEntity {
         Integer rights = this.rights != null ? this.rights : 0;
         String toReturn = "";
         toReturn += "ui:" + ui + "(";
-        toReturn += (RightsHelper.OWNER_READ & rights) > 0 ? "R" : "-";
-        toReturn += (RightsHelper.OWNER_UPDATE & rights) > 0 ? "U" : "-";
-        toReturn += (RightsHelper.OWNER_DELETE & rights) > 0 ? "D" : "-";
+        toReturn += (OWNER_READ & rights) > 0 ? "R" : "-";
+        toReturn += (OWNER_UPDATE & rights) > 0 ? "U" : "-";
+        toReturn += (OWNER_DELETE & rights) > 0 ? "D" : "-";
         toReturn += ") ";
         toReturn += "gi:" + gi + "(";
-        toReturn += (RightsHelper.GROUP_READ & rights) > 0 ? "R" : "-";
-        toReturn += (RightsHelper.GROUP_UPDATE & rights) > 0 ? "U" : "-";
-        toReturn += (RightsHelper.GROUP_DELETE & rights) > 0 ? "D" : "-";
+        toReturn += (GROUP_READ & rights) > 0 ? "R" : "-";
+        toReturn += (GROUP_UPDATE & rights) > 0 ? "U" : "-";
+        toReturn += (GROUP_DELETE & rights) > 0 ? "D" : "-";
         toReturn += ") ";
         toReturn += "o(";
-        toReturn += (RightsHelper.OTHER_READ & rights) > 0 ? "R" : "-";
-        toReturn += (RightsHelper.OTHER_UPDATE & rights) > 0 ? "U" : "-";
-        toReturn += (RightsHelper.OTHER_DELETE & rights) > 0 ? "D" : "-";
+        toReturn += (OTHER_READ & rights) > 0 ? "R" : "-";
+        toReturn += (OTHER_UPDATE & rights) > 0 ? "U" : "-";
+        toReturn += (OTHER_DELETE & rights) > 0 ? "D" : "-";
         toReturn += ") ";
         toReturn += "cd:" + format(cd) + " ";
         toReturn += "up:" + format(ud);
@@ -253,12 +254,44 @@ public class BaseEntity {
         }
     }
 
+    
+    public boolean isOwner() {
+        String token_ui = VicThreadScope.ui.get();
+        return ui != null && token_ui != null && token_ui.equals(ui);
+    }
+
+    
+    public boolean commonGroup() {
+        String token_gi = VicThreadScope.gi.get();
+        return gi != null && token_gi != null && token_gi.contains(',' + gi + ',');
+    }
+
+    
+    public boolean canDelete() {
+        return ((OTHER_DELETE | (commonGroup() ? GROUP_DELETE : 0) | (isOwner() ? OWNER_DELETE : 0)) & rights) > 0;
+    }
+
+    
+    public boolean canUpdate() {
+        return ((OTHER_UPDATE | (commonGroup() ? GROUP_UPDATE : 0) | (isOwner() ? OWNER_UPDATE : 0)) & rights) > 0;
+    }
+
+    
+    public boolean canRead() {
+        return ((OTHER_READ | (commonGroup() ? GROUP_READ : 0) | (isOwner() ? OWNER_READ : 0)) & rights) > 0;
+    }
+    
+    @JsonGetter
+    public String r(){
+        return ""+(isOwner()?'O':'_')+(commonGroup()?'G':'_')+(canRead()?'R':'_')+(canUpdate()?'U':'_')+(canDelete()?'D':'_');
+    }
+
     /**
      * Sobrescreve apenas o atributos com json ignore, optei por copiar na "mão"
      * pis são poucos.
      */
     public void overwriteJsonIgnoreFields(BaseEntity old) {
-        if (old==null){
+        if (old == null) {
             return;
         }
         this.oi = old.oi;
