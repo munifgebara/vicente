@@ -125,8 +125,7 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
                 + ") "
                 + " ORDER BY obj." + vicQuery.getOrderBy() + " , obj.id asc";
 
-        //System.out.println("---->"+hql);
-        //System.out.println("---->" + hql.replaceAll(":gi", "'" + VicThreadScope.gi.get() + "," + "'").replaceAll(":ui", "'" + VicThreadScope.ui.get() + "'").replaceAll("\n", ""));
+
         Query query = entityManager.createQuery(hql);
         query.setFirstResult(vicQuery.getFirstResult());
         query.setMaxResults(vicQuery.getMaxResults());

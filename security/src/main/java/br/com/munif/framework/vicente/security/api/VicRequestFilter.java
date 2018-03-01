@@ -5,12 +5,15 @@
  */
 package br.com.munif.framework.vicente.security.api;
 
+import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.security.domain.Grupo;
 import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.domain.Usuario;
 import br.com.munif.framework.vicente.security.service.TokenService;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,32 +35,39 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
     @Autowired
     private TokenService tokenService;
 
+    private List<String> publics = Arrays.asList(new String[]{"/api/token/login/bypassword"});
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String method = request.getMethod();
+        String requestURI = request.getRequestURI();
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS,HEAD");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, authorization, Connection, userRecognition");
+
+        if ("OPTIONS".equalsIgnoreCase(method)){
+            return true;
+        }
         VicThreadScope.ip.set(request.getRemoteAddr());
-        String tokenValue = request.getHeader("Authorization");
-        System.out.println("---->" + tokenValue);
-        if (tokenValue != null) {
-            Token token = tokenService.findUserByToken(tokenValue);
-            if (token != null) {
-                Usuario u = token.getUsuario();
-                VicThreadScope.gi.set(u.stringGrupos());
-                VicThreadScope.ui.set(u.getId());
-                VicThreadScope.oi.set(u.getStringOrganizacao());
-                System.out.println("-----> Autorizado " + u);
-            }
+        String tokenValue = ""+request.getHeader("Authorization");
+        Token token = tokenService.findUserByToken(tokenValue);
+        if (token != null) {
+            Usuario u = token.getUsuario();
+            VicThreadScope.gi.set(u.stringGrupos());
+            VicThreadScope.ui.set(u.getId());
+            VicThreadScope.oi.set(u.stringOrganizacao());
+        } else if (publics.contains(request.getRequestURI())) {
+            VicThreadScope.gi.set("VIC_PUBLIC");
+            VicThreadScope.ui.set("VIC_PUBLIC");
+            VicThreadScope.oi.set("VIC_PUBLIC");
+            VicThreadScope.defaultRights.set(RightsHelper.ALL_READ);
         } else {
             VicThreadScope.gi.set(null);
             VicThreadScope.ui.set(null);
             VicThreadScope.oi.set(null);
-            System.out.println("-----> Nao Autorizado ");
         }
-
         HandlerMethod hm;
 
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS,HEAD");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, authorization, Connection, userRecognition");
 
         if (handler instanceof HandlerMethod) {
             hm = (HandlerMethod) handler;

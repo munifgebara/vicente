@@ -196,10 +196,6 @@ public class BookApiTest {
         ResultActions r = restMockMvc.perform(get("/api/books?sort=id,desc")).andExpect(status().isOk());
         String toString = r.andReturn().getResponse().getContentAsString();
         VicReturn vr = TestUtil.convertStringVicReturn(toString);
-//        for (Object o : vr.getValues()) {
-//            Map m = (Map) o;
-//            System.out.println("--->" + m.get("id") + " " + m.get("name"));
-//        }
         assertNotNull(toString);
 
     }

@@ -173,7 +173,6 @@ public abstract class BaseService<T> {
         VicTenancyFieldsBaseEntity r = (VicTenancyFieldsBaseEntity) resource;
         for (String s : r.getVicTenancyFields().keySet()) {
             VicFieldValue vfv = r.getVicTenancyFields().get(s);
-            System.out.println("DDD "+vfv);
             vicFieldValueRepository.delete(vfv);
         }
     }

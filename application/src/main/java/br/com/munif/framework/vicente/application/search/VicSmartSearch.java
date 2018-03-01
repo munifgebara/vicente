@@ -88,7 +88,6 @@ public class VicSmartSearch {
 
             }
             hql += " as " + e2.toLowerCase() + " " + depois;
-            System.out.println("---->"+hql);
             QueryImpl query = (QueryImpl) em.createQuery(hql);
             query.setResultTransformer(new VicResultTransformer());
             query.setMaxResults(maxResults);
@@ -197,7 +196,6 @@ public class VicSmartSearch {
         graph.addNode(nodeF);
 
         graph = Dijkstra.calculateShortestPathFromSource(graph, nodeD);
-        System.out.println("--->" + graph.toString());
 
     }
 

@@ -33,7 +33,6 @@ public class TokenService extends BaseService<Token> {
     }
 
     public LoginRespostaDto loga(LoginDto login) {
-        System.out.println("--->" + login);
         LoginRespostaDto r = new LoginRespostaDto();
 
         VQuery vQuery = new VQuery(LogicalOperator.AND, new Criteria(), Arrays.asList(new VQuery[]{
@@ -42,9 +41,7 @@ public class TokenService extends BaseService<Token> {
         }));
         VicQuery query = new VicQuery();
         query.setQuery(vQuery);
-        System.out.println("--->" + query);
         List<Usuario> findByHql = usuarioService.findByHql(query);
-        System.out.println("====>" + findByHql);
         if (findByHql.size() == 0) {
             r.mensagem = "Erro em Usuário ou senha";
         } else if (findByHql.size() == 1) {

@@ -179,9 +179,7 @@ public class PontoApiTest {
         Ponto p = new Ponto();
         byte[] convertObjectToJsonBytes = TestUtil.convertObjectToJsonBytes(p);
         String s = new String(convertObjectToJsonBytes);
-        System.out.println("----->" + s);
         Map<String, Object> convertStringToMap = TestUtil.convertStringToMap(s);
-        System.out.println("------>" + convertStringToMap);
         assertNotNull(convertStringToMap);
 
     }

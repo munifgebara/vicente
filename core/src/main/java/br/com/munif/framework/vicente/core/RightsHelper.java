@@ -1,7 +1,14 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+OWNER_READ 256
+OWNER_UPDATE 128
+OWNER_DELETE 64
+GROUP_READ 32
+GROUP_UPDATE 16
+GROUP_DELETE 8
+OTHER_READ 4
+OTHER_UPDATE 2
+OTHER_DELETE 1
+
  */
 package br.com.munif.framework.vicente.core;
 
@@ -12,6 +19,7 @@ package br.com.munif.framework.vicente.core;
 public class RightsHelper {
 
     //                                     876543210
+    public static final int ALL_READ =   0b100100100;
     public static final int OWNER_READ = 0b100000000;
     public static final int OWNER_UPDATE = 0b010000000;
     public static final int OWNER_DELETE = 0b001000000;
@@ -50,33 +58,5 @@ public class RightsHelper {
         return get;
     }
 
-//    public static void main(String[] args) {
-//        System.out.println("OWNER_READ " + 0b100000000);
-//        System.out.println("OWNER_UPDATE " + 0b010000000);
-//        System.out.println("OWNER_DELETE " + 0b001000000);
-//
-//        System.out.println("GROUP_READ " + 0b000100000);
-//        System.out.println("GROUP_UPDATE " + 0b000010000);
-//        System.out.println("GROUP_DELETE " + 0b000001000);
-//
-//        System.out.println("OTHER_READ " + 0b000000100);
-//        System.out.println("OTHER_UPDATE " + 0b000000010);
-//        System.out.println("OTHER_DELETE " + 0b000000001);
-//
-//    }
 }
 
-
-
-/*
-OWNER_READ 256
-OWNER_UPDATE 128
-OWNER_DELETE 64
-GROUP_READ 32
-GROUP_UPDATE 16
-GROUP_DELETE 8
-OTHER_READ 4
-OTHER_UPDATE 2
-OTHER_DELETE 1
-
-*/

@@ -59,7 +59,6 @@ public class BaseAPI<T extends BaseEntity> {
         if (service.view(model.getId()) != null) {
             throw new VicenteCreateWithExistingIdException("create With Existing Id=" + model.getId());
         }
-
         T entity = service.save(model);
         return entity;
     }

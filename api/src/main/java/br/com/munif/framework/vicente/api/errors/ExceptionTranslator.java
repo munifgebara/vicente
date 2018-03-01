@@ -92,7 +92,7 @@ public class ExceptionTranslator {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorVM> processException(Exception ex) {
-        System.out.println("--->" + ex.getClass() + " " + ex.getMessage() + " " + ex.getCause());
+        log.debug("--->" + ex.getClass() + " " + ex.getMessage() + " " + ex.getCause());
         ex.printStackTrace();
         if (log.isDebugEnabled()) {
             log.debug("An unexpected error occurred: {}", ex.getMessage(), ex);
