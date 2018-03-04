@@ -20,7 +20,7 @@ public class VicSerializer {
     private static final String LN_FALSE = "";
     private static String IDENT = IDENT_FALSE;
     private static String LN = LN_FALSE;
-    private static final String QUOTE = "\"";
+    public static String QUOTE = "\"";
 
     public static void setIdentention(boolean b) {
         if (b) {
@@ -57,7 +57,7 @@ public class VicSerializer {
         try {
             Class clazz = object.getClass();
             if (object instanceof BaseEntity) {
-                visitados.put(object, "{class:" + clazz.getCanonicalName() + ",id:" + ((BaseEntity) object).getId() + "}");
+                visitados.put(object, "{" + QUOTE + "class" + QUOTE + ":" + QUOTE + "" + clazz.getCanonicalName() + QUOTE + "," + QUOTE + "id" + QUOTE + ":" + QUOTE + "" + ((BaseEntity) object).getId() + "" + QUOTE + "," + QUOTE + "version" + QUOTE + ":" + QUOTE + "" + ((BaseEntity) object).getVersion() + "" + QUOTE + "}");
             }
             if (clazz.isArray()) {
                 StringBuilder toReturn = new StringBuilder();
@@ -70,10 +70,10 @@ public class VicSerializer {
             }
             String packageName = clazz.getPackage().getName();
             if (packageName.startsWith("java.lang")) {
-                return "" + object;
+                return QUOTE + object + QUOTE;
             }
             StringBuilder toReturn = new StringBuilder();
-            toReturn.append("{" + ln + "class:" + clazz.getCanonicalName());
+            toReturn.append("{" + ln + "" + QUOTE + "class" + QUOTE + ":" + QUOTE + "" + clazz.getCanonicalName() + QUOTE);
             int lugar = toReturn.length();
 
             for (Class c = clazz; !Object.class.equals(c); c = c.getSuperclass()) {
@@ -98,7 +98,7 @@ public class VicSerializer {
                         sValue = serialize(value, ident + IDENT);
                         visitados.put(value, sValue);
                     }
-                    sbf.append("," + ln + f.getName() + ":" + sValue);
+                    sbf.append("," + ln + QUOTE + f.getName() + QUOTE + ":" + sValue);
 
                 }
                 toReturn.insert(lugar, sbf);

@@ -19,22 +19,22 @@ import static org.junit.Assert.*;
  * @author munif
  */
 public class VicSerializerTest {
-    
+
     public VicSerializerTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -57,6 +57,7 @@ public class VicSerializerTest {
     @Test
     public void testSerialize_Object() {
         BaseEntity.simpleId = true;
+        VicSerializer.setIdentention(true);
         Familia f = new Familia("GEBARA");
         Pessoa duda, vicente, munif;
         f.setMembros(Arrays.asList(new Pessoa[]{munif = new Pessoa("Munif"), vicente = new Pessoa("Vicente"), duda = new Pessoa("Duda"), new Pessoa("Josil")}));
@@ -65,12 +66,15 @@ public class VicSerializerTest {
         f.getMembros().forEach((p) -> {
             p.setFamilia(f);
         });
-        VicSerializer.setIdentention(true);
+        System.out.println("\n\n\n\n\n");
         System.out.println(VicSerializer.getInstance().serialize(vicente));
-        
+        System.out.println("\n\n\n\n\n");
+
         VicSerializer.setIdentention(false);
-        assertEquals("{class:br.com.munif.framework.vicente.domain.experimental.Pessoa,id:Pes000000002,extra:Framework,version:null,nome:Munif,irmao:null,familia:{class:br.com.munif.framework.vicente.domain.experimental.Familia,id:Fam000000001,extra:Framework,version:null,nome:GEBARA,membros:{class:java.util.Arrays.ArrayList,modCount:0,a:[{class:br.com.munif.framework.vicente.domain.experimental.Pessoa,id:Pes000000002,extra:Framework,version:null,nome:Munif,irmao:null,familia:{class:br.com.munif.framework.vicente.domain.experimental.Familia,id:Fam000000001}},{class:br.com.munif.framework.vicente.domain.experimental.Pessoa,id:Pes000000003,extra:Framework,version:null,nome:Vicente,irmao:{class:br.com.munif.framework.vicente.domain.experimental.Pessoa,id:Pes000000004,extra:Framework,version:null,nome:Duda,irmao:{class:br.com.munif.framework.vicente.domain.experimental.Pessoa,id:Pes000000003},familia:{class:br.com.munif.framework.vicente.domain.experimental.Familia,id:Fam000000001}},familia:{class:br.com.munif.framework.vicente.domain.experimental.Familia,id:Fam000000001}},{class:br.com.munif.framework.vicente.domain.experimental.Pessoa,id:Pes000000004,extra:Framework,version:null,nome:Duda,irmao:{class:br.com.munif.framework.vicente.domain.experimental.Pessoa,id:Pes000000003},familia:{class:br.com.munif.framework.vicente.domain.experimental.Familia,id:Fam000000001}},{class:br.com.munif.framework.vicente.domain.experimental.Pessoa,id:Pes000000005,extra:Framework,version:null,nome:Josil,irmao:null,familia:{class:br.com.munif.framework.vicente.domain.experimental.Familia,id:Fam000000001}}]}}}", VicSerializer.getInstance().serialize(munif));
-        
+        System.out.println(VicSerializer.getInstance().serialize(vicente));
+
+        assertEquals("{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000003\",\"extra\":\"Framework\",\"version\":null,\"nome\":\"Vicente\",\"irmao\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000004\",\"extra\":\"Framework\",\"version\":null,\"nome\":\"Duda\",\"irmao\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000003\",\"version\":\"null\"},\"familia\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Familia\",\"id\":\"Fam000000001\",\"extra\":\"Framework\",\"version\":null,\"nome\":\"GEBARA\",\"membros\":{\"class\":\"java.util.Arrays.ArrayList\",\"modCount\":\"0\",\"a\":[{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000002\",\"extra\":\"Framework\",\"version\":null,\"nome\":\"Munif\",\"irmao\":null,\"familia\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Familia\",\"id\":\"Fam000000001\",\"version\":\"null\"}},{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000003\",\"extra\":\"Framework\",\"version\":null,\"nome\":\"Vicente\",\"irmao\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000004\",\"version\":\"null\"},\"familia\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Familia\",\"id\":\"Fam000000001\",\"version\":\"null\"}},{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000004\",\"extra\":\"Framework\",\"version\":null,\"nome\":\"Duda\",\"irmao\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000003\",\"version\":\"null\"},\"familia\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Familia\",\"id\":\"Fam000000001\",\"version\":\"null\"}},{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000005\",\"extra\":\"Framework\",\"version\":null,\"nome\":\"Josil\",\"irmao\":null,\"familia\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Familia\",\"id\":\"Fam000000001\",\"version\":\"null\"}}]}}},\"familia\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Familia\",\"id\":\"Fam000000001\",\"extra\":\"Framework\",\"version\":null,\"nome\":\"GEBARA\",\"membros\":{\"class\":\"java.util.Arrays.ArrayList\",\"modCount\":\"0\",\"a\":[{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000002\",\"extra\":\"Framework\",\"version\":null,\"nome\":\"Munif\",\"irmao\":null,\"familia\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Familia\",\"id\":\"Fam000000001\",\"version\":\"null\"}},{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000003\",\"extra\":\"Framework\",\"version\":null,\"nome\":\"Vicente\",\"irmao\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000004\",\"version\":\"null\"},\"familia\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Familia\",\"id\":\"Fam000000001\",\"version\":\"null\"}},{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000004\",\"extra\":\"Framework\",\"version\":null,\"nome\":\"Duda\",\"irmao\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000003\",\"version\":\"null\"},\"familia\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Familia\",\"id\":\"Fam000000001\",\"version\":\"null\"}},{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Pessoa\",\"id\":\"Pes000000005\",\"extra\":\"Framework\",\"version\":null,\"nome\":\"Josil\",\"irmao\":null,\"familia\":{\"class\":\"br.com.munif.framework.vicente.domain.experimental.Familia\",\"id\":\"Fam000000001\",\"version\":\"null\"}}]}}}", VicSerializer.getInstance().serialize(vicente));
+
     }
-    
+
 }
