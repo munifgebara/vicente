@@ -47,6 +47,12 @@ public class BaseAPI<T extends BaseEntity> {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public T delete(@PathVariable String id) {
         T entity = service.view(id);
+        if (entity == null) {
+            throw new VicenteNotFoundException("Not found");
+        }
+        if (!entity.canDelete()) {
+            throw new VicenteRightsException("DELETE," + id + "," + entity.r());
+        }
         service.delete(entity);
         return entity;
     }
@@ -68,6 +74,7 @@ public class BaseAPI<T extends BaseEntity> {
     public T update(@PathVariable("id") String id, @RequestBody @Valid T model) {
         beforeUpdate(id, model);
         T oldEntity = service.view(id);
+
         model.overwriteJsonIgnoreFields(oldEntity);
         T entity = service.save(model);
         return entity;
@@ -141,7 +148,7 @@ public class BaseAPI<T extends BaseEntity> {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public T load(@PathVariable String id) {
         T view = service.view(id);
-        if (view == null) {
+        if (view == null || !view.canRead()) {
             throw new VicenteNotFoundException("Not found");
         };
         beforeReturnOne(view);

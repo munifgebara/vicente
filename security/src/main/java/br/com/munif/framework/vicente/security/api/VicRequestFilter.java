@@ -43,7 +43,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         String requestURI = request.getRequestURI();
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS,HEAD");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, authorization, Connection, userRecognition");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, authorization, Connection, group");
 
         if ("OPTIONS".equalsIgnoreCase(method)){
             return true;
@@ -56,15 +56,18 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
             VicThreadScope.gi.set(u.stringGrupos());
             VicThreadScope.ui.set(u.getId());
             VicThreadScope.oi.set(u.stringOrganizacao());
+            VicThreadScope.cg.set(""+request.getHeader("group"));
         } else if (publics.contains(request.getRequestURI())) {
             VicThreadScope.gi.set("VIC_PUBLIC");
             VicThreadScope.ui.set("VIC_PUBLIC");
             VicThreadScope.oi.set("VIC_PUBLIC");
+            VicThreadScope.cg.set("VIC_PUBLIC");
             VicThreadScope.defaultRights.set(RightsHelper.ALL_READ);
         } else {
             VicThreadScope.gi.set(null);
             VicThreadScope.ui.set(null);
             VicThreadScope.oi.set(null);
+            VicThreadScope.cg.set(null);
         }
         HandlerMethod hm;
 

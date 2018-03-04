@@ -48,6 +48,10 @@ public class RightsHelper {
     }
 
     public static String getMainGi() {
+        String cg = VicThreadScope.cg.get();
+        if (cg != null) {
+            return cg;
+        }
         String get = VicThreadScope.gi.get();
         if (get == null) {
             return null;

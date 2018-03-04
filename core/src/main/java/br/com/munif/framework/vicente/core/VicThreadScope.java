@@ -10,6 +10,8 @@ package br.com.munif.framework.vicente.core;
  * @author munif
  */
 public class VicThreadScope {
+    
+    public static final ThreadLocal<String> cg = new ThreadLocal<>();
 
     public static final ThreadLocal<String> gi = new ThreadLocal<>();
     
