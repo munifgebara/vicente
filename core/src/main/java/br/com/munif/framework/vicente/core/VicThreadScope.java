@@ -24,4 +24,6 @@ public class VicThreadScope {
     public static final ThreadLocal<Long> effectiveTime = new ThreadLocal<>();
     
     public static final ThreadLocal<Integer> defaultRights = new ThreadLocal<>();
+
+    public static final ThreadLocal<Boolean> ignoreTime = new ThreadLocal<>();
 }

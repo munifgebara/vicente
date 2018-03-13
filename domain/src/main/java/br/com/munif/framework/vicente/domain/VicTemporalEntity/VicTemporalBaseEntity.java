@@ -1,7 +1,15 @@
 package br.com.munif.framework.vicente.domain.VicTemporalEntity;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 import javax.persistence.MappedSuperclass;
 
 /**
@@ -11,9 +19,10 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public class VicTemporalBaseEntity extends BaseEntity {
 
-    @JsonIgnore
+    public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
+
     protected Long startTime;
-    @JsonIgnore
+
     protected Long endTime;
 
     public VicTemporalBaseEntity() {
@@ -39,7 +48,18 @@ public class VicTemporalBaseEntity extends BaseEntity {
 
     public boolean valid() {
         Long ed = VicTemporalBaseEntityHelper.getEffectiveTime();
-        return startTime<=ed && ed <= endTime;
+        return startTime <= ed && ed <= endTime;
+    }
+
+    @JsonGetter
+    public String start() {
+        return  ZonedDateTime.ofInstant(Instant.ofEpochMilli(startTime), ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE);
+    }
+
+    @JsonGetter
+    public String end() {
+        return  ZonedDateTime.ofInstant(Instant.ofEpochMilli(endTime), ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE);
+        
     }
 
     @Override

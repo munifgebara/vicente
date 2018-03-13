@@ -34,7 +34,7 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
 
     public String geTenancyHQL(boolean publics) {
         Class<T> domainClass = this.getDomainClass();
-        boolean isVicTemporalEntity = VicTemporalBaseEntity.class.isAssignableFrom(domainClass);
+        boolean isVicTemporalEntity = VicTemporalBaseEntity.class.isAssignableFrom(domainClass) && (!Boolean.TRUE.equals(VicThreadScope.ignoreTime.get()));
         boolean assignableFrom2 = BaseEntity.class.isAssignableFrom(domainClass);
         if (!assignableFrom2) {
             return "(1=1)";
