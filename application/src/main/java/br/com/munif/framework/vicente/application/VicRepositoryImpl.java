@@ -10,6 +10,8 @@ import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
+import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntityHelper;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
@@ -32,12 +34,16 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
 
     public String geTenancyHQL(boolean publics) {
         Class<T> domainClass = this.getDomainClass();
+        boolean isVicTemporalEntity = VicTemporalBaseEntity.class.isAssignableFrom(domainClass);
         boolean assignableFrom2 = BaseEntity.class.isAssignableFrom(domainClass);
         if (!assignableFrom2) {
             return "(1=1)";
         }
         VicTenancyType vtt = getPolicy(domainClass);
         StringBuilder sb = new StringBuilder("(\n");
+        if (isVicTemporalEntity) {
+            sb.append("(\n");
+        }
         sb.append("   (obj.ui=:ui and mod(obj.rights/64,8)/4>=1) \n");
 
         if (vtt.equals(VicTenancyType.GROUPS) || vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
@@ -50,9 +56,16 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
         if (publics) {
             sb.append("or (1=1    and    mod(obj.rights  ,8)/4>=1)\n");
         }
-
+        if (isVicTemporalEntity) {
+            sb.append(") and (obj.startTime<=:et and :et<=obj.endTime) \n");
+        }
         sb.append(
                 ")");
+
+        if (VicTemporalBaseEntity.class.isAssignableFrom(domainClass)) {
+
+        }
+
         return sb.toString();
     }
 
@@ -65,6 +78,9 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
     public void setTenancyParameters(Query query) {
         Set<Parameter<?>> parameters = query.getParameters();
         for (Parameter p : parameters) {
+            if ("et".equals(p.getName())) {
+                query.setParameter("et", VicTemporalBaseEntityHelper.getEffectiveTime());
+            }
             if ("ui".equals(p.getName())) {
                 query.setParameter("ui", VicThreadScope.ui.get());
             }
@@ -74,11 +90,11 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
             if ("oi".equals(p.getName())) {
                 VicTenancyType vtt = getPolicy(getDomainClass());
                 String oi = VicThreadScope.oi.get();
-                if (oi==null){
-                    oi=".";
+                if (oi == null) {
+                    oi = ".";
                 }
                 if (vtt.equals(VicTenancyType.ORGANIZATIONAL) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
-                    query.setParameter("oi", oi.substring(0,oi.indexOf('.')+1) + "%");
+                    query.setParameter("oi", oi.substring(0, oi.indexOf('.') + 1) + "%");
                 } else {
                     query.setParameter("oi", oi + "%");
                 }
@@ -114,17 +130,16 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
 
         String clause = (vicQuery.getHql() != null ? vicQuery.getHql() : "1=1")
                 .concat(" and ")
-                .concat((vicQuery.getQuery() != null ? vicQuery.getQuery().toString(): "1=1"));
+                .concat((vicQuery.getQuery() != null ? vicQuery.getQuery().toString() : "1=1"));
 
         String joins = (vicQuery.getQuery() != null) ? vicQuery.getQuery().getJoins() : "";
 
-        String hql = "select obj FROM " + getDomainClass().getSimpleName() + " obj "+ joins +" where \n"
+        String hql = "select obj FROM " + getDomainClass().getSimpleName() + " obj " + joins + " where \n"
                 + "(" + clause + ") and "
                 + "("
                 + geTenancyHQL(true)
                 + ") "
                 + " ORDER BY obj." + vicQuery.getOrderBy() + " , obj.id asc";
-
 
         Query query = entityManager.createQuery(hql);
         query.setFirstResult(vicQuery.getFirstResult());

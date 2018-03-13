@@ -21,5 +21,7 @@ public class VicThreadScope {
     
     public static final ThreadLocal<String> oi = new ThreadLocal<>();
     
+    public static final ThreadLocal<Long> effectiveTime = new ThreadLocal<>();
+    
     public static final ThreadLocal<Integer> defaultRights = new ThreadLocal<>();
 }

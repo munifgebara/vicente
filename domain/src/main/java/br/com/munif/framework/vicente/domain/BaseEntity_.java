@@ -20,15 +20,16 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class BaseEntity_ {
     
     public static volatile SingularAttribute<BaseEntity, String> id;
+    public static volatile SingularAttribute<BaseEntity, String> oi;
     public static volatile SingularAttribute<BaseEntity, String> gi;
     public static volatile SingularAttribute<BaseEntity, String> ui;
-    public static volatile SingularAttribute<BaseEntity, String> oi;
+    
     public static volatile SingularAttribute<BaseEntity, String> rights;
     public static volatile SingularAttribute<BaseEntity, String> extra;
     public static volatile SingularAttribute<BaseEntity, Date> cd;
     public static volatile SingularAttribute<BaseEntity, Date> ud;
     public static volatile SingularAttribute<BaseEntity, Boolean> active;
   
-    
+    public static volatile SingularAttribute<BaseEntity, Integer> version;
     
 }
