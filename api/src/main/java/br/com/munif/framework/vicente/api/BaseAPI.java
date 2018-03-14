@@ -6,19 +6,14 @@
 package br.com.munif.framework.vicente.api;
 
 import br.com.munif.framework.vicente.application.BaseService;
-import br.com.munif.framework.vicente.core.Utils;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;

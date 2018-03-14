@@ -3,8 +3,6 @@ package br.com.munif.framework.test.vicente.application;
 import br.com.munif.framework.test.vicente.domain.model.Consultor;
 import br.com.munif.framework.test.vicente.domain.model.Funcionario;
 import br.com.munif.framework.test.vicente.domain.model.Pessoa;
-import br.com.munif.framework.vicente.core.RightsHelper;
-import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import org.junit.Before;

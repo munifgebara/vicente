@@ -2,7 +2,6 @@ package br.com.munif.framework.vicente.domain.VicTemporalEntity;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.BaseEntity_;
-import java.util.Date;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;

@@ -7,7 +7,6 @@ package br.com.munif.framework.vicente.domain.util;
 
 import br.com.munif.framework.vicente.core.GraphUtil;
 import br.com.munif.framework.vicente.core.Utils;
-import java.io.File;
 import java.io.StringWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -110,7 +109,7 @@ public class EntitiesToSVG {
         List<String> associacoes = new ArrayList<String>();
 
         if (!entidade.getSuperclass().equals(Object.class)) {
-            if (entidade.getSuperclass().getSimpleName().equals("BaseEntity")) {
+            if (entidade.getSuperclass().getSimpleName().equals("BaseEntity")||entidade.getSuperclass().getSimpleName().equals("VicTemporalBaseEntity")) {
                 //COLOCAR apenas uma marca
             } else {
                 associacoes.add("edge [ arrowhead = \"empty\" headlabel = \"\" taillabel = \"\"] " + entidade.getSimpleName() + " -> " + entidade.getSuperclass().getSimpleName());

@@ -2,7 +2,6 @@ package br.com.munif.framework.vicente.domain.tenancyfields;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;

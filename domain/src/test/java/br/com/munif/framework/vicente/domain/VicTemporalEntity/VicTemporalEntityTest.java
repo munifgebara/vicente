@@ -6,7 +6,6 @@
 package br.com.munif.framework.vicente.domain.VicTemporalEntity;
 
 import br.com.munif.framework.vicente.core.VicThreadScope;
-import java.util.Date;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

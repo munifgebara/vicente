@@ -10,11 +10,8 @@ import br.com.munif.framework.vicente.application.victenancyfields.VicFieldValue
 import br.com.munif.framework.vicente.core.Utils;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.tenancyfields.VicField;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldValue;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -24,7 +21,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

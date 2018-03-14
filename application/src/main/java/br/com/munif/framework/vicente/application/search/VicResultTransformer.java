@@ -6,7 +6,6 @@
 package br.com.munif.framework.vicente.application.search;
 
 import br.com.munif.framework.vicente.core.Utils;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -2,14 +2,11 @@ package br.com.munif.framework.vicente.domain.VicTemporalEntity;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Locale;
 import javax.persistence.MappedSuperclass;
 
 /**

@@ -30,6 +30,8 @@ public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> i
     public VicRepositoryImpl(JpaEntityInformation entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
         this.entityManager = entityManager;
+        
+        
     }
 
     public String geTenancyHQL(boolean publics) {

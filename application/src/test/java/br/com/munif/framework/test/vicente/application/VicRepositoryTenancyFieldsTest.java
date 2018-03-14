@@ -1,10 +1,7 @@
 package br.com.munif.framework.test.vicente.application;
 
 import br.com.munif.framework.test.vicente.domain.model.Pessoa;
-import br.com.munif.framework.vicente.application.victenancyfields.VicFieldRepository;
 import br.com.munif.framework.vicente.application.victenancyfields.VicFieldService;
-import br.com.munif.framework.vicente.core.RightsHelper;
-import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicField;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldType;
@@ -20,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import org.junit.Ignore;
 
 /**
  * @author munif
