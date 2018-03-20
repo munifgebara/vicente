@@ -7,7 +7,6 @@ package br.com.munif.framework.vicente.domain.util;
 
 import br.com.munif.framework.vicente.core.GraphUtil;
 import br.com.munif.framework.vicente.core.Utils;
-import java.io.File;
 import java.io.StringWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;

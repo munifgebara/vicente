@@ -5,27 +5,19 @@ import br.com.munif.framework.vicente.application.search.dijkstra.Graph;
 import br.com.munif.framework.vicente.application.search.dijkstra.Node;
 import br.com.munif.framework.vicente.domain.VicRevisionEntity;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.PluralAttribute;
 import javax.persistence.metamodel.SingularAttribute;
-import javax.persistence.metamodel.Type;
-import org.hibernate.metamodel.internal.AbstractAttribute;
 import org.hibernate.query.internal.QueryImpl;
-import org.hibernate.transform.AliasToEntityMapResultTransformer;
-import org.hibernate.transform.ResultTransformer;
-import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Service;
 
 @Service

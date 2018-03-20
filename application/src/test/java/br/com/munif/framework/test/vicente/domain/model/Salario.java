@@ -1,8 +1,5 @@
 package br.com.munif.framework.test.vicente.domain.model;
 
-import br.com.munif.framework.vicente.core.VicTenancyPolicy;
-import br.com.munif.framework.vicente.core.VicTenancyType;
-import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
 import java.math.BigDecimal;
 import org.hibernate.envers.Audited;

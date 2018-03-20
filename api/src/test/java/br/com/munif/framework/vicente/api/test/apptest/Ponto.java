@@ -3,8 +3,6 @@ package br.com.munif.framework.vicente.api.test.apptest;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
-import java.time.temporal.TemporalUnit;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import org.hibernate.envers.Audited;

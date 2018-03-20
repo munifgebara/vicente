@@ -2,17 +2,14 @@ package br.com.munif.framework.test.vicente.domain;
 
 import br.com.munif.framework.test.vicente.application.MySQLSpringConfig;
 import br.com.munif.framework.test.vicente.application.PontoService;
-import br.com.munif.framework.test.vicente.domain.model.Pessoa;
 import br.com.munif.framework.test.vicente.domain.model.Ponto;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import static org.junit.Assert.*;
 import org.springframework.beans.factory.annotation.Autowired;

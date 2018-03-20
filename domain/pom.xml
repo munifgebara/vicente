@@ -4,7 +4,7 @@
     <parent>
         <groupId>br.com.munif.framework</groupId>
         <artifactId>vicente</artifactId>
-        <version>0.8.0-SNAPSHOT</version>
+        <version>0.9.0-SNAPSHOT</version>
     </parent>
     <name>Vicente Domain</name>
     <groupId>br.com.munif.framework.vicente</groupId>
@@ -22,7 +22,6 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-                
             <type>jar</type>
         </dependency>
         <dependency>
@@ -31,17 +30,9 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>net.jodah</groupId>
-            <artifactId>typetools</artifactId>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

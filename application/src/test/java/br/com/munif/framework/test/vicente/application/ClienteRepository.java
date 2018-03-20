@@ -6,8 +6,6 @@
 package br.com.munif.framework.test.vicente.application;
 
 
-import br.com.munif.framework.test.vicente.domain.model.Pessoa;
-import br.com.munif.framework.test.vicente.domain.model.smartsearch.Categoria;
 import br.com.munif.framework.test.vicente.domain.model.smartsearch.Cliente;
 import br.com.munif.framework.vicente.application.VicRepository;
 
