@@ -18,7 +18,6 @@ import org.hibernate.envers.RevisionTimestamp;
 @Table(name = "vic_revision_entity")
 public class VicRevisionEntity implements Serializable{
     
-    
     @Id
     @RevisionNumber
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -61,6 +61,29 @@ public class RightsHelper {
         }
         return get;
     }
+    
+     public static String getStringRights(Integer rights, String ui, String gi) {
+        Integer r = rights != null ? rights : 0;
+        String toReturn = "";
+        toReturn += "ui:" + ui + "(";
+        toReturn += (OWNER_READ & r) > 0 ? "R" : "-";
+        toReturn += (OWNER_UPDATE & r) > 0 ? "U" : "-";
+        toReturn += (OWNER_DELETE & r) > 0 ? "D" : "-";
+        toReturn += ") ";
+        toReturn += "gi:" + gi + "(";
+        toReturn += (GROUP_READ & r) > 0 ? "R" : "-";
+        toReturn += (GROUP_UPDATE & r) > 0 ? "U" : "-";
+        toReturn += (GROUP_DELETE & r) > 0 ? "D" : "-";
+        toReturn += ") ";
+        toReturn += "o(";
+        toReturn += (OTHER_READ & r) > 0 ? "R" : "-";
+        toReturn += (OTHER_UPDATE & r) > 0 ? "U" : "-";
+        toReturn += (OTHER_DELETE & r) > 0 ? "D" : "-";
+        toReturn += ") ";
+        return toReturn;
+    }
+    
+    
 
 }
 

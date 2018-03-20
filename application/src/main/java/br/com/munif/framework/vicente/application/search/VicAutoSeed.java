@@ -1,5 +1,7 @@
 package br.com.munif.framework.vicente.application.search;
 
+import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

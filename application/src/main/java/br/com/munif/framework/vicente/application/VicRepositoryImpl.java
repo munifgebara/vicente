@@ -23,7 +23,7 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
-public class VicRepositoryImpl<T> extends SimpleJpaRepository<T, Serializable> implements VicRepository<T> {
+public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository<T, Serializable> implements VicRepository<T> {
 
     private final EntityManager entityManager;
 

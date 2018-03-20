@@ -33,7 +33,7 @@ public class TimeTypesTest {
     public void setUp() {
         VicThreadScope.ui.set("ZZ");
         VicThreadScope.gi.set("ZZ");
-        this.entity = new Ponto();
+        this.entity = pontoService.newEntity();
         pontoService.save(entity);
     }
 

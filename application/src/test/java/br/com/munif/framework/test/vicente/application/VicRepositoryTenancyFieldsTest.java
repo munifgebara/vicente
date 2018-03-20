@@ -3,6 +3,7 @@ package br.com.munif.framework.test.vicente.application;
 import br.com.munif.framework.test.vicente.domain.model.Pessoa;
 import br.com.munif.framework.vicente.application.victenancyfields.VicFieldService;
 import br.com.munif.framework.vicente.core.VicThreadScope;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicField;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldType;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldValue;
@@ -34,7 +35,7 @@ public class VicRepositoryTenancyFieldsTest {
     @Before
     @Transactional
     public void setUp() {
-        System.out.println("Setup of Test class "+this.getClass().getSimpleName()+" "+pessoaService.findAllNoPublic().size());
+        System.out.println("Setup of Test class " + this.getClass().getSimpleName() + " " + pessoaService.findAllNoPublic().size());
         VicThreadScope.ui.set("UZT");
         VicThreadScope.gi.set("GZT");
 
@@ -43,33 +44,33 @@ public class VicRepositoryTenancyFieldsTest {
             return;
         }
         System.out.println("---> SETUP");
-        VicField vf = new VicField();
+        VicField vf = vicFieldService.newEntity();
         vf.setClazz(Pessoa.class.getCanonicalName());
         vf.setName("time");
         vf.setFieldType(VicFieldType.TEXT);
         vf.setDefaultValueScript("'novo'");
         vicFieldService.save(vf);
 
-        Pessoa p = new Pessoa();
+        Pessoa p = pessoaService.newEntity();
         p.setNome("Pessoa X");
         p.getVicTenancyFields().put("time", new VicFieldValue(vf, null, "COXA"));
         pessoaService.save(p);
 
-        p = new Pessoa();
+        p = pessoaService.newEntity();
         p.setNome("Pessoa Z");
         p.getVicTenancyFields().put("time", new VicFieldValue(vf, null, "Vasco da Gama"));
         pessoaService.save(p);
 
         VicThreadScope.ui.set("UXT");
         VicThreadScope.gi.set("GXT");
-        vf = new VicField();
+        vf = vicFieldService.newEntity();
         vf.setClazz(Pessoa.class.getCanonicalName());
         vf.setName("religião");
         vf.setFieldType(VicFieldType.TEXT);
         vf.setDefaultValueScript("'sem'");
         vicFieldService.save(vf);
 
-        p = new Pessoa();
+        p = pessoaService.newEntity();
         p.setNome("Pessoa Y");
         p.getVicTenancyFields().put("religião", new VicFieldValue(vf, null, "Católica"));
         pessoaService.save(p);
@@ -108,6 +109,5 @@ public class VicRepositoryTenancyFieldsTest {
         }
         assertEquals(2, findAll.size());
     }
-
 
 }

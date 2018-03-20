@@ -10,6 +10,7 @@ import br.com.munif.framework.vicente.application.victenancyfields.VicFieldValue
 import br.com.munif.framework.vicente.core.Utils;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldValue;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
 import java.util.Date;
@@ -30,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope("prototype")
-public abstract class BaseService<T> {
+public abstract class BaseService<T extends BaseEntity> {
 
     protected final VicRepository<T> repository;
     @Autowired
@@ -136,6 +137,7 @@ public abstract class BaseService<T> {
     public T newEntity() {
         try {
             T newInstance = clazz().newInstance();
+            BaseEntityHelper.setBaseEntityFields(newInstance);
             fillCollections(newInstance);
             return newInstance;
         } catch (InstantiationException ex) {

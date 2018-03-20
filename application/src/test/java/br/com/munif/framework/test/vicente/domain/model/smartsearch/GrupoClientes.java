@@ -1,6 +1,7 @@
 package br.com.munif.framework.test.vicente.domain.model.smartsearch;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -18,6 +19,7 @@ public class GrupoClientes extends BaseEntity {
     }
 
     public GrupoClientes(String nomeGrupo) {
+        BaseEntityHelper.setBaseEntityFieldsWithSimpleId(this);
         this.nomeGrupo = nomeGrupo;
     }
 
@@ -28,7 +30,5 @@ public class GrupoClientes extends BaseEntity {
     public void setNomeGrupo(String nomeGrupo) {
         this.nomeGrupo = nomeGrupo;
     }
-    
-    
 
 }

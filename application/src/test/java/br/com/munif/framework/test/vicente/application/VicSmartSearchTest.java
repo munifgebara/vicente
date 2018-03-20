@@ -14,6 +14,7 @@ import br.com.munif.framework.test.vicente.domain.model.smartsearch.Produto;
 import br.com.munif.framework.vicente.application.search.VicAutoSeed;
 import br.com.munif.framework.vicente.application.search.VicSmartSearch;
 import br.com.munif.framework.vicente.core.VicThreadScope;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -147,6 +148,7 @@ public class VicSmartSearchTest {
         }
         List<Categoria> inteligentInstances = VicAutoSeed.getInteligentInstances(new Categoria(), 10);
         for (Categoria cat : inteligentInstances) {
+            BaseEntityHelper.setBaseEntityFieldsWithSimpleId(cat);
             categoriaRepository.saveAndFlush(cat);
         }
     }
@@ -163,6 +165,7 @@ public class VicSmartSearchTest {
         List<Categoria> values = categoriaRepository.findAll();
         int i = 0;
         for (Produto p : inteligentInstances) {
+            BaseEntityHelper.setBaseEntityFieldsWithSimpleId(p);
             p.setCategoria(values.get((i++) % values.size()));
             produtoRepository.save(p);
         }
@@ -182,11 +185,13 @@ public class VicSmartSearchTest {
         for (int i = 0; i < 100; i++) {
 
             Pedido p = new Pedido();
+            BaseEntityHelper.setBaseEntityFieldsWithSimpleId(p);
             p.setCliente(clientes.get(VicAutoSeed.getRandomInteger(0, clientes.size())));
             p.setItens(new ArrayList<>());
             Integer nProdutos = VicAutoSeed.getRandomInteger(5, 10);
             for (int j = 0; j < nProdutos; j++) {
                 ItemPedido ip = new ItemPedido();
+                BaseEntityHelper.setBaseEntityFieldsWithSimpleId(ip);
                 ip.setPedido(p);
                 ip.setProduto(produtos.get(VicAutoSeed.getRandomInteger(0, produtos.size())));
                 VicAutoSeed.randomFill(ip);
@@ -209,6 +214,7 @@ public class VicSmartSearchTest {
         List<Cliente> clientes = VicAutoSeed.getInteligentInstances(example, 20);
         for (int i = 0; i < clientes.size(); i++) {
             Cliente cliente = clientes.get(i);
+            BaseEntityHelper.setBaseEntityFieldsWithSimpleId(cliente);
             cliente.setGrupoClientes(subLists.get(i % subLists.size()));
             clienteRepository.save(cliente);
         }

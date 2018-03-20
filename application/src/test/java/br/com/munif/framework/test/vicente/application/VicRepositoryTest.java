@@ -37,27 +37,25 @@ public class VicRepositoryTest {
         for (int i = 0; i < 100; i++) {
             VicThreadScope.ui.set("U" + (1 + i % 10));
             VicThreadScope.gi.set("G1" + (1 + i / 10));
-            Pessoa p = new Pessoa();
+            Pessoa p = pessoaService.newEntity();
             p.setNome("Pessoa " + i);
             pessoaService.save(p);
-
         }
         VicThreadScope.ui.set("UZ");
         VicThreadScope.gi.set("GZ");
-        Pessoa p = new Pessoa();
+        Pessoa p = pessoaService.newEntity();
         p.setNome("Pessoa Z");
         p.setRights(RightsHelper.OTHER_READ);
         pessoaService.save(p);
         VicThreadScope.ui.set("UZ");
         VicThreadScope.gi.set("GZ");
 
-        Pessoa p2 = new Pessoa();
+        Pessoa p2 = pessoaService.newEntity();
         p2.setNome("Pessoa J");
         p2.setRights(0);
         pessoaService.save(p2);
 
     }
-
 
     @Test
     @Transactional
@@ -69,7 +67,6 @@ public class VicRepositoryTest {
         assertEquals(10, findAllNoPublic.size());
 
     }
-
 
     @Test
     @Transactional
@@ -155,13 +152,12 @@ public class VicRepositoryTest {
         assertEquals(2, findAll.size());
     }
 
-
     @Test(expected = org.springframework.dao.DataIntegrityViolationException.class)
     @Transactional
     public void saveNull() {
         VicThreadScope.ui.set("XXX");
         VicThreadScope.gi.set("XXXXX");
-        Pessoa p = new Pessoa();
+        Pessoa p = pessoaService.newEntity();
         p.setNome(null);
         pessoaService.save(p);
     }

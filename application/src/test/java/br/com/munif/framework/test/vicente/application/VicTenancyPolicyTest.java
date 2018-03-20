@@ -28,6 +28,8 @@ public class VicTenancyPolicyTest {
     protected FuncionarioService funcionarioService;
     @Autowired
     protected ConsultorService consultorService;
+    @Autowired
+    protected PessoaService pessoaService;
 
     @Before
     @Transactional
@@ -41,17 +43,17 @@ public class VicTenancyPolicyTest {
 
         for (int i = 0; i < 1000; i++) {
             VicThreadScope.oi.set(1 + i / 100 + "." + (1 + (i / 10) % 10) + "." + (1 + i % 10) + ".");
-            Funcionario f = new Funcionario();
+            Funcionario f = funcionarioService.newEntity();
             f.setNome("Funcionario " + i);
             funcionarioService.save(f);
 
-            Consultor c = new Consultor();
+            Consultor c = consultorService.newEntity();
             c.setNome("Consultor " + i);
             consultorService.save(c);
         }
 
         VicThreadScope.oi.set("A.B.C.");
-        Funcionario f = new Funcionario();
+        Funcionario f = funcionarioService.newEntity();
         f.setNome("Funcionario ABC");
         funcionarioService.save(f);
 
@@ -60,14 +62,14 @@ public class VicTenancyPolicyTest {
     @Test
     @Transactional
     public void defaultPolicy() {
-        Pessoa p = new Pessoa();
+        Pessoa p = pessoaService.newEntity();
         assertEquals(VicTenancyType.GROUPS, p.getTencyPolicy());
     }
 
     @Test
     @Transactional
     public void otherPolicy() {
-        Funcionario f = new Funcionario();
+        Funcionario f = funcionarioService.newEntity();
         assertEquals(VicTenancyType.HIERARCHICAL_TOP_DOWN, f.getTencyPolicy());
     }
 

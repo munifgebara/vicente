@@ -6,6 +6,7 @@
 package br.com.munif.framework.vicente.domain.experimental;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import java.util.Arrays;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -56,14 +57,15 @@ public class VicSerializerTest {
      */
     @Test
     public void testSerialize_Object() {
-        BaseEntity.simpleId = true;
         VicSerializer.setIdentention(true);
         Familia f = new Familia("GEBARA");
+        BaseEntityHelper.setBaseEntityFieldsWithSimpleId(f);
         Pessoa duda, vicente, munif;
         f.setMembros(Arrays.asList(new Pessoa[]{munif = new Pessoa("Munif"), vicente = new Pessoa("Vicente"), duda = new Pessoa("Duda"), new Pessoa("Josil")}));
         duda.setIrmao(vicente);
         vicente.setIrmao(duda);
         f.getMembros().forEach((p) -> {
+            BaseEntityHelper.setBaseEntityFieldsWithSimpleId(p);
             p.setFamilia(f);
         });
         System.out.println("\n\n\n\n\n");
