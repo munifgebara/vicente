@@ -55,7 +55,7 @@ public class TokenService extends BaseService<Token> {
     }
 
     private Token criaToken(Usuario usuario) {
-        Token t=new Token();
+        Token t=newEntity();
         t.setToken(t.getId());
         t.setUsuario(usuario);
         return repository.save(t);
