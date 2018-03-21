@@ -10,6 +10,7 @@ import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntityHelper;
 import java.io.Serializable;
@@ -30,8 +31,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
     public VicRepositoryImpl(JpaEntityInformation entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
         this.entityManager = entityManager;
-        
-        
+
     }
 
     public String geTenancyHQL(boolean publics) {
@@ -149,5 +149,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         setTenancyParameters(query);
         return query.getResultList();
     }
+
+
 
 }
