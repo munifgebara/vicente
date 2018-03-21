@@ -33,9 +33,9 @@ import org.junit.Ignore;
 
 import org.springframework.test.web.servlet.MvcResult;
 
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 @Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = InformationApp.class)
@@ -52,7 +52,6 @@ public class InformationApiTest {
 
 //    @Autowired
 //    private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
     @Autowired
     private EntityManager em;
 
@@ -64,13 +63,12 @@ public class InformationApiTest {
     @Before
     public void setup() {
         System.out.println("----> SETUP ");
-        BaseEntity.simpleId = true;
 
         MockitoAnnotations.initMocks(this);
 
         final InformationApi api = new InformationApi(service);
         this.restMockMvc = MockMvcBuilders.standaloneSetup(api)
-//                .setCustomArgumentResolvers(pageableArgumentResolver)
+                //                .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setControllerAdvice(exceptionTranslator)
                 .setMessageConverters(jacksonMessageConverter).build();
 

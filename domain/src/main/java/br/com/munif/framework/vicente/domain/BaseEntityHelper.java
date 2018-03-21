@@ -42,7 +42,7 @@ public class BaseEntityHelper {
         return baseEntity;
     }
 
-    public void overwriteJsonIgnoreFields(BaseEntity currentBaseEntity, BaseEntity oldBaseEntity) {
+    public static void overwriteJsonIgnoreFields(BaseEntity currentBaseEntity, BaseEntity oldBaseEntity) {
         if (oldBaseEntity == null) {
             return;
         }

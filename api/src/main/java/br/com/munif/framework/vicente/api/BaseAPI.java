@@ -9,6 +9,7 @@ import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -69,8 +71,7 @@ public class BaseAPI<T extends BaseEntity> {
     public T update(@PathVariable("id") String id, @RequestBody @Valid T model) {
         beforeUpdate(id, model);
         T oldEntity = service.view(id);
-
-        model.overwriteJsonIgnoreFields(oldEntity);
+        BaseEntityHelper.overwriteJsonIgnoreFields(model, oldEntity);
         T entity = service.save(model);
         return entity;
     }
@@ -148,6 +149,14 @@ public class BaseAPI<T extends BaseEntity> {
         };
         beforeReturnOne(view);
         return view;
+    }
+
+    @ResponseBody
+    @Transactional
+    @RequestMapping(value = "/draw/{id}", method = RequestMethod.GET, produces = "image/svg+xml")
+    public String draw(@PathVariable String id) {
+        String svg = service.draw(id);
+        return svg;
     }
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)
