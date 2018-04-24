@@ -36,7 +36,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Ignore
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = InformationApp.class)
 public class InformationApiTest {

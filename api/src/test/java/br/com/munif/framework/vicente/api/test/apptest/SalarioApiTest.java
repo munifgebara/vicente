@@ -11,6 +11,7 @@ import br.com.munif.framework.vicente.api.test.apptest.LibaryApp;
 import br.com.munif.framework.vicente.api.test.apptest.TestUtil;
 import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import org.junit.Before;
@@ -39,7 +40,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = LibaryApp.class)
 public class SalarioApiTest {
@@ -87,6 +87,7 @@ public class SalarioApiTest {
         VicThreadScope.defaultRights.set(RightsHelper.OWNER_ALL | RightsHelper.GROUP_ALL);
         for (long i = 1000; i < 10000; i += 1000) {
             Salario s = new Salario("Munif " + i, BigDecimal.valueOf(i));
+            BaseEntityHelper.setBaseEntityFields(s);
             s.setStartTime(i);
             s.setEndTime(i + 999);
             Salario ss = repository.saveAndFlush(s);
@@ -162,6 +163,7 @@ public class SalarioApiTest {
     @Test
     public void conversao() throws Exception {
         Salario p = new Salario();
+        BaseEntityHelper.setBaseEntityFields(p);
         byte[] convertObjectToJsonBytes = TestUtil.convertObjectToJsonBytes(p);
         String s = new String(convertObjectToJsonBytes);
         Map<String, Object> convertStringToMap = TestUtil.convertStringToMap(s);

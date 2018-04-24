@@ -20,6 +20,7 @@ import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
 import br.com.munif.framework.vicente.core.vquery.Criteria;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import java.util.ArrayList;
 
 import org.junit.Before;
@@ -49,7 +50,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-@Ignore
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = LibaryApp.class)
 public class BookApiTest {
@@ -99,12 +100,14 @@ public class BookApiTest {
 
     public static Book createEntity(EntityManager em) {
         Book book = new Book();
+        BaseEntityHelper.setBaseEntityFields(book);
         book.setName(DEAFAULT_NAME);
         return book;
     }
 
     public static Book createEntity() {
         Book book = new Book();
+        BaseEntityHelper.setBaseEntityFields(book);
         book.setName(DEAFAULT_NAME);
         return book;
     }
@@ -133,11 +136,12 @@ public class BookApiTest {
     @Transactional
     public void create() throws Exception {
         int databaseSizeBeforeCreate = count();
-
+        Book createEntity = createEntity();
+        
         // Create the Book
         restMockMvc.perform(post("/api/books")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(createEntity())))
+                .content(TestUtil.convertObjectToJsonBytes(createEntity)))
                 .andExpect(status().isCreated());
 
         // Validate the Contato in the database
@@ -264,12 +268,14 @@ public class BookApiTest {
     @Test
     @Transactional
     public void equalsVerifier() throws Exception {
-        TestUtil.equalsVerifier(Book.class
-        );
+        TestUtil.equalsVerifier(Book.class);
         Book book1 = new Book();
-        book1.setId("1L");
+        BaseEntityHelper.setBaseEntityFields(book);
         Book book2 = new Book();
+        BaseEntityHelper.setBaseEntityFields(book);
         book2.setId(book1.getId());
+        System.out.println("BOOK1 "+book1);
+        System.out.println("BOOK2 "+book2);
         assertThat(book1).isEqualTo(book2);
         book2.setId("2L");
         assertThat(book1).isNotEqualTo(book2);

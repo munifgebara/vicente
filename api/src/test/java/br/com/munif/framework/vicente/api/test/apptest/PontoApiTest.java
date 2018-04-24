@@ -10,6 +10,7 @@ import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
 import br.com.munif.framework.vicente.api.test.apptest.LibaryApp;
 import br.com.munif.framework.vicente.api.test.apptest.TestUtil;
 import br.com.munif.framework.vicente.core.VicThreadScope;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +38,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = LibaryApp.class)
 public class PontoApiTest {
@@ -77,18 +77,21 @@ public class PontoApiTest {
                 .setMessageConverters(jacksonMessageConverter).build();
 
         Ponto p = new Ponto();
+        BaseEntityHelper.setBaseEntityFields(p);
         repository.save(p);
 
     }
 
     public static Ponto createEntity(EntityManager em) {
         Ponto ponto = new Ponto();
+        BaseEntityHelper.setBaseEntityFields(ponto);
         ponto.setNome(DEAFAULT_NAME);
         return ponto;
     }
 
     public static Ponto createEntity() {
         Ponto ponto = new Ponto();
+        BaseEntityHelper.setBaseEntityFields(ponto);
         ponto.setNome(DEAFAULT_NAME);
         return ponto;
     }
@@ -161,6 +164,7 @@ public class PontoApiTest {
     @Test
     public void conversao() throws Exception {
         Ponto p = new Ponto();
+        BaseEntityHelper.setBaseEntityFields(p);
         byte[] convertObjectToJsonBytes = TestUtil.convertObjectToJsonBytes(p);
         String s = new String(convertObjectToJsonBytes);
         Map<String, Object> convertStringToMap = TestUtil.convertStringToMap(s);

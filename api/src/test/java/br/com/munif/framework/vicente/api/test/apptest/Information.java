@@ -1,6 +1,7 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -19,6 +20,7 @@ public class Information extends BaseEntity {
     }
 
     public Information(String info) {
+        BaseEntityHelper.setBaseEntityFields(this);
         this.info = info;
     }
 

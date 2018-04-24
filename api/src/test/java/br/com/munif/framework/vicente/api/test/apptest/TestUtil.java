@@ -1,6 +1,8 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.core.VicReturn;
+import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -132,6 +134,9 @@ public class TestUtil {
     @SuppressWarnings("unchecked")
     public static void equalsVerifier(Class clazz) throws Exception {
         Object domainObject1 = clazz.getConstructor().newInstance();
+        if (domainObject1 instanceof BaseEntity){
+            BaseEntityHelper.setBaseEntityFields((BaseEntity) domainObject1);
+        }
         assertThat(domainObject1.toString()).isNotNull();
         assertThat(domainObject1).isEqualTo(domainObject1);
         assertThat(domainObject1.hashCode()).isEqualTo(domainObject1.hashCode());

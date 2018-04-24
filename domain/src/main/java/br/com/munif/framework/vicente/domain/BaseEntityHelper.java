@@ -17,7 +17,9 @@ import java.util.Date;
 public class BaseEntityHelper {
 
     public static BaseEntity setBaseEntityFields(BaseEntity baseEntity) {
-        baseEntity.id = UIDHelper.getUID();
+        if (baseEntity.id == null) {
+            baseEntity.id = UIDHelper.getUID();
+        }
         baseEntity.gi = RightsHelper.getMainGi();
         baseEntity.ui = VicThreadScope.ui.get();
         baseEntity.oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";

@@ -1,5 +1,7 @@
 package br.com.munif.framework.vicente.api;
 
+import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -84,7 +86,7 @@ public class VicAutoSeed {
             }
 
         } catch (Exception ex) {
-            LOG.error("randomFill "+obj.getClass().getSimpleName(), ex);
+            LOG.error("randomFill " + obj.getClass().getSimpleName(), ex);
         }
     }
 
@@ -96,6 +98,9 @@ public class VicAutoSeed {
             try {
                 Field[] declaredFields = exaple.getClass().getDeclaredFields();
                 Object newInstance = clazz.newInstance();
+                if (newInstance instanceof BaseEntity) {
+                    BaseEntityHelper.setBaseEntityFields((BaseEntity) newInstance);
+                }
                 for (Field f : declaredFields) {
                     if (f.isAnnotationPresent(Version.class)) {
                         continue;
@@ -106,11 +111,11 @@ public class VicAutoSeed {
                             Class<?> type = f.getType();
                             if (type.equals(String.class)) {
                                 if (!searched.containsKey(f)) {
-                                    searched.put(f, getDataMuseWord("ml="+translates(clazz.getSimpleName() + "+" + f.getName()) + "&max=" + (number+3)));
+                                    searched.put(f, getDataMuseWord("ml=" + translates(clazz.getSimpleName() + "+" + f.getName()) + "&max=" + (number + 3)));
                                 }
                                 Object[] values = searched.get(f);
                                 if (values.length > 0) {
-                                    f.set(newInstance, values[(i+3) % values.length]);
+                                    f.set(newInstance, values[(i + 3) % values.length]);
                                 } else {
                                     f.set(newInstance, getRandomString(20));
                                 }
@@ -129,7 +134,7 @@ public class VicAutoSeed {
                 toReturn.add(newInstance);
             } catch (Exception ex) {
                 LOG.info("problem in getInteligentInstances" + exaple.getClass().getSimpleName(), ex);
-                
+
             }
         }
 

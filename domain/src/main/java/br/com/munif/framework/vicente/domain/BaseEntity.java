@@ -213,7 +213,9 @@ public class BaseEntity {
     }
 
     public boolean canRead() {
-        return ((OTHER_READ | (commonGroup() ? GROUP_READ : 0) | (isOwner() ? OWNER_READ : 0)) & rights) > 0;
+        boolean commonGroup = commonGroup();
+        boolean isOwner = isOwner();
+        return ((OTHER_READ | (commonGroup? GROUP_READ : 0) | (isOwner? OWNER_READ : 0)) & rights) > 0;
     }
 
     @JsonGetter
