@@ -10,6 +10,7 @@ import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.BaseEntityHelper;
+import static br.com.munif.framework.vicente.domain.BaseEntityHelper.setBaseEntityFields;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -68,34 +69,39 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     @Transactional
+    @RequestMapping(value = "", method = RequestMethod.PUT, consumes = "application/json")
+    public ResponseEntity<T> updateWithoutId(@RequestBody @Valid T model) {
+        return doUpdate(model);
+
+    }
+    @Transactional
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
-    public T update(@PathVariable("id") String id, @RequestBody @Valid T model) {
-        beforeUpdate(id, model);
-        T oldEntity = service.view(id);
-        BaseEntityHelper.overwriteJsonIgnoreFields(model, oldEntity);
-        T entity = service.save(model);
-        return entity;
+    public ResponseEntity<T> updateWithId(@PathVariable("id") String id, @RequestBody @Valid T model) {
+        model.setId(id);
+        return doUpdate(model);
+
     }
 
-    @Transactional
-    @RequestMapping(value = "", method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<T> update2(@RequestBody @Valid T model) {
+    private ResponseEntity<T> doUpdate(T model) {
         try {
+            T entity=null;
             HttpStatus ht = HttpStatus.OK;
-            if (service.view(model.getId()) != null) {
-                model = update(model.getId(), model);
+            T oldEntity = service.view(model.getId());
+            if (oldEntity != null) {
+                BaseEntityHelper.overwriteJsonIgnoreFields(model, oldEntity);
+                entity = service.save(model);
             } else {
                 BaseEntityHelper.setBaseEntityFields(model);
                 model = service.save(model);
                 ht = HttpStatus.CREATED;
             }
-            return new ResponseEntity(model, ht);
+            return new ResponseEntity(entity, ht);
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }
-
     }
+
 
     protected void beforeSave(T model) {
 
