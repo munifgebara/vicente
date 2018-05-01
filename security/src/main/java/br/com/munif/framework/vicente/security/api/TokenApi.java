@@ -49,6 +49,14 @@ public class TokenApi extends BaseAPI<Token> {
     }
 
     @Transactional
+    @RequestMapping(value = "/login/bygoogle", method = RequestMethod.POST)
+    public LoginRespostaDto logaGoogle(@RequestBody String token) {
+        LoginRespostaDto r = tokenService.logaGoogle(token);
+        return r;
+    }
+
+
+    @Transactional
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public LoginRespostaDto logout() {
         return tokenService.logout();
