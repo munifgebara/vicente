@@ -51,6 +51,7 @@ public class BaseAPI<T extends BaseEntity> {
         if (!entity.canDelete()) {
             throw new VicenteRightsException("DELETE," + id + "," + entity.r());
         }
+        beforeDelete(entity);
         service.delete(entity);
         return entity;
     }
@@ -88,11 +89,13 @@ public class BaseAPI<T extends BaseEntity> {
             HttpStatus ht = HttpStatus.OK;
             T oldEntity = service.view(model.getId());
             if (oldEntity != null) {
+                beforeUpdate(model.getId(),model);
                 BaseEntityHelper.overwriteJsonIgnoreFields(model, oldEntity);
                 entity = service.save(model);
             } else {
+                beforeSave(model);
                 BaseEntityHelper.setBaseEntityFields(model);
-                model = service.save(model);
+                entity = service.save(model);
                 ht = HttpStatus.CREATED;
             }
             return new ResponseEntity(entity, ht);
@@ -178,6 +181,10 @@ public class BaseAPI<T extends BaseEntity> {
 
     protected void beforeReturnOne(T view) {
 
+    }
+
+    protected void beforeDelete(T entity) {
+        
     }
 
 }
