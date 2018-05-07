@@ -68,7 +68,7 @@ public class BaseEntity {
     private Integer version;
 
     public BaseEntity() {
-
+        BaseEntityHelper.setBaseEntityFields(this);
     }
 
     public String getId() {
