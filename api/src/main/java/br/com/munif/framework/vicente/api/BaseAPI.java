@@ -88,9 +88,11 @@ public class BaseAPI<T extends BaseEntity> {
             T entity=null;
             HttpStatus ht = HttpStatus.OK;
             T oldEntity = service.view(model.getId());
+            //System.out.println("old "+(oldEntity!=null?oldEntity.getRights():"null")+" new "+model.getRights());
             if (oldEntity != null) {
                 beforeUpdate(model.getId(),model);
                 BaseEntityHelper.overwriteJsonIgnoreFields(model, oldEntity);
+                //System.out.println("old "+(oldEntity!=null?oldEntity.getRights():"null")+" new "+model.getRights());
                 entity = service.save(model);
             } else {
                 beforeSave(model);

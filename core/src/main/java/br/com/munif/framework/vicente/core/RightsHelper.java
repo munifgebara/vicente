@@ -20,21 +20,21 @@ public class RightsHelper {
 
     //                                     876543210
     public static final int ALL_READ =   0b100100100;
-    public static final int OWNER_READ = 0b100000000;
-    public static final int OWNER_UPDATE = 0b010000000;
-    public static final int OWNER_DELETE = 0b001000000;
+    public static final int OWNER_READ = 0b100000000; //256
+    public static final int OWNER_UPDATE = 0b010000000; //128
+    public static final int OWNER_DELETE = 0b001000000; //64
     public static final int OWNER_ALL = 0b111000000;
     public static final int OWNER_READ_UPDATE = 0b110000000;
 
-    public static final int GROUP_READ = 0b000100000;
-    public static final int GROUP_UPDATE = 0b000010000;
-    public static final int GROUP_DELETE = 0b000001000;
+    public static final int GROUP_READ = 0b000100000;  //32
+    public static final int GROUP_UPDATE = 0b000010000; //16 
+    public static final int GROUP_DELETE = 0b000001000; //8
     public static final int GROUP_ALL = 0b000111000;
     public static final int GROUP_READ_UPDATE = 0b000110000;
 
-    public static final int OTHER_READ = 0b000000100;
-    public static final int OTHER_UPDATE = 0b000000010;
-    public static final int OTHER_DELETE = 0b000000001;
+    public static final int OTHER_READ = 0b000000100;   //4
+    public static final int OTHER_UPDATE = 0b000000010; //2
+    public static final int OTHER_DELETE = 0b000000001; //1
 
     public static int getDefault() {
         if (VicThreadScope.defaultRights.get() != null) {
