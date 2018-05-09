@@ -1,5 +1,6 @@
 package br.com.munif.framework.test.vicente.domain.model;
 
+import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
 import java.math.BigDecimal;
@@ -22,7 +23,7 @@ public class Salario extends VicTemporalBaseEntity {
     }
 
     public Salario(String nome, BigDecimal valor) {
-        BaseEntityHelper.setBaseEntityFieldsWithSimpleId(this);
+        BaseEntity.useSimpleId=true;
         this.nome = nome;
         this.valor = valor;
     }

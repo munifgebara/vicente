@@ -100,14 +100,12 @@ public class BookApiTest {
 
     public static Book createEntity(EntityManager em) {
         Book book = new Book();
-        BaseEntityHelper.setBaseEntityFields(book);
         book.setName(DEAFAULT_NAME);
         return book;
     }
 
     public static Book createEntity() {
         Book book = new Book();
-        BaseEntityHelper.setBaseEntityFields(book);
         book.setName(DEAFAULT_NAME);
         return book;
     }
@@ -270,9 +268,9 @@ public class BookApiTest {
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(Book.class);
         Book book1 = new Book();
-        BaseEntityHelper.setBaseEntityFields(book);
+
         Book book2 = new Book();
-        BaseEntityHelper.setBaseEntityFields(book);
+
         book2.setId(book1.getId());
         System.out.println("BOOK1 "+book1);
         System.out.println("BOOK2 "+book2);

@@ -19,7 +19,7 @@ public class GrupoClientes extends BaseEntity {
     }
 
     public GrupoClientes(String nomeGrupo) {
-        BaseEntityHelper.setBaseEntityFieldsWithSimpleId(this);
+        BaseEntity.useSimpleId=true;
         this.nomeGrupo = nomeGrupo;
     }
 

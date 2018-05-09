@@ -135,7 +135,7 @@ public class TestUtil {
     public static void equalsVerifier(Class clazz) throws Exception {
         Object domainObject1 = clazz.getConstructor().newInstance();
         if (domainObject1 instanceof BaseEntity){
-            BaseEntityHelper.setBaseEntityFields((BaseEntity) domainObject1);
+
         }
         assertThat(domainObject1.toString()).isNotNull();
         assertThat(domainObject1).isEqualTo(domainObject1);

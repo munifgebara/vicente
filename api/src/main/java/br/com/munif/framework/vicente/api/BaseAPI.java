@@ -10,7 +10,7 @@ import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.BaseEntityHelper;
-import static br.com.munif.framework.vicente.domain.BaseEntityHelper.setBaseEntityFields;
+
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -64,7 +64,7 @@ public class BaseAPI<T extends BaseEntity> {
         if (service.view(model.getId()) != null) {
             throw new VicenteCreateWithExistingIdException("create With Existing Id=" + model.getId());
         }
-        BaseEntityHelper.setBaseEntityFields(model);
+
         T entity = service.save(model);
         return entity;
     }
@@ -94,7 +94,7 @@ public class BaseAPI<T extends BaseEntity> {
                 entity = service.save(model);
             } else {
                 beforeSave(model);
-                BaseEntityHelper.setBaseEntityFields(model);
+
                 entity = service.save(model);
                 ht = HttpStatus.CREATED;
             }

@@ -99,7 +99,7 @@ public class VicAutoSeed {
                 Field[] declaredFields = exaple.getClass().getDeclaredFields();
                 Object newInstance = clazz.newInstance();
                 if (newInstance instanceof BaseEntity) {
-                    BaseEntityHelper.setBaseEntityFields((BaseEntity) newInstance);
+
                 }
                 for (Field f : declaredFields) {
                     if (f.isAnnotationPresent(Version.class)) {

@@ -135,8 +135,8 @@ public abstract class BaseService<T extends BaseEntity> {
     
     public T newEntity() {
         try {
+            BaseEntity.useSimpleId=true;
             T newInstance = clazz().newInstance();
-            BaseEntityHelper.setBaseEntityFields(newInstance);
             fillCollections(newInstance);
             return newInstance;
         } catch (InstantiationException ex) {
@@ -149,8 +149,8 @@ public abstract class BaseService<T extends BaseEntity> {
     
     public T newEntityForTest() {
         try {
+            BaseEntity.useSimpleId=true;
             T newInstance = clazz().newInstance();
-            BaseEntityHelper.setBaseEntityFieldsWithSimpleId(newInstance);
             fillCollections(newInstance);
             return newInstance;
         } catch (InstantiationException ex) {

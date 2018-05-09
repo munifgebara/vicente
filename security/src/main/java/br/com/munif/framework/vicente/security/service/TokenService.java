@@ -71,18 +71,18 @@ public class TokenService extends BaseService<Token> {
             VicThreadScope.oi.set("GOOGLE.");
             VicThreadScope.defaultRights.set(RightsHelper.OWNER_ALL + RightsHelper.GROUP_READ_UPDATE + RightsHelper.OTHER_READ);
             Usuario u = new Usuario();
-            BaseEntityHelper.setBaseEntityFields(u);
+
             u.setLogin((String) verify.get("email"));
             u.setSenha("123"); //TODO MUDAR 
 
             Grupo g0 = new Grupo();
-            BaseEntityHelper.setBaseEntityFields(g0);
+
             g0.setCodigo(email.replaceAll("\\.", "_"));
             g0.setNome(email);
             grupoRepository.save(g0);
 
             Organizacao o1 = new Organizacao();
-            BaseEntityHelper.setBaseEntityFields(o1);
+
             String fa = verify.get("family_name").toString();
             o1.setCodigo(fa.replaceAll(" ", "_"));
             o1.setNome(fa);

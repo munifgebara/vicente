@@ -20,7 +20,7 @@ public class Information extends BaseEntity {
     }
 
     public Information(String info) {
-        BaseEntityHelper.setBaseEntityFields(this);
+
         this.info = info;
     }
 

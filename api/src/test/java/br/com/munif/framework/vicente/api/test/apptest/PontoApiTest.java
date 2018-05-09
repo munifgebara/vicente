@@ -77,21 +77,21 @@ public class PontoApiTest {
                 .setMessageConverters(jacksonMessageConverter).build();
 
         Ponto p = new Ponto();
-        BaseEntityHelper.setBaseEntityFields(p);
+
         repository.save(p);
 
     }
 
     public static Ponto createEntity(EntityManager em) {
         Ponto ponto = new Ponto();
-        BaseEntityHelper.setBaseEntityFields(ponto);
+
         ponto.setNome(DEAFAULT_NAME);
         return ponto;
     }
 
     public static Ponto createEntity() {
         Ponto ponto = new Ponto();
-        BaseEntityHelper.setBaseEntityFields(ponto);
+
         ponto.setNome(DEAFAULT_NAME);
         return ponto;
     }
@@ -164,7 +164,7 @@ public class PontoApiTest {
     @Test
     public void conversao() throws Exception {
         Ponto p = new Ponto();
-        BaseEntityHelper.setBaseEntityFields(p);
+
         byte[] convertObjectToJsonBytes = TestUtil.convertObjectToJsonBytes(p);
         String s = new String(convertObjectToJsonBytes);
         Map<String, Object> convertStringToMap = TestUtil.convertStringToMap(s);

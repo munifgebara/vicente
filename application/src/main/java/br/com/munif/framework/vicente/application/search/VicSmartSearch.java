@@ -37,15 +37,6 @@ public class VicSmartSearch {
         return em;
     }
 
-    public List<Object[]> normalSearch() {
-        Query createQuery = em.createQuery("select cliente.nome,categoria.nome,count(categoria.nome)"
-                + " from Cliente cliente inner join cliente.pedidos as pedido inner join pedido.itens as item inner join item.produto as produto inner join produto.categoria as categoria "
-                + " where categoria.nome='egg'  group by cliente.nome,categoria.nome order by categoria.nome");
-        List<Object[]> resultList = createQuery.getResultList();
-        return resultList;
-
-    }
-
     public List<Map<String, Object>> smartSearch(String e1, String e2, String antes, String depois,int maxResults) {
         init();
         initDijkstra();

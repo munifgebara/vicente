@@ -51,37 +51,31 @@ public class SeedSecurity {
         log.info("Inserting Security Data");
 
         Grupo g0 = new Grupo();
-        BaseEntityHelper.setBaseEntityFields(g0);
         g0.setCodigo("SEED");
         g0.setNome("SEED");
         grupoRepository.save(g0);
 
         Grupo g1 = new Grupo();
-        BaseEntityHelper.setBaseEntityFields(g1);
         g1.setCodigo("G1");
         g1.setNome("Grupo 1");
         grupoRepository.save(g1);
         Grupo g2 = new Grupo();
-        BaseEntityHelper.setBaseEntityFields(g2);
         g2.setCodigo("G2");
         g2.setNome("Grupo 2");
         grupoRepository.save(g2);
 
         Organizacao o1 = new Organizacao();
-        BaseEntityHelper.setBaseEntityFields(o1);
         o1.setCodigo("empresa");
         o1.setNome("Empresa");
         organizacaoRepository.save(o1);
 
         Organizacao o2 = new Organizacao();
-        BaseEntityHelper.setBaseEntityFields(o2);
         o2.setCodigo("departamento");
         o2.setNome("Departamento");
         o2.setSuperior(o1);
         organizacaoRepository.save(o2);
 
         Usuario admin = new Usuario("admin@munif.com.br", "qwe123");
-        BaseEntityHelper.setBaseEntityFields(admin);
         admin.setGrupos(new HashSet<>());
         admin.getGrupos().add(g0);
         admin.getGrupos().add(g2);
@@ -89,7 +83,6 @@ public class SeedSecurity {
         usuarioRepository.save(admin);
 
         Usuario usuario = new Usuario("munif@munif.com.br", "qwe123");
-        BaseEntityHelper.setBaseEntityFields(usuario);
         usuario.setGrupos(new HashSet<>());
         usuario.getGrupos().add(g1);
         usuario.setOrganizacao(o2);

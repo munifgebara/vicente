@@ -5,8 +5,10 @@
  */
 package br.com.munif.framework.vicente.domain;
 
+import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import static br.com.munif.framework.vicente.core.RightsHelper.*;
+import br.com.munif.framework.vicente.core.UIDHelper;
 import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import java.util.Date;
@@ -28,13 +30,13 @@ import org.hibernate.annotations.TypeDefs;
  */
 @MappedSuperclass
 @TypeDefs({
-    @TypeDef(name = "vicaddress", defaultForType = VicAddress.class, typeClass = VicAddressUserType.class)
-    ,
-        @TypeDef(name = "vicemail", defaultForType = VicEmail.class, typeClass = VicEmailUserType.class)
-    ,
-        @TypeDef(name = "vicphone", defaultForType = VicPhone.class, typeClass = VicPhoneUserType.class)
+    @TypeDef(name = "vicaddress", defaultForType = VicAddress.class, typeClass = VicAddressUserType.class),
+    @TypeDef(name = "vicemail", defaultForType = VicEmail.class, typeClass = VicEmailUserType.class),
+    @TypeDef(name = "vicphone", defaultForType = VicPhone.class, typeClass = VicPhoneUserType.class)
 })
 public class BaseEntity {
+
+    public static boolean useSimpleId = false;
 
     @Id
     protected String id;
@@ -68,7 +70,29 @@ public class BaseEntity {
     private Integer version;
 
     public BaseEntity() {
-        BaseEntityHelper.setBaseEntityFields(this);
+        if (useSimpleId) {
+            id = UIDHelper.getSimpleID(this.getClass());
+        }
+        else{
+            id=UIDHelper.getUID();
+        }
+        gi = stringNull(RightsHelper.getMainGi());
+        ui = stringNull(VicThreadScope.ui.get());
+        oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";
+        rights = RightsHelper.getDefault();
+        extra = "Framework";
+        cd = new Date();
+        ud = new Date();
+        active = true;
+        version = null;
+    }
+
+    private String stringNull(String v) {
+        if (v == null) {
+            return "_NULL_";
+        } else {
+            return v;
+        }
     }
 
     public String getId() {
@@ -215,7 +239,7 @@ public class BaseEntity {
     public boolean canRead() {
         boolean commonGroup = commonGroup();
         boolean isOwner = isOwner();
-        return ((OTHER_READ | (commonGroup? GROUP_READ : 0) | (isOwner? OWNER_READ : 0)) & rights) > 0;
+        return ((OTHER_READ | (commonGroup ? GROUP_READ : 0) | (isOwner ? OWNER_READ : 0)) & rights) > 0;
     }
 
     @JsonGetter

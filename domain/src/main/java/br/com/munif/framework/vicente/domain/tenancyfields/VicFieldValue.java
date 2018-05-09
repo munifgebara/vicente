@@ -42,7 +42,7 @@ public class VicFieldValue extends BaseEntity {
     }
 
     public VicFieldValue(VicField vicField, String entityId, Object value) {
-        BaseEntityHelper.setBaseEntityFields(this);
+        BaseEntity.useSimpleId=true;
         this.vicField = vicField;
         this.entityId = entityId;
         setValue(value);

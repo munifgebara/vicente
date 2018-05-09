@@ -108,18 +108,19 @@ public class DatabaseDiagramTest {
 
     @Transactional
     public void loadSeedCategoria() throws IOException {
+        BaseEntity.useSimpleId=true;
         if (categoriaRepository.count() > 0) {
             return;
         }
         List<Categoria> inteligentInstances = VicAutoSeed.getInteligentInstances(new Categoria(), 4);
         for (Categoria cat : inteligentInstances) {
-            BaseEntityHelper.setBaseEntityFieldsWithSimpleId(cat);
             categoriaRepository.saveAndFlush(cat);
         }
     }
 
     @Transactional
     public void loadSeedProduto() throws IOException {
+        BaseEntity.useSimpleId=true;
         if (produtoRepository.count() > 0) {
             return;
         }
@@ -129,7 +130,6 @@ public class DatabaseDiagramTest {
         List<Categoria> values = categoriaRepository.findAll();
         int i = 0;
         for (Produto p : inteligentInstances) {
-            BaseEntityHelper.setBaseEntityFieldsWithSimpleId(p);
             p.setCategoria(values.get((i++) % values.size()));
             produtoRepository.save(p);
         }
@@ -137,6 +137,7 @@ public class DatabaseDiagramTest {
 
     @Transactional
     public void loadSeedPedido() throws IOException {
+        BaseEntity.useSimpleId=true;
         if (pedidoRepository.count() > 0) {
             return;
         }
@@ -146,13 +147,11 @@ public class DatabaseDiagramTest {
 
         for (int i = 0; i < 3; i++) {
             Pedido p = new Pedido();
-            BaseEntityHelper.setBaseEntityFieldsWithSimpleId(p);
             p.setCliente(clientes.get(VicAutoSeed.getRandomInteger(0, clientes.size())));
             p.setItens(new ArrayList<>());
             Integer nProdutos = VicAutoSeed.getRandomInteger(1, 3);
             for (int j = 0; j < nProdutos; j++) {
                 ItemPedido ip = new ItemPedido();
-                BaseEntityHelper.setBaseEntityFieldsWithSimpleId(ip);
                 ip.setPedido(p);
                 ip.setProduto(produtos.get(VicAutoSeed.getRandomInteger(0, produtos.size())));
                 VicAutoSeed.randomFill(ip);
@@ -164,6 +163,7 @@ public class DatabaseDiagramTest {
 
     @Transactional
     public void loadSeedCliente() throws IOException {
+        BaseEntity.useSimpleId=true;
         if (clienteRepository.count() > 0) {
             return;
         }
@@ -174,7 +174,6 @@ public class DatabaseDiagramTest {
         List<Cliente> clientes = VicAutoSeed.getInteligentInstances(example, 4);
         for (int i = 0; i < clientes.size(); i++) {
             Cliente cliente = clientes.get(i);
-            BaseEntityHelper.setBaseEntityFieldsWithSimpleId(cliente);
             cliente.setGrupoClientes(subLists.get(i % subLists.size()));
             clienteRepository.save(cliente);
         }

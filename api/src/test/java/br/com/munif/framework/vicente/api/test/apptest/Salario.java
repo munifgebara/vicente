@@ -22,7 +22,7 @@ public class Salario extends VicTemporalBaseEntity {
     }
 
     public Salario(String nome, BigDecimal valor) {
-        BaseEntityHelper.setBaseEntityFields(this);
+
         this.nome = nome;
         this.valor = valor;
     }
