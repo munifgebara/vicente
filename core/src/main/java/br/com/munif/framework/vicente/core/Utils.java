@@ -98,6 +98,9 @@ public class Utils {
     public static List<Class> scanFolder(File folder, File baseFolder) {
         List<Class> toReturn = new ArrayList<>();
         File[] fs = folder.listFiles();
+        if (fs == null) {
+            return toReturn;
+        }
         for (File f : fs) {
             if (f.isDirectory()) {
                 toReturn.addAll(scanFolder(f, baseFolder));
@@ -141,6 +144,12 @@ public class Utils {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public static String primeiraMaiuscula(String s) {
+        String first = s.substring(0, 1).toUpperCase();
+        return first + s.substring(1);
+
     }
 
 }
