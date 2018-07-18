@@ -179,8 +179,6 @@ public class VicField extends BaseEntity {
     public void setTranslateKey(String translateKey) {
         this.translateKey = translateKey;
     }
-    
-    
 
     @Override
     public int hashCode() {
@@ -213,9 +211,7 @@ public class VicField extends BaseEntity {
 
     @Override
     public String toString() {
-        return "VicField{" + "clazz=" + clazz + ", name=" + name + '}';
+        return super.toString() + " VicField{" + "clazz=" + clazz + ", name=" + name + '}';
     }
-    
-    
 
 }
