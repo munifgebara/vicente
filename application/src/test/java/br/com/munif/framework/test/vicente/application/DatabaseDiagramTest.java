@@ -102,6 +102,7 @@ public class DatabaseDiagramTest {
 //        }
 
         String draw = new DatabaseDiagramBuilder().draw(pedidoRepository.findAllNoTenancy().get(0));
+        System.out.println(draw);
         Assert.assertNotNull(draw);
 
     }

@@ -51,6 +51,7 @@ public class VicAutoSeed {
             URL url = new URL("http://api.datamuse.com/words?" + s);
             List<Map> readValue = om.readValue(url, List.class);
             Object[] result = readValue.stream().map(a -> a.get("word")).toArray();
+            System.out.println("================>"+s+"---->"+readValue);
             return result;
         } catch (Exception e) {
             LOG.info("Problem in getDataMuseWord Query " + s, e);
@@ -197,8 +198,8 @@ public class VicAutoSeed {
 
     public static String DICTIONARY[] = {
         "Categoria+nome", "product+type",
-        "Produto+nome", "product+name",
-        "Cliente+nome", "customer",
+        "Produto+nome", "product+names",
+        "Cliente+nome", "name",
         "Cliente+cidade", "city"
     };
 
