@@ -2,6 +2,9 @@ package br.com.munif.framework.vicente.domain.tenancyfields;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.BaseEntityHelper;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Column;
@@ -42,7 +45,7 @@ public class VicFieldValue extends BaseEntity {
     }
 
     public VicFieldValue(VicField vicField, String entityId, Object value) {
-        BaseEntity.useSimpleId=true;
+        BaseEntity.useSimpleId = true;
         this.vicField = vicField;
         this.entityId = entityId;
         setValue(value);
