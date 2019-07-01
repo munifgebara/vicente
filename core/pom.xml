@@ -4,7 +4,7 @@
     <parent>
         <groupId>br.com.munif.framework</groupId>
         <artifactId>vicente</artifactId>
-        <version>0.13.0-SNAPSHOT</version>
+        <version>0.14.0-SNAPSHOT</version>
     </parent>
     <name>Vicente Core</name>
     <groupId>br.com.munif.framework.vicente</groupId>

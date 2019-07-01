@@ -72,7 +72,7 @@ public class MySQLSpringConfig {
         properties.put("hibernate.hbm2ddl.auto", "create");
         properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect"); //TODO ATUALIZAR DIALETO
         properties.put("hibernate.ejb.naming_strategy", "org.hibernate.cfg.EJB3NamingStrategy");
-        properties.put("hibernate.show_sql", "true");
+        properties.put("hibernate.show_sql", "false");
         properties.put("hibernate.format_sql", "false");
         properties.put("hibernate.connection.charSet", "UTF-8");
         properties.put("hibernate.connection.characterEncoding", "UTF-8");
