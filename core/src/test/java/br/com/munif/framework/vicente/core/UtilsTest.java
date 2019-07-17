@@ -5,6 +5,8 @@
  */
 package br.com.munif.framework.vicente.core;
 
+import java.lang.reflect.Field;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -19,7 +21,9 @@ public class UtilsTest {
 
     @Test
     public void testGetAllFields() {
-        assertEquals(2, Utils.getAllFields(Aluno.class).size());
+        List<Field> allFields = Utils.getAllFields(Aluno.class);
+        System.out.println(""+allFields);
+        assertEquals(2, allFields.size());
     }
 
     @Test
