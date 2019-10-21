@@ -19,5 +19,5 @@ public interface VicRepository<T extends BaseEntity> extends JpaRepository<T, Se
     List<T> findAllNoPublic();
     
     List<T> findByHql(VicQuery query);
-
+    
 }

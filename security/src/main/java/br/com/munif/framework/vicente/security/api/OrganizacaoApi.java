@@ -5,9 +5,10 @@ package br.com.munif.framework.vicente.security.api;
 import br.com.munif.framework.vicente.api.BaseAPI;
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.security.domain.Organizacao;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -17,7 +18,7 @@ import org.apache.log4j.Logger;
 @RequestMapping("/api/organizacao")
 public class OrganizacaoApi extends BaseAPI<Organizacao> {
 
-    private final Logger log = Logger.getLogger(OrganizacaoApi.class);
+    private final Logger log = LogManager.getLogger(OrganizacaoApi.class);
 
     private static final String ENTITY_NAME = "organizacao";
 

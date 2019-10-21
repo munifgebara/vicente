@@ -136,7 +136,7 @@ public class TokenService extends BaseService<Token> {
     }
 
     public LoginRespostaDto logout() {
-        //Token tok = repository.findOne("aaa");
+        //Token tok = repository.getOne("aaa");
         LoginRespostaDto lr = new LoginRespostaDto();
         lr.codigo = 0;
         lr.mensagem = "Volte sempre";
@@ -146,7 +146,7 @@ public class TokenService extends BaseService<Token> {
     }
 
     public Token findUserByToken(String tokenValue) {
-        Token token = repository.findOne(tokenValue);
+        Token token = repository.findById(tokenValue).orElse(null);
         return token;
     }
 

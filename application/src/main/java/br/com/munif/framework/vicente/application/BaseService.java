@@ -86,7 +86,7 @@ public abstract class BaseService<T extends BaseEntity> {
 
     @Transactional(readOnly = true)
     public T view(String id) {
-        T entity = repository.findOne(id);
+        T entity = repository.findById(id).orElse(null);
         readVicTenancyFields(entity);
         return entity;
     }
@@ -226,7 +226,7 @@ public abstract class BaseService<T extends BaseEntity> {
 
     @Transactional(readOnly = true)
     public String draw(String id) {
-        T entity = repository.findOne(id);
+        T entity = repository.findById(id).orElse(null);
         readVicTenancyFields(entity);
         return new DatabaseDiagramBuilder().draw(entity);
     }

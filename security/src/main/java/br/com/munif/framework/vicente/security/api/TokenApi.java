@@ -12,9 +12,11 @@ import br.com.munif.framework.vicente.security.dto.LoginRespostaDto;
 import br.com.munif.framework.vicente.security.service.TokenService;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.logging.log4j.LogManager;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/api/token")
 public class TokenApi extends BaseAPI<Token> {
 
-    private final Logger log = Logger.getLogger(TokenApi.class);
+    private final Logger log = LogManager.getLogger(TokenApi.class);
 
     private static final String ENTITY_NAME = "token";
 

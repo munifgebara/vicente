@@ -17,6 +17,7 @@ import javax.validation.Valid;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -123,13 +124,13 @@ public class BaseAPI<T extends BaseEntity> {
 //        return new VicReturn<T>(findAll);
 //    }
     @Transactional
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public VicReturn<T> findHQL(HttpServletRequest request, VicQuery query) {
         return getVicReturnByQuery(query);
     }
 
     @Transactional
-    @RequestMapping(value = "/vquery", method = RequestMethod.POST)
+    @RequestMapping(value = "/vquery", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public VicReturn<T> findVQuery(@RequestBody VicQuery query) {
         return getVicReturnByQuery(query);
     }
@@ -154,7 +155,7 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     @Transactional
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public T load(@PathVariable String id) {
         T view = service.view(id);
         if (view == null || !view.canRead()) {

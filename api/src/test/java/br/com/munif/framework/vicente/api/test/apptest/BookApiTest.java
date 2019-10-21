@@ -94,7 +94,7 @@ public class BookApiTest {
                 .setMessageConverters(jacksonMessageConverter).build();
 
         Book b = new Book();
-        bookRepository.save(VicAutoSeed.getInteligentInstances(b, 10));
+        bookRepository.saveAll(VicAutoSeed.getInteligentInstances(b, 10));
 
     }
 
@@ -135,7 +135,7 @@ public class BookApiTest {
     public void create() throws Exception {
         int databaseSizeBeforeCreate = count();
         Book createEntity = createEntity();
-        
+        createEntity.setId(null);
         // Create the Book
         restMockMvc.perform(post("/api/books")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -218,7 +218,7 @@ public class BookApiTest {
         int databaseSizeBeforeUpdate = findAll().size();
 
         // Update the book
-        Book updatedBook = bookRepository.findOne(book.getId());
+        Book updatedBook = bookRepository.findById(book.getId()).orElse(null);
         updatedBook.setName("NEW NAME");
         restMockMvc.perform(put("/api/books/" + book.getId())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -285,12 +285,15 @@ public class BookApiTest {
     @Transactional
     public void getHQL() throws Exception {
         // Initialize the database
-        bookRepository.saveAndFlush(book);
+        restMockMvc.perform(post("/api/books")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(this.book)))
+                .andExpect(status().isCreated());
 
         restMockMvc.perform(get("/api/books?hql=name like '%'&sort=id,desc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.values.[*].id").value(hasItem(book.getId())))
+                .andExpect(jsonPath("$.values.[*].id").value(hasItem(this.book.getId())))
                 .andExpect(jsonPath("$.values.[*].name").value(hasItem(DEAFAULT_NAME)));
 
     }
@@ -300,7 +303,10 @@ public class BookApiTest {
     @Transactional
     public void getVQuery() throws Exception {
         // Initialize the database
-        bookRepository.saveAndFlush(book);
+        restMockMvc.perform(post("/api/books")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(this.book)))
+                .andExpect(status().isCreated());
 
         VicQuery v = new VicQuery();
         VQuery vQuery = new VQuery(new Criteria("name", ComparisonOperator.CONTAINS, "The Book"))
