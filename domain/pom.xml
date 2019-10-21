@@ -11,9 +11,6 @@
     <artifactId>domain</artifactId>
     <packaging>jar</packaging>
     <dependencies>
-        
-        
-        <!-- DEPENDENCIAS DE Módulos    -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>core</artifactId>
