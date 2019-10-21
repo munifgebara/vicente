@@ -1,25 +1,26 @@
 package br.com.munif.framework.test.vicente.domain;
 
-import br.com.munif.framework.test.vicente.application.MySQLSpringConfig;
+import br.com.munif.framework.test.vicente.application.H2SpringConfig;
 import br.com.munif.framework.test.vicente.application.SalarioRepository;
 import br.com.munif.framework.test.vicente.application.SalarioService;
 import br.com.munif.framework.test.vicente.domain.model.Salario;
 import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-import java.math.BigDecimal;
-import java.util.List;
-import org.springframework.transaction.annotation.Transactional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MySQLSpringConfig.class})
+@ContextConfiguration(classes = {H2SpringConfig.class})
 public class VicTemporalTest {
 
     private static int contador = 0;

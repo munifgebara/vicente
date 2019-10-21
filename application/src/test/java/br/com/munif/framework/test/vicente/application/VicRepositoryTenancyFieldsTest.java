@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author munif
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MySQLSpringConfig.class})
+@ContextConfiguration(classes = {H2SpringConfig.class})
 public class VicRepositoryTenancyFieldsTest {
 
     @Autowired

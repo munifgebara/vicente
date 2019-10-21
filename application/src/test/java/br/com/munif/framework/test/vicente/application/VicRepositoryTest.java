@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
  * @author munif
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MySQLSpringConfig.class})
+@ContextConfiguration(classes = {H2SpringConfig.class})
 public class VicRepositoryTest {
 
     @Autowired

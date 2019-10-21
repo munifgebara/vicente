@@ -44,7 +44,7 @@ import org.junit.Ignore;
  */
 @Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MySQLSpringConfig.class})
+@ContextConfiguration(classes = {H2SpringConfig.class})
 public class DatabaseDiagramTest {
 
     @Autowired

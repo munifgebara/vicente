@@ -5,15 +5,12 @@
  */
 package br.com.munif.framework.vicente.core;
 
-import java.util.Date;
+import org.junit.*;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -61,6 +58,8 @@ public class VicScriptEngineTest {
         objects.put("v", valores);
         Object expResult = 30.0;
         Object result = VicScriptEngine.eval(script, objects);
+        result = result instanceof Integer ? Double.valueOf((Integer) result) : result;
+        System.out.println("--------" + expResult.getClass().getName() + " -- " + result.getClass().getName());
         assertEquals(expResult, result);
     }
 
