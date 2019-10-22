@@ -4,7 +4,7 @@ package br.com.munif.framework.vicente.security.service;
 
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
-import br.com.munif.framework.vicente.security.domain.Organizacao;
+import br.com.munif.framework.vicente.security.domain.Organization;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,10 +12,8 @@ import org.springframework.stereotype.Service;
  * @author GeradorVicente
  */
 @Service
-public class OrganizacaoService extends BaseService<Organizacao>{
-    
-    public OrganizacaoService(VicRepository<Organizacao> repository) {
+public class OrganizacaoService extends BaseService<Organization>{
+    public OrganizacaoService(VicRepository<Organization> repository) {
         super(repository);
     }
-    
 }

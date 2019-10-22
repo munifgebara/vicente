@@ -7,20 +7,18 @@ package br.com.munif.framework.vicente.security.seed;
 
 import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
-import br.com.munif.framework.vicente.security.domain.Grupo;
-import br.com.munif.framework.vicente.security.domain.Organizacao;
-import br.com.munif.framework.vicente.security.domain.Usuario;
-import br.com.munif.framework.vicente.security.repository.GrupoRepository;
-import br.com.munif.framework.vicente.security.repository.OrganizacaoRepository;
-import br.com.munif.framework.vicente.security.repository.UsuarioRepository;
-import java.util.HashSet;
-import java.util.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.munif.framework.vicente.security.domain.Group;
+import br.com.munif.framework.vicente.security.domain.Organization;
+import br.com.munif.framework.vicente.security.domain.User;
+import br.com.munif.framework.vicente.security.repository.GroupRepository;
+import br.com.munif.framework.vicente.security.repository.OrganizationRepository;
+import br.com.munif.framework.vicente.security.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.logging.Logger;
+
 /**
- *
  * @author munif
  */
 @Component
@@ -28,17 +26,18 @@ public class SeedSecurity {
 
     private final Logger log = Logger.getLogger("SeedSecurity");
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UserRepository userRepository;
+    private final GroupRepository groupRepository;
+    private final OrganizationRepository organizationRepository;
 
-    @Autowired
-    private GrupoRepository grupoRepository;
-
-    @Autowired
-    private OrganizacaoRepository organizacaoRepository;
+    public SeedSecurity(OrganizationRepository organizationRepository, GroupRepository groupRepository, UserRepository userRepository) {
+        this.organizationRepository = organizationRepository;
+        this.groupRepository = groupRepository;
+        this.userRepository = userRepository;
+    }
 
     public void seedSecurity() {
-        if (usuarioRepository.count() > 0) {
+        if (userRepository.count() > 0) {
             return;
         }
 
@@ -50,43 +49,43 @@ public class SeedSecurity {
 
         log.info("Inserting Security Data");
 
-        Grupo g0 = new Grupo();
-        g0.setCodigo("SEED");
-        g0.setNome("SEED");
-        grupoRepository.save(g0);
+        Group g0 = new Group();
+        g0.setCode("SEED");
+        g0.setName("SEED");
+        groupRepository.save(g0);
 
-        Grupo g1 = new Grupo();
-        g1.setCodigo("G1");
-        g1.setNome("Grupo 1");
-        grupoRepository.save(g1);
-        Grupo g2 = new Grupo();
-        g2.setCodigo("G2");
-        g2.setNome("Grupo 2");
-        grupoRepository.save(g2);
+        Group g1 = new Group();
+        g1.setCode("G1");
+        g1.setName("Grupo 1");
+        groupRepository.save(g1);
+        Group g2 = new Group();
+        g2.setCode("G2");
+        g2.setName("Grupo 2");
+        groupRepository.save(g2);
 
-        Organizacao o1 = new Organizacao();
-        o1.setCodigo("empresa");
-        o1.setNome("Empresa");
-        organizacaoRepository.save(o1);
+        Organization o1 = new Organization();
+        o1.setCode("empresa");
+        o1.setName("Empresa");
+        organizationRepository.save(o1);
 
-        Organizacao o2 = new Organizacao();
-        o2.setCodigo("departamento");
-        o2.setNome("Departamento");
-        o2.setSuperior(o1);
-        organizacaoRepository.save(o2);
+        Organization o2 = new Organization();
+        o2.setCode("departamento");
+        o2.setName("Departamento");
+        o2.setUpper(o1);
+        organizationRepository.save(o2);
 
-        Usuario admin = new Usuario("admin@munif.com.br", "qwe123");
-        admin.setGrupos(new HashSet<>());
-        admin.getGrupos().add(g0);
-        admin.getGrupos().add(g2);
-        admin.setOrganizacao(o1);
-        usuarioRepository.save(admin);
+        User admin = new User("admin@munif.com.br", "qwe123");
+        admin.setGroups(new HashSet<>());
+        admin.getGroups().add(g0);
+        admin.getGroups().add(g2);
+        admin.setOrganization(o1);
+        userRepository.save(admin);
 
-        Usuario usuario = new Usuario("munif@munif.com.br", "qwe123");
-        usuario.setGrupos(new HashSet<>());
-        usuario.getGrupos().add(g1);
-        usuario.setOrganizacao(o2);
-        usuarioRepository.save(usuario);
+        User user = new User("munif@munif.com.br", "qwe123");
+        user.setGroups(new HashSet<>());
+        user.getGroups().add(g1);
+        user.setOrganization(o2);
+        userRepository.save(user);
     }
 
 }

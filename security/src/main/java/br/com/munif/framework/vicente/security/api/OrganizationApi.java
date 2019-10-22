@@ -4,27 +4,25 @@ package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.api.BaseAPI;
 import br.com.munif.framework.vicente.application.BaseService;
-import br.com.munif.framework.vicente.security.domain.Organizacao;
+import br.com.munif.framework.vicente.security.domain.Organization;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.apache.logging.log4j.Logger;
 
 /**
- *
  * @author GeradorVicente
  */
 @RestController
-@RequestMapping("/api/organizacao")
-public class OrganizacaoApi extends BaseAPI<Organizacao> {
+@RequestMapping("/api/organization")
+public class OrganizationApi extends BaseAPI<Organization> {
 
-    private final Logger log = LogManager.getLogger(OrganizacaoApi.class);
+    private final Logger log = LogManager.getLogger(OrganizationApi.class);
+    private static final String ENTITY_NAME = "organization";
 
-    private static final String ENTITY_NAME = "organizacao";
-
-    public OrganizacaoApi(BaseService<Organizacao> service) {
+    public OrganizationApi(BaseService<Organization> service) {
         super(service);
     }
-    
+
 
 }

@@ -7,35 +7,29 @@ package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.security.domain.Grupo;
 import br.com.munif.framework.vicente.security.domain.Token;
-import br.com.munif.framework.vicente.security.domain.Usuario;
+import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.service.TokenService;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
+import java.util.List;
+
 /**
- *
  * @author munif
  */
 public class VicRequestFilter extends HandlerInterceptorAdapter {
 
-    private final String software;
-
-    public VicRequestFilter(String software) {
-        this.software = software;
-    }
-    @Autowired
     private TokenService tokenService;
 
-    private List<String> publics = Arrays.asList(new String[]{"/api/token/login/bypassword"});
+    public VicRequestFilter(TokenService tokenService) {
+        this.tokenService = tokenService;
+    }
+
+    private List<String> publics = Collections.singletonList("/api/token/login/bypassword");
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -45,18 +39,18 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS,HEAD");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, authorization, Connection, group");
 
-        if ("OPTIONS".equalsIgnoreCase(method)){
+        if ("OPTIONS".equalsIgnoreCase(method)) {
             return true;
         }
         VicThreadScope.ip.set(request.getRemoteAddr());
-        String tokenValue = ""+request.getHeader("Authorization");
+        String tokenValue = "" + request.getHeader("Authorization");
         Token token = tokenService.findUserByToken(tokenValue);
         if (token != null) {
-            Usuario u = token.getUsuario();
+            User u = token.getUser();
             VicThreadScope.gi.set(u.stringGrupos());
             VicThreadScope.ui.set(u.getId());
             VicThreadScope.oi.set(u.stringOrganizacao());
-            VicThreadScope.cg.set(""+request.getHeader("group"));
+            VicThreadScope.cg.set("" + request.getHeader("group"));
         } else if (publics.contains(request.getRequestURI())) {
             VicThreadScope.gi.set("VIC_PUBLIC");
             VicThreadScope.ui.set("VIC_PUBLIC");

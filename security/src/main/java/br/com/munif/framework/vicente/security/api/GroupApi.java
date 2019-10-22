@@ -4,27 +4,24 @@ package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.api.BaseAPI;
 import br.com.munif.framework.vicente.application.BaseService;
-import br.com.munif.framework.vicente.security.domain.Usuario;
-import org.apache.logging.log4j.LogManager;
+import br.com.munif.framework.vicente.security.domain.Group;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.apache.logging.log4j.Logger;
+
+import java.util.logging.Logger;
 
 /**
- *
  * @author GeradorVicente
  */
 @RestController
-@RequestMapping("/api/usuario")
-public class UsuarioApi extends BaseAPI<Usuario> {
+@RequestMapping("/api/group")
+public class GroupApi extends BaseAPI<Group> {
 
-    private final Logger log = LogManager.getLogger(UsuarioApi.class);
+    private final Logger log = Logger.getLogger(GroupApi.class.getSimpleName());
+    private static final String ENTITY_NAME = "group";
 
-    private static final String ENTITY_NAME = "usuario";
-
-    public UsuarioApi(BaseService<Usuario> service) {
+    public GroupApi(BaseService<Group> service) {
         super(service);
     }
-    
 
 }

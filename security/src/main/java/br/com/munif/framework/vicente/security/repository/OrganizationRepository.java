@@ -3,7 +3,7 @@
 package br.com.munif.framework.vicente.security.repository;
 
 import br.com.munif.framework.vicente.application.VicRepository;
-import br.com.munif.framework.vicente.security.domain.Organizacao;
+import br.com.munif.framework.vicente.security.domain.Organization;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface OrganizacaoRepository extends VicRepository<Organizacao>{
+public interface OrganizationRepository extends VicRepository<Organization>{
     
 }
