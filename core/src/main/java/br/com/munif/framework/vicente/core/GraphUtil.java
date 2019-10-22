@@ -1,17 +1,6 @@
 package br.com.munif.framework.vicente.core;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -146,9 +135,9 @@ public class GraphUtil {
      * its input
      *
      * @param process The process to execute
-     * @param _in Reader that will feed the input pipe of the process
-     * @param out Writer that will receive the output of the process
-     * @param err Writer that will receive the error pipe of the process
+     * @param _in     Reader that will feed the input pipe of the process
+     * @param out     Writer that will receive the output of the process
+     * @param err     Writer that will receive the error pipe of the process
      */
     private static void communicate(
             Process process,
@@ -179,7 +168,8 @@ public class GraphUtil {
                     out.flush();
                     out.close();
                 } catch (IOException e) {
-                    /* Who cares ?*/ }
+                    /* Who cares ?*/
+                }
             }
         };
         t1.start(); // Starts now
@@ -200,7 +190,8 @@ public class GraphUtil {
                     err.flush();
                     err.close();
                 } catch (IOException e) {
-                    /* Who cares ?*/ }
+                    /* Who cares ?*/
+                }
             }
         };
         t2.start(); // Starts now
@@ -222,7 +213,8 @@ public class GraphUtil {
                     stdIn.flush();
                     stdIn.close();
                 } catch (IOException e) {
-                    /* Who cares ?*/ }
+                    /* Who cares ?*/
+                }
             }
         };
         t3.start(); // Starts now

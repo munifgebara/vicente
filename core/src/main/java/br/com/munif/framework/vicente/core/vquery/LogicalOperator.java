@@ -1,5 +1,9 @@
 package br.com.munif.framework.vicente.core.vquery;
 
+/**
+ *
+ * @author wmfsystem
+ */
 public enum LogicalOperator {
     SIMPLE, NOT, OR, AND;
 

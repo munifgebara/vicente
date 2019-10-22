@@ -30,7 +30,7 @@ public class VicResultTransformer implements ResultTransformer {
                     contadores.put(className, 0);
                 }
                 int v=contadores.get(className);
-                fieldName=Utils.primeiraMinuscula(className)+(v>0?v:"");
+                fieldName=Utils.firstTiny(className)+(v>0?v:"");
                 v++;
                 contadores.put(className, v);
             }

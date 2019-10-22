@@ -6,13 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
  * @author munif
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface VicTenancyPolicy {
-    
-    public VicTenancyType value() default VicTenancyType.GROUPS;
-    
+    VicTenancyType value() default VicTenancyType.GROUPS;
 }

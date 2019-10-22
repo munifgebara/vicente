@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.munif.framework.vicente.domain.util;
+package br.com.munif.framework.vicente.domain.entities;
 
 import br.com.munif.framework.vicente.core.Utils;
 import java.io.File;

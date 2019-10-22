@@ -1,8 +1,11 @@
 package br.com.munif.framework.vicente.core.vquery;
 
-
 import java.util.Map;
 
+/**
+ *
+ * @author wmfsystem
+ */
 public class Criteria {
 
     private Object field;

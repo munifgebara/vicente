@@ -13,13 +13,12 @@ OTHER_DELETE 1
 package br.com.munif.framework.vicente.core;
 
 /**
- *
  * @author munif
  */
 public class RightsHelper {
 
     //                                     876543210
-    public static final int ALL_READ =   0b100100100;
+    public static final int ALL_READ = 0b100100100;
     public static final int OWNER_READ = 0b100000000; //256
     public static final int OWNER_UPDATE = 0b010000000; //128
     public static final int OWNER_DELETE = 0b001000000; //64
@@ -61,8 +60,8 @@ public class RightsHelper {
         }
         return get;
     }
-    
-     public static String getStringRights(Integer rights, String ui, String gi) {
+
+    public static String getStringRights(Integer rights, String ui, String gi) {
         Integer r = rights != null ? rights : 0;
         String toReturn = "";
         toReturn += "ui:" + ui + "(";
@@ -82,8 +81,7 @@ public class RightsHelper {
         toReturn += ") ";
         return toReturn;
     }
-    
-    
+
 
 }
 

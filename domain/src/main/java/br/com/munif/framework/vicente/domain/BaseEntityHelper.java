@@ -5,13 +5,7 @@
  */
 package br.com.munif.framework.vicente.domain;
 
-import br.com.munif.framework.vicente.core.RightsHelper;
-import br.com.munif.framework.vicente.core.UIDHelper;
-import br.com.munif.framework.vicente.core.VicThreadScope;
-import java.util.Date;
-
 /**
- *
  * @author munif
  */
 public class BaseEntityHelper {

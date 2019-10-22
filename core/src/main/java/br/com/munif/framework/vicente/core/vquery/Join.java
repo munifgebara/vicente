@@ -4,6 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ *
+ * @author wmfsystem
+ */
 public class Join implements Queryable<Join>, Joinable<Join> {
 
     /**

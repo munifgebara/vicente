@@ -2,6 +2,7 @@ package br.com.munif.framework.vicente.domain.experimental;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -30,7 +31,7 @@ public class VicSerializer {
 
     private static final VicSerializer INSTANCE = new VicSerializer();
 
-    public Map<Object, String> visitados = new HashMap<>();
+    public Map<Object, String> visited = new HashMap<>();
 
     public static VicSerializer getInstance() {
         return INSTANCE;
@@ -40,7 +41,7 @@ public class VicSerializer {
     }
 
     public String serialize(Object object) {
-        visitados = new HashMap<>();
+        visited = new HashMap<>();
         return serialize(object, IDENT);
     }
 
@@ -53,7 +54,7 @@ public class VicSerializer {
         try {
             Class clazz = object.getClass();
             if (object instanceof BaseEntity) {
-                visitados.put(object, "{" + QUOTE + "class" + QUOTE + ":" + QUOTE + "" + clazz.getCanonicalName() + QUOTE + "," + QUOTE + "id" + QUOTE + ":" + QUOTE + "" + ((BaseEntity) object).getId() + "" + QUOTE + "," + QUOTE + "version" + QUOTE + ":" + QUOTE + "" + ((BaseEntity) object).getVersion() + "" + QUOTE + "}");
+                visited.put(object, "{" + QUOTE + "class" + QUOTE + ":" + QUOTE + "" + clazz.getCanonicalName() + QUOTE + "," + QUOTE + "id" + QUOTE + ":" + QUOTE + "" + ((BaseEntity) object).getId() + "" + QUOTE + "," + QUOTE + "version" + QUOTE + ":" + QUOTE + "" + ((BaseEntity) object).getVersion() + "" + QUOTE + "}");
             }
             if (clazz.isArray()) {
                 StringBuilder toReturn = new StringBuilder();
@@ -70,7 +71,7 @@ public class VicSerializer {
             }
             StringBuilder toReturn = new StringBuilder();
             toReturn.append("{" + ln + "" + QUOTE + "class" + QUOTE + ":" + QUOTE + "" + clazz.getCanonicalName() + QUOTE);
-            int lugar = toReturn.length();
+            int local = toReturn.length();
 
             for (Class c = clazz; !Object.class.equals(c); c = c.getSuperclass()) {
                 StringBuilder sbf = new StringBuilder();
@@ -85,19 +86,19 @@ public class VicSerializer {
                     f.setAccessible(true);
                     Object value = f.get(object);
                     String sValue = "";
-                    if (visitados.containsKey(value)) {
+                    if (visited.containsKey(value)) {
                         if (value instanceof BaseEntity) {
                             //System.out.println("----> HIT " + ((BaseEntity) value).getClassName() + " " + ((BaseEntity) value).getId());
                         }
-                        sValue = visitados.get(value);
+                        sValue = visited.get(value);
                     } else {
                         sValue = serialize(value, ident + IDENT);
-                        visitados.put(value, sValue);
+                        visited.put(value, sValue);
                     }
                     sbf.append("," + ln + QUOTE + f.getName() + QUOTE + ":" + sValue);
 
                 }
-                toReturn.insert(lugar, sbf);
+                toReturn.insert(local, sbf);
             }
 
             toReturn.append(ln.substring(0, ln.length() - IDENT.length()) + "}");

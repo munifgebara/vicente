@@ -1,5 +1,9 @@
 package br.com.munif.framework.vicente.core.vquery;
 
+/**
+ *
+ * @author wmfsystem
+ */
 public class CriteriaJoin {
 
     private Criteria criteria;

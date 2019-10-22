@@ -2,6 +2,10 @@ package br.com.munif.framework.vicente.core.vquery;
 
 import java.util.*;
 
+/**
+ *
+ * @author wmfsystem
+ */
 public class VQuery {
 
     private LogicalOperator logicalOperator = LogicalOperator.SIMPLE;

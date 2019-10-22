@@ -28,7 +28,7 @@ public class UtilsTest {
 
     @Test
     public void testRemoveNaoNumeros() {
-        assertEquals("12", Utils.removeNaoNumeros("A1B2D"));
+        assertEquals("12", Utils.removeNotNumbers("A1B2D"));
     }
 
     @Test

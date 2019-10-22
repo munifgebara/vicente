@@ -4,21 +4,16 @@ import br.com.munif.framework.vicente.application.search.dijkstra.Dijkstra;
 import br.com.munif.framework.vicente.application.search.dijkstra.Graph;
 import br.com.munif.framework.vicente.application.search.dijkstra.Node;
 import br.com.munif.framework.vicente.domain.VicRevisionEntity;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.hibernate.query.internal.QueryImpl;
+import org.springframework.stereotype.Service;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.PluralAttribute;
 import javax.persistence.metamodel.SingularAttribute;
-import org.hibernate.query.internal.QueryImpl;
-import org.springframework.stereotype.Service;
+import java.util.*;
 
 @Service
 public class VicSmartSearch {
@@ -37,7 +32,7 @@ public class VicSmartSearch {
         return em;
     }
 
-    public List<Map<String, Object>> smartSearch(String e1, String e2, String antes, String depois,int maxResults) {
+    public List<Map<String, Object>> smartSearch(String e1, String e2, String antes, String depois, int maxResults) {
         init();
         initDijkstra();
         Graph graph = new Graph();
@@ -60,7 +55,7 @@ public class VicSmartSearch {
             caminho.add(e2);
 
             String hql = antes + " FROM " + e1;
-            
+
             for (int i = 0; i < caminho.size() - 1; i++) {
                 String nomeEntidade = caminho.get(i);
                 String proximaEntidade = caminho.get(i + 1);
@@ -84,7 +79,7 @@ public class VicSmartSearch {
 //                + " where categoria.nome='egg'  group by cliente.nome,categoria.nome order by categoria.nome");
 
     public List<Map<String, Object>> smartSearch(String e1, String e2, String antes, String depois) {
-        return smartSearch(e1, e2, antes, depois,Integer.MAX_VALUE);
+        return smartSearch(e1, e2, antes, depois, Integer.MAX_VALUE);
     }
 
     private int peso(String multiplicidade) {

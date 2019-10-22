@@ -2,6 +2,10 @@ package br.com.munif.framework.vicente.core.vquery;
 
 import java.util.List;
 
+/**
+ *
+ * @author wmfsystem
+ */
 public interface Queryable<T> {
     T or(Criteria criteria);
     T and(Criteria criteria);

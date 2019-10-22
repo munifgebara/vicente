@@ -8,19 +8,14 @@ package br.com.munif.framework.vicente.core;
 import java.util.List;
 
 /**
- *
  * @author munif
  */
 public class VicReturn<T> {
 
     private List<T> values;
-
     private Integer quantity;
-
     private Integer total;
-
     private Integer firstResult;
-
     private Boolean hasMore;
 
     public VicReturn() {

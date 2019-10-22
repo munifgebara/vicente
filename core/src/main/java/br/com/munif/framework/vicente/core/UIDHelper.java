@@ -3,6 +3,9 @@ package br.com.munif.framework.vicente.core;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
+/**
+ * @author munif
+ */
 public class UIDHelper {
 
     public static long lastTime;
@@ -53,12 +56,5 @@ public class UIDHelper {
             throw new RuntimeException("Impossible to find NetworkInterface");
         }
         return toReturn;
-    }
-
-    public static void main(String args[]) {
-        for (int i = 0; i < 1000; i++) {
-            //System.out.println("----->" + getUID());
-        }
-
     }
 }

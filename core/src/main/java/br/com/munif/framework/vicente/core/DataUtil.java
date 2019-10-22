@@ -9,25 +9,25 @@ import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 import static java.util.Calendar.*;
 
 /**
- *
  * @author daniel
  * @author anderson
  */
 public class DataUtil {
 
-     private static final int DIAS_NO_MES[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    private static final int[] MONTH_DAYS = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     private static DateFormatSymbols dfs = new DateFormatSymbols(new Locale("pt", "BR"));
-    public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     private static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy_MM_dd");
-    
-    private static String homeFolder(){
+
+    private static String homeFolder() {
         return System.getProperty("user.home");
     }
 
-    public static Date getDataHoraMinutoSegundoZerado(Date valorData) {
+    public static Date getDateHourMinuteSecondZero(Date valorData) {
         Calendar c = Calendar.getInstance();
 
         c.setTime(valorData);
@@ -47,19 +47,19 @@ public class DataUtil {
         return sdf2.format(data);
     }
 
-    public static List<Calendar> mesesEntreDatas(Date inicio, Date fim) {
-        List<Calendar> aRetornar = new ArrayList<Calendar>();
-        Calendar data = Calendar.getInstance();
-        data.setTime(inicio);
-        data.set(Calendar.DAY_OF_MONTH, 1);
-        while (data.getTime().getTime() <= fim.getTime()) {
-            aRetornar.add((Calendar) data.clone());
-            data.add(Calendar.MONTH, 1);
+    public static List<Calendar> monthsBetweenDates(Date inicio, Date fim) {
+        List<Calendar> toReturn = new ArrayList<Calendar>();
+        Calendar date = Calendar.getInstance();
+        date.setTime(inicio);
+        date.set(Calendar.DAY_OF_MONTH, 1);
+        while (date.getTime().getTime() <= fim.getTime()) {
+            toReturn.add((Calendar) date.clone());
+            date.add(Calendar.MONTH, 1);
         }
-        return aRetornar;
+        return toReturn;
     }
 
-    public static String nomeDoMes(int m) {
+    public static String MonthName(int m) {
         String month = "invalid";
         String[] months = dfs.getMonths();
         if (m >= 0 && m <= 11) {
@@ -68,7 +68,7 @@ public class DataUtil {
         return month;
     }
 
-    public static Date amanhaUltimoSegundo() {
+    public static Date tomorrowLastSecond() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, 1);
         cal.set(Calendar.HOUR_OF_DAY, 23);
@@ -77,7 +77,7 @@ public class DataUtil {
         return cal.getTime();
     }
 
-    public static Date ultimoDiaDoMes() {
+    public static Date lastMonthDay() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, 1);
         cal.set(Calendar.HOUR_OF_DAY, 23);
@@ -88,7 +88,7 @@ public class DataUtil {
         return cal.getTime();
     }
 
-    public static Date depoisDeAmanhaPrimeiroSegundo() {
+    public static Date afterTomorrowFirstSecond() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, 2);
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -102,34 +102,12 @@ public class DataUtil {
         return format.format(date);
     }
 
-    public static void main(String[] args) {
-
-        Locale ptBr = new Locale("pt", "BR");
-        Locale.setDefault(ptBr);
-
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, 1975);
-        cal.set(Calendar.MONTH, Calendar.AUGUST);
-        cal.set(Calendar.DAY_OF_MONTH, 18);
-        Date dataMenor = cal.getTime();
-
-        cal = Calendar.getInstance();
-        // cal.set(Calendar.YEAR, 2012);
-        //  cal.set(Calendar.MONTH, Calendar.AUGUST);
-        //  cal.set(Calendar.DAY_OF_MONTH, 31);
-        Date dataMaior = cal.getTime();
-
-        for (Calendar m : mesesEntreDatas(dataMenor, dataMaior)) {
-            //System.out.println(nomeDoMes(m.get(Calendar.MONTH)));
-        }
-    }
-
-    public static int diferencaMesesInteira(Date dataAnterior, Date dataPosterior) {
-        if (dataAnterior.after(dataPosterior)) {
+    public static int entireDifferenceMonth(Date previousDate, Date dataPosterior) {
+        if (previousDate.after(dataPosterior)) {
             return 0;
         }
         Calendar calMenor = Calendar.getInstance();
-        calMenor.setTime(dataAnterior);
+        calMenor.setTime(previousDate);
         Calendar calMaior = Calendar.getInstance();
         calMaior.setTime(dataPosterior);
         int dAno = calMaior.get(YEAR) - calMenor.get(YEAR);
@@ -147,12 +125,12 @@ public class DataUtil {
         return dMes + dAno * 12;
     }
 
-    public static double diferencaMesesFracionada(Date dataAnterior, Date dataPosterior) {
-        if (dataAnterior.after(dataPosterior)) {
+    public static double fractionalDifferenceMonth(Date previousDate, Date dataPosterior) {
+        if (previousDate.after(dataPosterior)) {
             return 0;
         }
         Calendar calMenor = Calendar.getInstance();
-        calMenor.setTime(dataAnterior);
+        calMenor.setTime(previousDate);
         Calendar calMaior = Calendar.getInstance();
         calMaior.setTime(dataPosterior);
         int dAno = calMaior.get(YEAR) - calMenor.get(YEAR);
@@ -164,26 +142,26 @@ public class DataUtil {
             dAno--;
         }
         if (dDia < 0) {
-            dDia += quantidadeDiasMesAnterior(dataPosterior);
+            dDia += amountDaysLastMonth(dataPosterior);
             dMes--;
         }
-        return dAno * 12 + dMes + (dDia / (double) quantidadeDiasMesAnterior(dataPosterior));
+        return dAno * 12 + dMes + (dDia / (double) amountDaysLastMonth(dataPosterior));
     }
 
-    public static int getDiasNoMes(Date date) {
+    public static int getDaysOnMonth(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        return getDiasNoMes(cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
+        return getDaysOnMonth(cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
     }
 
-    public static int getDiasNoMes(int mes, int ano) {
-        if (mes == 2 && isBissexto(ano)) {
+    public static int getDaysOnMonth(int month, int year) {
+        if (month == 2 && isLeapYear(year)) {
             return 29;
         }
-        return DIAS_NO_MES[mes];
+        return MONTH_DAYS[month];
     }
 
-    public static boolean isBissexto(int ano) {
+    public static boolean isLeapYear(int ano) {
         if (ano % 400 == 0) {
             return true;
         }
@@ -196,22 +174,22 @@ public class DataUtil {
         return false;
     }
 
-    public static int quantidadeDiasMesAnterior(Date data) {
+    public static int amountDaysLastMonth(Date data) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(data);
         cal.set(DAY_OF_MONTH, 1);
         cal.add(Calendar.MONTH, -1);
-        return getDiasNoMes(cal.getTime());
+        return getDaysOnMonth(cal.getTime());
     }
 
-    public static int diferencaDiasInteira(Date dataAnterior, Date dataPosterior) {
+    public static int entireDaysDifference(Date dataAnterior, Date dataPosterior) {
         Calendar calAnterior = Calendar.getInstance();
         calAnterior.setTime(dataAnterior);
         calAnterior.set(HOUR_OF_DAY, 0);
         calAnterior.set(MINUTE, 0);
         calAnterior.set(SECOND, 0);
         calAnterior.set(MILLISECOND, 0);
-        Date dataAnteriorSemHora = calAnterior.getTime();
+        Date previousDateWithoutTime = calAnterior.getTime();
 
         Calendar calPosterior = Calendar.getInstance();
         calPosterior.setTime(dataPosterior);
@@ -219,28 +197,28 @@ public class DataUtil {
         calPosterior.set(MINUTE, 0);
         calPosterior.set(SECOND, 0);
         calPosterior.set(MILLISECOND, 0);
-        Date dataPosteriorSemHora = calPosterior.getTime();
-        if (dataAnteriorSemHora.after(dataPosteriorSemHora)) {
+        Date laterDateWithoutTime = calPosterior.getTime();
+        if (previousDateWithoutTime.after(laterDateWithoutTime)) {
             return 0;
         }
 
-        Long diferenca = (dataPosteriorSemHora.getTime() - dataAnteriorSemHora.getTime()) / (24 * 60 * 60 * 1000);
+        Long diferenca = (laterDateWithoutTime.getTime() - previousDateWithoutTime.getTime()) / (24 * 60 * 60 * 1000);
         return diferenca.intValue();
     }
 
-    public static Date dataInicial() {
+    public static Date inicialDate() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -3);
         return cal.getTime();
     }
 
-    public static Date dataFinal() {
+    public static Date finalDate() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, 4);
         return cal.getTime();
     }
 
-    public static List<Date> dozeMeses() {
+    public static List<Date> twelveMonths() {
         List<Date> aRetornar = new ArrayList<Date>();
         for (int i = 0; i < 12; i++) {
             Calendar calendar = Calendar.getInstance();
@@ -255,50 +233,51 @@ public class DataUtil {
         return aRetornar;
     }
 
-    public static Date dataAutalComDiasDoParametro(int dias) { // se o parametro for negativo ele VOLTA a quantidade de dias a partir de hoje
+    public static Date actualDateWithDays(int dias) { // se o parametro for negativo ele VOLTA a quantidade de dias a partir de hoje
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, dias);
         return cal.getTime();
     }
 
     // se o parametro for negativo ele VOLTA a quantidade de dias a partir de hoje
-    public static Date dataAutalComMesesDoParametro(int meses) {
+    public static Date actualDateWithMonths(int meses) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, meses);
         return cal.getTime();
     }
 
-    public static int horaAtual() {
+    public static int actualHour() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         return calendar.get(Calendar.HOUR_OF_DAY);
     }
 
-    public static String formatarData(String pattern, Date data) {
+    public static String formatDate(String pattern, Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
-        return dateFormat.format(data);
+        return dateFormat.format(date);
     }
 
-    public static int diaDoMes(Date data) {
+    public static int monthDate(Date data) {
         Calendar c = Calendar.getInstance();
         c.setTime(data);
         return c.get(c.DAY_OF_MONTH);
     }
 
-    public static Date dataParametroComDiasDoParametro(int dias, Date data) {
+    public static Date addDays(int dias, Date data) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(data);
         cal.add(Calendar.DAY_OF_MONTH, dias);
         return cal.getTime();
     }
-    public static Date dataParametroComSegundosDoParametro(int segundos, Date data) {
+
+    public static Date addSeconds(int segundos, Date data) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(data);
         cal.add(Calendar.SECOND, segundos);
         return cal.getTime();
     }
 
-    public static Date dataParametroComDiasEMesesDoParametro(int dias, int meses, Date data) {
+    public static Date addDaysAndMonths(int dias, int meses, Date data) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(data);
         cal.add(Calendar.DAY_OF_MONTH, dias);
@@ -306,14 +285,14 @@ public class DataUtil {
         return cal.getTime();
     }
 
-    public static Date dataParametroComMesesDoParametro(int mes, Date data) {
+    public static Date addMonths(int mes, Date data) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(data);
         cal.add(Calendar.MONTH, mes);
         return cal.getTime();
     }
 
-    public static long diferencaEntreDias(Date dataInicial, Date dataFinal) {
+    public static long differenceBetween(Date dataInicial, Date dataFinal) {
         Calendar calInicial = Calendar.getInstance();
         calInicial.setTime(dataInicial);
         Calendar calFinal = Calendar.getInstance();
@@ -321,22 +300,22 @@ public class DataUtil {
         return (calFinal.getTime().getTime() - calInicial.getTime().getTime()) / 86400000; //1000(milisegundo) / 60(segundo) / 60(minitos) / 24 (horas)
     }
 
-    public static int anoAtual() {
+    public static int actualYear() {
         Calendar c = Calendar.getInstance();
         return c.get(c.YEAR);
     }
 
-    public static int diaAtual() {
+    public static int actualDay() {
         return Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
     }
 
-    public static int anoAtualMenosParamentro(int valorSubtrair) {
+    public static int actualYearLess(int valorSubtrair) {
         Calendar c = Calendar.getInstance();
         int anoAtual = c.get(c.YEAR);
         return anoAtual > valorSubtrair ? anoAtual - valorSubtrair : anoAtual - 10;
     }
 
-    public static Date juntarMesAnoComDia(int dia, Date data) {
+    public static Date JoinMonthYearWithDay(int dia, Date data) {
         Calendar c = Calendar.getInstance();
         c.setTime(data);
         c.set(c.get(c.YEAR), c.get(c.MONTH), dia);
@@ -349,29 +328,27 @@ public class DataUtil {
      *
      * @param data1 primeira data a ser verificada.
      * @param data2 segunda data a ser verificada.
-     *
      * @return retora true caso seja no mesmo dia e false caso nao seja mesmo
      * dia
-     *
      */
-    public static boolean mesmoDia(Date data1, Date data2) {
-        int dif = diferencaDiasInteira(data1, data2);
+    public static boolean isSameDay(Date data1, Date data2) {
+        int dif = entireDaysDifference(data1, data2);
         return dif == 0;
     }
 
-    public static Integer getMes(Date data) {
+    public static Integer getMonth(Date data) {
         Calendar c = Calendar.getInstance();
         c.setTime(data);
         return c.get(c.MONTH) + 1;
     }
 
-    public static Integer getAno(Date data) {
+    public static Integer getYear(Date data) {
         Calendar c = Calendar.getInstance();
         c.setTime(data);
         return c.get(c.YEAR);
     }
 
-    public static Date transformarStringEmData(String data) {
+    public static Date StringToDate(String data) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
@@ -386,12 +363,11 @@ public class DataUtil {
      * string deve obedecer o param patter, ou seja, a data deve estar no padrão
      * informado no outro parametro.
      *
-     * @param data exemplo "01/05/2016"
+     * @param data    exemplo "01/05/2016"
      * @param pattern exemplo "dd/MM/yyyy"
-     *
      * @return data do tipo DATE.
      */
-    public static Date transformarStringEmData(String data, String pattern) {
+    public static Date StringToDate(String data, String pattern) {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         try {
             return format.parse(data);
@@ -400,44 +376,44 @@ public class DataUtil {
         return null;
     }
 
-    public static String mesAtualPorExtenso() {
-        return mesPorExtenso(Calendar.getInstance().getTime());
+    public static String actualMonthInFull() {
+        return monthInFull(Calendar.getInstance().getTime());
     }
 
-    public static String mesPorExtenso(Date data) {
+    public static String monthInFull(Date data) {
         Calendar inicio = Calendar.getInstance();
         inicio.setTime(data);
         switch (inicio.get(inicio.MONTH)) {
             case 0:
-                return "Janeiro";
+                return "January";
             case 1:
-                return "Fevereiro";
+                return "February";
             case 2:
-                return "Março";
+                return "March";
             case 3:
-                return "Abril";
+                return "April";
             case 4:
-                return "Maio";
+                return "May";
             case 5:
-                return "Junho";
+                return "Juny";
             case 6:
-                return "Julho";
+                return "July";
             case 7:
-                return "Agosto";
+                return "August";
             case 8:
-                return "Setembro";
+                return "September";
             case 9:
-                return "Outubro";
+                return "October";
             case 10:
-                return "Novembro";
+                return "November";
             case 11:
-                return "Dezembro";
+                return "December";
             default:
                 return "";
         }
     }
 
-    public static Date primeiroSegundoDia(Date data) {
+    public static Date firstSecond(Date data) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(data);
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -446,7 +422,7 @@ public class DataUtil {
         return cal.getTime();
     }
 
-    public static Date primeiroSegundoSeteDiasAntesDeHoje() {
+    public static Date firstSecondSevenPreviousDays() {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -456,7 +432,7 @@ public class DataUtil {
         return cal.getTime();
     }
 
-    public static Date primeiroSegundoDeHojeMaisDiasDoParamentro(int dias) {
+    public static Date firstSecondAfterTodatMorDays(int dias) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -465,15 +441,15 @@ public class DataUtil {
         cal.set(Calendar.DATE, cal.get(Calendar.DATE) + dias);
         return cal.getTime();
     }
-    
-    public static Date ultimoSegundoDeHojeMaisDiasDoParamentro(int dias) {
+
+    public static Date lastSecondMoreDays(int dias) {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(ultimoSegundoDia(new Date()));
+        cal.setTime(lastSecondDay(new Date()));
         cal.set(Calendar.DATE, cal.get(Calendar.DATE) + dias);
         return cal.getTime();
     }
 
-    public static Date ultimoSegundoDia(Date data) {
+    public static Date lastSecondDay(Date data) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(data);
         cal.set(Calendar.HOUR_OF_DAY, 23);

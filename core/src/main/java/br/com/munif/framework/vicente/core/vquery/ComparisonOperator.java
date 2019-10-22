@@ -3,6 +3,10 @@ package br.com.munif.framework.vicente.core.vquery;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ *
+ * @author wmfsystem
+ */
 public enum ComparisonOperator {
     EQUAL(" = "),
     LOWER(" < "),

@@ -1,5 +1,9 @@
 ==========================================
 Vicente - Framework Java
+2.0.0-SNAPSHOT
+Suporte ao Java 13
+Organização dos arquivos de dependências pom.xml
+Atualização para a última versão do spring boot para suporte do java 13
 
 1.0.0 release
 
