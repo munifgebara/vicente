@@ -9,6 +9,9 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Set;
 
+/**
+ * @author munif
+ */
 public class Dijkstra {
 
     public static Graph calculateShortestPathFromSource(Graph graph, Node source) {

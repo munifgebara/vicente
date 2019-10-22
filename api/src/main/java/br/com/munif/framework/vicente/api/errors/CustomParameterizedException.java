@@ -4,13 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ *
+ * @author munif
  * Custom, parameterized exception, which can be translated on the client side.
  * For example:
  *
  * <pre>
  * throw new CustomParameterizedException(&quot;myCustomError&quot;, &quot;hello&quot;, &quot;world&quot;);
  * </pre>
- *
+ * <p>
  * Can be translated with:
  *
  * <pre>

@@ -1,7 +1,5 @@
 package br.com.munif.framework.vicente.api.errors;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -14,10 +12,16 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
+import java.util.List;
+
 /**
+ * @author munif
  * Controller advice to translate the server side exceptions to client-friendly
  * json structures.
  */
@@ -26,7 +30,7 @@ public class ExceptionTranslator {
 
     private final Logger log = LoggerFactory.getLogger(ExceptionTranslator.class);
 
-//TODO        
+    //TODO
 //    @ExceptionHandler( org.springframework.dao.DataIntegrityViolationException )
 //    @ResponseStatus(HttpStatus.CONFLICT)
 //    @ResponseBody

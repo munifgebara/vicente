@@ -13,9 +13,13 @@ import br.com.munif.framework.test.vicente.domain.model.smartsearch.Pedido;
 import br.com.munif.framework.test.vicente.domain.model.smartsearch.Produto;
 import br.com.munif.framework.vicente.application.search.VicAutoSeed;
 import br.com.munif.framework.vicente.application.search.VicSmartSearch;
+import br.com.munif.framework.vicente.application.search.dijkstra.Dijkstra;
+import br.com.munif.framework.vicente.application.search.dijkstra.Graph;
+import br.com.munif.framework.vicente.application.search.dijkstra.Node;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.BaseEntityHelper;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +39,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author munif
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -135,6 +140,41 @@ public class VicSmartSearchTest {
         assertTrue(!smartSearch.isEmpty());
     }
 
+    @Test
+    public void teste5() {
+        Node nodeA = new Node("A");
+        Node nodeB = new Node("B");
+        Node nodeC = new Node("C");
+        Node nodeD = new Node("D");
+        Node nodeE = new Node("E");
+        Node nodeF = new Node("F");
+
+        nodeA.addDestination(nodeB, 10);
+        nodeA.addDestination(nodeC, 15);
+
+        nodeB.addDestination(nodeD, 12);
+        nodeB.addDestination(nodeF, 15);
+
+        nodeC.addDestination(nodeE, 10);
+
+        nodeD.addDestination(nodeE, 2);
+        nodeD.addDestination(nodeF, 1);
+
+        nodeF.addDestination(nodeE, 5);
+
+        Graph graph = new Graph();
+
+        graph.addNode(nodeA);
+        graph.addNode(nodeB);
+        graph.addNode(nodeC);
+        graph.addNode(nodeD);
+        graph.addNode(nodeE);
+        graph.addNode(nodeF);
+
+        graph = Dijkstra.calculateShortestPathFromSource(graph, nodeD);
+        assertNotNull(graph);
+    }
+
     @Transactional
     public void loadSeedCategoria() throws IOException {
         BaseEntity.useSimpleId = true;
@@ -193,7 +233,7 @@ public class VicSmartSearchTest {
                 VicAutoSeed.randomFill(ip);
                 p.getItens().add(itemPedidoRepository.save(ip));
             }
-            
+
         }
     }
 

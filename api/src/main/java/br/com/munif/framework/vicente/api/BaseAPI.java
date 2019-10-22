@@ -10,26 +10,18 @@ import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.BaseEntityHelper;
-
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.List;
 
 /**
- *
  * @author munif
  */
 @RestController
@@ -76,6 +68,7 @@ public class BaseAPI<T extends BaseEntity> {
         return doUpdate(model);
 
     }
+
     @Transactional
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<T> updateWithId(@PathVariable("id") String id, @RequestBody @Valid T model) {
@@ -86,14 +79,12 @@ public class BaseAPI<T extends BaseEntity> {
 
     private ResponseEntity<T> doUpdate(T model) {
         try {
-            T entity=null;
+            T entity = null;
             HttpStatus ht = HttpStatus.OK;
             T oldEntity = service.view(model.getId());
-            //System.out.println("old "+(oldEntity!=null?oldEntity.getRights():"null")+" new "+model.getRights());
             if (oldEntity != null) {
-                beforeUpdate(model.getId(),model);
+                beforeUpdate(model.getId(), model);
                 BaseEntityHelper.overwriteJsonIgnoreFields(model, oldEntity);
-                //System.out.println("old "+(oldEntity!=null?oldEntity.getRights():"null")+" new "+model.getRights());
                 entity = service.save(model);
             } else {
                 beforeSave(model);
@@ -108,21 +99,6 @@ public class BaseAPI<T extends BaseEntity> {
         }
     }
 
-
-    protected void beforeSave(T model) {
-
-    }
-
-    protected void beforeUpdate(String id, T model) {
-
-    }
-
-//    @Transactional
-//    @RequestMapping(method = RequestMethod.GET)
-//    public VicReturn<T> findAll() {
-//        List<T> findAll = service.findAll();
-//        return new VicReturn<T>(findAll);
-//    }
     @Transactional
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public VicReturn<T> findHQL(HttpServletRequest request, VicQuery query) {
@@ -160,7 +136,8 @@ public class BaseAPI<T extends BaseEntity> {
         T view = service.view(id);
         if (view == null || !view.canRead()) {
             throw new VicenteNotFoundException("Not found");
-        };
+        }
+        ;
         beforeReturnOne(view);
         return view;
     }
@@ -182,12 +159,16 @@ public class BaseAPI<T extends BaseEntity> {
         return 20;
     }
 
-    protected void beforeReturnOne(T view) {
+    protected void beforeSave(T model) {
+    }
 
+    protected void beforeUpdate(String id, T model) {
+    }
+
+    protected void beforeReturnOne(T view) {
     }
 
     protected void beforeDelete(T entity) {
-        
     }
 
 }

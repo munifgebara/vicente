@@ -10,18 +10,18 @@ import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntityHelper;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.persistence.Parameter;
-import javax.persistence.Query;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Parameter;
+import javax.persistence.Query;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 
 @NoRepositoryBean
 public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository<T, Serializable> implements VicRepository<T> {
@@ -73,8 +73,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
 
     public VicTenancyType getPolicy(Class<T> domainClass) {
         VicTenancyPolicy vtp = domainClass.getAnnotation(VicTenancyPolicy.class);
-        VicTenancyType vtt = vtp == null ? VicTenancyType.GROUPS : vtp.value();
-        return vtt;
+        return vtp == null ? VicTenancyType.GROUPS : vtp.value();
     }
 
     public void setTenancyParameters(Query query) {
@@ -149,7 +148,6 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         setTenancyParameters(query);
         return query.getResultList();
     }
-
 
 
 }

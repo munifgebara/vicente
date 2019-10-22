@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.munif.framework.vicente.application;
 
 import br.com.munif.framework.vicente.application.victenancyfields.VicFieldRepository;
@@ -15,20 +10,20 @@ import br.com.munif.framework.vicente.domain.tenancyfields.VicField;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldType;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldValue;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- *
  * @author munif
  */
 @Service
@@ -101,19 +96,14 @@ public abstract class BaseService<T extends BaseEntity> {
 
     @Transactional
     public T save(T resource) {
-        if (resource instanceof BaseEntity) {
-            BaseEntity baseEntity = (BaseEntity) resource;
-            baseEntity.setUd(new Date());
+        if (resource != null) {
+            resource.setUd(new Date());
         }
         T entity = repository.save(resource);
         if (entity instanceof VicTenancyFieldsBaseEntity) {
             saveVicTenancyFields(resource);
         }
         return entity;
-    }
-
-    public void forceFlush() {
-//        repository.flush();
     }
 
     @Transactional(readOnly = true)
@@ -127,11 +117,11 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
-    public List<T> find10primeiros(Class classe, String hql) {
+    public List<T> findFirst10(Class classe, String hql) {
         return find(classe, hql, 10);
     }
 
-    public Long quantidade() {
+    public Long count() {
         return repository.count();
     }
 
@@ -152,9 +142,7 @@ public abstract class BaseService<T extends BaseEntity> {
             }
             fillCollections(newInstance);
             return newInstance;
-        } catch (InstantiationException ex) {
-            Logger.getLogger(BaseService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
+        } catch (InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(BaseService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -166,9 +154,7 @@ public abstract class BaseService<T extends BaseEntity> {
             T newInstance = clazz().newInstance();
             fillCollections(newInstance);
             return newInstance;
-        } catch (InstantiationException ex) {
-            Logger.getLogger(BaseService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
+        } catch (InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(BaseService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -177,11 +163,6 @@ public abstract class BaseService<T extends BaseEntity> {
     @SuppressWarnings("unchecked")
     public Class<T> clazz() {
         return (Class<T>) Utils.inferGenericType(getClass());
-    }
-
-    public void teste() {
-        em.getMetamodel().getEntities();
-
     }
 
     private void saveVicTenancyFields(T resource) {

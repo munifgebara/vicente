@@ -1,23 +1,19 @@
 package br.com.munif.framework.vicente.application.search;
 
-import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Version;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import javax.persistence.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.*;
 
+/**
+ * @author munif
+ */
 public class VicAutoSeed {
 
     //private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -51,7 +47,7 @@ public class VicAutoSeed {
             URL url = new URL("http://api.datamuse.com/words?" + s);
             List<Map> readValue = om.readValue(url, List.class);
             Object[] result = readValue.stream().map(a -> a.get("word")).toArray();
-            System.out.println("================>"+s+"---->"+readValue);
+            System.out.println("================>" + s + "---->" + readValue);
             return result;
         } catch (Exception e) {
             LOG.info("Problem in getDataMuseWord Query " + s, e);
@@ -87,7 +83,7 @@ public class VicAutoSeed {
             }
 
         } catch (Exception ex) {
-            LOG.error("randomFill "+obj.getClass().getSimpleName(), ex);
+            LOG.error("randomFill " + obj.getClass().getSimpleName(), ex);
         }
     }
 
@@ -109,11 +105,11 @@ public class VicAutoSeed {
                             Class<?> type = f.getType();
                             if (type.equals(String.class)) {
                                 if (!searched.containsKey(f)) {
-                                    searched.put(f, getDataMuseWord("ml="+translates(clazz.getSimpleName() + "+" + f.getName()) + "&max=" + (number+3)));
+                                    searched.put(f, getDataMuseWord("ml=" + translates(clazz.getSimpleName() + "+" + f.getName()) + "&max=" + (number + 3)));
                                 }
                                 Object[] values = searched.get(f);
                                 if (values.length > 0) {
-                                    f.set(newInstance, values[(i+3) % values.length]);
+                                    f.set(newInstance, values[(i + 3) % values.length]);
                                 } else {
                                     f.set(newInstance, getRandomString(20));
                                 }
@@ -132,7 +128,7 @@ public class VicAutoSeed {
                 toReturn.add(newInstance);
             } catch (Exception ex) {
                 LOG.info("problem in getInteligentInstances" + exaple.getClass().getSimpleName(), ex);
-                
+
             }
         }
 
@@ -150,12 +146,12 @@ public class VicAutoSeed {
 
             if (k <= input.length) {
                 // first index sequence: 0, 1, 2, ...
-                for (int i = 0; (s[i] = i) < k - 1; i++);
+                for (int i = 0; (s[i] = i) < k - 1; i++) ;
                 subLists.add(getSubList(input, s));
-                for (;;) {
+                for (; ; ) {
                     int i;
                     // find position of item that can be incremented
-                    for (i = k - 1; i >= 0 && s[i] == input.length - k + i; i--);
+                    for (i = k - 1; i >= 0 && s[i] == input.length - k + i; i--) ;
                     if (i < 0) {
                         break;
                     }
@@ -196,11 +192,11 @@ public class VicAutoSeed {
 
     }
 
-    public static String DICTIONARY[] = {
-        "Categoria+nome", "product+type",
-        "Produto+nome", "product+names",
-        "Cliente+nome", "name",
-        "Cliente+cidade", "city"
+    public static String[] DICTIONARY = {
+            "Categoria+nome", "product+type",
+            "Produto+nome", "product+names",
+            "Cliente+nome", "name",
+            "Cliente+cidade", "city"
     };
 
 }

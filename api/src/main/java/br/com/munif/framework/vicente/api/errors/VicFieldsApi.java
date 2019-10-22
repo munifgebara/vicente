@@ -13,13 +13,16 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @author munif
+ */
 @RestController
 @RequestMapping("/api/vicfield")
 public class VicFieldsApi extends BaseAPI<VicField> {
 
     private final Logger log = LogManager.getLogger(VicFieldsApi.class);
 
-    private static final String ENTITY_NAME = "pessoa";
+    private static final String ENTITY_NAME = "FIELDS";
 
     public VicFieldsApi(BaseService<VicField> service) {
         super(service);
