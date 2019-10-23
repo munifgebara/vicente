@@ -10,9 +10,9 @@ public enum LogicalOperator {
     public String getOperation(VQuery vQuery) {
         switch (this) {
             case SIMPLE:
-                return "(" + vQuery.getCriteria().toString() + ")";
+                return "(" + vQuery.getAliasWithDot() + vQuery.getCriteria().toString() + ")";
             case NOT:
-                return "(!" + vQuery.getCriteria().toString() + ")";
+                return "(!" + vQuery.getAliasWithDot() + vQuery.getCriteria().toString() + ")";
             case OR:
             case AND:
                 if (vQuery.getSubQuerys() == null || vQuery.getSubQuerys().isEmpty()) {

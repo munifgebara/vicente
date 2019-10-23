@@ -1,13 +1,10 @@
 package br.com.munif.framework.vicente.core.vquery;
 
 /**
- *
  * @author wmfsystem
  */
 public class VEntityQuery extends VQuery {
     private Object entity;
-    private String alias;
-    private String[] fields;
 
     public VEntityQuery(Object entity) {
         this.entity = entity;
@@ -20,19 +17,19 @@ public class VEntityQuery extends VQuery {
 
     public VEntityQuery(Object entity, String alias) {
         this.entity = entity;
-        this.alias = alias;
+        this.setAlias(alias);
     }
 
     public VEntityQuery(Object entity, String alias, String... fields) {
         this.entity = entity;
-        this.alias = alias;
-        this.fields = fields;
+        this.setAlias(alias);
+        this.setFields(fields);
     }
 
     public VEntityQuery(Object entity, String alias, Criteria criteria, String... fields) {
         this.entity = entity;
-        this.alias = alias;
-        this.fields = fields;
+        this.setAlias(alias);
+        this.setFields(fields);
         this.setCriteria(criteria);
     }
 
@@ -46,37 +43,6 @@ public class VEntityQuery extends VQuery {
 
     public void setEntity(Object entity) {
         this.entity = entity;
-    }
-
-    public String getAlias() {
-        return alias == null ? "obj" : alias;
-    }
-
-    public String getAliasWithDot() {
-        return (alias != null) ? alias + "." : "";
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    public String[] getFields() {
-        return fields;
-    }
-
-    public String getFieldsWithAlias() {
-        if (fields != null) {
-            String toReturn = "";
-            for (int i = 0; i < fields.length; i++) {
-                toReturn += getAliasWithDot().concat(fields[i]);
-            }
-            return toReturn;
-        }
-        return getAlias();
-    }
-
-    public void setFields(String[] fields) {
-        this.fields = fields;
     }
 
     @Override

@@ -9,15 +9,10 @@ import java.util.Map;
 public class Criteria {
 
     private Object field;
-
     private ComparisonOperator comparisonOperator;
-
     private Object value;
-
     private Object[] values;
-
     private String fieldFn;
-
     private String valueFn;
 
     private void onInit() {

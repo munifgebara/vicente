@@ -304,7 +304,7 @@ public class VQueryTest {
                                         "id")
                         )
                 );
-        assertEquals("(((sexo in ('M','F')) AND (idade in (1,2,3))) OR (subitems in (select obj from OutraTabela obj where (1 = 1))) OR (id in (select hist.id from Historico hist where (hist.id = id))))", vQuery.toString());
+        assertEquals("(((sexo in ('M','F')) AND (idade in (1,2,3))) OR (subitems in (select obj from OutraTabela obj where (1 = 1))) OR (id in (select hist.id as id from Historico hist where (hist.id = id))))", vQuery.toString());
     }
 
     @Test

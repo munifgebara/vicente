@@ -64,6 +64,10 @@ public class BaseEntity {
     private Integer version;
 
     public BaseEntity() {
+        init();
+    }
+
+    private void init() {
         if (useSimpleId) {
             id = UIDHelper.getSimpleID(this.getClass());
         } else {
@@ -79,6 +83,7 @@ public class BaseEntity {
         active = true;
         version = null;
     }
+
 
     private String stringNull(String v) {
         if (v == null) {

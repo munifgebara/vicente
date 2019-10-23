@@ -9,17 +9,14 @@ import java.util.*;
 public class VQuery {
 
     private LogicalOperator logicalOperator = LogicalOperator.SIMPLE;
-
     private Criteria criteria;
-
     private List<VQuery> subQuerys = new LinkedList<>();
-
     private List<Join> joins = new LinkedList<>();
-
     private Boolean useDistinct = Boolean.FALSE;
+    private String alias;
+    private String[] fields;
 
     public VQuery() {
-        this.logicalOperator = LogicalOperator.SIMPLE;
         this.criteria = new Criteria();
     }
 
@@ -38,9 +35,21 @@ public class VQuery {
         this.criteria = criteria;
     }
 
+    public VQuery(Criteria criteria, String... fields) {
+        this.criteria = criteria;
+        this.fields = fields;
+    }
+
     public VQuery(LogicalOperator logicalOperator, List<VQuery> subQuerys) {
         this.logicalOperator = logicalOperator;
         this.subQuerys = subQuerys;
+        adjustJoins(this);
+    }
+
+    public VQuery(LogicalOperator logicalOperator, List<VQuery> subQuerys, String... fields) {
+        this.logicalOperator = logicalOperator;
+        this.subQuerys = subQuerys;
+        this.fields = fields;
         adjustJoins(this);
     }
 
@@ -176,6 +185,17 @@ public class VQuery {
         Optional.ofNullable(subQuerys).ifPresent(sub -> sub.forEach(VQuery::addIgnoreCase));
     }
 
+    public String getFieldsWithAlias() {
+        if (getFields() != null) {
+            StringBuilder toReturn = new StringBuilder();
+            for (int i = 0; i < getFields().length; i++) {
+                toReturn.append(getAliasWithDot().concat(getFields()[i]).concat(" as ").concat(getFields()[i]));
+            }
+            return toReturn.toString();
+        }
+        return getAlias();
+    }
+
     @Override
     public String toString() {
         if (this.criteria != null && this.criteria.getField().equals(1) && this.getSubQuerys().size() > 0) {
@@ -185,5 +205,25 @@ public class VQuery {
             return logicalOperator.getOperation(this);
         }
         return LogicalOperator.defaultOperation(this);
+    }
+
+    public String[] getFields() {
+        return fields;
+    }
+
+    public void setFields(String[] fields) {
+        this.fields = fields;
+    }
+
+    public String getAlias() {
+        return alias == null ? "obj" : alias;
+    }
+
+    public String getAliasWithDot() {
+        return (alias != null) ? alias + "." : "";
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 }
