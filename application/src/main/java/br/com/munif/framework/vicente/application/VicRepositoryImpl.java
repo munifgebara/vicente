@@ -17,7 +17,6 @@ import javax.persistence.Parameter;
 import javax.persistence.Query;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -29,6 +28,7 @@ import java.util.Set;
 public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository<T, Serializable> implements VicRepository<T> {
 
     private final EntityManager entityManager;
+    private final String DEFAULT_ALIAS = "obj";
 
     public VicRepositoryImpl(JpaEntityInformation entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
@@ -47,7 +47,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
      * @param publics includes public elements
      * @return hql with tenancy
      */
-    public String geTenancyHQL(boolean publics) {
+    public String geTenancyHQL(boolean publics, String alias) {
         Class<T> domainClass = this.getDomainClass();
         boolean isVicTemporalEntity = VicTemporalBaseEntity.class.isAssignableFrom(domainClass) && (!Boolean.TRUE.equals(VicThreadScope.ignoreTime.get()));
         boolean assignableFrom2 = BaseEntity.class.isAssignableFrom(domainClass);
@@ -59,20 +59,20 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         if (isVicTemporalEntity) {
             sb.append("(\n");
         }
-        sb.append("   (obj.ui=:ui and mod(obj.rights/64,8)/4>=1) \n");
+        sb.append("   (" + alias + ".ui=:ui and mod(" + alias + ".rights/64,8)/4>=1) \n");
 
         if (vtt.equals(VicTenancyType.GROUPS) || vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
-            sb.append("or (:gi like concat('%',obj.gi,',%') and mod(obj.rights/8,8)/4>=1) \n");
+            sb.append("or (:gi like concat('%'," + alias + ".gi,',%') and mod(" + alias + ".rights/8,8)/4>=1) \n");
         }
 
         if (vtt.equals(VicTenancyType.HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.ORGANIZATIONAL) || vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
-            sb.append("or (obj.oi like :oi)\n");
+            sb.append("or (" + alias + ".oi like :oi)\n");
         }
         if (publics) {
-            sb.append("or (1=1    and    mod(obj.rights  ,8)/4>=1)\n");
+            sb.append("or (1=1    and    mod(" + alias + ".rights  ,8)/4>=1)\n");
         }
         if (isVicTemporalEntity) {
-            sb.append(") and (obj.startTime<=:et and :et<=obj.endTime) \n");
+            sb.append(") and (" + alias + ".startTime<=:et and :et<=" + alias + ".endTime) \n");
         }
         sb.append(
                 ")");
@@ -135,7 +135,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
      */
     @Override
     public List<T> findAll() {
-        String hql = "FROM " + getDomainClass().getSimpleName() + " obj where \n" + geTenancyHQL(true);
+        String hql = "FROM " + getDomainClass().getSimpleName() + " obj where \n" + geTenancyHQL(true, "obj");
         Query query = entityManager.createQuery(hql);
         setTenancyParameters(query);
         return query.getResultList();
@@ -147,7 +147,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
      * @return all domain elements by tenancy
      */
     public List<T> findAllNoPublic() {
-        String hql = "FROM " + getDomainClass().getSimpleName() + " obj where \n" + geTenancyHQL(false);
+        String hql = "FROM " + getDomainClass().getSimpleName() + " obj where \n" + geTenancyHQL(false, DEFAULT_ALIAS);
         Query query = entityManager.createQuery(hql);
         setTenancyParameters(query);
         return query.getResultList();
@@ -170,21 +170,20 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
                 .concat((vicQuery.getQuery() != null ? vicQuery.getQuery().toString() : "1=1"));
 
         String joins = "";
-        String obj = "obj";
+        String attrs = DEFAULT_ALIAS;
+        String alias = DEFAULT_ALIAS;
         if (vicQuery.getQuery() != null) {
-            vicQuery.getQuery().setAlias("obj");
-            obj = vicQuery.getQuery().getFieldsWithAlias();
+            attrs = vicQuery.getQuery().getFieldsWithAlias();
             joins = vicQuery.getQuery().getJoins();
+            alias = vicQuery.getQuery().getAlias();
         }
 
-
-
-        String hql = mountHQL(vicQuery, clause, joins, obj);
+        String hql = mountHQL(vicQuery, clause, joins, attrs, alias);
         Query query = entityManager.createQuery(hql);
         query.setFirstResult(vicQuery.getFirstResult());
         query.setMaxResults(vicQuery.getMaxResults());
         setTenancyParameters(query);
-        if (!"obj".equals(obj)) {
+        if (!DEFAULT_ALIAS.equals(attrs)) {
             query = selectAttributes(query);
 
         }
@@ -218,12 +217,12 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
                 });
     }
 
-    private String mountHQL(VicQuery vicQuery, String clause, String joins, String obj) {
-        return "select " + obj + " FROM " + getDomainClass().getSimpleName() + " obj " + joins + " where \n"
+    private String mountHQL(VicQuery vicQuery, String clause, String joins, String attrs, String alias) {
+        return "select " + attrs + " FROM " + getDomainClass().getSimpleName() + " " + alias + " " + joins + " where \n"
                 + "(" + clause + ") and "
                 + "("
-                + geTenancyHQL(true)
+                + geTenancyHQL(true, alias)
                 + ") "
-                + " ORDER BY obj." + vicQuery.getOrderBy() + " , obj.id asc";
+                + " ORDER BY " + alias + "." + vicQuery.getOrderBy() + " , " + alias + ".id asc";
     }
 }
