@@ -40,13 +40,13 @@ public class CriteriaJoin {
         this.operator = operator;
     }
 
-    public Map<String, Object> getParams() {
-        HashMap<String, Object> params = new HashMap<>();
+    public ParamList getParams() {
+        ParamList params = new ParamList();
         getParams(this, params);
         return params;
     }
 
-    public void getParams(CriteriaJoin vQuery, HashMap<String, Object> params) {
+    public void getParams(CriteriaJoin vQuery, ParamList params) {
         if (vQuery != null) {
             if (vQuery.getCriteria() != null) {
                 StringBuilder toReturn = new StringBuilder();
@@ -55,8 +55,8 @@ public class CriteriaJoin {
                     getParams(((CriteriaJoin) value), params);
                 } else {
                     ComparisonOperator.mount(value, toReturn, vQuery.getCriteria().getComparisonOperator());
+                    params.add(vQuery.getCriteria().getParam(), toReturn.toString(), value.getClass().getSimpleName());
                 }
-                params.put(vQuery.getCriteria().getParam(), toReturn.toString());
             }
         }
     }

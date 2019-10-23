@@ -21,7 +21,7 @@ public class Criteria {
         comparisonOperator = ComparisonOperator.EQUAL;
         fieldFn = null;
         valueFn = null;
-        param = ":" + field + RandomStringUtils.randomNumeric(10);
+        param = ":" + RandomStringUtils.randomAlphabetic(10).toLowerCase().concat(RandomStringUtils.randomNumeric(10));
     }
 
     public Criteria() {

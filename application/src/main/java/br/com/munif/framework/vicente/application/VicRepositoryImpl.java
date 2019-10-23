@@ -4,6 +4,8 @@ import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.core.VicThreadScope;
+import br.com.munif.framework.vicente.core.vquery.Param;
+import br.com.munif.framework.vicente.core.vquery.ParamList;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntityHelper;
@@ -18,7 +20,6 @@ import javax.persistence.Query;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -173,7 +174,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         String joins = "";
         String attrs = DEFAULT_ALIAS;
         String alias = DEFAULT_ALIAS;
-        Map<String, Object> params = null;
+        ParamList params = null;
         if (vicQuery.getQuery() != null) {
             attrs = vicQuery.getQuery().getFieldsWithAlias();
             joins = vicQuery.getQuery().getJoins();
@@ -187,8 +188,8 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         query.setMaxResults(vicQuery.getMaxResults());
         setTenancyParameters(query);
         if (params != null) {
-            for (Map.Entry<String, Object> entry : params.entrySet()) {
-                query.setParameter(entry.getKey().replace(":", ""), entry.getValue());
+            for (Param entry : params) {
+                query.setParameter(entry.getKey().replace(":", ""), entry.getValueToSearch());
             }
         }
         if (!DEFAULT_ALIAS.equals(attrs)) {

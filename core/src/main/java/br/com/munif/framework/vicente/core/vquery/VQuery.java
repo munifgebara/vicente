@@ -220,8 +220,8 @@ public class VQuery {
     }
 
     private String replaceParams(String s) {
-        Map<String, Object> params = getParams();
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
+        ParamList params = getParams();
+        for (Param entry : params) {
             String val = String.valueOf(entry.getValue());
             s = s.replace(entry.getKey(), val);
         }
@@ -248,13 +248,13 @@ public class VQuery {
         this.alias = alias;
     }
 
-    public Map<String, Object> getParams() {
-        HashMap<String, Object> params = new HashMap<>();
+    public ParamList getParams() {
+        ParamList params = new ParamList();
         getParams(this, params);
         return params;
     }
 
-    public void getParams(VQuery vQuery, HashMap<String, Object> params) {
+    public void getParams(VQuery vQuery, ParamList params) {
         if (vQuery != null) {
             if (vQuery.getCriteria() != null) {
                 StringBuilder toReturn = new StringBuilder();
@@ -263,15 +263,15 @@ public class VQuery {
                     getParams(((VEntityQuery) value), params);
                 } else {
                     ComparisonOperator.mount(value, toReturn, vQuery.getCriteria().getComparisonOperator());
+                    params.add(vQuery.getCriteria().getParam(), toReturn.toString(), value.getClass().getSimpleName());
                 }
-                params.put(vQuery.getCriteria().getParam(), toReturn.toString());
             }
             for (VQuery subQuery : vQuery.getSubQuerys()) {
                 getParams(subQuery, params);
             }
             for (Join join : vQuery.joins) {
                 for (CriteriaJoin subQuery : join.getSubQuerys()) {
-                    params.putAll(subQuery.getParams());
+                    params.addAll(subQuery.getParams());
                 }
             }
         }
