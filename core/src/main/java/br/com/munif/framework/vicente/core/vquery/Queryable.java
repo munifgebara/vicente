@@ -22,7 +22,7 @@ public interface Queryable<T> {
 
     default void addIgnoreCase() {}
 
-    default List<Queryable> getSubQuerys() {
+    default List<CriteriaJoin> getSubQuerys() {
         return null;
     }
 }

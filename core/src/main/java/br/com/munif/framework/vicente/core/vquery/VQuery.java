@@ -1,9 +1,9 @@
 package br.com.munif.framework.vicente.core.vquery;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- *
  * @author wmfsystem
  */
 public class VQuery {
@@ -98,6 +98,12 @@ public class VQuery {
         StringBuilder joinStr = new StringBuilder();
         mountJoins(this, joinStr);
         return joinStr.toString();
+    }
+
+    public String getJoinsWithoutParam() {
+        StringBuilder joinStr = new StringBuilder();
+        mountJoins(this, joinStr);
+        return replaceParams(joinStr.toString());
     }
 
     public void setJoins(List<Join> joins) {
@@ -207,6 +213,21 @@ public class VQuery {
         return LogicalOperator.defaultOperation(this);
     }
 
+    public String toStringWithoutParams() {
+        String s = this.toString();
+        s = replaceParams(s);
+        return s;
+    }
+
+    private String replaceParams(String s) {
+        Map<String, Object> params = getParams();
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            String val = String.valueOf(entry.getValue());
+            s = s.replace(entry.getKey(), val);
+        }
+        return s;
+    }
+
     public String[] getFields() {
         return fields;
     }
@@ -225,5 +246,34 @@ public class VQuery {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public Map<String, Object> getParams() {
+        HashMap<String, Object> params = new HashMap<>();
+        getParams(this, params);
+        return params;
+    }
+
+    public void getParams(VQuery vQuery, HashMap<String, Object> params) {
+        if (vQuery != null) {
+            if (vQuery.getCriteria() != null) {
+                StringBuilder toReturn = new StringBuilder();
+                Object value = vQuery.getCriteria().getValue();
+                if (value instanceof VEntityQuery) {
+                    getParams(((VEntityQuery) value), params);
+                } else {
+                    ComparisonOperator.mount(value, toReturn, vQuery.getCriteria().getComparisonOperator());
+                }
+                params.put(vQuery.getCriteria().getParam(), toReturn.toString());
+            }
+            for (VQuery subQuery : vQuery.getSubQuerys()) {
+                getParams(subQuery, params);
+            }
+            for (Join join : vQuery.joins) {
+                for (CriteriaJoin subQuery : join.getSubQuerys()) {
+                    params.putAll(subQuery.getParams());
+                }
+            }
+        }
     }
 }

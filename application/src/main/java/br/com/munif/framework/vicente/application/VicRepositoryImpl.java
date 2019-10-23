@@ -18,6 +18,7 @@ import javax.persistence.Query;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -172,10 +173,12 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         String joins = "";
         String attrs = DEFAULT_ALIAS;
         String alias = DEFAULT_ALIAS;
+        Map<String, Object> params = null;
         if (vicQuery.getQuery() != null) {
             attrs = vicQuery.getQuery().getFieldsWithAlias();
             joins = vicQuery.getQuery().getJoins();
             alias = vicQuery.getQuery().getAlias();
+            params = vicQuery.getQuery().getParams();
         }
 
         String hql = mountHQL(vicQuery, clause, joins, attrs, alias);
@@ -183,10 +186,15 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         query.setFirstResult(vicQuery.getFirstResult());
         query.setMaxResults(vicQuery.getMaxResults());
         setTenancyParameters(query);
+        if (params != null) {
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                query.setParameter(entry.getKey().replace(":", ""), entry.getValue());
+            }
+        }
         if (!DEFAULT_ALIAS.equals(attrs)) {
             query = selectAttributes(query);
-
         }
+        System.out.println(hql);
         return query.getResultList();
     }
 

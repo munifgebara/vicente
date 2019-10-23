@@ -169,7 +169,7 @@ public class VicRepositoryTest {
         VicThreadScope.gi.set("G11,G15");
         VicQuery vicQuery = new VicQuery();
         vicQuery.setHql("obj.nome like '%3%'");
-        vicQuery.setQuery(new VQuery(new Criteria("nome", ComparisonOperator.CONTAINS, "4"), "nome"));
+        vicQuery.setQuery(new VQuery(new Criteria("nome", ComparisonOperator.CONTAINS, "4")));
         List<Pessoa> findAll = pessoaService.findByHql(vicQuery);
         assertEquals(1, findAll.size());
     }

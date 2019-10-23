@@ -1,9 +1,10 @@
 package br.com.munif.framework.vicente.core.vquery;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import java.util.Map;
 
 /**
- *
  * @author wmfsystem
  */
 public class Criteria {
@@ -14,11 +15,13 @@ public class Criteria {
     private Object[] values;
     private String fieldFn;
     private String valueFn;
+    private String param;
 
     private void onInit() {
         comparisonOperator = ComparisonOperator.EQUAL;
         fieldFn = null;
         valueFn = null;
+        param = ":" + field + RandomStringUtils.randomNumeric(10);
     }
 
     public Criteria() {
@@ -28,10 +31,10 @@ public class Criteria {
     }
 
     public Criteria(Object field, ComparisonOperator comparisonOperator, Object value) {
-        onInit();
         this.field = field;
-        this.comparisonOperator = comparisonOperator;
         this.value = value;
+        onInit();
+        this.comparisonOperator = comparisonOperator;
     }
 
     public Object getField() {
@@ -98,6 +101,14 @@ public class Criteria {
 
     @Override
     public String toString() {
-        return comparisonOperator.getComparation(getField(), getValue());
+        return comparisonOperator.getComparation(getField(), value instanceof VEntityQuery ?  getValue() : getParam());
+    }
+
+    public String getParam() {
+        return param;
+    }
+
+    public void setParam(String param) {
+        this.param = param;
     }
 }
