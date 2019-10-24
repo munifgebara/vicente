@@ -256,7 +256,7 @@ public class BookApiTest {
         // Get the book
         restMockMvc.perform(delete("/api/books/{id}", book.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         // Validate the database is empty
         List<Book> bookList = findAll();

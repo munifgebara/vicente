@@ -7,6 +7,8 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author munif
@@ -16,4 +18,7 @@ public interface VicRepository<T extends BaseEntity> extends JpaRepository<T, Se
     List<T> findAllNoTenancy();
     List<T> findAllNoPublic();
     List<T> findByHql(VicQuery query);
+    void patch(Map<String, Object> map);
+    T patchReturning(Map<String, Object> map);
+    public T load(String id);
 }

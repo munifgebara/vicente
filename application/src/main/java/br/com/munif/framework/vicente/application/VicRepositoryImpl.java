@@ -4,8 +4,7 @@ import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-import br.com.munif.framework.vicente.core.vquery.Param;
-import br.com.munif.framework.vicente.core.vquery.ParamList;
+import br.com.munif.framework.vicente.core.vquery.*;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntityHelper;
@@ -20,6 +19,7 @@ import javax.persistence.Query;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,7 +30,6 @@ import java.util.Set;
 public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository<T, Serializable> implements VicRepository<T> {
 
     private final EntityManager entityManager;
-    private final String DEFAULT_ALIAS = "obj";
 
     public VicRepositoryImpl(JpaEntityInformation entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
@@ -149,7 +148,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
      * @return all domain elements by tenancy
      */
     public List<T> findAllNoPublic() {
-        String hql = "FROM " + getDomainClass().getSimpleName() + " obj where \n" + geTenancyHQL(false, DEFAULT_ALIAS);
+        String hql = "FROM " + getDomainClass().getSimpleName() + " obj where \n" + geTenancyHQL(false, VicRepositoryUtil.DEFAULT_ALIAS);
         Query query = entityManager.createQuery(hql);
         setTenancyParameters(query);
         return query.getResultList();
@@ -172,8 +171,8 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
                 .concat((vicQuery.getQuery() != null ? vicQuery.getQuery().toString() : "1=1"));
 
         String joins = "";
-        String attrs = DEFAULT_ALIAS;
-        String alias = DEFAULT_ALIAS;
+        String attrs = VicRepositoryUtil.DEFAULT_ALIAS;
+        String alias = VicRepositoryUtil.DEFAULT_ALIAS;
         ParamList params = null;
         if (vicQuery.getQuery() != null) {
             attrs = vicQuery.getQuery().getFieldsWithAlias();
@@ -189,10 +188,10 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         setTenancyParameters(query);
         if (params != null) {
             for (Param entry : params) {
-                query.setParameter(entry.getKey().replace(":", ""), entry.getValueToSearch());
+                query.setParameter(entry.getKeyToSearch(), entry.getValueToSearch());
             }
         }
-        if (!DEFAULT_ALIAS.equals(attrs)) {
+        if (!VicRepositoryUtil.DEFAULT_ALIAS.equals(attrs)) {
             query = selectAttributes(query);
         }
         System.out.println(hql);
@@ -233,5 +232,49 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
                 + geTenancyHQL(true, alias)
                 + ") "
                 + " ORDER BY " + alias + "." + vicQuery.getOrderBy() + " , " + alias + ".id asc";
+    }
+
+    @Override
+    public void patch(Map<String, Object> map) {
+        SetUpdateQuery setUpdate = VicRepositoryUtil.getSetUpdate(map);
+        String str = " update " + getDomainClass().getSimpleName() + " " + VicRepositoryUtil.DEFAULT_ALIAS + " set " + setUpdate + " where " + VicRepositoryUtil.DEFAULT_ALIAS + ".id = '" + map.get("id") + "' and " + geTenancyHQL(false, VicRepositoryUtil.DEFAULT_ALIAS);
+        Query query = entityManager.createQuery(str);
+        for (Param param : setUpdate.getParams()) {
+            query.setParameter(param.getKeyToSearch(), param.getValue());
+        }
+        setTenancyParameters(query);
+        query.executeUpdate();
+    }
+
+    @Override
+    public T patchReturning(Map<String, Object> map) {
+        T byId = load(String.valueOf(map.get("id")));
+        try {
+            patchReturningRecursively(map, byId);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return byId;
+    }
+
+    private void patchReturningRecursively(Map<String, Object> map, Object t) throws NoSuchFieldException, IllegalAccessException {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            if (entry instanceof Map) {
+                Field field = t.getClass().getField(entry.getKey());
+                field.setAccessible(true);
+                patchReturningRecursively((Map<String, Object>) entry.getValue(), field.get(t));
+            } else {
+                Field field = t.getClass().getField(entry.getKey());
+                field.setAccessible(true);
+                field.set(t, entry.getValue());
+            }
+        }
+    }
+
+    @Override
+    public T load(String id) {
+        VicQuery vicQuery = new VicQuery(new VQuery(new Criteria("id", ComparisonOperator.EQUAL, id)), 1);
+        List<T> byHql = findByHql(vicQuery);
+        return byHql.size() > 0 ? byHql.get(0) : null;
     }
 }

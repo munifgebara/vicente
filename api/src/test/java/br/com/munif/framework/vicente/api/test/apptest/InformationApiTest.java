@@ -186,7 +186,7 @@ public class InformationApiTest {
         System.out.println("T3---->" + describeInformations(all));
         restMockMvc.perform(delete("/api/information/" + all.get(2).getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
 }

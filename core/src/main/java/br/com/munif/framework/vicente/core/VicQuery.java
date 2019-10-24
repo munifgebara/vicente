@@ -26,6 +26,18 @@ public class VicQuery {
         this.orderBy = orderBy;
     }
 
+    public VicQuery(VQuery query, int firstResult, int maxResults, String orderBy) {
+        this.query = query;
+        this.firstResult = firstResult;
+        this.maxResults = maxResults;
+        this.orderBy = orderBy;
+    }
+
+    public VicQuery(VQuery query, int maxResults) {
+        this.query = query;
+        this.maxResults = maxResults;
+    }
+
     public String getOrderBy() {
         return orderBy;
     }

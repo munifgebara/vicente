@@ -15,13 +15,13 @@ public class Criteria {
     private Object[] values;
     private String fieldFn;
     private String valueFn;
-    private String param;
+    private Param param;
 
     private void onInit() {
         comparisonOperator = ComparisonOperator.EQUAL;
         fieldFn = null;
         valueFn = null;
-        param = ":" + RandomStringUtils.randomAlphabetic(10).toLowerCase().concat(RandomStringUtils.randomNumeric(10));
+        param = new Param(null, value.getClass().getSimpleName());
     }
 
     public Criteria() {
@@ -101,14 +101,14 @@ public class Criteria {
 
     @Override
     public String toString() {
-        return comparisonOperator.getComparation(getField(), value instanceof VEntityQuery ?  getValue() : getParam());
+        return comparisonOperator.getComparation(getField(), value instanceof VEntityQuery ? getValue() : getParam().getKey());
     }
 
-    public String getParam() {
+    public Param getParam() {
         return param;
     }
 
-    public void setParam(String param) {
+    public void setParam(Param param) {
         this.param = param;
     }
 }

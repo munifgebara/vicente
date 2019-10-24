@@ -55,7 +55,7 @@ public class CriteriaJoin {
                     getParams(((CriteriaJoin) value), params);
                 } else {
                     ComparisonOperator.mount(value, toReturn, vQuery.getCriteria().getComparisonOperator());
-                    params.add(vQuery.getCriteria().getParam(), toReturn.toString(), value.getClass().getSimpleName());
+                    params.add(vQuery.getCriteria().getParam().setBuilderValue(toReturn.toString()));
                 }
             }
         }

@@ -223,7 +223,7 @@ public class SimpleApiTest {
         assert (qtdNew == qtdOld + 1);
         restMockMvc.perform(delete("/api/books/{id}", "1")
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
         qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld);
         System.out.println("----------->" + bookRepository.findAll());

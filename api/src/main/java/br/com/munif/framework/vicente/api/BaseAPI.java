@@ -40,7 +40,7 @@ public class BaseAPI<T extends BaseEntity> {
     @Transactional
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<T> delete(@PathVariable String id) {
-        T entity = service.view(id);
+        T entity = service.load(id);
         if (entity == null) {
             throw new VicenteNotFoundException("Not found");
         }
@@ -57,7 +57,7 @@ public class BaseAPI<T extends BaseEntity> {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<T> save(@RequestBody @Valid T model) {
         beforeSave(model);
-        if (service.view(model.getId()) != null) {
+        if (service.load(model.getId()) != null) {
             throw new VicenteCreateWithExistingIdException("create With Existing Id=" + model.getId());
         }
 
@@ -80,11 +80,24 @@ public class BaseAPI<T extends BaseEntity> {
 
     }
 
+    @Transactional
+    @PatchMapping(value = "/{id}", consumes = "application/json")
+    public ResponseEntity<Void> patch(@RequestBody @Valid Map model) {
+        service.patch(model);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Transactional
+    @PatchMapping(value = "/returning/{id}", consumes = "application/json")
+    public ResponseEntity patchReturning(@RequestBody @Valid Map model) {
+        return ResponseEntity.ok(service.patchReturning(model));
+    }
+
     private ResponseEntity<T> doUpdate(T model) {
         try {
             T entity = null;
             HttpStatus ht = HttpStatus.OK;
-            T oldEntity = service.view(model.getId());
+            T oldEntity = service.load(model.getId());
             if (oldEntity != null) {
                 beforeUpdate(model.getId(), model);
                 BaseEntityHelper.overwriteJsonIgnoreFields(model, oldEntity);
@@ -141,7 +154,7 @@ public class BaseAPI<T extends BaseEntity> {
     @Transactional
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity load(@PathVariable String id, @RequestParam(required = false) String fields) {
-        T view = service.view(id);
+        T view = service.load(id);
         if (view == null || !view.canRead()) {
             throw new VicenteNotFoundException("Not found");
         }

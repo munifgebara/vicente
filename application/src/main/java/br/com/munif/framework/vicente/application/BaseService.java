@@ -20,6 +20,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -80,8 +81,8 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
-    public T view(String id) {
-        T entity = repository.findById(id).orElse(null);
+    public T load(String id) {
+        T entity = repository.load(id);
         readVicTenancyFields(entity);
         return entity;
     }
@@ -104,6 +105,21 @@ public abstract class BaseService<T extends BaseEntity> {
             saveVicTenancyFields(resource);
         }
         return entity;
+    }
+
+    @Transactional(readOnly = true)
+    public void patch(Map<String, Object> map) {
+        repository.patch(map);
+    }
+
+    @Transactional(readOnly = true)
+    public T patchReturning(Map<String, Object> map) {
+        return repository.patchReturning(map);
+    }
+
+    @Transactional(readOnly = true)
+    public T findOne(String id) {
+        return repository.load(id);
     }
 
     @Transactional(readOnly = true)

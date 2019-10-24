@@ -7,7 +7,6 @@ import java.util.*;
  * @author wmfsystem
  */
 public class VQuery {
-
     private LogicalOperator logicalOperator = LogicalOperator.SIMPLE;
     private Criteria criteria;
     private List<VQuery> subQuerys = new LinkedList<>();
@@ -263,7 +262,7 @@ public class VQuery {
                     getParams(((VEntityQuery) value), params);
                 } else {
                     ComparisonOperator.mount(value, toReturn, vQuery.getCriteria().getComparisonOperator());
-                    params.add(vQuery.getCriteria().getParam(), toReturn.toString(), value.getClass().getSimpleName());
+                    params.add(vQuery.getCriteria().getParam().setBuilderValue(toReturn.toString()));
                 }
             }
             for (VQuery subQuery : vQuery.getSubQuerys()) {
