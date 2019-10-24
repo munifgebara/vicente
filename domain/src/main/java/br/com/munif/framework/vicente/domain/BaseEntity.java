@@ -6,9 +6,12 @@
 package br.com.munif.framework.vicente.domain;
 
 import br.com.munif.framework.vicente.core.*;
+import br.com.munif.framework.vicente.domain.annotations.BaseEntityIgnoreProperties;
 import br.com.munif.framework.vicente.domain.typings.*;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 

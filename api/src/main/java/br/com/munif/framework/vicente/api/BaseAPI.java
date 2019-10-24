@@ -6,6 +6,7 @@
 package br.com.munif.framework.vicente.api;
 
 import br.com.munif.framework.vicente.application.BaseService;
+import br.com.munif.framework.vicente.core.ReflectionUtil;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.domain.BaseEntity;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author munif
@@ -35,8 +38,8 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     @Transactional
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public T delete(@PathVariable String id) {
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<T> delete(@PathVariable String id) {
         T entity = service.view(id);
         if (entity == null) {
             throw new VicenteNotFoundException("Not found");
@@ -46,31 +49,31 @@ public class BaseAPI<T extends BaseEntity> {
         }
         beforeDelete(entity);
         service.delete(entity);
-        return entity;
+        return new ResponseEntity<>(entity, HttpStatus.NO_CONTENT);
     }
 
     @Transactional
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public T save(@RequestBody @Valid T model) {
+    public ResponseEntity<T> save(@RequestBody @Valid T model) {
         beforeSave(model);
         if (service.view(model.getId()) != null) {
             throw new VicenteCreateWithExistingIdException("create With Existing Id=" + model.getId());
         }
 
         T entity = service.save(model);
-        return entity;
+        return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
     @Transactional
-    @RequestMapping(value = "", method = RequestMethod.PUT, consumes = "application/json")
+    @PutMapping(value = "", consumes = "application/json")
     public ResponseEntity<T> updateWithoutId(@RequestBody @Valid T model) {
         return doUpdate(model);
 
     }
 
     @Transactional
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
+    @PutMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<T> updateWithId(@PathVariable("id") String id, @RequestBody @Valid T model) {
         model.setId(id);
         return doUpdate(model);
@@ -100,13 +103,13 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     @Transactional
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public VicReturn<T> findHQL(HttpServletRequest request, VicQuery query) {
         return getVicReturnByQuery(query);
     }
 
     @Transactional
-    @RequestMapping(value = "/vquery", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/vquery", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public VicReturn<T> findVQuery(@RequestBody VicQuery query) {
         return getVicReturnByQuery(query);
     }
@@ -127,30 +130,48 @@ public class BaseAPI<T extends BaseEntity> {
         if (hasMore) {
             result.remove(maxResults);
         }
+        if (query.getQuery() != null && query.getQuery().getFields() != null) {
+            String[] fields = query.getQuery().getFields();
+            List<Map<String, Object>> collect = result.stream().map(s -> getFields(fields, s)).collect(Collectors.toList());
+            return new VicReturn(collect, collect.size(), query.getFirstResult(), hasMore);
+        }
         return new VicReturn<T>(result, result.size(), query.getFirstResult(), hasMore);
     }
 
     @Transactional
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public T load(@PathVariable String id) {
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity load(@PathVariable String id, @RequestParam(required = false) String fields) {
         T view = service.view(id);
         if (view == null || !view.canRead()) {
             throw new VicenteNotFoundException("Not found");
         }
-        ;
+
         beforeReturnOne(view);
-        return view;
+        if (fields != null) {
+            Map<String, Object> stringObjectMap = getFields(fields, view);
+            return new ResponseEntity(stringObjectMap, HttpStatus.OK);
+        }
+        return ResponseEntity.ok(view);
+    }
+
+    private Map<String, Object> getFields(String fields, T view) {
+        String[] split = fields.split(",");
+        return getFields(split, view);
+    }
+
+    private Map<String, Object> getFields(String[] fields, T view) {
+        return ReflectionUtil.objectFieldsToMap(fields, view);
     }
 
     @ResponseBody
     @Transactional
-    @RequestMapping(value = "/draw/{id}", method = RequestMethod.GET, produces = "image/svg+xml")
-    public String draw(@PathVariable String id) {
+    @GetMapping(value = "/draw/{id}", produces = "image/svg+xml")
+    public ResponseEntity<String> draw(@PathVariable String id) {
         String svg = service.draw(id);
-        return svg;
+        return ResponseEntity.ok(svg);
     }
 
-    @RequestMapping(value = "/new", method = RequestMethod.GET)
+    @GetMapping(value = "/new")
     public T initialState() {
         return service.newEntity();
     }
