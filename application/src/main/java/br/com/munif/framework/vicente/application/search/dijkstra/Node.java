@@ -1,24 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.munif.framework.vicente.application.search.dijkstra;
-
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author munif
+ */
 public class Node {
 
     private String name;
-
     private LinkedList<Node> shortestPath = new LinkedList<>();
-
     private Integer distance = Integer.MAX_VALUE;
-
     private Map<Node, Integer> adjacentNodes = new HashMap<>();
 
     public Node(String name) {
@@ -63,9 +57,8 @@ public class Node {
 
     @Override
     public String toString() {
-        return name+" "+distance;
+        return name + " " + distance;
     }
-    
-    
+
 
 }

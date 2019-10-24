@@ -2,14 +2,14 @@ package br.com.munif.framework.vicente.api.errors;
 
 import java.io.Serializable;
 
+/**
+ * @author munif
+ */
 public class FieldErrorVM implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     private final String objectName;
-
     private final String field;
-
     private final String message;
 
     public FieldErrorVM(String dto, String field, String message) {

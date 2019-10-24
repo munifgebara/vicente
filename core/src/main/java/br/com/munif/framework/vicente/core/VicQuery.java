@@ -2,22 +2,18 @@ package br.com.munif.framework.vicente.core;
 
 import br.com.munif.framework.vicente.core.vquery.VQuery;
 
+/**
+ * @author munif
+ */
 public class VicQuery {
 
     public static final int DEFAULT_QUERY_SIZE = 1000000000;
-
     public static final String DEFAULT_QUERY = "1=1";
-
-    public static final String DEFAULT_ORDER_BY = "id";
-
+    private static final String DEFAULT_ORDER_BY = "id";
     private String hql = DEFAULT_QUERY;
-
     private VQuery query;
-
     private int firstResult = 0;
-
     private int maxResults = -1;
-
     private String orderBy = DEFAULT_ORDER_BY;
 
     public VicQuery() {
@@ -28,6 +24,18 @@ public class VicQuery {
         this.firstResult = firstResult;
         this.maxResults = maxResults;
         this.orderBy = orderBy;
+    }
+
+    public VicQuery(VQuery query, int firstResult, int maxResults, String orderBy) {
+        this.query = query;
+        this.firstResult = firstResult;
+        this.maxResults = maxResults;
+        this.orderBy = orderBy;
+    }
+
+    public VicQuery(VQuery query, int maxResults) {
+        this.query = query;
+        this.maxResults = maxResults;
     }
 
     public String getOrderBy() {

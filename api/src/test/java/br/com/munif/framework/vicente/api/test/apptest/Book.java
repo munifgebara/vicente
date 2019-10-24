@@ -1,16 +1,10 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
-import br.com.munif.framework.vicente.domain.typings.VicAddress;
-import br.com.munif.framework.vicente.domain.typings.VicEmail;
-import br.com.munif.framework.vicente.domain.typings.VicPhone;
-import org.hibernate.annotations.Columns;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author munif
@@ -18,6 +12,10 @@ import java.util.List;
 @Entity
 @Audited
 public class Book extends BaseEntity {
+
+    public Book() {
+        
+    }
 
     @Column(nullable = false)
     private String name;
@@ -29,5 +27,12 @@ public class Book extends BaseEntity {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return super.toString()+" "+name;
+    }
+    
+    
 
 }

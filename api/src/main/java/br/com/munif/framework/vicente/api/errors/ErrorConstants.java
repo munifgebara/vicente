@@ -1,5 +1,8 @@
 package br.com.munif.framework.vicente.api.errors;
 
+/**
+ * @author munif
+ */
 public final class ErrorConstants {
 
     public static final String ERR_CONCURRENCY_FAILURE = "error.concurrencyFailure";

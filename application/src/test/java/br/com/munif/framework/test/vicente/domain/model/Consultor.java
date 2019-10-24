@@ -2,7 +2,7 @@ package br.com.munif.framework.test.vicente.domain.model;
 
 import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
-import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Entity
 @Audited
 @VicTenancyPolicy(VicTenancyType.ORGANIZATIONAL)
-public class Consultor extends BaseEntity {
+public class Consultor extends VicTemporalBaseEntity {
 
     @Column(nullable = false)
     private String nome;

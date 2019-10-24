@@ -1,6 +1,5 @@
 package br.com.munif.framework.test.vicente.domain.model;
 
-import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
 import br.com.munif.framework.vicente.domain.typings.VicAddress;
 import br.com.munif.framework.vicente.domain.typings.VicEmail;

@@ -1,5 +1,9 @@
 package br.com.munif.framework.vicente.core.vquery;
 
+/**
+ *
+ * @author wmfsystem
+ */
 public interface Joinable<T> {
-    public T on(Criteria criteria);
+    T on(Criteria criteria);
 }

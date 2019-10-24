@@ -5,73 +5,95 @@
  */
 package br.com.munif.framework.vicente.domain;
 
-import br.com.munif.framework.vicente.core.VicThreadScope;
-import br.com.munif.framework.vicente.core.RightsHelper;
-import br.com.munif.framework.vicente.core.UIDHelper;
-import br.com.munif.framework.vicente.core.VicTenancyPolicy;
-import br.com.munif.framework.vicente.core.VicTenancyType;
-import java.util.Date;
-import java.util.Objects;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.Version;
-
+import br.com.munif.framework.vicente.core.*;
+import br.com.munif.framework.vicente.domain.annotations.BaseEntityIgnoreProperties;
 import br.com.munif.framework.vicente.domain.typings.*;
-import java.text.SimpleDateFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Objects;
+
+import static br.com.munif.framework.vicente.core.RightsHelper.*;
 
 /**
- *
  * @author munif
  */
 @MappedSuperclass
 @TypeDefs({
-    @TypeDef(name = "vicaddress", defaultForType = VicAddress.class, typeClass = VicAddressUserType.class)
-    ,
-        @TypeDef(name = "vicemail", defaultForType = VicEmail.class, typeClass = VicEmailUserType.class)
-    ,
+        @TypeDef(name = "vicaddress", defaultForType = VicAddress.class, typeClass = VicAddressUserType.class),
+        @TypeDef(name = "vicemail", defaultForType = VicEmail.class, typeClass = VicEmailUserType.class),
         @TypeDef(name = "vicphone", defaultForType = VicPhone.class, typeClass = VicPhoneUserType.class)
 })
 public class BaseEntity {
 
+    public static boolean useSimpleId = false;
+
     @Id
+    @Column(length = 100)
     protected String id;
 
+    @JsonIgnore
     protected String oi;
 
+    @JsonIgnore
     protected String gi;
 
+    @JsonIgnore
     protected String ui;
 
+    @JsonIgnore
     protected Integer rights;
 
     protected String extra;
 
+    @JsonIgnore
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     protected Date cd;
 
+    @JsonIgnore
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     protected Date ud;
 
+    @JsonIgnore
     protected Boolean active;
 
     @Version
     private Integer version;
 
     public BaseEntity() {
-        this.id = UIDHelper.getUID();
-        this.gi = RightsHelper.getMainGi();
-        this.ui = VicThreadScope.ui.get();
-        this.oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";
-        this.rights = RightsHelper.getDefault();
-        this.extra = "Framework";
-        this.cd = new Date();
-        this.ud = new Date();
+        init();
+    }
+
+    private void init() {
+        if (useSimpleId) {
+            id = UIDHelper.getSimpleID(this.getClass());
+        } else {
+            id = UIDHelper.getUID();
+        }
+        gi = stringNull(RightsHelper.getMainGi());
+        ui = stringNull(VicThreadScope.ui.get());
+        oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";
+        rights = RightsHelper.getDefault();
+        extra = "Framework";
+        cd = new Date();
+        ud = new Date();
         active = true;
-        //version=0; TODO Pesquisar
+        version = null;
+    }
+
+
+    private String stringNull(String v) {
+        if (v == null) {
+            return "_NULL_";
+        } else {
+            return v;
+        }
     }
 
     public String getId() {
@@ -192,53 +214,45 @@ public class BaseEntity {
         return this.getClass().getSimpleName();
     }
 
-    public String getStringRights() {
-        Integer rights = this.rights != null ? this.rights : 0;
-        String toReturn = "";
-        toReturn += "ui:" + ui + "(";
-        toReturn += (RightsHelper.OWNER_READ & rights) > 0 ? "R" : "-";
-        toReturn += (RightsHelper.OWNER_UPDATE & rights) > 0 ? "U" : "-";
-        toReturn += (RightsHelper.OWNER_DELETE & rights) > 0 ? "D" : "-";
-        toReturn += ") ";
-        toReturn += "gi:" + gi + "(";
-        toReturn += (RightsHelper.GROUP_READ & rights) > 0 ? "R" : "-";
-        toReturn += (RightsHelper.GROUP_UPDATE & rights) > 0 ? "U" : "-";
-        toReturn += (RightsHelper.GROUP_DELETE & rights) > 0 ? "D" : "-";
-        toReturn += ") ";
-        toReturn += "o(";
-        toReturn += (RightsHelper.OTHER_READ & rights) > 0 ? "R" : "-";
-        toReturn += (RightsHelper.OTHER_UPDATE & rights) > 0 ? "U" : "-";
-        toReturn += (RightsHelper.OTHER_DELETE & rights) > 0 ? "D" : "-";
-        toReturn += ") ";
-        toReturn += "cd:" + format(cd) + " ";
-        toReturn += "up:" + format(ud);
-
-        return toReturn;
-    }
-
     @Override
     public String toString() {
         return getClass().getSimpleName() + "{" + "id=" + id + ", oi=" + oi + ", gi=" + gi + ", ui=" + ui + ", rights=" + rights + ", extra=" + extra + ", cd=" + cd + ", ud=" + ud + ", active=" + active + ", version=" + version + '}';
     }
 
-    public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+    public boolean isOwner() {
+        String token_ui = VicThreadScope.ui.get();
+        return ui != null && token_ui != null && token_ui.equals(ui);
+    }
 
-    public String format(Date d) {
-        if (d == null) {
-            return "null";
-        } else {
-            return sdf.format(d);
-        }
+    public boolean commonGroup() {
+        String token_gi = VicThreadScope.gi.get();
+        return gi != null && token_gi != null && token_gi.contains(gi + ',');
+    }
+
+    public boolean canDelete() {
+        return ((OTHER_DELETE | (commonGroup() ? GROUP_DELETE : 0) | (isOwner() ? OWNER_DELETE : 0)) & rights) > 0;
+    }
+
+    public boolean canUpdate() {
+        return ((OTHER_UPDATE | (commonGroup() ? GROUP_UPDATE : 0) | (isOwner() ? OWNER_UPDATE : 0)) & rights) > 0;
+    }
+
+    public boolean canRead() {
+        boolean commonGroup = commonGroup();
+        boolean isOwner = isOwner();
+        return ((OTHER_READ | (commonGroup ? GROUP_READ : 0) | (isOwner ? OWNER_READ : 0)) & rights) > 0;
+    }
+
+    @JsonGetter
+    public String r() {
+        return "" + (isOwner() ? 'O' : '_') + (commonGroup() ? 'G' : '_') + (canRead() ? 'R' : '_') + (canUpdate() ? 'U' : '_') + (canDelete() ? 'D' : '_');
     }
 
     public VicTenancyType getTencyPolicy() {
         VicTenancyPolicy vtp = this.getClass().getAnnotation(VicTenancyPolicy.class);
-
         if (vtp == null) {
-            //System.out.println("----> "+this.getClassName()+" "+VicTenancyType.GROUPS);
             return VicTenancyType.GROUPS;
         }
-        System.out.println("----> " + this.getClassName() + " " + vtp.value());
         return vtp.value();
     }
 

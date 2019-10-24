@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Audited
 public class Pedido extends BaseEntity {
-
+    
     @OneToMany(mappedBy = "pedido")
     private List<ItemPedido> itens;
 

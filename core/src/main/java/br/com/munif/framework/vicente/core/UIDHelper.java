@@ -3,22 +3,33 @@ package br.com.munif.framework.vicente.core;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
+/**
+ * @author munif
+ */
 public class UIDHelper {
 
-    private static long lastTime;
+    public static long lastTime;
 
-    private static String myMac;
+    public static String myMac;
+
+    public static long simpleIdInitialCount = 0;
+
+    public static synchronized String getSimpleID(Class c) {
+        String prefixo = c.getSimpleName().substring(0, 3);
+        simpleIdInitialCount++;
+        return String.format("%s%09d", prefixo, simpleIdInitialCount);
+    }
 
     public static synchronized String getUID() {
-        if (myMac==null){
-            myMac=getMacValue();
+        if (myMac == null) {
+            myMac = getMacValue();
         }
         long time = System.currentTimeMillis() * 100;
         while (time <= lastTime) {
             time++;
         }
         lastTime = time;
-        return "" + Long.toHexString(time).toUpperCase()+myMac;
+        return "" + Long.toHexString(time).toUpperCase() + myMac;
     }
 
     public static String getMacValue() {
@@ -45,12 +56,5 @@ public class UIDHelper {
             throw new RuntimeException("Impossible to find NetworkInterface");
         }
         return toReturn;
-    }
-
-    public static void main(String args[]) {
-        for (int i = 0; i < 1000; i++) {
-            //System.out.println("----->" + getUID());
-        }
-
     }
 }

@@ -8,17 +8,14 @@ package br.com.munif.framework.vicente.core;
 import java.util.List;
 
 /**
- *
  * @author munif
  */
 public class VicReturn<T> {
 
     private List<T> values;
-
     private Integer quantity;
-
+    private Integer total;
     private Integer firstResult;
-
     private Boolean hasMore;
 
     public VicReturn() {
@@ -29,6 +26,7 @@ public class VicReturn<T> {
         this.quantity = quantity;
         this.firstResult = firstResult;
         this.hasMore = hasMore;
+        this.total = null;
     }
 
     public List<T> getValues() {
@@ -45,6 +43,10 @@ public class VicReturn<T> {
 
     public Boolean getHasMore() {
         return hasMore;
+    }
+
+    public Integer getTotal() {
+        return total;
     }
 
 }

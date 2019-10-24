@@ -1,7 +1,6 @@
 package br.com.munif.framework.test.vicente.domain.model;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.typings.VicEmail;
 import br.com.munif.framework.vicente.domain.typings.VicPhone;
 import org.hibernate.annotations.Columns;
 import org.hibernate.envers.Audited;

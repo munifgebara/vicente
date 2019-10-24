@@ -6,13 +6,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * @author munif
+ */
 public class Utils {
 
     public static List<Field> getAllFields(Class c) {
@@ -24,27 +24,21 @@ public class Utils {
         return arrayList;
     }
 
-    public static String removeNaoNumeros(String numero) {
+    public static String removeNotNumbers(String numero) {
         if (numero == null) {
             return null;
         }
         return numero.replaceAll("[\\D]", "");
     }
 
-    public static void removeNumerosDosAtributosa(Object obj, String... atributos) {
+    public static void removeNumbersFromAtrributes(Object obj, String... atributos) {
         Class clazz = obj.getClass();
-        for (String atributo : atributos) {
+        for (String attr : atributos) {
             try {
-                Field att = clazz.getDeclaredField(atributo);
+                Field att = clazz.getDeclaredField(attr);
                 att.setAccessible(true);
-                att.set(obj, removeNaoNumeros((String) att.get(obj)));
-            } catch (NoSuchFieldException ex) {
-                Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SecurityException ex) {
-                Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalArgumentException ex) {
-                Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
+                att.set(obj, removeNotNumbers((String) att.get(obj)));
+            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
                 Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -60,7 +54,7 @@ public class Utils {
         return (Class<?>) ((ParameterizedType) superClass).getActualTypeArguments()[index];
     }
 
-    public static String primeiraMinuscula(String s) {
+    public static String firstTiny(String s) {
         String first = s.substring(0, 1).toLowerCase();
         return first + s.substring(1);
 
@@ -68,12 +62,6 @@ public class Utils {
 
     public static String windowsSafe(String s) {
         return s.replaceAll("\\\\", "/");
-    }
-
-    public static void main(String args[]) {
-
-        System.out.println(primeiraMinuscula("ABC"));
-
     }
 
     public static List<Class> scanClasses() throws IOException {
@@ -95,6 +83,9 @@ public class Utils {
     public static List<Class> scanFolder(File folder, File baseFolder) {
         List<Class> toReturn = new ArrayList<>();
         File[] fs = folder.listFiles();
+        if (fs == null) {
+            return toReturn;
+        }
         for (File f : fs) {
             if (f.isDirectory()) {
                 toReturn.addAll(scanFolder(f, baseFolder));
@@ -111,6 +102,38 @@ public class Utils {
             }
         }
         return toReturn;
+    }
+
+    public static void fillColectionsWithEmpty(Object obj) {
+        try {
+            List<Field> fields = getAllFields(obj.getClass());
+            for (Field f : fields) {
+                if (List.class.isAssignableFrom(f.getType())) {
+                    f.setAccessible(true);
+                    if (f.get(obj) == null) {
+                        f.set(obj, Collections.EMPTY_LIST);
+                    }
+                } else if (Set.class.isAssignableFrom(f.getType())) {
+                    f.setAccessible(true);
+                    if (f.get(obj) == null) {
+                        f.set(obj, Collections.EMPTY_SET);
+                    }
+                } else if (Map.class.isAssignableFrom(f.getType())) {
+                    f.setAccessible(true);
+                    if (f.get(obj) == null) {
+                        f.set(obj, Collections.EMPTY_MAP);
+                    }
+                }
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static String firstCapital(String s) {
+        String first = s.substring(0, 1).toUpperCase();
+        return first + s.substring(1);
     }
 
 }

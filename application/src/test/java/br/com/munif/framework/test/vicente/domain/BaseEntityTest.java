@@ -2,6 +2,8 @@ package br.com.munif.framework.test.vicente.domain;
 
 import br.com.munif.framework.test.vicente.domain.model.Pessoa;
 import br.com.munif.framework.vicente.core.VicThreadScope;
+import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +18,7 @@ public class BaseEntityTest {
 
     @Before
     public void setUp() {
+        BaseEntity.useSimpleId=true;
         VicThreadScope.ui.set("ZZ");
         VicThreadScope.gi.set("ZZ");
         this.entity = new Pessoa();

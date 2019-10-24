@@ -3,8 +3,6 @@ package br.com.munif.framework.test.vicente.application;
 import br.com.munif.framework.test.vicente.domain.model.Consultor;
 import br.com.munif.framework.test.vicente.domain.model.Funcionario;
 import br.com.munif.framework.test.vicente.domain.model.Pessoa;
-import br.com.munif.framework.vicente.core.RightsHelper;
-import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import org.junit.Before;
@@ -23,18 +21,20 @@ import static org.junit.Assert.assertEquals;
  * @author munif
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MySQLSpringConfig.class})
+@ContextConfiguration(classes = {H2SpringConfig.class})
 public class VicTenancyPolicyTest {
 
     @Autowired
     protected FuncionarioService funcionarioService;
     @Autowired
     protected ConsultorService consultorService;
+    @Autowired
+    protected PessoaService pessoaService;
 
     @Before
     @Transactional
     public void setUp() {
-        System.out.println("Setup of Test class " + this.getClass().getSimpleName() + " " + funcionarioService.quantidade());
+        System.out.println("Setup of Test class " + this.getClass().getSimpleName() + " " + funcionarioService.count());
         if (funcionarioService.findAll().size() > 0) {
             return;
         }
@@ -43,17 +43,17 @@ public class VicTenancyPolicyTest {
 
         for (int i = 0; i < 1000; i++) {
             VicThreadScope.oi.set(1 + i / 100 + "." + (1 + (i / 10) % 10) + "." + (1 + i % 10) + ".");
-            Funcionario f = new Funcionario();
+            Funcionario f = funcionarioService.newEntity();
             f.setNome("Funcionario " + i);
             funcionarioService.save(f);
 
-            Consultor c = new Consultor();
+            Consultor c = consultorService.newEntity();
             c.setNome("Consultor " + i);
             consultorService.save(c);
         }
 
         VicThreadScope.oi.set("A.B.C.");
-        Funcionario f = new Funcionario();
+        Funcionario f = funcionarioService.newEntity();
         f.setNome("Funcionario ABC");
         funcionarioService.save(f);
 
@@ -62,14 +62,14 @@ public class VicTenancyPolicyTest {
     @Test
     @Transactional
     public void defaultPolicy() {
-        Pessoa p = new Pessoa();
+        Pessoa p = pessoaService.newEntity();
         assertEquals(VicTenancyType.GROUPS, p.getTencyPolicy());
     }
 
     @Test
     @Transactional
     public void otherPolicy() {
-        Funcionario f = new Funcionario();
+        Funcionario f = funcionarioService.newEntity();
         assertEquals(VicTenancyType.HIERARCHICAL_TOP_DOWN, f.getTencyPolicy());
     }
 

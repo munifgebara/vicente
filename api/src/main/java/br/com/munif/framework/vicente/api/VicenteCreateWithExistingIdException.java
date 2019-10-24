@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- *
  * @author munif
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -18,5 +17,5 @@ public class VicenteCreateWithExistingIdException extends RuntimeException {
     public VicenteCreateWithExistingIdException(String string) {
         super(string);
     }
-    
+
 }

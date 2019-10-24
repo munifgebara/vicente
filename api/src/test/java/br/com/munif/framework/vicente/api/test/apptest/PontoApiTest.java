@@ -6,22 +6,11 @@
  */
 package br.com.munif.framework.vicente.api.test.apptest;
 
-import br.com.munif.framework.vicente.api.VicAutoSeed;
-import br.com.munif.framework.vicente.api.test.apptest.Book;
-import br.com.munif.framework.vicente.api.test.apptest.BookApi;
-import br.com.munif.framework.vicente.api.test.apptest.BookRepository;
-import br.com.munif.framework.vicente.api.test.apptest.BookService;
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
-import br.com.munif.framework.vicente.api.test.Carro;
-import static br.com.munif.framework.vicente.api.test.apptest.BookApiTest.DEAFAULT_NAME;
 import br.com.munif.framework.vicente.api.test.apptest.LibaryApp;
 import br.com.munif.framework.vicente.api.test.apptest.TestUtil;
-import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.io.IOException;
+import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,15 +31,13 @@ import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
-import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import org.junit.Ignore;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = LibaryApp.class)
 public class PontoApiTest {
@@ -65,9 +52,6 @@ public class PontoApiTest {
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
-
-    @Autowired
-    private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
     @Autowired
     private EntityManager em;
@@ -88,23 +72,26 @@ public class PontoApiTest {
         MockitoAnnotations.initMocks(this);
         final PontoApi pontoAPi = new PontoApi(service);
         this.restMockMvc = MockMvcBuilders.standaloneSetup(pontoAPi)
-                .setCustomArgumentResolvers(pageableArgumentResolver)
+//                .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setControllerAdvice(exceptionTranslator)
                 .setMessageConverters(jacksonMessageConverter).build();
 
         Ponto p = new Ponto();
+
         repository.save(p);
 
     }
 
     public static Ponto createEntity(EntityManager em) {
         Ponto ponto = new Ponto();
+
         ponto.setNome(DEAFAULT_NAME);
         return ponto;
     }
 
     public static Ponto createEntity() {
         Ponto ponto = new Ponto();
+
         ponto.setNome(DEAFAULT_NAME);
         return ponto;
     }
@@ -177,11 +164,10 @@ public class PontoApiTest {
     @Test
     public void conversao() throws Exception {
         Ponto p = new Ponto();
+
         byte[] convertObjectToJsonBytes = TestUtil.convertObjectToJsonBytes(p);
         String s = new String(convertObjectToJsonBytes);
-        System.out.println("----->" + s);
         Map<String, Object> convertStringToMap = TestUtil.convertStringToMap(s);
-        System.out.println("------>" + convertStringToMap);
         assertNotNull(convertStringToMap);
 
     }

@@ -4,29 +4,16 @@ import br.com.munif.framework.vicente.application.search.dijkstra.Dijkstra;
 import br.com.munif.framework.vicente.application.search.dijkstra.Graph;
 import br.com.munif.framework.vicente.application.search.dijkstra.Node;
 import br.com.munif.framework.vicente.domain.VicRevisionEntity;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import org.hibernate.query.internal.QueryImpl;
+import org.springframework.stereotype.Service;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.PluralAttribute;
 import javax.persistence.metamodel.SingularAttribute;
-import javax.persistence.metamodel.Type;
-import org.hibernate.metamodel.internal.AbstractAttribute;
-import org.hibernate.query.internal.QueryImpl;
-import org.hibernate.transform.AliasToEntityMapResultTransformer;
-import org.hibernate.transform.ResultTransformer;
-import org.springframework.data.jpa.repository.QueryHints;
-import org.springframework.stereotype.Service;
+import java.util.*;
 
 @Service
 public class VicSmartSearch {
@@ -34,7 +21,7 @@ public class VicSmartSearch {
     @PersistenceContext
     protected EntityManager em;
 
-    private Map<String, List<Associassoes>> entidades;
+    private Map<String, List<Association>> entidades;
     private Map<String, Node> nodes;
 
     public VicSmartSearch() {
@@ -45,16 +32,7 @@ public class VicSmartSearch {
         return em;
     }
 
-    public List<Object[]> normalSearch() {
-        Query createQuery = em.createQuery("select cliente.nome,categoria.nome,count(categoria.nome)"
-                + " from Cliente cliente inner join cliente.pedidos as pedido inner join pedido.itens as item inner join item.produto as produto inner join produto.categoria as categoria "
-                + " where categoria.nome='egg'  group by cliente.nome,categoria.nome order by categoria.nome");
-        List<Object[]> resultList = createQuery.getResultList();
-        return resultList;
-
-    }
-
-    public List<Map<String, Object>> smartSearch(String e1, String e2, String antes, String depois,int maxResults) {
+    public List<Map<String, Object>> smartSearch(String e1, String e2, String antes, String depois, int maxResults) {
         init();
         initDijkstra();
         Graph graph = new Graph();
@@ -77,18 +55,17 @@ public class VicSmartSearch {
             caminho.add(e2);
 
             String hql = antes + " FROM " + e1;
-            
+
             for (int i = 0; i < caminho.size() - 1; i++) {
                 String nomeEntidade = caminho.get(i);
                 String proximaEntidade = caminho.get(i + 1);
                 String alisEntidade = nomeEntidade.toLowerCase();
-                List<Associassoes> associacoes = entidades.get(nomeEntidade);
-                Associassoes a = associacoes.stream().filter(p -> p.getEntidadeDestino().equals(proximaEntidade)).findFirst().orElse(null);
-                hql += " as " + alisEntidade + " inner join " + alisEntidade + "." + a.getAtributo();
+                List<Association> associacoes = entidades.get(nomeEntidade);
+                Association a = associacoes.stream().filter(p -> p.getDestinationEntity().equals(proximaEntidade)).findFirst().orElse(null);
+                hql += " as " + alisEntidade + " inner join " + alisEntidade + "." + a.getAttribute();
 
             }
             hql += " as " + e2.toLowerCase() + " " + depois;
-            System.out.println("---->"+hql);
             QueryImpl query = (QueryImpl) em.createQuery(hql);
             query.setResultTransformer(new VicResultTransformer());
             query.setMaxResults(maxResults);
@@ -102,7 +79,7 @@ public class VicSmartSearch {
 //                + " where categoria.nome='egg'  group by cliente.nome,categoria.nome order by categoria.nome");
 
     public List<Map<String, Object>> smartSearch(String e1, String e2, String antes, String depois) {
-        return smartSearch(e1, e2, antes, depois,Integer.MAX_VALUE);
+        return smartSearch(e1, e2, antes, depois, Integer.MAX_VALUE);
     }
 
     private int peso(String multiplicidade) {
@@ -125,8 +102,8 @@ public class VicSmartSearch {
             nodes.put(e, new Node(e));
         }
         for (String e : entidades.keySet()) {
-            for (Associassoes a : entidades.get(e)) {
-                nodes.get(a.getEntidadeOrigem()).addDestination(nodes.get(a.getEntidadeDestino()), peso(a.getMultiplicidade()));
+            for (Association a : entidades.get(e)) {
+                nodes.get(a.getSourceEntity()).addDestination(nodes.get(a.getDestinationEntity()), peso(a.getMultiplicity()));
             }
         }
 
@@ -147,12 +124,12 @@ public class VicSmartSearch {
             if (javaType.equals(VicRevisionEntity.class)) {
                 continue;
             }
-            List<Associassoes> associacoesDaEntidade = new ArrayList<>();
+            List<Association> associacoesDaEntidade = new ArrayList<>();
             entidades.put(e.getName(), associacoesDaEntidade);
             Set<SingularAttribute> singularAtributes = e.getSingularAttributes();
             for (SingularAttribute a : singularAtributes) {
                 if (a.isAssociation()) {
-                    associacoesDaEntidade.add(new Associassoes(a.getName(), e.getName(), a.getJavaType().getSimpleName(), a.getPersistentAttributeType().toString()));
+                    associacoesDaEntidade.add(new Association(a.getName(), e.getName(), a.getJavaType().getSimpleName(), a.getPersistentAttributeType().toString()));
                 }
             }
 
@@ -160,45 +137,9 @@ public class VicSmartSearch {
 
             for (PluralAttribute a : pluralAttributes) {
                 if (a.isAssociation()) {
-                    associacoesDaEntidade.add(new Associassoes(a.getName(), e.getName(), a.getElementType().getJavaType().getSimpleName(), a.getPersistentAttributeType().toString()));
+                    associacoesDaEntidade.add(new Association(a.getName(), e.getName(), a.getElementType().getJavaType().getSimpleName(), a.getPersistentAttributeType().toString()));
                 }
             }
         }
     }
-
-    public static void main(String args[]) {
-        Node nodeA = new Node("A");
-        Node nodeB = new Node("B");
-        Node nodeC = new Node("C");
-        Node nodeD = new Node("D");
-        Node nodeE = new Node("E");
-        Node nodeF = new Node("F");
-
-        nodeA.addDestination(nodeB, 10);
-        nodeA.addDestination(nodeC, 15);
-
-        nodeB.addDestination(nodeD, 12);
-        nodeB.addDestination(nodeF, 15);
-
-        nodeC.addDestination(nodeE, 10);
-
-        nodeD.addDestination(nodeE, 2);
-        nodeD.addDestination(nodeF, 1);
-
-        nodeF.addDestination(nodeE, 5);
-
-        Graph graph = new Graph();
-
-        graph.addNode(nodeA);
-        graph.addNode(nodeB);
-        graph.addNode(nodeC);
-        graph.addNode(nodeD);
-        graph.addNode(nodeE);
-        graph.addNode(nodeF);
-
-        graph = Dijkstra.calculateShortestPathFromSource(graph, nodeD);
-        System.out.println("--->" + graph.toString());
-
-    }
-
 }

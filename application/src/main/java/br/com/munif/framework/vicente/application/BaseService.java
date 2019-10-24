@@ -1,40 +1,35 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.munif.framework.vicente.application;
 
 import br.com.munif.framework.vicente.application.victenancyfields.VicFieldRepository;
 import br.com.munif.framework.vicente.application.victenancyfields.VicFieldValueRepository;
 import br.com.munif.framework.vicente.core.Utils;
 import br.com.munif.framework.vicente.core.VicQuery;
+import br.com.munif.framework.vicente.core.VicScriptEngine;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicField;
+import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldType;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldValue;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- *
  * @author munif
  */
 @Service
 @Scope("prototype")
-public abstract class BaseService<T> {
+public abstract class BaseService<T extends BaseEntity> {
 
     protected final VicRepository<T> repository;
     @Autowired
@@ -71,7 +66,6 @@ public abstract class BaseService<T> {
         return result;
     }
 
-
     @Transactional(readOnly = true)
     public List<T> findByHql(VicQuery query) {
         List<T> result = repository.findByHql(query);
@@ -87,8 +81,8 @@ public abstract class BaseService<T> {
     }
 
     @Transactional(readOnly = true)
-    public T view(String id) {
-        T entity = repository.findOne(id);
+    public T load(String id) {
+        T entity = repository.load(id);
         readVicTenancyFields(entity);
         return entity;
     }
@@ -103,9 +97,8 @@ public abstract class BaseService<T> {
 
     @Transactional
     public T save(T resource) {
-        if (resource instanceof BaseEntity){
-            BaseEntity baseEntity = (BaseEntity) resource;
-            baseEntity.setUd(new Date());
+        if (resource != null) {
+            resource.setUd(new Date());
         }
         T entity = repository.save(resource);
         if (entity instanceof VicTenancyFieldsBaseEntity) {
@@ -114,8 +107,19 @@ public abstract class BaseService<T> {
         return entity;
     }
 
-    public void forceFlush() {
-//        repository.flush();
+    @Transactional(readOnly = true)
+    public void patch(Map<String, Object> map) {
+        repository.patch(map);
+    }
+
+    @Transactional(readOnly = true)
+    public T patchReturning(Map<String, Object> map) {
+        return repository.patchReturning(map);
+    }
+
+    @Transactional(readOnly = true)
+    public T findOne(String id) {
+        return repository.load(id);
     }
 
     @Transactional(readOnly = true)
@@ -129,20 +133,44 @@ public abstract class BaseService<T> {
     }
 
     @Transactional(readOnly = true)
-    public List<T> find10primeiros(Class classe, String hql) {
+    public List<T> findFirst10(Class classe, String hql) {
         return find(classe, hql, 10);
     }
 
-    public Long quantidade() {
+    public Long count() {
         return repository.count();
     }
 
     public T newEntity() {
         try {
-            return clazz().newInstance();
-        } catch (InstantiationException ex) {
+            BaseEntity.useSimpleId = true;
+            T newInstance = clazz().newInstance();
+            if (newInstance instanceof VicTenancyFieldsBaseEntity) {
+                VicTenancyFieldsBaseEntity n = (VicTenancyFieldsBaseEntity) newInstance;
+                List<VicField> res = vicFieldRepository.findByHql(new VicQuery("obj.clazz='" + clazz().getCanonicalName() + "'", 0, 1000000, "id"));
+                for (VicField vf : res) {
+                    if (vf.getFieldType().equals(VicFieldType.DATE)) {
+                        n.getVicTenancyFields().put(vf.getName(), new VicFieldValue(vf, newInstance.getId(), VicScriptEngine.evalForDate(vf.getDefaultValueScript(), null)));
+                    } else {
+                        n.getVicTenancyFields().put(vf.getName(), new VicFieldValue(vf, newInstance.getId(), VicScriptEngine.eval(vf.getDefaultValueScript(), null)));
+                    }
+                }
+            }
+            fillCollections(newInstance);
+            return newInstance;
+        } catch (InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(BaseService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
+        }
+        return null;
+    }
+
+    public T newEntityForTest() {
+        try {
+            BaseEntity.useSimpleId = true;
+            T newInstance = clazz().newInstance();
+            fillCollections(newInstance);
+            return newInstance;
+        } catch (InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(BaseService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -151,11 +179,6 @@ public abstract class BaseService<T> {
     @SuppressWarnings("unchecked")
     public Class<T> clazz() {
         return (Class<T>) Utils.inferGenericType(getClass());
-    }
-
-    public void teste() {
-        em.getMetamodel().getEntities();
-
     }
 
     private void saveVicTenancyFields(T resource) {
@@ -171,7 +194,6 @@ public abstract class BaseService<T> {
         VicTenancyFieldsBaseEntity r = (VicTenancyFieldsBaseEntity) resource;
         for (String s : r.getVicTenancyFields().keySet()) {
             VicFieldValue vfv = r.getVicTenancyFields().get(s);
-            System.out.println("DDD "+vfv);
             vicFieldValueRepository.delete(vfv);
         }
     }
@@ -194,7 +216,19 @@ public abstract class BaseService<T> {
         }
     }
 
+    private void fillCollections(T newinstance) {
+        Utils.fillColectionsWithEmpty(newinstance);
+
+    }
+
+    @Transactional(readOnly = true)
+    public String draw(String id) {
+        T entity = repository.findById(id).orElse(null);
+        readVicTenancyFields(entity);
+        return new DatabaseDiagramBuilder().draw(entity);
+    }
+
 }
 
-//88B797E428E850E5494404A5 
+//88B797E428E850E5494404A5
 //88B797E428E850E5494404A5

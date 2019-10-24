@@ -2,7 +2,12 @@ package br.com.munif.framework.vicente.core.vquery;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
+/**
+ *
+ * @author wmfsystem
+ */
 public class Join implements Queryable<Join>, Joinable<Join> {
 
     /**
@@ -13,6 +18,11 @@ public class Join implements Queryable<Join>, Joinable<Join> {
      * Tabela
      */
     private String table;
+
+    public Join() {
+    }
+
+
 
     public Join(String table, JoinType type) {
         this.table = table;
@@ -57,5 +67,59 @@ public class Join implements Queryable<Join>, Joinable<Join> {
             stringBuilder.append(criteriaJoin.toString());
         });
         return stringBuilder.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 19 * hash + Objects.hashCode(this.type);
+        hash = 19 * hash + Objects.hashCode(this.table);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Join other = (Join) obj;
+        if (!Objects.equals(this.table, other.table)) {
+            return false;
+        }
+        if (this.type != other.type) {
+            return false;
+        }
+        return true;
+    }
+
+    public JoinType getType() {
+        return type;
+    }
+
+    public void setType(JoinType type) {
+        this.type = type;
+    }
+
+    public String getTable() {
+        return table;
+    }
+
+    public void setTable(String table) {
+        this.table = table;
+    }
+
+    @Override
+    public List<CriteriaJoin> getSubQuerys() {
+        return subQuerys;
+    }
+
+    public void setSubQuerys(List<CriteriaJoin> subQuerys) {
+        this.subQuerys = subQuerys;
     }
 }

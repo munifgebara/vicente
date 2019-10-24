@@ -3,6 +3,10 @@ package br.com.munif.framework.vicente.core.vquery;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ *
+ * @author wmfsystem
+ */
 public enum ComparisonOperator {
     EQUAL(" = "),
     LOWER(" < "),
@@ -40,7 +44,7 @@ public enum ComparisonOperator {
         String startsValue = (ComparisonOperator.IN_ELEMENTS.equals(this)) ? "(" : "";
         String endsValue = (ComparisonOperator.IN_ELEMENTS.equals(this)) ? ")" : "";
         if (ComparisonOperator.IN_ELEMENTS.equals(this)) {
-            mount(field, toReturn);
+            mount(field, toReturn, this);
             toReturn.append(this.getComparator()).append(startsValue);
         } else {
             toReturn = toReturn.append(field).append(this.getComparator()).append(startsValue);
@@ -51,23 +55,25 @@ public enum ComparisonOperator {
         return toReturn.toString().concat(endsValue);
     }
 
-    private void mount(Object value, StringBuilder toReturn) {
+    public static void mount(Object value, StringBuilder toReturn, ComparisonOperator comparisonOperator) {
+        String pre = comparisonOperator.prefixString();
+        String pos = comparisonOperator.posfixString();
         if (value instanceof CriteriaField) {
             toReturn.append(((CriteriaField) value).getField());
         } else if (value instanceof String) {
-            toReturn.append("'" + prefixString()).append(value).append(posfixString() + "'");
+            toReturn.append("'" + pre).append(value).append(pos + "'");
         } else if (value instanceof Date) {
             toReturn.append("'").append(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(value)).append("'");
         } else if (value instanceof Object[]) {
-            if (this.equals(ComparisonOperator.BETWEEN) || this.equals(ComparisonOperator.NOT_BETWEEN)) {
-                mount(((Object[]) value)[0], toReturn);
+            if (comparisonOperator.equals(ComparisonOperator.BETWEEN) || comparisonOperator.equals(ComparisonOperator.NOT_BETWEEN)) {
+                mount(((Object[]) value)[0], toReturn, comparisonOperator);
                 toReturn.append(" and ");
-                mount(((Object[]) value)[1], toReturn);
+                mount(((Object[]) value)[1], toReturn, comparisonOperator);
             } else {
                 toReturn.append("(");
                 Object[] v = (Object[]) value;
                 for (int i = 0; i < v.length; i++) {
-                    mount(v[i], toReturn);
+                    mount(v[i], toReturn, comparisonOperator);
                     toReturn.append(",");
                 }
                 int lastVirgula = toReturn.lastIndexOf(",");
@@ -79,7 +85,33 @@ public enum ComparisonOperator {
         }
     }
 
-    private String prefixString() {
+    private void mount(Object value, StringBuilder toReturn) {
+        if (value instanceof CriteriaField) {
+            toReturn.append(((CriteriaField) value).getField());
+        } else if (value instanceof Date) {
+            toReturn.append(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(value));
+        } else if (value instanceof Object[]) {
+            if (this.equals(ComparisonOperator.BETWEEN) || this.equals(ComparisonOperator.NOT_BETWEEN)) {
+                mount(((Object[]) value)[0], toReturn);
+                toReturn.append(" and ");
+                mount(((Object[]) value)[1], toReturn);
+            } else {
+                toReturn.append("(");
+                Object[] v = (Object[]) value;
+                for (Object o : v) {
+                    mount(o, toReturn);
+                    toReturn.append(",");
+                }
+                int lastVirgula = toReturn.lastIndexOf(",");
+                toReturn.replace(lastVirgula, lastVirgula + 1, "");
+                toReturn.append(")");
+            }
+        } else {
+            toReturn.append(value);
+        }
+    }
+
+    public String prefixString() {
         switch (this) {
             case ENDS_WITH:
             case NOT_ENDS_WITH:
@@ -91,7 +123,7 @@ public enum ComparisonOperator {
         }
     }
 
-    private String posfixString() {
+    public String posfixString() {
         switch (this) {
             case STARTS_WITH:
             case NOT_STARTS_WITH:

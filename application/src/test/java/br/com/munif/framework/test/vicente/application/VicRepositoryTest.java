@@ -1,10 +1,13 @@
 package br.com.munif.framework.test.vicente.application;
 
 import br.com.munif.framework.test.vicente.domain.model.Pessoa;
+import br.com.munif.framework.vicente.application.VicRepositoryUtil;
 import br.com.munif.framework.vicente.core.RightsHelper;
+import br.com.munif.framework.vicente.core.UIDHelper;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.vquery.*;
+import br.com.munif.framework.vicente.domain.typings.PhoneType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,51 +17,53 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * @author munif
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MySQLSpringConfig.class})
+@ContextConfiguration(classes = {H2SpringConfig.class})
 public class VicRepositoryTest {
 
     @Autowired
     protected PessoaService pessoaService;
+    @Autowired
+    protected PessoaRepository pessoaRepository;
 
     @Before
     @Transactional
     public void setUp() {
-        System.out.println("Setup of Test class " + this.getClass().getSimpleName() + " " + pessoaService.quantidade());
+        System.out.println("Setup of Test class " + this.getClass().getSimpleName() + " " + pessoaService.count());
         if (pessoaService.findAll().size() > 0) {
             return;
         }
         for (int i = 0; i < 100; i++) {
             VicThreadScope.ui.set("U" + (1 + i % 10));
             VicThreadScope.gi.set("G1" + (1 + i / 10));
-            Pessoa p = new Pessoa();
+            Pessoa p = pessoaService.newEntity();
             p.setNome("Pessoa " + i);
             pessoaService.save(p);
-
         }
         VicThreadScope.ui.set("UZ");
         VicThreadScope.gi.set("GZ");
-        Pessoa p = new Pessoa();
+        Pessoa p = pessoaService.newEntity();
         p.setNome("Pessoa Z");
         p.setRights(RightsHelper.OTHER_READ);
         pessoaService.save(p);
         VicThreadScope.ui.set("UZ");
         VicThreadScope.gi.set("GZ");
 
-        Pessoa p2 = new Pessoa();
+        Pessoa p2 = pessoaService.newEntity();
         p2.setNome("Pessoa J");
         p2.setRights(0);
         pessoaService.save(p2);
 
     }
-
 
     @Test
     @Transactional
@@ -70,7 +75,6 @@ public class VicRepositoryTest {
         assertEquals(10, findAllNoPublic.size());
 
     }
-
 
     @Test
     @Transactional
@@ -156,13 +160,12 @@ public class VicRepositoryTest {
         assertEquals(2, findAll.size());
     }
 
-
     @Test(expected = org.springframework.dao.DataIntegrityViolationException.class)
     @Transactional
     public void saveNull() {
         VicThreadScope.ui.set("XXX");
         VicThreadScope.gi.set("XXXXX");
-        Pessoa p = new Pessoa();
+        Pessoa p = pessoaService.newEntity();
         p.setNome(null);
         pessoaService.save(p);
     }
@@ -229,6 +232,43 @@ public class VicRepositoryTest {
         ));
         List<Pessoa> findAll = pessoaService.findByHql(q);
         assertEquals(2, findAll.size());
+    }
+
+    @Test
+    public void getSetUpdate() {
+        HashMap<String, Object> map = new HashMap<>();
+        String uid = UIDHelper.getUID();
+        Date date = new Date();
+        map.put("id", uid);
+        map.put("nome", "PESSOA ALTERADA");
+        map.put("nascimento", date);
+        SetUpdateQuery setUpdate = VicRepositoryUtil.getSetUpdate(map);
+        System.out.println(setUpdate);
+    }
+
+    @Test
+    public void patch() {
+        VicThreadScope.ui.set("U1001");
+        VicThreadScope.gi.set("G11,G15");
+        List<Pessoa> all = pessoaService.findAll();
+        Pessoa pessoa = all.get(0);
+        HashMap<String, Object> pessoaAlterada = new HashMap<>();
+        pessoaAlterada.put("id", pessoa.getId());
+        pessoaAlterada.put("nome", "NOVO NOME");
+
+        HashMap<String, Object> telefone = new HashMap<>();
+        telefone.put("description", "999999999");
+        telefone.put("type", PhoneType.LANDLINE.name());
+        pessoaAlterada.put("telefone", telefone);
+        pessoaService.patch(pessoaAlterada);
+
+        Pessoa load = pessoaService.load(pessoa.getId());
+        assertEquals("NOVO NOME", load.getNome());
+        assertEquals("999999999", load.getTelefone().getDescription());
+        assertEquals(load.getTelefone().getType(), load.getTelefone().getType());
+        assertNotEquals(load.getNome(), pessoa.getNome());
+        assertEquals(load.getApelido(), pessoa.getApelido());
+        assertEquals(load.getDocumento(), pessoa.getDocumento());
     }
 
 }
