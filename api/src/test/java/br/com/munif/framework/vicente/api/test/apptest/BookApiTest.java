@@ -298,7 +298,6 @@ public class BookApiTest {
 
     }
 
-
     @Test
     @Transactional
     public void getVQuery() throws Exception {

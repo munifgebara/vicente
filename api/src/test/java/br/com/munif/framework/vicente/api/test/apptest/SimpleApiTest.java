@@ -6,54 +6,32 @@
  */
 package br.com.munif.framework.vicente.api.test.apptest;
 
-import br.com.munif.framework.vicente.api.VicAutoSeed;
-import br.com.munif.framework.vicente.api.test.apptest.Book;
-import br.com.munif.framework.vicente.api.test.apptest.BookApi;
-import br.com.munif.framework.vicente.api.test.apptest.BookRepository;
-import br.com.munif.framework.vicente.api.test.apptest.BookService;
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
-import static br.com.munif.framework.vicente.api.test.apptest.BookApiTest.DEAFAULT_NAME;
-import static br.com.munif.framework.vicente.api.test.apptest.BookApiTest.createEntity;
-import br.com.munif.framework.vicente.api.test.apptest.LibaryApp;
-import br.com.munif.framework.vicente.api.test.apptest.TestUtil;
+import br.com.munif.framework.vicente.api.hateoas.HateoasTranslator;
 import br.com.munif.framework.vicente.core.VicQuery;
-import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
 import br.com.munif.framework.vicente.core.vquery.Criteria;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
-import java.util.ArrayList;
-
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
-import org.junit.After;
-import org.junit.AfterClass;
-
-import static org.junit.Assert.assertNotNull;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-
-import org.springframework.test.web.servlet.ResultActions;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -72,13 +50,16 @@ public class SimpleApiTest {
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-//    @Autowired
+    //    @Autowired
 //    private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
     @Autowired
     private EntityManager em;
 
     @Autowired
     private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
+    private HateoasTranslator hateoasTranslator;
 
     private MockMvc restMockMvc;
 
@@ -227,6 +208,61 @@ public class SimpleApiTest {
         qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld);
         System.out.println("----------->" + bookRepository.findAll());
+    }
+
+    @Test
+    @Transactional
+    public void getVQueryWithHateoas() throws Exception {
+        // Initialize the database
+        this.book = new Book();
+        this.book.setName(DEAFAULT_NAME);
+        restMockMvc.perform(post("/api/books")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(this.book)))
+                .andExpect(status().isCreated());
+
+        VicQuery v = new VicQuery();
+        VQuery vQuery = new VQuery(new Criteria("name", ComparisonOperator.CONTAINS, DEAFAULT_NAME))
+                .or(new Criteria("name", ComparisonOperator.CONTAINS, "books"));
+        v.setQuery(vQuery);
+        ResultActions perform = restMockMvc.perform(post("/api/books/vquery")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(v)));
+
+        perform.andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.values.[*].id").value(hasItem(book.getId())))
+                .andExpect(jsonPath("$.values.[*].name").value(hasItem(DEAFAULT_NAME)))
+                .andExpect(jsonPath("$.values.[*].links.[*].rel").exists())
+                .andExpect(jsonPath("$.values.[*].links.[*].href").value(hasItem("/api/books/" + book.getId())));
+    }
+
+    @Test
+    @Transactional
+    public void getVQueryWitouthHateoas() throws Exception {
+        // Initialize the database
+        this.book = new Book();
+        this.book.setName(DEAFAULT_NAME);
+        restMockMvc.perform(post("/api/books")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(this.book)))
+                .andExpect(status().isCreated());
+
+        VicQuery v = new VicQuery();
+        VQuery vQuery = new VQuery(new Criteria("name", ComparisonOperator.CONTAINS, DEAFAULT_NAME))
+                .or(new Criteria("name", ComparisonOperator.CONTAINS, "books"));
+        v.setQuery(vQuery);
+        VicThreadScope.enableHateoas.set(false);
+        ResultActions perform = restMockMvc.perform(post("/api/books/vquery")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(v)));
+
+        perform.andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.values.[*].id").value(hasItem(book.getId())))
+                .andExpect(jsonPath("$.values.[*].name").value(hasItem(DEAFAULT_NAME)))
+                .andExpect(jsonPath("$.values.[*].links.[*].rel").doesNotExist())
+                .andExpect(jsonPath("$.values.[*].links.[*].href").doesNotExist());
     }
 
 }

@@ -117,18 +117,18 @@ public class BaseAPI<T extends BaseEntity> {
 
     @Transactional
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public VicReturn<T> findHQL(HttpServletRequest request, VicQuery query) {
+    public ResponseEntity<VicReturn<T>> findHQL(HttpServletRequest request, VicQuery query) {
         return getVicReturnByQuery(query);
     }
 
     @Transactional
     @PostMapping(value = "/vquery", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public VicReturn<T> findVQuery(@RequestBody VicQuery query) {
+    public ResponseEntity<VicReturn<T>> findVQuery(@RequestBody VicQuery query) {
         return getVicReturnByQuery(query);
     }
 
     @Transactional
-    public VicReturn<T> getVicReturnByQuery(@RequestBody VicQuery query) {
+    public ResponseEntity<VicReturn<T>> getVicReturnByQuery(@RequestBody VicQuery query) {
         if (query.getHql() == null || query.getHql().trim().isEmpty()) {
             query.setHql(VicQuery.DEFAULT_QUERY);
         }
@@ -146,9 +146,9 @@ public class BaseAPI<T extends BaseEntity> {
         if (query.getQuery() != null && query.getQuery().getFields() != null) {
             String[] fields = query.getQuery().getFields();
             List<Map<String, Object>> collect = result.stream().map(s -> getFields(fields, s)).collect(Collectors.toList());
-            return new VicReturn(collect, collect.size(), query.getFirstResult(), hasMore);
+            return ResponseEntity.ok(new VicReturn(collect, collect.size(), query.getFirstResult(), hasMore));
         }
-        return new VicReturn<T>(result, result.size(), query.getFirstResult(), hasMore);
+        return ResponseEntity.ok(new VicReturn<T>(result, result.size(), query.getFirstResult(), hasMore));
     }
 
     @Transactional
@@ -185,8 +185,8 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     @GetMapping(value = "/new")
-    public T initialState() {
-        return service.newEntity();
+    public ResponseEntity<T> initialState() {
+        return ResponseEntity.ok(service.newEntity());
     }
 
     public int getDefaultSize() {

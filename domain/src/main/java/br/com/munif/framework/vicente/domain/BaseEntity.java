@@ -6,12 +6,9 @@
 package br.com.munif.framework.vicente.domain;
 
 import br.com.munif.framework.vicente.core.*;
-import br.com.munif.framework.vicente.domain.annotations.BaseEntityIgnoreProperties;
 import br.com.munif.framework.vicente.domain.typings.*;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
@@ -30,7 +27,7 @@ import static br.com.munif.framework.vicente.core.RightsHelper.*;
         @TypeDef(name = "vicemail", defaultForType = VicEmail.class, typeClass = VicEmailUserType.class),
         @TypeDef(name = "vicphone", defaultForType = VicPhone.class, typeClass = VicPhoneUserType.class)
 })
-public class BaseEntity {
+public class BaseEntity extends HateosBaseEntity {
 
     public static boolean useSimpleId = false;
 
