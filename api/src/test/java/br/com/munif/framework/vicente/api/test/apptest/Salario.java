@@ -1,6 +1,5 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
 import java.math.BigDecimal;
 import org.hibernate.envers.Audited;

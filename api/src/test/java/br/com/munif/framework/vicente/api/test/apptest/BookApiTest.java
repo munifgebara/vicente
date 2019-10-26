@@ -7,20 +7,14 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.VicAutoSeed;
-import br.com.munif.framework.vicente.api.test.apptest.Book;
-import br.com.munif.framework.vicente.api.test.apptest.BookApi;
-import br.com.munif.framework.vicente.api.test.apptest.BookRepository;
-import br.com.munif.framework.vicente.api.test.apptest.BookService;
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
-import br.com.munif.framework.vicente.api.test.apptest.LibaryApp;
-import br.com.munif.framework.vicente.api.test.apptest.TestUtil;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
 import br.com.munif.framework.vicente.core.vquery.Criteria;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
+
 import java.util.ArrayList;
 
 import org.junit.Before;
@@ -29,7 +23,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -44,7 +37,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
 
 import static org.junit.Assert.assertNotNull;
-import org.junit.Ignore;
 
 import org.springframework.test.web.servlet.ResultActions;
 

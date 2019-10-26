@@ -1,4 +1,4 @@
-package br.com.munif.framework.vicente.domain;
+package br.com.munif.framework.vicente.api.hateoas;
 
 import java.util.ArrayList;
 import java.util.List;

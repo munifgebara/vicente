@@ -44,13 +44,4 @@ public class VicThreadScope {
      * If set, time constrains will be ignored in querys
      */
     public static final ThreadLocal<Boolean> ignoreTime = new ThreadLocal<>();
-    /**
-     * If set, every api return using the BaseEntity are going to contain links (Search for hateoas)
-     */
-    public static final ThreadLocal<Boolean> enableHateoas = new ThreadLocal<Boolean>() {
-        @Override
-        protected Boolean initialValue() {
-            return true;
-        }
-    };
 }

@@ -13,7 +13,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 @ControllerAdvice
 public class HateoasTranslator implements ResponseBodyAdvice<ResponseEntity> {
 
-
     @Override
     public boolean supports(MethodParameter methodParameter, Class aClass) {
         return methodParameter.getContainingClass().getSuperclass() == BaseAPI.class && methodParameter.getParameterType() == ResponseEntity.class;

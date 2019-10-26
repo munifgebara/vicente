@@ -1,11 +1,11 @@
-package br.com.munif.framework.vicente.api;
+package br.com.munif.framework.vicente.api.hateoas;
 
-import br.com.munif.framework.vicente.domain.BaseLink;
-import br.com.munif.framework.vicente.domain.MappedRoutes;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
@@ -21,8 +21,14 @@ import java.util.Set;
 
 @Component
 public class EndpointsListener implements ApplicationListener {
+
+    @Autowired
+    private Environment env;
+
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
+        Boolean isEnabled = Boolean.parseBoolean(env.getProperty("vicente.enable-hateoas"));
+        if (!isEnabled) return;
         ApplicationContext applicationContext = ((ContextRefreshedEvent) event).getApplicationContext();
         Map<RequestMappingInfo, HandlerMethod> handlerMethods = applicationContext.getBean(RequestMappingHandlerMapping.class).getHandlerMethods();
         for (Map.Entry<RequestMappingInfo, HandlerMethod> map : handlerMethods.entrySet()) {

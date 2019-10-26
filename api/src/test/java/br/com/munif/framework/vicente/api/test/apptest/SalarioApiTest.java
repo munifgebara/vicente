@@ -7,11 +7,9 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
-import br.com.munif.framework.vicente.api.test.apptest.LibaryApp;
-import br.com.munif.framework.vicente.api.test.apptest.TestUtil;
 import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import org.junit.Before;
@@ -20,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -35,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Ignore;
+
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

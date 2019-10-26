@@ -67,6 +67,7 @@ public class SimpleApiTest {
 
     @Before
     public void setup() {
+        System.setProperty("vicente.enable-hateoas", "true");
         VicThreadScope.gi.set("GRUPO");
         VicThreadScope.ui.set("USUARIO");
         VicThreadScope.oi.set("1.");
@@ -212,33 +213,6 @@ public class SimpleApiTest {
 
     @Test
     @Transactional
-    public void getVQueryWithHateoas() throws Exception {
-        // Initialize the database
-        this.book = new Book();
-        this.book.setName(DEAFAULT_NAME);
-        restMockMvc.perform(post("/api/books")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.book)))
-                .andExpect(status().isCreated());
-
-        VicQuery v = new VicQuery();
-        VQuery vQuery = new VQuery(new Criteria("name", ComparisonOperator.CONTAINS, DEAFAULT_NAME))
-                .or(new Criteria("name", ComparisonOperator.CONTAINS, "books"));
-        v.setQuery(vQuery);
-        ResultActions perform = restMockMvc.perform(post("/api/books/vquery")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(v)));
-
-        perform.andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.values.[*].id").value(hasItem(book.getId())))
-                .andExpect(jsonPath("$.values.[*].name").value(hasItem(DEAFAULT_NAME)))
-                .andExpect(jsonPath("$.values.[*].links.[*].rel").exists())
-                .andExpect(jsonPath("$.values.[*].links.[*].href").value(hasItem("/api/books/" + book.getId())));
-    }
-
-    @Test
-    @Transactional
     public void getVQueryWitouthHateoas() throws Exception {
         // Initialize the database
         this.book = new Book();
@@ -252,7 +226,6 @@ public class SimpleApiTest {
         VQuery vQuery = new VQuery(new Criteria("name", ComparisonOperator.CONTAINS, DEAFAULT_NAME))
                 .or(new Criteria("name", ComparisonOperator.CONTAINS, "books"));
         v.setQuery(vQuery);
-        VicThreadScope.enableHateoas.set(false);
         ResultActions perform = restMockMvc.perform(post("/api/books/vquery")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(v)));

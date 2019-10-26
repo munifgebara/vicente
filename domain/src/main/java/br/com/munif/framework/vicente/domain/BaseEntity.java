@@ -27,7 +27,7 @@ import static br.com.munif.framework.vicente.core.RightsHelper.*;
         @TypeDef(name = "vicemail", defaultForType = VicEmail.class, typeClass = VicEmailUserType.class),
         @TypeDef(name = "vicphone", defaultForType = VicPhone.class, typeClass = VicPhoneUserType.class)
 })
-public class BaseEntity extends HateosBaseEntity {
+public class BaseEntity {
 
     public static boolean useSimpleId = false;
 
