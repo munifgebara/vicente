@@ -1,5 +1,8 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
+import br.com.munif.framework.vicente.api.test.apptest.config.ApplicationProperties;
+import br.com.munif.framework.vicente.api.test.apptest.config.DefaultProfileUtil;
+import br.com.munif.framework.vicente.application.VicRepositoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -9,20 +12,32 @@ import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-@ComponentScan(basePackages = {"br.com.munif.framework.vicente.api.test.apptest",
-        "br.com.munif.framework.vicente.api",
+@ComponentScan(basePackages = {
+        "br.com.munif.framework.vicente.api.test.apptest",
+        "br.com.munif.framework.vicente.api.test.apptest.api",
+        "br.com.munif.framework.vicente.api.test.apptest.config",
+        "br.com.munif.framework.vicente.api.test.apptest.service",
         "br.com.munif.framework.vicente.application.victenancyfields",
-        "br.com.munif.framework.vicente.application",
-        "br.com.munif.framework.vicente.api"
+        "br.com.munif.framework.vicente.api",
+        "br.com.munif.framework.vicente.application"
 })
 @EnableAutoConfiguration()
+@EnableJpaRepositories(basePackages ={
+        "br.com.munif.framework.vicente.api.test.apptest.repository",
+        "br.com.munif.framework.vicente.application.victenancyfields"
+},
+        repositoryBaseClass = VicRepositoryImpl.class)
 @EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
-@EntityScan(basePackages = {"br.com.munif.framework.vicente.domain", "br.com.munif.framework.vicente.api.test.apptest"})
+@EntityScan(basePackages = {
+        "br.com.munif.framework.vicente.domain",
+        "br.com.munif.framework.vicente.api.test.apptest.domain"
+})
 public class InformationApp {
 
     private static final Logger log = LoggerFactory.getLogger(InformationApp.class);
@@ -53,10 +68,10 @@ public class InformationApp {
                         "Profile(s): \t{}\n----------------------------------------------------------",
                 env.getProperty("spring.application.name"),
                 protocol,
-                env.getProperty("server.port"),
+                env.getProperty("local.server.port"),
                 protocol,
                 InetAddress.getLocalHost().getHostAddress(),
-                env.getProperty("server.port"),
+                env.getProperty("remote.server.port"),
                 env.getActiveProfiles());
     }
 }

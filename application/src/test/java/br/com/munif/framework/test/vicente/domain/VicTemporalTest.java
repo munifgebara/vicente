@@ -1,8 +1,8 @@
 package br.com.munif.framework.test.vicente.domain;
 
 import br.com.munif.framework.test.vicente.application.H2SpringConfig;
-import br.com.munif.framework.test.vicente.application.SalarioRepository;
-import br.com.munif.framework.test.vicente.application.SalarioService;
+import br.com.munif.framework.test.vicente.application.repository.Salario2Repository;
+import br.com.munif.framework.test.vicente.application.service.SalarioService;
 import br.com.munif.framework.test.vicente.domain.model.Salario;
 import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
@@ -26,7 +26,7 @@ public class VicTemporalTest {
     private static int contador = 0;
 
     @Autowired
-    private SalarioRepository repository;
+    private Salario2Repository repository;
 
     @Autowired
     private SalarioService service;

@@ -10,6 +10,9 @@ import br.com.munif.framework.vicente.domain.tenancyfields.VicField;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldType;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldValue;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
+import io.reactivex.Single;
+import lombok.Builder;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -60,10 +63,24 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
+    public Single<List<T>> asyncFindAllNoTenancy() {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(findAllNoTenancy());
+        });
+    }
+
+    @Transactional(readOnly = true)
     public List<T> findAllNoPublic() {
         List<T> result = repository.findAllNoPublic();
         readVicTenancyFields(result);
         return result;
+    }
+
+    @Transactional(readOnly = true)
+    public Single<List<T>> asyncFindAllNoPublic() {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(findAllNoPublic());
+        });
     }
 
     @Transactional(readOnly = true)
@@ -74,10 +91,24 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
+    public Single<List<T>> asyncFindByHql(VicQuery query) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(findByHql(query));
+        });
+    }
+
+    @Transactional(readOnly = true)
     public List<T> findAll() {
         List<T> result = repository.findAll();
         readVicTenancyFields(result);
         return result;
+    }
+
+    @Transactional(readOnly = true)
+    public Single<List<T>> asyncFindAll() {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(findAll());
+        });
     }
 
     @Transactional(readOnly = true)
@@ -87,12 +118,27 @@ public abstract class BaseService<T extends BaseEntity> {
         return entity;
     }
 
+    @Transactional(readOnly = true)
+    public Single<T> asyncLoad(String id) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(load(id));
+        });
+    }
+
     @Transactional
     public void delete(T resource) {
         if (resource instanceof VicTenancyFieldsBaseEntity) {
             //deleteVicTenancyFields(resource);
         }
         repository.delete(resource);
+    }
+
+    @Transactional
+    public Single<Void> asyncDelete(T resource) {
+        return Single.create(singleEmitter -> {
+            delete(resource);
+            singleEmitter.onSuccess(null);
+        });
     }
 
     @Transactional
@@ -107,9 +153,24 @@ public abstract class BaseService<T extends BaseEntity> {
         return entity;
     }
 
+    @Transactional
+    public Single<T> asyncSave(T resource) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(save(resource));
+        });
+    }
+
     @Transactional(readOnly = true)
     public void patch(Map<String, Object> map) {
         repository.patch(map);
+    }
+
+    @Transactional(readOnly = true)
+    public Single<Void> asyncPatch(Map<String, Object> map) {
+        return Single.create(singleEmitter -> {
+            patch(map);
+            singleEmitter.onSuccess(null);
+        });
     }
 
     @Transactional(readOnly = true)
@@ -118,8 +179,22 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
+    public Single<T> asyncPatchReturning(Map<String, Object> map) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(patchReturning(map));
+        });
+    }
+
+    @Transactional(readOnly = true)
     public T findOne(String id) {
         return repository.load(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Single<T> asyncFindOne(String id) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(findOne(id));
+        });
     }
 
     @Transactional(readOnly = true)
@@ -133,12 +208,32 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
+    public Single<List<T>> asyncFind(Class classe, String hql, int maxResults) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(find(classe, hql, maxResults));
+        });
+    }
+
+    @Transactional(readOnly = true)
     public List<T> findFirst10(Class classe, String hql) {
         return find(classe, hql, 10);
     }
 
+    @Transactional(readOnly = true)
+    public Single<List<T>> asyncFindFirst10(Class classe, String hql) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(findFirst10(classe, hql));
+        });
+    }
+
     public Long count() {
         return repository.count();
+    }
+
+    public Single<Long> asyncCount() {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(count());
+        });
     }
 
     public T newEntity() {
@@ -164,6 +259,12 @@ public abstract class BaseService<T extends BaseEntity> {
         return null;
     }
 
+    public Single<T> asyncNewEntity() {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(newEntity());
+        });
+    }
+
     public T newEntityForTest() {
         try {
             BaseEntity.useSimpleId = true;
@@ -176,8 +277,29 @@ public abstract class BaseService<T extends BaseEntity> {
         return null;
     }
 
+    public Single<T> asyncNewEntityForTest() {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(newEntityForTest());
+        });
+    }
+
+
+    @Transactional(readOnly = true)
+    public String draw(String id) {
+        T entity = repository.findById(id).orElse(null);
+        readVicTenancyFields(entity);
+        return new DatabaseDiagramBuilder().draw(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public Single<String> asyncDraw(String id) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(draw(id));
+        });
+    }
+
     @SuppressWarnings("unchecked")
-    public Class<T> clazz() {
+    private Class<T> clazz() {
         return (Class<T>) Utils.inferGenericType(getClass());
     }
 
@@ -219,13 +341,6 @@ public abstract class BaseService<T extends BaseEntity> {
     private void fillCollections(T newinstance) {
         Utils.fillColectionsWithEmpty(newinstance);
 
-    }
-
-    @Transactional(readOnly = true)
-    public String draw(String id) {
-        T entity = repository.findById(id).orElse(null);
-        readVicTenancyFields(entity);
-        return new DatabaseDiagramBuilder().draw(entity);
     }
 
 }

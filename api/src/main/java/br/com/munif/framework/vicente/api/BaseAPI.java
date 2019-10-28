@@ -11,6 +11,7 @@ import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.BaseEntityHelper;
+import io.reactivex.Single;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -53,6 +54,14 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     @Transactional
+    @DeleteMapping(value = "/async/{id}")
+    public Single<ResponseEntity<T>> asyncDelete(@PathVariable String id) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(delete(id));
+        });
+    }
+
+    @Transactional
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<T> save(@RequestBody @Valid T model) {
@@ -66,10 +75,26 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     @Transactional
+    @PostMapping(value = "/async")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Single<ResponseEntity<T>> asyncSave(@RequestBody @Valid T model) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(save(model));
+        });
+    }
+
+    @Transactional
     @PutMapping(value = "", consumes = "application/json")
     public ResponseEntity<T> updateWithoutId(@RequestBody @Valid T model) {
         return doUpdate(model);
+    }
 
+    @Transactional
+    @PutMapping(value = "/async", consumes = "application/json")
+    public Single<ResponseEntity<T>> asyncUpdateWithoutId(@RequestBody @Valid T model) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(doUpdate(model));
+        });
     }
 
     @Transactional
@@ -77,20 +102,45 @@ public class BaseAPI<T extends BaseEntity> {
     public ResponseEntity<T> updateWithId(@PathVariable("id") String id, @RequestBody @Valid T model) {
         model.setId(id);
         return doUpdate(model);
+    }
 
+    @Transactional
+    @PutMapping(value = "/async/{id}", consumes = "application/json")
+    public Single<ResponseEntity<T>> asyncUpdateWithId(@PathVariable("id") String id, @RequestBody @Valid T model) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(updateWithId(id, model));
+        });
     }
 
     @Transactional
     @PatchMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity<Void> patch(@RequestBody @Valid Map model) {
+    public ResponseEntity<Void> patch(@PathVariable("id") String id, @RequestBody @Valid Map model) {
+        model.put("id", id);
         service.patch(model);
         return ResponseEntity.noContent().build();
     }
 
     @Transactional
+    @PatchMapping(value = "/async/{id}", consumes = "application/json")
+    public Single<ResponseEntity<Void>> asyncPatch(@PathVariable("id") String id, @RequestBody @Valid Map model) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(patch(id, model));
+        });
+    }
+
+    @Transactional
     @PatchMapping(value = "/returning/{id}", consumes = "application/json")
-    public ResponseEntity patchReturning(@RequestBody @Valid Map model) {
+    public ResponseEntity patchReturning(@PathVariable("id") String id, @RequestBody @Valid Map model) {
+        model.put("id", id);
         return ResponseEntity.ok(service.patchReturning(model));
+    }
+
+    @Transactional
+    @PatchMapping(value = "/async/returning/{id}", consumes = "application/json")
+    public Single<ResponseEntity> asyncPatchReturning(@PathVariable("id") String id, @RequestBody @Valid Map model) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(patchReturning(id, model));
+        });
     }
 
     private ResponseEntity<T> doUpdate(T model) {
@@ -122,9 +172,25 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     @Transactional
+    @GetMapping(value = "/async", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Single<ResponseEntity<VicReturn<T>>> asyncFindHQL(HttpServletRequest request, VicQuery query) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(findHQL(request, query));
+        });
+    }
+
+    @Transactional
     @PostMapping(value = "/vquery", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<VicReturn<T>> findVQuery(@RequestBody VicQuery query) {
         return getVicReturnByQuery(query);
+    }
+
+    @Transactional
+    @PostMapping(value = "/async/vquery", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Single<ResponseEntity<VicReturn<T>>> asyncFindVQuery(@RequestBody VicQuery query) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(findVQuery(query));
+        });
     }
 
     @Transactional
@@ -167,6 +233,14 @@ public class BaseAPI<T extends BaseEntity> {
         return ResponseEntity.ok(view);
     }
 
+    @Transactional
+    @GetMapping(value = "/async/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Single<ResponseEntity> asyncLoad(@PathVariable String id, @RequestParam(required = false) String fields) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(load(id, fields));
+        });
+    }
+
     private Map<String, Object> getFields(String fields, T view) {
         String[] split = fields.split(",");
         return getFields(split, view);
@@ -184,9 +258,25 @@ public class BaseAPI<T extends BaseEntity> {
         return ResponseEntity.ok(svg);
     }
 
+    @ResponseBody
+    @Transactional
+    @GetMapping(value = "/async/draw/{id}", produces = "image/svg+xml")
+    public Single<ResponseEntity<String>> asyncDraw(@PathVariable String id) {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(draw(id));
+        });
+    }
+
     @GetMapping(value = "/new")
     public ResponseEntity<T> initialState() {
         return ResponseEntity.ok(service.newEntity());
+    }
+
+    @GetMapping(value = "/async/new")
+    public Single<ResponseEntity<T>> asyncInitialState() {
+        return Single.create(singleEmitter -> {
+            singleEmitter.onSuccess(initialState());
+        });
     }
 
     public int getDefaultSize() {

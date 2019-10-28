@@ -7,6 +7,22 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
+import br.com.munif.framework.vicente.api.test.apptest.api.BookApi;
+import br.com.munif.framework.vicente.api.test.apptest.api.PessoaGenericaApi;
+import br.com.munif.framework.vicente.api.test.apptest.api.PontoApi;
+import br.com.munif.framework.vicente.api.test.apptest.api.SalarioApi;
+import br.com.munif.framework.vicente.api.test.apptest.domain.Book;
+import br.com.munif.framework.vicente.api.test.apptest.domain.PessoaGenerica;
+import br.com.munif.framework.vicente.api.test.apptest.domain.Ponto;
+import br.com.munif.framework.vicente.api.test.apptest.domain.Salario;
+import br.com.munif.framework.vicente.api.test.apptest.repository.BookRepository;
+import br.com.munif.framework.vicente.api.test.apptest.repository.PessoaGenericaRepository;
+import br.com.munif.framework.vicente.api.test.apptest.repository.PontoRepository;
+import br.com.munif.framework.vicente.api.test.apptest.repository.SalarioRepository;
+import br.com.munif.framework.vicente.api.test.apptest.service.BookService;
+import br.com.munif.framework.vicente.api.test.apptest.service.PessoaGenericaService;
+import br.com.munif.framework.vicente.api.test.apptest.service.PontoService;
+import br.com.munif.framework.vicente.api.test.apptest.service.SalarioService;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +34,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +51,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = LibaryApp.class)
+@SpringBootTest(classes = InformationApp.class)
 public class BaseEntitySerializerTest {
 
     public static final String DEAFAULT_NAME = "The Book";

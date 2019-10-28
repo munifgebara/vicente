@@ -1,5 +1,7 @@
 package br.com.munif.framework.test.vicente.application;
 
+import br.com.munif.framework.test.vicente.application.repository.PessoaRepository;
+import br.com.munif.framework.test.vicente.application.service.PessoaService;
 import br.com.munif.framework.test.vicente.domain.model.Pessoa;
 import br.com.munif.framework.vicente.application.victenancyfields.VicFieldRepository;
 import br.com.munif.framework.vicente.application.victenancyfields.VicFieldService;

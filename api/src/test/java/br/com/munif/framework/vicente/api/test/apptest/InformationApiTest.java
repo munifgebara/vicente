@@ -7,10 +7,12 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
-import br.com.munif.framework.vicente.api.test.apptest.TestUtil;
+import br.com.munif.framework.vicente.api.test.apptest.api.InformationApi;
+import br.com.munif.framework.vicente.api.test.apptest.domain.Information;
+import br.com.munif.framework.vicente.api.test.apptest.repository.InformationRepository;
+import br.com.munif.framework.vicente.api.test.apptest.service.InformationService;
 import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-import br.com.munif.framework.vicente.domain.BaseEntity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +20,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,7 +30,6 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 
 import org.springframework.test.web.servlet.MvcResult;
 

@@ -7,6 +7,10 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
+import br.com.munif.framework.vicente.api.test.apptest.api.PessoaGenericaApi;
+import br.com.munif.framework.vicente.api.test.apptest.domain.PessoaGenerica;
+import br.com.munif.framework.vicente.api.test.apptest.repository.PessoaGenericaRepository;
+import br.com.munif.framework.vicente.api.test.apptest.service.PessoaGenericaService;
 import br.com.munif.framework.vicente.application.victenancyfields.VicFieldRepository;
 import br.com.munif.framework.vicente.application.victenancyfields.VicFieldService;
 import br.com.munif.framework.vicente.core.VicThreadScope;
@@ -40,7 +44,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = LibaryApp.class)
+@SpringBootTest(classes = InformationApp.class)
 public class PessoaGenericaApiTest {
 
     private static final String DEAFAULT_NAME = "Vicente";

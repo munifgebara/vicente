@@ -20,5 +20,5 @@ public interface VicRepository<T extends BaseEntity> extends JpaRepository<T, Se
     List<T> findByHql(VicQuery query);
     void patch(Map<String, Object> map);
     T patchReturning(Map<String, Object> map);
-    public T load(String id);
+    T load(String id);
 }

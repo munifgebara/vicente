@@ -7,6 +7,10 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
+import br.com.munif.framework.vicente.api.test.apptest.api.PontoApi;
+import br.com.munif.framework.vicente.api.test.apptest.domain.Ponto;
+import br.com.munif.framework.vicente.api.test.apptest.repository.PontoRepository;
+import br.com.munif.framework.vicente.api.test.apptest.service.PontoService;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 
 import java.util.ArrayList;
@@ -36,7 +40,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = LibaryApp.class)
+@SpringBootTest(classes = InformationApp.class)
 public class PontoApiTest {
 
     public static final String DEAFAULT_NAME = "Meu Ponto";

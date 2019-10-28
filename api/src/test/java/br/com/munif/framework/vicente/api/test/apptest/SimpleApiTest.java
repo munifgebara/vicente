@@ -7,7 +7,10 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
-import br.com.munif.framework.vicente.api.hateoas.HateoasTranslator;
+import br.com.munif.framework.vicente.api.test.apptest.api.BookApi;
+import br.com.munif.framework.vicente.api.test.apptest.domain.Book;
+import br.com.munif.framework.vicente.api.test.apptest.repository.BookRepository;
+import br.com.munif.framework.vicente.api.test.apptest.service.BookService;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
@@ -36,7 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = LibaryApp.class)
+@SpringBootTest(classes = InformationApp.class)
 public class SimpleApiTest {
 
     public static final String DEAFAULT_NAME = "The Book";
@@ -57,9 +60,6 @@ public class SimpleApiTest {
 
     @Autowired
     private ExceptionTranslator exceptionTranslator;
-
-    @Autowired
-    private HateoasTranslator hateoasTranslator;
 
     private MockMvc restMockMvc;
 

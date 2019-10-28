@@ -7,6 +7,10 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
+import br.com.munif.framework.vicente.api.test.apptest.api.SalarioApi;
+import br.com.munif.framework.vicente.api.test.apptest.domain.Salario;
+import br.com.munif.framework.vicente.api.test.apptest.repository.SalarioRepository;
+import br.com.munif.framework.vicente.api.test.apptest.service.SalarioService;
 import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 
@@ -38,7 +42,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = LibaryApp.class)
+@SpringBootTest(classes = InformationApp.class)
 public class SalarioApiTest {
 
     public static final String DEAFAULT_NAME = "Meu Salario";

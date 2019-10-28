@@ -1,5 +1,6 @@
 package br.com.munif.framework.test.vicente.application;
 
+import br.com.munif.framework.test.vicente.application.repository.*;
 import br.com.munif.framework.test.vicente.domain.model.smartsearch.Categoria;
 import br.com.munif.framework.test.vicente.domain.model.smartsearch.Cliente;
 import br.com.munif.framework.test.vicente.domain.model.smartsearch.GrupoClientes;
@@ -10,7 +11,6 @@ import br.com.munif.framework.vicente.application.DatabaseDiagramBuilder;
 import br.com.munif.framework.vicente.application.search.VicAutoSeed;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;

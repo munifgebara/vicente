@@ -1,5 +1,8 @@
 package br.com.munif.framework.test.vicente.application;
 
+import br.com.munif.framework.test.vicente.application.service.ConsultorService;
+import br.com.munif.framework.test.vicente.application.service.FuncionarioService;
+import br.com.munif.framework.test.vicente.application.service.PessoaService;
 import br.com.munif.framework.test.vicente.domain.model.Consultor;
 import br.com.munif.framework.test.vicente.domain.model.Funcionario;
 import br.com.munif.framework.test.vicente.domain.model.Pessoa;
