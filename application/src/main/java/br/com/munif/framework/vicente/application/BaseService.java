@@ -160,12 +160,12 @@ public abstract class BaseService<T extends BaseEntity> {
         });
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public void patch(Map<String, Object> map) {
         repository.patch(map);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Single<Void> asyncPatch(Map<String, Object> map) {
         return Single.create(singleEmitter -> {
             patch(map);
@@ -173,12 +173,12 @@ public abstract class BaseService<T extends BaseEntity> {
         });
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public T patchReturning(Map<String, Object> map) {
         return repository.patchReturning(map);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Single<T> asyncPatchReturning(Map<String, Object> map) {
         return Single.create(singleEmitter -> {
             singleEmitter.onSuccess(patchReturning(map));

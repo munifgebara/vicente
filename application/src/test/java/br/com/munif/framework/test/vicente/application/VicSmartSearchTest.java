@@ -71,7 +71,6 @@ public class VicSmartSearchTest {
     public void setUp() {
         BaseEntity.useSimpleId = true;
         try {
-            System.out.println("Setup of Test class " + this.getClass().getSimpleName() + " ");
             VicThreadScope.ui.set("U1");
             VicThreadScope.gi.set("G1");
             loadSeedCategoria();
@@ -95,11 +94,10 @@ public class VicSmartSearchTest {
     @Transactional
     public void teste1() {
         List<Map<String, Object>> smartSearch = vss.smartSearch("Cliente", "Categoria", "", "", 10);
-        System.out.println(smartSearch.toString());
         //"select cliente.nome as nomCliente,categoria.nome as cat,count(categoria.nome) as quantidade",
         //"where categoria.nome='egg'  group by cliente.nome,categoria.nome order by categoria.nome");
         for (Object obj : smartSearch) {
-            System.out.println(obj.toString());
+//            System.out.println(obj.toString());
         }
         assertTrue(!smartSearch.isEmpty());
     }
@@ -111,7 +109,7 @@ public class VicSmartSearchTest {
                 "select cliente.nome as nomCliente,categoria.nome as cat,count(categoria.nome) as quantidade",
                 "where categoria.nome='egg'  group by cliente.nome,categoria.nome order by quantidade");
         for (Object obj : smartSearch) {
-            System.out.println(obj.toString());
+//            System.out.println(obj.toString());
         }
         assertTrue(!smartSearch.isEmpty());
     }
@@ -123,7 +121,7 @@ public class VicSmartSearchTest {
                 "select cliente.nome as nomCliente,categoria.nome as cat,count(categoria.nome) as quantidade",
                 "where categoria.nome='egg'  group by cliente.nome,categoria.nome order by quantidade");
         for (Object obj : smartSearch) {
-            System.out.println(obj.toString());
+//            System.out.println(obj.toString());
         }
         assertTrue(!smartSearch.isEmpty());
     }
@@ -135,7 +133,7 @@ public class VicSmartSearchTest {
                 "select grupoclientes.nomeGrupo as nomeCliente,categoria.nome as cat,count(categoria.nome) as quantidade",
                 "where categoria.nome='egg'  group by grupoclientes.nomeGrupo,categoria.nome order by quantidade");
         for (Object obj : smartSearch) {
-            System.out.println(obj.toString());
+//            System.out.println(obj.toString());
         }
         assertTrue(!smartSearch.isEmpty());
     }
@@ -178,7 +176,6 @@ public class VicSmartSearchTest {
     @Transactional
     public void loadSeedCategoria() throws IOException {
         BaseEntity.useSimpleId = true;
-        System.out.println("---->loadSeedCategoria()" + categoriaRepository.count());
         if (categoriaRepository.count() > 0) {
             return;
         }
@@ -191,7 +188,6 @@ public class VicSmartSearchTest {
     @Transactional
     public void loadSeedProduto() throws IOException {
         BaseEntity.useSimpleId = true;
-        System.out.println("---->loadSeedProduto()" + produtoRepository.count());
         if (produtoRepository.count() > 0) {
             return;
         }
@@ -211,7 +207,6 @@ public class VicSmartSearchTest {
     @Transactional
     public void loadSeedPedido() throws IOException {
         BaseEntity.useSimpleId = true;
-        System.out.println("---->loadSeedPedido() " + pedidoRepository.count());
         if (pedidoRepository.count() > 0) {
             return;
         }
@@ -240,7 +235,6 @@ public class VicSmartSearchTest {
     @Transactional
     public void loadSeedCliente() throws IOException {
         BaseEntity.useSimpleId = true;
-        System.out.println("---->loadSeedCliente() " + clienteRepository.count());
         if (clienteRepository.count() > 0) {
             return;
         }
@@ -259,7 +253,6 @@ public class VicSmartSearchTest {
 
     @Transactional
     public void loadSeedGrupoClientes() throws IOException {
-        System.out.println("---->loadSeedGrupoClientes() " + grupoClientesRepository.count());
         if (grupoClientesRepository.count() > 0) {
             return;
         }

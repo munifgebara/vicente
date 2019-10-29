@@ -73,7 +73,6 @@ public class SalarioApiTest {
 
     @Before
     public void setup() {
-
         MockitoAnnotations.initMocks(this);
         final SalarioApi api = new SalarioApi(service);
         this.restMockMvc = MockMvcBuilders.standaloneSetup(api)
@@ -142,9 +141,6 @@ public class SalarioApiTest {
                 .andExpect(jsonPath("$.values.[*].nome").value(hasItem(DEAFAULT_NAME)));
 
     }
-    
-    
-
 
     @Test
     @Transactional
@@ -155,10 +151,8 @@ public class SalarioApiTest {
         repository.saveAndFlush(salario);
         MvcResult r = restMockMvc.perform(get("/api/salario/" + salario.getId())).andReturn();
         String contentAsString = r.getResponse().getContentAsString();
-        System.out.println("---->" + contentAsString);
         String writeValueAsString = this.jacksonMessageConverter.getObjectMapper().writeValueAsString(salario);
         assertEquals(writeValueAsString, contentAsString);
-
     }
 
     @Test

@@ -183,9 +183,6 @@ public class PessoaGenericaApiTest {
         int databaseSizeBeforeCreate = count();
         PessoaGenerica createEntity = createEntity();
         createEntity.getVicTenancyFields().put("time", new VicFieldValue(time, createEntity.getId(), "Ponte Petra"));
-        System.out.println("new");
-        System.out.println(new String(TestUtil.convertObjectToJsonBytes(createEntity)));
-        System.out.println("");
         // Create the Book
         restMockMvc.perform(post("/api/pessoagenerica")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -194,9 +191,6 @@ public class PessoaGenericaApiTest {
 
         // Validate the Contato in the database
         List<PessoaGenerica> list = findAll();
-        System.out.println("");
-        System.out.println(list);
-        System.out.println("");
         assertThat(list).hasSize(databaseSizeBeforeCreate + 1);
         PessoaGenerica test = list.get(list.size() - 1);
         assertThat(test.getNome()).isEqualTo(DEAFAULT_NAME);

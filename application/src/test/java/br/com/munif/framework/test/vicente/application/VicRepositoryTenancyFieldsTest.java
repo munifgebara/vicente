@@ -106,7 +106,7 @@ public class VicRepositoryTenancyFieldsTest {
         VicThreadScope.gi.set("GXT");
         List<Pessoa> findAll = pessoaService.findAllNoPublic();
         for (Pessoa p : findAll) {
-            System.out.println("" + p.getId() + " " + p.getNome() + " " + p.getVicTenancyFields());
+//            System.out.println("" + p.getId() + " " + p.getNome() + " " + p.getVicTenancyFields());
         }
         assertEquals(1, findAll.size());
     }
@@ -118,7 +118,7 @@ public class VicRepositoryTenancyFieldsTest {
         VicThreadScope.gi.set("GZT");
         List<Pessoa> findAll = pessoaService.findAllNoPublic();
         for (Pessoa p : findAll) {
-            System.out.println("" + p.getId() + " " + p.getNome() + " " + p.getVicTenancyFields());
+//            System.out.println("" + p.getId() + " " + p.getNome() + " " + p.getVicTenancyFields());
         }
         assertEquals(2, findAll.size());
     }
@@ -129,7 +129,6 @@ public class VicRepositoryTenancyFieldsTest {
         VicThreadScope.ui.set("UZT");
         VicThreadScope.gi.set("GZT");
         Pessoa p = pessoaService.newEntity();
-        System.out.println("--->" + p);
         assertEquals("novo", p.getVicTenancyFields().get("time").getValue());
     }
 
@@ -139,7 +138,6 @@ public class VicRepositoryTenancyFieldsTest {
         VicThreadScope.ui.set("UXT");
         VicThreadScope.gi.set("GXT");
         Pessoa p = pessoaService.newEntity();
-        System.out.println("--->" + p);
         assertEquals("sem", p.getVicTenancyFields().get("religião").getValue());
     }
 

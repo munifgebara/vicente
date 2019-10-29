@@ -12,11 +12,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PessoaService extends BaseService<Pessoa>{
-    
     public PessoaService(VicRepository<Pessoa> repository) {
         super(repository);
     }
-    
-    
-    
 }

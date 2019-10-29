@@ -24,6 +24,9 @@ import br.com.munif.framework.vicente.api.test.apptest.service.PessoaGenericaSer
 import br.com.munif.framework.vicente.api.test.apptest.service.PontoService;
 import br.com.munif.framework.vicente.api.test.apptest.service.SalarioService;
 import br.com.munif.framework.vicente.core.VicThreadScope;
+
+import static org.mockito.Mockito.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +37,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -228,7 +232,62 @@ public class BaseEntitySerializerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(ponto.getId()))
                 .andExpect(jsonPath("$.name").doesNotExist());
+    }
 
+    @Test
+    @Transactional
+    public void getOneAsync() throws Exception {
+        // Initialize the database
+        restMockMvcBook.perform(post("/api/books")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(this.book)))
+                .andExpect(status().isCreated());
+
+        restMockMvcPonto.perform(post("/api/ponto")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(this.ponto)))
+                .andExpect(status().isCreated());
+
+        restMockMvcPessoa.perform(post("/api/pessoagenerica")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(this.pessoa)))
+                .andExpect(status().isCreated());
+
+        restMockMvcSalario.perform(post("/api/salario")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(this.salario)))
+                .andExpect(status().isCreated());
+
+        ResultActions perform = restMockMvcBook.perform(get("/api/books/async/{id}", book.getId()).param("fields", "id"));
+        ResultActions perform1 = restMockMvcSalario.perform(get("/api/salario/async/{id}", salario.getId()).param("fields", "id"));
+        ResultActions perform2 = restMockMvcPessoa.perform(get("/api/pessoagenerica/async/{id}", pessoa.getId()).param("fields", "id"));
+        ResultActions perform3 = restMockMvcPonto.perform(get("/api/ponto/async/{id}", ponto.getId()).param("fields", "id"));
+
+        MvcResult mvcResult = perform.andReturn();
+        MvcResult mvcResult1 = perform1.andReturn();
+        MvcResult mvcResult2 = perform2.andReturn();
+        MvcResult mvcResult3 = perform3.andReturn();
+
+        restMockMvcBook.perform(asyncDispatch(mvcResult))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.id").value(book.getId()))
+                .andExpect(jsonPath("$.name").doesNotExist());
+        restMockMvcSalario.perform(asyncDispatch(mvcResult1))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.id").value(salario.getId()))
+                .andExpect(jsonPath("$.name").doesNotExist());
+        restMockMvcPessoa.perform(asyncDispatch(mvcResult2))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.id").value(pessoa.getId()))
+                .andExpect(jsonPath("$.name").doesNotExist());
+        restMockMvcPonto.perform(asyncDispatch(mvcResult3))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.id").value(ponto.getId()))
+                .andExpect(jsonPath("$.name").doesNotExist());
     }
 
 

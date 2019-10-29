@@ -1,9 +1,6 @@
 package br.com.munif.framework.vicente.application;
 
-import br.com.munif.framework.vicente.core.VicQuery;
-import br.com.munif.framework.vicente.core.VicTenancyPolicy;
-import br.com.munif.framework.vicente.core.VicTenancyType;
-import br.com.munif.framework.vicente.core.VicThreadScope;
+import br.com.munif.framework.vicente.core.*;
 import br.com.munif.framework.vicente.core.vquery.*;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
@@ -194,7 +191,6 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         if (!VicRepositoryUtil.DEFAULT_ALIAS.equals(attrs)) {
             query = selectAttributes(query);
         }
-        System.out.println(hql);
         return query.getResultList();
     }
 
@@ -254,17 +250,17 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
-        return byId;
+        return save(byId);
     }
 
     private void patchReturningRecursively(Map<String, Object> map, Object t) throws NoSuchFieldException, IllegalAccessException {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
-            if (entry instanceof Map) {
-                Field field = t.getClass().getField(entry.getKey());
+            if (entry.getValue() instanceof Map) {
+                Field field = ReflectionUtil.getField(t.getClass(), entry.getKey());
                 field.setAccessible(true);
                 patchReturningRecursively((Map<String, Object>) entry.getValue(), field.get(t));
             } else {
-                Field field = t.getClass().getField(entry.getKey());
+                Field field = ReflectionUtil.getField(t.getClass(), entry.getKey());
                 field.setAccessible(true);
                 field.set(t, entry.getValue());
             }

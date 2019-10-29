@@ -37,7 +37,6 @@ public class VicTenancyPolicyTest {
     @Before
     @Transactional
     public void setUp() {
-        System.out.println("Setup of Test class " + this.getClass().getSimpleName() + " " + funcionarioService.count());
         if (funcionarioService.findAll().size() > 0) {
             return;
         }

@@ -62,7 +62,6 @@ public class DatabaseDiagramTest {
     @Transactional
     public void setUp() {
         try {
-            System.out.println("Setup of Test class " + this.getClass().getSimpleName() + " ");
             VicThreadScope.ui.set("U1");
             VicThreadScope.gi.set("G1");
             loadSeedCategoria();
@@ -95,7 +94,6 @@ public class DatabaseDiagramTest {
 //        }
 
         String draw = new DatabaseDiagramBuilder().draw(pedidoRepository.findAllNoTenancy().get(0));
-        System.out.println(draw);
         Assert.assertNotNull(draw);
 
     }

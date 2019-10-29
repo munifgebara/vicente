@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SalarioService extends BaseService<Salario> {
-
     public SalarioService(VicRepository<Salario> repository) {
         super(repository);
     }
-
 }

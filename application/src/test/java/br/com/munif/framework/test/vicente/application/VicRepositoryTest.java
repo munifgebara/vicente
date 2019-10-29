@@ -40,7 +40,6 @@ public class VicRepositoryTest {
     @Before
     @Transactional
     public void setUp() {
-        System.out.println("Setup of Test class " + this.getClass().getSimpleName() + " " + pessoaService.count());
         if (pessoaService.findAll().size() > 0) {
             return;
         }
@@ -73,7 +72,6 @@ public class VicRepositoryTest {
         VicThreadScope.ui.set("U1");
         VicThreadScope.gi.set("G1");
         List<Pessoa> findAllNoPublic = pessoaService.findAllNoPublic();
-        //System.out.println("---->" + findAll);
         assertEquals(10, findAllNoPublic.size());
 
     }
@@ -84,7 +82,6 @@ public class VicRepositoryTest {
         VicThreadScope.ui.set("U1");
         VicThreadScope.gi.set("G1");
         List<Pessoa> findAll = pessoaService.findAll();
-        //System.out.println("---->" + findAll);
         assertEquals(11, findAll.size());
 
     }
@@ -95,7 +92,6 @@ public class VicRepositoryTest {
         VicThreadScope.ui.set("U11");
         VicThreadScope.gi.set("G1");
         List<Pessoa> findAll = pessoaService.findAll();
-        //System.out.println("---->" + findAll);
         assertEquals(1, findAll.size());
     }
 
@@ -105,7 +101,6 @@ public class VicRepositoryTest {
         VicThreadScope.ui.set("U11");
         VicThreadScope.gi.set("G19");
         List<Pessoa> findAll = pessoaService.findAll();
-        //System.out.println("---->" + findAll);
         assertEquals(11, findAll.size());
     }
 
@@ -125,7 +120,6 @@ public class VicRepositoryTest {
         VicThreadScope.ui.set("UZ");
         VicThreadScope.gi.set("GZZ");
         List<Pessoa> findAll = pessoaService.findAll();
-        //System.out.println("---->" + findAll);
         assertEquals(1, findAll.size());
     }
 
@@ -145,7 +139,6 @@ public class VicRepositoryTest {
         VicThreadScope.ui.set("U1001");
         VicThreadScope.gi.set("G11,G15");
         List<Pessoa> findAll = pessoaService.findByHql(new VicQuery());
-        //System.out.println("---->" + findAll);
         assertEquals(21, findAll.size());
     }
 
@@ -158,7 +151,6 @@ public class VicRepositoryTest {
         q.setMaxResults(2);
         q.setHql("obj.nome like '%'");
         List<Pessoa> findAll = pessoaService.findByHql(q);
-        //System.out.println("---->" + findAll);
         assertEquals(2, findAll.size());
     }
 
@@ -245,7 +237,6 @@ public class VicRepositoryTest {
         map.put("nome", "PESSOA ALTERADA");
         map.put("nascimento", date);
         SetUpdateQuery setUpdate = VicRepositoryUtil.getSetUpdate(map);
-        System.out.println(setUpdate);
     }
 
     @Test
@@ -256,15 +247,41 @@ public class VicRepositoryTest {
         Pessoa pessoa = all.get(0);
         HashMap<String, Object> pessoaAlterada = new HashMap<>();
         pessoaAlterada.put("id", pessoa.getId());
-        pessoaAlterada.put("nome", "NOVO NOME");
+        pessoaAlterada.put("nome", "NOVO NOME DIFERENTE");
 
         HashMap<String, Object> telefone = new HashMap<>();
-        telefone.put("description", "999999999");
+        telefone.put("description", "888888888");
         telefone.put("type", PhoneType.LANDLINE.name());
         pessoaAlterada.put("telefone", telefone);
         pessoaService.patch(pessoaAlterada);
 
         Pessoa load = pessoaService.load(pessoa.getId());
+        assertEquals("NOVO NOME DIFERENTE", load.getNome());
+        assertEquals("888888888", load.getTelefone().getDescription());
+        assertEquals(load.getTelefone().getType(), load.getTelefone().getType());
+        assertNotEquals(load.getNome(), pessoa.getNome());
+        assertEquals(load.getApelido(), pessoa.getApelido());
+        assertEquals(load.getDocumento(), pessoa.getDocumento());
+    }
+
+    @Test
+    public void patchReturning() {
+        VicThreadScope.ui.set("U1001");
+        VicThreadScope.gi.set("G11,G15");
+        List<Pessoa> all = pessoaService.findAll();
+        Pessoa pessoa = all.get(0);
+        HashMap<String, Object> pessoaAlterada = new HashMap<>();
+        pessoaAlterada.put("id", pessoa.getId());
+        pessoaAlterada.put("nome", "NOVO NOME");
+
+        HashMap<String, Object> telefone = new HashMap<>();
+        telefone.put("description", "999999999");
+        telefone.put("type", PhoneType.LANDLINE);
+        pessoaAlterada.put("telefone", telefone);
+        Pessoa pessoaReturning = pessoaService.patchReturning(pessoaAlterada);
+        Pessoa load = pessoaService.load(pessoa.getId());
+
+        assertEquals(pessoaReturning, load);
         assertEquals("NOVO NOME", load.getNome());
         assertEquals("999999999", load.getTelefone().getDescription());
         assertEquals(load.getTelefone().getType(), load.getTelefone().getType());
@@ -272,5 +289,4 @@ public class VicRepositoryTest {
         assertEquals(load.getApelido(), pessoa.getApelido());
         assertEquals(load.getDocumento(), pessoa.getDocumento());
     }
-
 }

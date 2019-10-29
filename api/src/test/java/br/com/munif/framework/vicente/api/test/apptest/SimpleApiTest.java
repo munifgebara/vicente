@@ -27,9 +27,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import static org.mockito.Mockito.*;
 
 import javax.persistence.EntityManager;
 import java.util.Map;
@@ -85,7 +87,7 @@ public class SimpleApiTest {
     @After
     public void end() {
         bookRepository.findAll().forEach((b) -> {
-            System.out.println("------>" + b);
+//            System.out.println("------>" + b);
         });
     }
 
@@ -103,7 +105,24 @@ public class SimpleApiTest {
                 .andExpect(status().isCreated());
         long qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld + 1);
+    }
 
+    @Test
+    @Transactional
+    public void createPutAsync() throws Exception {
+        long qtdOld = bookRepository.count();
+        String contentAsString = restMockMvc.perform(get("/api/books/new")).andReturn().getResponse().getContentAsString();
+
+        Map<String, Object> map = TestUtil.convertStringToMap(contentAsString);
+        map.put("name", "POST");
+        MvcResult mvcResult = restMockMvc.perform(post("/api/books/async")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(map)))
+                .andReturn();
+        restMockMvc.perform(asyncDispatch(mvcResult))
+                .andExpect(status().isCreated());
+        long qtdNew = bookRepository.count();
+        assert (qtdNew == qtdOld + 1);
     }
 
     @Test
@@ -116,6 +135,22 @@ public class SimpleApiTest {
         restMockMvc.perform(put("/api/books")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(map)))
+                .andExpect(status().isCreated());
+        long qtdNew = bookRepository.count();
+        assert (qtdNew == qtdOld + 1);
+    }
+
+    @Test
+    @Transactional
+    public void createPutNoIdAsync() throws Exception {
+        long qtdOld = bookRepository.count();
+        String contentAsString = restMockMvc.perform(get("/api/books/new")).andReturn().getResponse().getContentAsString();
+        Map<String, Object> map = TestUtil.convertStringToMap(contentAsString);
+        map.put("name", "PUT_NO_ID");
+        MvcResult mvcResult = restMockMvc.perform(put("/api/books/async")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(map))).andReturn();
+        restMockMvc.perform(asyncDispatch(mvcResult))
                 .andExpect(status().isCreated());
         long qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld + 1);
@@ -138,6 +173,23 @@ public class SimpleApiTest {
 
     @Test
     @Transactional
+    public void createPutWithIdAsync() throws Exception {
+        long qtdOld = bookRepository.count();
+        String contentAsString = restMockMvc.perform(get("/api/books/new")).andReturn().getResponse().getContentAsString();
+        Map<String, Object> map = TestUtil.convertStringToMap(contentAsString);
+        map.put("name", "PUT_WITH_ID");
+        MvcResult id = restMockMvc.perform(put("/api/books/async/" + map.get("id"))
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(map)))
+                .andReturn();
+        restMockMvc.perform(asyncDispatch(id))
+                .andExpect(status().isCreated());
+        long qtdNew = bookRepository.count();
+        assert (qtdNew == qtdOld + 1);
+    }
+
+    @Test
+    @Transactional
     public void updateWithId() throws Exception {
         long qtdOld = bookRepository.count();
         String contentAsString = restMockMvc.perform(get("/api/books/new")).andReturn().getResponse().getContentAsString();
@@ -149,7 +201,7 @@ public class SimpleApiTest {
                 .andExpect(status().isCreated());
         long qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld + 1);
-        System.out.println("----------->" + bookRepository.findAll());
+
         contentAsString = restMockMvc.perform(get("/api/books/1")).andReturn().getResponse().getContentAsString();
         map = TestUtil.convertStringToMap(contentAsString);
         map.put("name", "AFTER UPDATE");
@@ -159,8 +211,35 @@ public class SimpleApiTest {
                 .andExpect(status().isOk());
         qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld + 1);
+    }
 
-        System.out.println("----------->" + bookRepository.findAll());
+    @Test
+    @Transactional
+    public void updateWithIdAsync() throws Exception {
+        long qtdOld = bookRepository.count();
+        String contentAsString = restMockMvc.perform(get("/api/books/new")).andReturn().getResponse().getContentAsString();
+        Map<String, Object> map = TestUtil.convertStringToMap(contentAsString);
+        map.put("name", "BEFORE UPDATE");
+        MvcResult mvcResult = restMockMvc.perform(put("/api/books/async/1")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(map)))
+                .andReturn();
+        restMockMvc.perform(asyncDispatch(mvcResult))
+                .andExpect(status().isCreated());
+
+        long qtdNew = bookRepository.count();
+        assert (qtdNew == qtdOld + 1);
+        contentAsString = restMockMvc.perform(get("/api/books/1")).andReturn().getResponse().getContentAsString();
+        map = TestUtil.convertStringToMap(contentAsString);
+        map.put("name", "AFTER UPDATE");
+        MvcResult mvcResult1 = restMockMvc.perform(put("/api/books/async/1")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(map)))
+                .andReturn();
+        restMockMvc.perform(asyncDispatch(mvcResult1))
+                .andExpect(status().isOk());
+        qtdNew = bookRepository.count();
+        assert (qtdNew == qtdOld + 1);
     }
 
     @Test
@@ -174,9 +253,10 @@ public class SimpleApiTest {
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(map)))
                 .andExpect(status().isCreated());
+
         long qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld + 1);
-        System.out.println("----------->" + bookRepository.findAll());
+
         contentAsString = restMockMvc.perform(get("/api/books/1")).andReturn().getResponse().getContentAsString();
         map = TestUtil.convertStringToMap(contentAsString);
         map.put("name", "AFTER UPDATE");
@@ -186,8 +266,36 @@ public class SimpleApiTest {
                 .andExpect(status().isOk());
         qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld + 1);
+    }
 
-        System.out.println("----------->" + bookRepository.findAll());
+    @Test
+    @Transactional
+    public void updateWithoutIdAsync() throws Exception {
+        long qtdOld = bookRepository.count();
+        String contentAsString = restMockMvc.perform(get("/api/books/new")).andReturn().getResponse().getContentAsString();
+        Map<String, Object> map = TestUtil.convertStringToMap(contentAsString);
+        map.put("name", "BEFORE UPDATE");
+        MvcResult mvcResult = restMockMvc.perform(put("/api/books/async/1")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(map)))
+                .andReturn();
+        restMockMvc.perform(asyncDispatch(mvcResult))
+                .andExpect(status().isCreated());
+
+        long qtdNew = bookRepository.count();
+        assert (qtdNew == qtdOld + 1);
+
+        contentAsString = restMockMvc.perform(get("/api/books/1")).andReturn().getResponse().getContentAsString();
+        map = TestUtil.convertStringToMap(contentAsString);
+        map.put("name", "AFTER UPDATE");
+        MvcResult mvcResult1 = restMockMvc.perform(put("/api/books/async")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(map)))
+                .andReturn();
+        restMockMvc.perform(asyncDispatch(mvcResult1))
+                .andExpect(status().isOk());
+        qtdNew = bookRepository.count();
+        assert (qtdNew == qtdOld + 1);
     }
 
     @Test
@@ -208,7 +316,31 @@ public class SimpleApiTest {
                 .andExpect(status().isNoContent());
         qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld);
-        System.out.println("----------->" + bookRepository.findAll());
+    }
+
+    @Test
+    @Transactional
+    public void deleteOneAsync() throws Exception {
+        long qtdOld = bookRepository.count();
+        String contentAsString = restMockMvc.perform(get("/api/books/new")).andReturn().getResponse().getContentAsString();
+        Map<String, Object> map = TestUtil.convertStringToMap(contentAsString);
+        map.put("name", "BEFORE DELETE");
+        MvcResult mvcResult = restMockMvc.perform(put("/api/books/async/1")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(map)))
+                .andReturn();
+        restMockMvc.perform(asyncDispatch(mvcResult))
+                .andExpect(status().isCreated());
+
+        long qtdNew = bookRepository.count();
+        assert (qtdNew == qtdOld + 1);
+        MvcResult mvcResult1 = restMockMvc.perform(delete("/api/books/async/{id}", "1")
+                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                .andReturn();
+        restMockMvc.perform(asyncDispatch(mvcResult1))
+                .andExpect(status().isNoContent());
+        qtdNew = bookRepository.count();
+        assert (qtdNew == qtdOld);
     }
 
     @Test
@@ -229,6 +361,7 @@ public class SimpleApiTest {
         ResultActions perform = restMockMvc.perform(post("/api/books/vquery")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(v)));
+
 
         perform.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))

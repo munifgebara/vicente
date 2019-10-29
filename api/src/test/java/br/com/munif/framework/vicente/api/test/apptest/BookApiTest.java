@@ -263,8 +263,6 @@ public class BookApiTest {
         Book book2 = new Book();
 
         book2.setId(book1.getId());
-        System.out.println("BOOK1 "+book1);
-        System.out.println("BOOK2 "+book2);
         assertThat(book1).isEqualTo(book2);
         book2.setId("2L");
         assertThat(book1).isNotEqualTo(book2);

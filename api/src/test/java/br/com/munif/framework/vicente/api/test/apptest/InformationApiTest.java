@@ -62,8 +62,6 @@ public class InformationApiTest {
 
     @Before
     public void setup() {
-        System.out.println("----> SETUP ");
-
         MockitoAnnotations.initMocks(this);
 
         final InformationApi api = new InformationApi(service);
@@ -129,7 +127,6 @@ public class InformationApiTest {
     public void T1() throws Exception {
         myOwnership();
         List<Information> all = repository.findAll();
-        System.out.println("T1--->" + describeInformations(all));
         assertNotEquals(0, all.size());
     }
 
@@ -140,7 +137,7 @@ public class InformationApiTest {
 
         MvcResult r = restMockMvc.perform(get("/api/information")).andReturn();
         String contentAsString = r.getResponse().getContentAsString();
-        System.out.println("T2---->" + contentAsString);
+
         assertNotEquals("[]", contentAsString);
 
     }
@@ -150,7 +147,7 @@ public class InformationApiTest {
     public void T3() throws Exception {
         myOwnership();
         List<Information> all = repository.findAll();
-        System.out.println("T3---->" + describeInformations(all));
+
         restMockMvc.perform(delete("/api/information/" + all.get(1).getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isForbidden());
@@ -161,7 +158,6 @@ public class InformationApiTest {
     public void T4() throws Exception {
         myOwnership();
         List<Information> all = repository.findAllNoTenancy();
-        System.out.println("T4---->" + describeInformations(all));
         restMockMvc.perform(get("/api/information/" + all.get(0).getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
@@ -172,7 +168,6 @@ public class InformationApiTest {
     public void T5() throws Exception {
         myOwnership();
         List<Information> all = repository.findAll();
-        System.out.println("T5---->" + describeInformations(all));
         restMockMvc.perform(get("/api/information/" + all.get(1).getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
@@ -183,7 +178,6 @@ public class InformationApiTest {
     public void T6() throws Exception {
         myOwnership();
         List<Information> all = repository.findAll();
-        System.out.println("T3---->" + describeInformations(all));
         restMockMvc.perform(delete("/api/information/" + all.get(2).getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNoContent());

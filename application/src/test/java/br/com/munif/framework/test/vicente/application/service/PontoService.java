@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PontoService extends BaseService<Ponto> {
-
     public PontoService(VicRepository<Ponto> repository) {
         super(repository);
     }
-
 }

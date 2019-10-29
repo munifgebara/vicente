@@ -156,7 +156,6 @@ public class PontoApiTest {
         repository.saveAndFlush(ponto);
         MvcResult r = restMockMvc.perform(get("/api/ponto/"+ponto.getId())).andReturn();
         String contentAsString = r.getResponse().getContentAsString();
-        System.out.println("---->" + contentAsString);
         String writeValueAsString = this.jacksonMessageConverter.getObjectMapper().writeValueAsString(ponto);
         assertEquals(writeValueAsString, contentAsString);
 

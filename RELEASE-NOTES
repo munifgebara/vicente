@@ -12,7 +12,9 @@ Padronização do método de busca de uma entidade, nome oficial: load(ID)
 Correção em tipos como VicPhoneUserType que estavam com problema no preenchimento do tipo
 Grande parte do framework inclusive do segurança (rotas, serviços, etc) foram alteradas para inglês
 Adicionado Hateoas (Há um acoplamento entre os módulos devido a limitações da nova versão do spring)
-
+Implementado métodos assíncronos no BaseService e BaseApi
+Implementado testes para novos métodos
+Removidos System.out.println (s)
 
 1.0. release
 

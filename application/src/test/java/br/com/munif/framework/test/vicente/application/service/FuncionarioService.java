@@ -12,11 +12,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class FuncionarioService extends BaseService<Funcionario>{
-    
     public FuncionarioService(VicRepository<Funcionario> repository) {
         super(repository);
     }
-    
-    
-    
 }

@@ -12,11 +12,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ConsultorService extends BaseService<Consultor>{
-    
     public ConsultorService(VicRepository<Consultor> repository) {
         super(repository);
     }
-    
-    
-    
 }
