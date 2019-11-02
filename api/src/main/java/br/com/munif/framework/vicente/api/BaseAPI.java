@@ -11,13 +11,13 @@ import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.BaseEntityHelper;
-import io.reactivex.Single;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -55,10 +55,8 @@ public class BaseAPI<T extends BaseEntity> {
 
     @Transactional
     @DeleteMapping(value = "/async/{id}")
-    public Single<ResponseEntity<T>> asyncDelete(@PathVariable String id) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(delete(id));
-        });
+    public Mono<ResponseEntity<T>> asyncDelete(@PathVariable String id) {
+        return service.asyncMono(delete(id));
     }
 
     @Transactional
@@ -77,10 +75,8 @@ public class BaseAPI<T extends BaseEntity> {
     @Transactional
     @PostMapping(value = "/async")
     @ResponseStatus(HttpStatus.CREATED)
-    public Single<ResponseEntity<T>> asyncSave(@RequestBody @Valid T model) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(save(model));
-        });
+    public Mono<ResponseEntity<T>> asyncSave(@RequestBody @Valid T model) {
+        return service.asyncMono(save(model));
     }
 
     @Transactional
@@ -91,10 +87,8 @@ public class BaseAPI<T extends BaseEntity> {
 
     @Transactional
     @PutMapping(value = "/async", consumes = "application/json")
-    public Single<ResponseEntity<T>> asyncUpdateWithoutId(@RequestBody @Valid T model) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(doUpdate(model));
-        });
+    public Mono<ResponseEntity<T>> asyncUpdateWithoutId(@RequestBody @Valid T model) {
+        return service.asyncMono(doUpdate(model));
     }
 
     @Transactional
@@ -106,10 +100,8 @@ public class BaseAPI<T extends BaseEntity> {
 
     @Transactional
     @PutMapping(value = "/async/{id}", consumes = "application/json")
-    public Single<ResponseEntity<T>> asyncUpdateWithId(@PathVariable("id") String id, @RequestBody @Valid T model) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(updateWithId(id, model));
-        });
+    public Mono<ResponseEntity<T>> asyncUpdateWithId(@PathVariable("id") String id, @RequestBody @Valid T model) {
+        return service.asyncMono(updateWithId(id, model));
     }
 
     @Transactional
@@ -122,10 +114,8 @@ public class BaseAPI<T extends BaseEntity> {
 
     @Transactional
     @PatchMapping(value = "/async/{id}", consumes = "application/json")
-    public Single<ResponseEntity<Void>> asyncPatch(@PathVariable("id") String id, @RequestBody @Valid Map model) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(patch(id, model));
-        });
+    public Mono<ResponseEntity<Void>> asyncPatch(@PathVariable("id") String id, @RequestBody @Valid Map model) {
+        return service.asyncMono(patch(id, model));
     }
 
     @Transactional
@@ -137,10 +127,8 @@ public class BaseAPI<T extends BaseEntity> {
 
     @Transactional
     @PatchMapping(value = "/async/returning/{id}", consumes = "application/json")
-    public Single<ResponseEntity> asyncPatchReturning(@PathVariable("id") String id, @RequestBody @Valid Map model) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(patchReturning(id, model));
-        });
+    public Mono<ResponseEntity> asyncPatchReturning(@PathVariable("id") String id, @RequestBody @Valid Map model) {
+        return service.asyncMono(patchReturning(id, model));
     }
 
     private ResponseEntity<T> doUpdate(T model) {
@@ -173,10 +161,8 @@ public class BaseAPI<T extends BaseEntity> {
 
     @Transactional
     @GetMapping(value = "/async", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Single<ResponseEntity<VicReturn<T>>> asyncFindHQL(HttpServletRequest request, VicQuery query) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(findHQL(request, query));
-        });
+    public Mono<ResponseEntity<VicReturn<T>>> asyncFindHQL(HttpServletRequest request, VicQuery query) {
+        return service.asyncMono(findHQL(request, query));
     }
 
     @Transactional
@@ -187,10 +173,8 @@ public class BaseAPI<T extends BaseEntity> {
 
     @Transactional
     @PostMapping(value = "/async/vquery", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Single<ResponseEntity<VicReturn<T>>> asyncFindVQuery(@RequestBody VicQuery query) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(findVQuery(query));
-        });
+    public Mono<ResponseEntity<VicReturn<T>>> asyncFindVQuery(@RequestBody VicQuery query) {
+        return service.asyncMono(findVQuery(query));
     }
 
     @Transactional
@@ -235,10 +219,8 @@ public class BaseAPI<T extends BaseEntity> {
 
     @Transactional
     @GetMapping(value = "/async/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Single<ResponseEntity> asyncLoad(@PathVariable String id, @RequestParam(required = false) String fields) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(load(id, fields));
-        });
+    public Mono<ResponseEntity> asyncLoad(@PathVariable String id, @RequestParam(required = false) String fields) {
+        return service.asyncMono(load(id, fields));
     }
 
     private Map<String, Object> getFields(String fields, T view) {
@@ -261,10 +243,8 @@ public class BaseAPI<T extends BaseEntity> {
     @ResponseBody
     @Transactional
     @GetMapping(value = "/async/draw/{id}", produces = "image/svg+xml")
-    public Single<ResponseEntity<String>> asyncDraw(@PathVariable String id) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(draw(id));
-        });
+    public Mono<ResponseEntity<String>> asyncDraw(@PathVariable String id) {
+        return service.asyncMono(draw(id));
     }
 
     @GetMapping(value = "/new")
@@ -273,10 +253,8 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     @GetMapping(value = "/async/new")
-    public Single<ResponseEntity<T>> asyncInitialState() {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(initialState());
-        });
+    public Mono<ResponseEntity<T>> asyncInitialState() {
+        return service.asyncMono(initialState());
     }
 
     public int getDefaultSize() {

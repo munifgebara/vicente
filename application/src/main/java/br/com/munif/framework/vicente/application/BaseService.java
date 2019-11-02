@@ -10,13 +10,13 @@ import br.com.munif.framework.vicente.domain.tenancyfields.VicField;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldType;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldValue;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
-import io.reactivex.Single;
-import lombok.Builder;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -55,6 +55,20 @@ public abstract class BaseService<T extends BaseEntity> {
         return em;
     }
 
+    /**
+     * @return
+     * @Bean Scheduler jdbcScheduler(Environment env) {
+     * return Schedulers.fromExecutor(Executors.newFixedThreadPool(env.getRequiredProperty("jdbc.connection.pool.size", Integer.class)));
+     * }
+     */
+    public <T> Mono<T> asyncMono(T callable) {
+        return Mono.just(callable).publishOn(Schedulers.elastic());
+    }
+
+    public <T> Flux<T> asyncFlux(Iterable<T> callable) {
+        return Flux.fromIterable(callable).publishOn(Schedulers.elastic());
+    }
+
     @Transactional(readOnly = true)
     public List<T> findAllNoTenancy() {
         List<T> result = repository.findAllNoTenancy();
@@ -63,10 +77,8 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
-    public Single<List<T>> asyncFindAllNoTenancy() {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(findAllNoTenancy());
-        });
+    public Flux<T> asyncFindAllNoTenancy() {
+        return asyncFlux(findAllNoTenancy());
     }
 
     @Transactional(readOnly = true)
@@ -77,10 +89,8 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
-    public Single<List<T>> asyncFindAllNoPublic() {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(findAllNoPublic());
-        });
+    public Flux<T> asyncFindAllNoPublic() {
+        return asyncFlux(findAllNoPublic());
     }
 
     @Transactional(readOnly = true)
@@ -91,10 +101,8 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
-    public Single<List<T>> asyncFindByHql(VicQuery query) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(findByHql(query));
-        });
+    public Flux<T> asyncFindByHql(VicQuery query) {
+        return asyncFlux(findByHql(query));
     }
 
     @Transactional(readOnly = true)
@@ -105,10 +113,8 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
-    public Single<List<T>> asyncFindAll() {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(findAll());
-        });
+    public Flux<T> asyncFindAll() {
+        return asyncFlux(findAll());
     }
 
     @Transactional(readOnly = true)
@@ -119,10 +125,8 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
-    public Single<T> asyncLoad(String id) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(load(id));
-        });
+    public Mono<T> asyncLoad(String id) {
+        return asyncMono(load(id));
     }
 
     @Transactional
@@ -134,11 +138,9 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional
-    public Single<Void> asyncDelete(T resource) {
-        return Single.create(singleEmitter -> {
-            delete(resource);
-            singleEmitter.onSuccess(null);
-        });
+    public Mono<Void> asyncDelete(T resource) {
+        delete(resource);
+        return Mono.empty();
     }
 
     @Transactional
@@ -154,10 +156,8 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional
-    public Single<T> asyncSave(T resource) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(save(resource));
-        });
+    public Mono<T> asyncSave(T resource) {
+        return asyncMono(save(resource));
     }
 
     @Transactional
@@ -166,11 +166,9 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional
-    public Single<Void> asyncPatch(Map<String, Object> map) {
-        return Single.create(singleEmitter -> {
-            patch(map);
-            singleEmitter.onSuccess(null);
-        });
+    public Mono<Void> asyncPatch(Map<String, Object> map) {
+        patch(map);
+        return Mono.empty();
     }
 
     @Transactional
@@ -179,10 +177,8 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional
-    public Single<T> asyncPatchReturning(Map<String, Object> map) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(patchReturning(map));
-        });
+    public Mono<T> asyncPatchReturning(Map<String, Object> map) {
+        return asyncMono(patchReturning(map));
     }
 
     @Transactional(readOnly = true)
@@ -191,10 +187,8 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
-    public Single<T> asyncFindOne(String id) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(findOne(id));
-        });
+    public Mono<T> asyncFindOne(String id) {
+        return asyncMono(findOne(id));
     }
 
     @Transactional(readOnly = true)
@@ -208,10 +202,8 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
-    public Single<List<T>> asyncFind(Class classe, String hql, int maxResults) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(find(classe, hql, maxResults));
-        });
+    public Flux<T> asyncFind(Class classe, String hql, int maxResults) {
+        return asyncFlux(find(classe, hql, maxResults));
     }
 
     @Transactional(readOnly = true)
@@ -220,20 +212,16 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
-    public Single<List<T>> asyncFindFirst10(Class classe, String hql) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(findFirst10(classe, hql));
-        });
+    public Flux<T> asyncFindFirst10(Class classe, String hql) {
+        return asyncFlux(findFirst10(classe, hql));
     }
 
     public Long count() {
         return repository.count();
     }
 
-    public Single<Long> asyncCount() {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(count());
-        });
+    public Mono<Long> asyncCount() {
+        return asyncMono(count());
     }
 
     public T newEntity() {
@@ -259,10 +247,8 @@ public abstract class BaseService<T extends BaseEntity> {
         return null;
     }
 
-    public Single<T> asyncNewEntity() {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(newEntity());
-        });
+    public Mono<T> asyncNewEntity() {
+        return asyncMono(newEntity());
     }
 
     public T newEntityForTest() {
@@ -277,10 +263,8 @@ public abstract class BaseService<T extends BaseEntity> {
         return null;
     }
 
-    public Single<T> asyncNewEntityForTest() {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(newEntityForTest());
-        });
+    public Mono<T> asyncNewEntityForTest() {
+        return asyncMono(newEntityForTest());
     }
 
 
@@ -292,10 +276,8 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
-    public Single<String> asyncDraw(String id) {
-        return Single.create(singleEmitter -> {
-            singleEmitter.onSuccess(draw(id));
-        });
+    public Mono<String> asyncDraw(String id) {
+        return asyncMono(draw(id));
     }
 
     @SuppressWarnings("unchecked")
