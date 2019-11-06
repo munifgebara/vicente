@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -106,7 +107,7 @@ public class TokenService extends BaseService<Token> {
 
         VQuery vQuery = new VQuery(LogicalOperator.AND, new Criteria(), Arrays.asList(new VQuery[]{
             new VQuery(new Criteria("login", ComparisonOperator.EQUAL, login.login.trim())),
-            new VQuery(new Criteria("senha", ComparisonOperator.EQUAL, login.password.trim()))
+            new VQuery(new Criteria("password", ComparisonOperator.EQUAL, login.password.trim()))
         }));
         VicQuery query = new VicQuery();
         query.setQuery(vQuery);
@@ -123,11 +124,12 @@ public class TokenService extends BaseService<Token> {
         return r;
     }
 
-    private Token criaToken(User user) {
+    @Transactional
+    public Token criaToken(User user) {
         Token t = newEntity();
         t.setValue(t.getId());
         t.setUser(user);
-        return repository.save(t);
+        return save(t);
     }
 
     public LoginResponseDto logout() {
@@ -141,8 +143,7 @@ public class TokenService extends BaseService<Token> {
     }
 
     public Token findUserByToken(String tokenValue) {
-        Token token = repository.findById(tokenValue).orElse(null);
-        return token;
+        return loadNoTenancy(tokenValue);
     }
 
 }

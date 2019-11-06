@@ -14,6 +14,7 @@ import java.util.Set;
 @Entity
 @Audited
 @VicTenancyPolicy(VicTenancyType.COMMUM)
+@Table(name = "vic_user")
 public class User extends BaseEntity {
 
     @Column(name = "login", unique = true)
@@ -23,12 +24,7 @@ public class User extends BaseEntity {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Group> groups;
     @ManyToOne
-    @JoinTable(
-            name = "user_organization",
-            joinColumns = {
-                    @JoinColumn(name = "user_id"),
-                    @JoinColumn(name = "organization_id")
-            })
+    @JoinColumn(name = "org_id")
     private Organization organization;
 
     public User() {

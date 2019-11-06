@@ -1,5 +1,8 @@
 package br.com.munif.framework.vicente.api.errors;
 
+import br.com.munif.framework.vicente.api.VicenteCreateWithExistingIdException;
+import br.com.munif.framework.vicente.api.VicenteNotFoundException;
+import br.com.munif.framework.vicente.api.VicenteRightsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -83,6 +86,27 @@ public class ExceptionTranslator {
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public ErrorVM processMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
         return new ErrorVM(ErrorConstants.ERR_METHOD_NOT_SUPPORTED, exception.getMessage());
+    }
+
+    @ExceptionHandler(VicenteRightsException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorVM vicenteRightsException(VicenteRightsException exception) {
+        return new ErrorVM(ErrorConstants.ERR_NOT_ALLOWED, exception.getMessage());
+    }
+
+    @ExceptionHandler(VicenteNotFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorVM vicenteNotFoundException(VicenteNotFoundException exception) {
+        return new ErrorVM(ErrorConstants.ERR_NOT_FOUND, exception.getMessage());
+    }
+
+    @ExceptionHandler(VicenteCreateWithExistingIdException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorVM vicenteCreateWithExistingIdException(VicenteCreateWithExistingIdException exception) {
+        return new ErrorVM(ErrorConstants.ERR_CONFLICT, exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

@@ -5,10 +5,7 @@ import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  * @author munif
@@ -16,6 +13,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Audited
 @VicTenancyPolicy(VicTenancyType.COMMUM)
+@Table(name = "vic_token")
 public class Token extends BaseEntity {
 
     @Column(name = "value")

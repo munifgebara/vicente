@@ -10,6 +10,7 @@ import br.com.munif.framework.vicente.domain.tenancyfields.VicField;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldType;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldValue;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
+import org.hibernate.criterion.Example;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -125,6 +126,13 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
+    public T loadNoTenancy(String id) {
+        T entity = repository.loadNoTenancy(id);
+        readVicTenancyFields(entity);
+        return entity;
+    }
+
+    @Transactional(readOnly = true)
     public Mono<T> asyncLoad(String id) {
         return asyncMono(load(id));
     }
@@ -226,7 +234,7 @@ public abstract class BaseService<T extends BaseEntity> {
 
     public T newEntity() {
         try {
-            BaseEntity.useSimpleId = true;
+//            BaseEntity.useSimpleId = true;
             T newInstance = clazz().newInstance();
             if (newInstance instanceof VicTenancyFieldsBaseEntity) {
                 VicTenancyFieldsBaseEntity n = (VicTenancyFieldsBaseEntity) newInstance;

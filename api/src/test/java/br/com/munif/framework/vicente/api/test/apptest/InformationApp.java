@@ -2,9 +2,14 @@ package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.test.apptest.config.ApplicationProperties;
 import br.com.munif.framework.vicente.api.test.apptest.config.DefaultProfileUtil;
+import br.com.munif.framework.vicente.api.test.apptest.domain.Book;
+import br.com.munif.framework.vicente.api.test.apptest.repository.BookRepository;
 import br.com.munif.framework.vicente.application.VicRepositoryImpl;
+import br.com.munif.framework.vicente.core.RightsHelper;
+//import br.com.munif.framework.vicente.security.seed.SeedSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -21,21 +26,26 @@ import java.net.UnknownHostException;
 @ComponentScan(basePackages = {
         "br.com.munif.framework.vicente.api.test.apptest",
         "br.com.munif.framework.vicente.api.test.apptest.api",
+        "br.com.munif.framework.vicente.security.api",
+        "br.com.munif.framework.vicente.security.seed",
+        "br.com.munif.framework.vicente.security.service",
         "br.com.munif.framework.vicente.api.test.apptest.config",
         "br.com.munif.framework.vicente.api.test.apptest.service",
+        "br.com.munif.framework.vicente.api.errors",
         "br.com.munif.framework.vicente.application.victenancyfields",
-        "br.com.munif.framework.vicente.api",
         "br.com.munif.framework.vicente.application"
 })
 @EnableAutoConfiguration()
-@EnableJpaRepositories(basePackages ={
+@EnableJpaRepositories(basePackages = {
         "br.com.munif.framework.vicente.api.test.apptest.repository",
+        "br.com.munif.framework.vicente.security.repository",
         "br.com.munif.framework.vicente.application.victenancyfields"
 },
         repositoryBaseClass = VicRepositoryImpl.class)
 @EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
 @EntityScan(basePackages = {
         "br.com.munif.framework.vicente.domain",
+        "br.com.munif.framework.vicente.security.domain",
         "br.com.munif.framework.vicente.api.test.apptest.domain"
 })
 public class InformationApp {
@@ -44,13 +54,23 @@ public class InformationApp {
 
     private final Environment env;
 
+    @Autowired
+    private BookRepository bookRepository;
+//    @Autowired
+//    private SeedSecurity seedSecurity;
+
     public InformationApp(Environment env) {
         this.env = env;
     }
 
     @PostConstruct
     public void initApplication() {
-
+//        Book teste = new Book("Book Test");
+//        teste.setRights(RightsHelper.getDefault());
+//        teste.setUi("admin@munif.com.br");
+//        teste.setGi("G2");
+//        bookRepository.save(teste);
+//        seedSecurity.seedSecurity();
     }
 
     public static void main(String[] args) throws UnknownHostException {

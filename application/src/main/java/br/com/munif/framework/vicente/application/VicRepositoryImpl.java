@@ -273,4 +273,8 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         List<T> byHql = findByHql(vicQuery);
         return byHql.size() > 0 ? byHql.get(0) : null;
     }
+    @Override
+    public T loadNoTenancy(String id) {
+        return findById(id).orElse(null);
+    }
 }

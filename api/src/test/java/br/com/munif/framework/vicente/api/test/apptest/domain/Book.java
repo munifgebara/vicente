@@ -13,7 +13,10 @@ import javax.persistence.*;
 public class Book extends HateosBaseEntity {
 
     public Book() {
-        
+    }
+
+    public Book(String name) {
+        this.name = name;
     }
 
     @Column(nullable = false)
@@ -29,9 +32,8 @@ public class Book extends HateosBaseEntity {
 
     @Override
     public String toString() {
-        return super.toString()+" "+name;
+        return super.toString() + " " + name;
     }
-    
-    
+
 
 }

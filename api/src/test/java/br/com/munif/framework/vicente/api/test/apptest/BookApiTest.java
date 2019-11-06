@@ -150,7 +150,7 @@ public class BookApiTest {
         restMockMvc.perform(post("/api/books")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(book)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
 
         List<Book> list = findAll();
         assertThat(list).hasSize(databaseSizeBeforeCreate);
