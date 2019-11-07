@@ -9,6 +9,7 @@ import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.security.domain.Group;
 import br.com.munif.framework.vicente.security.domain.Organization;
+import br.com.munif.framework.vicente.security.domain.PasswordGenerator;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.repository.GroupRepository;
 import br.com.munif.framework.vicente.security.repository.OrganizationRepository;
@@ -74,14 +75,14 @@ public class SeedSecurity {
         o2.setUpper(o1);
         organizationRepository.save(o2);
 
-        User admin = new User("admin@munif.com.br", "qwe123");
+        User admin = new User("admin@munif.com.br", PasswordGenerator.generate("qwe123"));
         admin.setGroups(new HashSet<>());
         admin.getGroups().add(g0);
         admin.getGroups().add(g2);
         admin.setOrganization(o1);
         userRepository.save(admin);
 
-        User user = new User("munif@munif.com.br", "qwe123");
+        User user = new User("munif@munif.com.br", PasswordGenerator.generate("qwe123"));
         user.setGroups(new HashSet<>());
         user.getGroups().add(g1);
         user.setOrganization(o2);

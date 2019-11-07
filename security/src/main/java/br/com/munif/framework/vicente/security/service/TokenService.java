@@ -11,20 +11,15 @@ import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
 import br.com.munif.framework.vicente.core.vquery.Criteria;
 import br.com.munif.framework.vicente.core.vquery.LogicalOperator;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
-import br.com.munif.framework.vicente.security.domain.Group;
-import br.com.munif.framework.vicente.security.domain.Organization;
-import br.com.munif.framework.vicente.security.domain.Token;
-import br.com.munif.framework.vicente.security.domain.User;
+import br.com.munif.framework.vicente.security.domain.*;
 import br.com.munif.framework.vicente.security.dto.LoginDto;
 import br.com.munif.framework.vicente.security.dto.LoginResponseDto;
 import br.com.munif.framework.vicente.security.repository.GroupRepository;
 import br.com.munif.framework.vicente.security.repository.OrganizationRepository;
 import br.com.munif.framework.vicente.security.repository.UserRepository;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,17 +30,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TokenService extends BaseService<Token> {
 
-    private final UsuarioService usuarioService;
+    private final UserService userService;
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
     private final OrganizationRepository organizationRepository;
 
-    public TokenService(VicRepository<Token> repository, OrganizationRepository organizationRepository, GroupRepository groupRepository, UserRepository userRepository, UsuarioService usuarioService) {
+    public TokenService(VicRepository<Token> repository, OrganizationRepository organizationRepository, GroupRepository groupRepository, UserRepository userRepository, UserService userService) {
         super(repository);
         this.organizationRepository = organizationRepository;
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
-        this.usuarioService = usuarioService;
+        this.userService = userService;
     }
 
     public LoginResponseDto logaGoogle(String token) {
@@ -59,7 +54,7 @@ public class TokenService extends BaseService<Token> {
         VQuery vQuery = new VQuery(new Criteria("login", ComparisonOperator.EQUAL, email.trim()));
         VicQuery query = new VicQuery();
         query.setQuery(vQuery);
-        List<User> findByHql = usuarioService.findByHql(query);
+        List<User> findByHql = userService.findByHql(query);
 
         if (findByHql.size() == 0) {
             VicThreadScope.gi.set("GOOGLE");
@@ -69,7 +64,7 @@ public class TokenService extends BaseService<Token> {
             User u = new User();
 
             u.setLogin((String) verify.get("email"));
-            u.setPassword("123"); //TODO MUDAR
+            u.setPassword(PasswordGenerator.generate("123")); //TODO MUDAR
 
             Group g0 = new Group();
 
@@ -105,21 +100,24 @@ public class TokenService extends BaseService<Token> {
     public LoginResponseDto loga(LoginDto login) {
         LoginResponseDto r = new LoginResponseDto();
 
-        VQuery vQuery = new VQuery(LogicalOperator.AND, new Criteria(), Arrays.asList(new VQuery[]{
-            new VQuery(new Criteria("login", ComparisonOperator.EQUAL, login.login.trim())),
-            new VQuery(new Criteria("password", ComparisonOperator.EQUAL, login.password.trim()))
-        }));
+        VQuery vQuery = new VQuery(LogicalOperator.AND, new Criteria(),
+                Collections.singletonList(new VQuery(new Criteria("login", ComparisonOperator.EQUAL, login.login.trim()))));
         VicQuery query = new VicQuery();
         query.setQuery(vQuery);
-        List<User> findByHql = usuarioService.findByHql(query);
+        List<User> findByHql = userService.findByHql(query);
         if (findByHql.size() == 0) {
-            r.message = "Erro em Usuário ou senha";
+            r.message = "Usuário não encontrado.";
+            return r;
         } else if (findByHql.size() == 1) {
+            if (!PasswordGenerator.validate(login.password, findByHql.get(0).getPassword())) {
+                r.message = "Senha inválida.";
+                return r;
+            }
             r.message = "Login OK";
             r.ok = true;
             r.token = criaToken(findByHql.get(0));
-        } else if (findByHql.size() > 0) {
-            r.message = "Multiplos Usuários";
+        } else {
+            r.message = "Multiplos Usuários.";
         }
         return r;
     }
@@ -133,7 +131,7 @@ public class TokenService extends BaseService<Token> {
     }
 
     public LoginResponseDto logout() {
-        //Token tok = repository.getOne("aaa");
+        Token tok = repository.load(VicThreadScope.token.get());
         LoginResponseDto lr = new LoginResponseDto();
         lr.code = 0;
         lr.message = "Volte sempre";

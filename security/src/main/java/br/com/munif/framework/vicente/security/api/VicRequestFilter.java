@@ -47,6 +47,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         Token token = tokenService.findUserByToken(tokenValue);
         if (token != null) {
             User u = token.getUser();
+            VicThreadScope.token.set(tokenValue);
             VicThreadScope.gi.set(u.stringGrupos());
             VicThreadScope.ui.set(u.getId());
             VicThreadScope.oi.set(u.stringOrganizacao());

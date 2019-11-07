@@ -10,6 +10,7 @@ import br.com.munif.framework.vicente.security.dto.LoginResponseDto;
 import br.com.munif.framework.vicente.security.service.TokenService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,26 +31,27 @@ public class TokenApi extends BaseAPI<Token> {
     }
 
     @Transactional
-    @RequestMapping(value = "/login/bypassword", method = RequestMethod.POST)
+    @RequestMapping(value = "/login/bypassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LoginResponseDto loga(@RequestBody LoginDto login) {
         return tokenService.loga(login);
     }
 
     @Transactional
-    @RequestMapping(value = "/login/bygoogle", method = RequestMethod.POST)
+    @RequestMapping(value = "/login/bygoogle", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LoginResponseDto logaGoogle(@RequestBody String token) {
         return tokenService.logaGoogle(token);
     }
 
+    // TODO SIGIN
 
     @Transactional
-    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    @RequestMapping(value = "/logout", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LoginResponseDto logout() {
         return tokenService.logout();
     }
 
     @Transactional
-    @RequestMapping(value = "/login/bypassword/{login}/{senha:.+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/login/bypassword/{login}/{senha:.+}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LoginResponseDto logaGet(@PathVariable String login, @PathVariable String senha) {
         return loga(new LoginDto(login, senha));
     }

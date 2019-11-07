@@ -4,15 +4,16 @@ package br.com.munif.framework.vicente.security.service;
 
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
-import br.com.munif.framework.vicente.security.domain.Group;
+import br.com.munif.framework.vicente.security.domain.User;
 import org.springframework.stereotype.Service;
 
 /**
+ *
  * @author GeradorVicente
  */
 @Service
-public class GrupoService extends BaseService<Group> {
-    public GrupoService(VicRepository<Group> repository) {
+public class UserService extends BaseService<User>{
+    public UserService(VicRepository<User> repository) {
         super(repository);
     }
 }
