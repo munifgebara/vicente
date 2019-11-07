@@ -17,6 +17,7 @@ Implementado testes para novos métodos
 Removidos System.out.println (s)
 Correção permissões security
 Implementação de testes security
+Reactive routes
 
 1.0. release
 
