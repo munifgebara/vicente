@@ -48,7 +48,6 @@ public class TokenApi extends BaseAPI<Token> {
         return tokenService.sigin(login);
     }
 
-
     @Transactional
     @RequestMapping(value = "/logout", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LoginResponseDto logout() {

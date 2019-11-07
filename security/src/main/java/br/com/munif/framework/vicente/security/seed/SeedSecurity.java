@@ -46,7 +46,7 @@ public class SeedSecurity {
         VicThreadScope.ui.set("SEED");
         VicThreadScope.oi.set("SEED.");
         VicThreadScope.ip.set("127.0.0.1");
-        VicThreadScope.defaultRights.set(RightsHelper.OWNER_ALL + RightsHelper.GROUP_READ_UPDATE + RightsHelper.OTHER_READ);
+        VicThreadScope.defaultRights.set(RightsHelper.OWNER_ALL + RightsHelper.GROUP_READ_UPDATE);
 
         log.info("Inserting Security Data");
 

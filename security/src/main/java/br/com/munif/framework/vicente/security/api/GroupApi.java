@@ -23,5 +23,4 @@ public class GroupApi extends BaseAPI<Group> {
     public GroupApi(BaseService<Group> service) {
         super(service);
     }
-
 }

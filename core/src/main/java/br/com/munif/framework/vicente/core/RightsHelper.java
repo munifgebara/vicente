@@ -48,17 +48,18 @@ public class RightsHelper {
 
     public static String getMainGi() {
         String cg = VicThreadScope.cg.get();
-        if (cg != null) {
+        if (cg != null && !cg.isEmpty()) {
             return cg;
         }
         String get = VicThreadScope.gi.get();
-        if (get == null) {
-            return null;
+        if (get != null) {
+            if (get.contains(",")) {
+                return get.substring(0, get.indexOf(','));
+            } else {
+                return get;
+            }
         }
-        if (get.contains(",")) {
-            return get.substring(0, get.indexOf(','));
-        }
-        return get;
+        return null;
     }
 
     public static String getStringRights(Integer rights, String ui, String gi) {

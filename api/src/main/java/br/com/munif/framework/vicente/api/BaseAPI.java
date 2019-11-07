@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Scope("prototype")
 public class BaseAPI<T extends BaseEntity> {
 
-    private final BaseService<T> service;
+    public final BaseService<T> service;
 
     public BaseAPI(BaseService<T> service) {
         this.service = service;

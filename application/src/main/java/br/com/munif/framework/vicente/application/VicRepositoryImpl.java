@@ -178,11 +178,53 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
             params = vicQuery.getQuery().getParams();
         }
 
-        String hql = mountHQL(vicQuery, clause, joins, attrs, alias);
+        String hql = mountHQL(vicQuery, clause, joins, attrs, alias, true);
         Query query = entityManager.createQuery(hql);
         query.setFirstResult(vicQuery.getFirstResult());
         query.setMaxResults(vicQuery.getMaxResults());
         setTenancyParameters(query);
+        if (params != null) {
+            for (Param entry : params) {
+                query.setParameter(entry.getKeyToSearch(), entry.getValueToSearch());
+            }
+        }
+        if (!VicRepositoryUtil.DEFAULT_ALIAS.equals(attrs)) {
+            query = selectAttributes(query);
+        }
+        return query.getResultList();
+    }
+
+    /**
+     * Find elements according using the VicQuery without tenancy
+     *
+     * @param vicQuery VicQuery
+     * @return domain elements according query
+     */
+    @Override
+    public List<T> findByHqlNoTenancy(VicQuery vicQuery) {
+        if (vicQuery.getMaxResults() == -1) {
+            vicQuery.setMaxResults(VicQuery.DEFAULT_QUERY_SIZE);
+        }
+
+        String clause = (vicQuery.getHql() != null ? vicQuery.getHql() : "1=1")
+                .concat(" and ")
+                .concat((vicQuery.getQuery() != null ? vicQuery.getQuery().toString() : "1=1"));
+
+        String joins = "";
+        String attrs = VicRepositoryUtil.DEFAULT_ALIAS;
+        String alias = VicRepositoryUtil.DEFAULT_ALIAS;
+        ParamList params = null;
+        if (vicQuery.getQuery() != null) {
+            attrs = vicQuery.getQuery().getFieldsWithAlias();
+            joins = vicQuery.getQuery().getJoins();
+            alias = vicQuery.getQuery().getAlias();
+            params = vicQuery.getQuery().getParams();
+        }
+
+        String hql = mountHQL(vicQuery, clause, joins, attrs, alias, false);
+        Query query = entityManager.createQuery(hql);
+        query.setFirstResult(vicQuery.getFirstResult());
+        query.setMaxResults(vicQuery.getMaxResults());
         if (params != null) {
             for (Param entry : params) {
                 query.setParameter(entry.getKeyToSearch(), entry.getValueToSearch());
@@ -221,13 +263,11 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
                 });
     }
 
-    private String mountHQL(VicQuery vicQuery, String clause, String joins, String attrs, String alias) {
+    private String mountHQL(VicQuery vicQuery, String clause, String joins, String attrs, String alias, boolean withTenancy) {
         return "select " + attrs + " FROM " + getDomainClass().getSimpleName() + " " + alias + " " + joins + " where \n"
-                + "(" + clause + ") and "
-                + "("
-                + geTenancyHQL(true, alias)
-                + ") "
-                + " ORDER BY " + alias + "." + vicQuery.getOrderBy() + " , " + alias + ".id asc";
+                + "(" + clause + ") "
+                + (withTenancy ? " and (" + geTenancyHQL(true, alias) + ") " : "") +
+                " ORDER BY " + alias + "." + vicQuery.getOrderBy() + " , " + alias + ".id asc";
     }
 
     @Override
@@ -273,6 +313,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         List<T> byHql = findByHql(vicQuery);
         return byHql.size() > 0 ? byHql.get(0) : null;
     }
+
     @Override
     public T loadNoTenancy(String id) {
         return findById(id).orElse(null);

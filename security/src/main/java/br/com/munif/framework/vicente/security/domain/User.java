@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -67,6 +69,11 @@ public class User extends BaseEntity {
 
     public void setGroups(Set<Group> groups) {
         this.groups = groups;
+    }
+
+    public void assignGroups(Collection<Group> groups) {
+        if (this.groups == null) this.groups = new HashSet<>();
+        this.groups.addAll(groups);
     }
 
     public Organization getOrganization() {

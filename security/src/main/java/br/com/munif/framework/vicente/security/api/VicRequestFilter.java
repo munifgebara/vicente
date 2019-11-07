@@ -51,7 +51,10 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
             VicThreadScope.gi.set(u.stringGrupos());
             VicThreadScope.ui.set(u.getLogin());
             VicThreadScope.oi.set(u.stringOrganizacao());
-            VicThreadScope.cg.set("" + request.getHeader("group"));
+            if (request.getHeader("group") != null)
+                VicThreadScope.cg.set("" + request.getHeader("group"));
+            else
+                VicThreadScope.cg.set(null);
             VicThreadScope.defaultRights.set(null);
         } else if (publics.contains(request.getRequestURI())) {
             VicThreadScope.gi.set("VIC_PUBLIC");

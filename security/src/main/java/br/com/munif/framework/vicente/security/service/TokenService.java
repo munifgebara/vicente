@@ -83,7 +83,7 @@ public class TokenService extends BaseService<Token> {
         VQuery vQuery = new VQuery(new Criteria("login", ComparisonOperator.EQUAL, email.trim()));
         VicQuery query = new VicQuery();
         query.setQuery(vQuery);
-        return userService.findByHql(query);
+        return userService.findByHqlNoTenancy(query);
     }
 
     public LoginResponseDto loga(LoginDto login) {
@@ -93,7 +93,7 @@ public class TokenService extends BaseService<Token> {
                 Collections.singletonList(new VQuery(new Criteria("login", ComparisonOperator.EQUAL, login.login.trim()))));
         VicQuery query = new VicQuery();
         query.setQuery(vQuery);
-        List<User> findByHql = userService.findByHql(query);
+        List<User> findByHql = userService.findByHqlNoTenancy(query);
         if (findByHql.size() == 0) {
             r.message = "Usuário não encontrado.";
             return r;

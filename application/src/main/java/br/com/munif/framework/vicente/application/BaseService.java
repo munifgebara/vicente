@@ -107,6 +107,18 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
+    public List<T> findByHqlNoTenancy(VicQuery query) {
+        List<T> result = repository.findByHqlNoTenancy(query);
+        readVicTenancyFields(result);
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    public Flux<T> asyncFindByHqlNoTenancy(VicQuery query) {
+        return asyncFlux(findByHqlNoTenancy(query));
+    }
+
+    @Transactional(readOnly = true)
     public List<T> findAll() {
         List<T> result = repository.findAll();
         readVicTenancyFields(result);
