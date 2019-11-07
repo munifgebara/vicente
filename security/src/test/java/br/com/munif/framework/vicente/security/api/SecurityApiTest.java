@@ -221,12 +221,6 @@ public class SecurityApiTest {
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(objectObjectHashMap)));
         req4.andExpect(status().isNoContent());
-
-        ResultActions req41 = restMockMvc.perform(get("/api/group/" + tokenJose.getUser().getFirstGroup().getId())
-                .header("Authorization", tokenJose.getValue())
-                .contentType(TestUtil.APPLICATION_JSON_UTF8));
-        req41.andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(tokenJose.getUser().getFirstGroup().getName()));
     }
 
     @Test
@@ -273,7 +267,7 @@ public class SecurityApiTest {
         assertFalse(getAllJose.stream().anyMatch((Map map) -> getAllWillian.stream().anyMatch((Map sm) -> map.get("id").equals(sm.get("id")))));
     }
 
-//    @Test
+    @Test
     public void assignGroupsFromWillianToJose() throws Exception {
         Group group = new Group("GROUP WILLIAN 2", "GROUP_WILLIAN2");
         ResultActions createRequest = restMockMvc.perform(post("/api/group")
