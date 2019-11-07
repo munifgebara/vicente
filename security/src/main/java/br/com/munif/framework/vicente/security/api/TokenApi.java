@@ -42,7 +42,12 @@ public class TokenApi extends BaseAPI<Token> {
         return tokenService.logaGoogle(token);
     }
 
-    // TODO SIGIN
+    @Transactional
+    @RequestMapping(value = "/sigin", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LoginResponseDto sigin(@RequestBody LoginDto login) {
+        return tokenService.sigin(login);
+    }
+
 
     @Transactional
     @RequestMapping(value = "/logout", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

@@ -3,6 +3,7 @@ package br.com.munif.framework.vicente.api.errors;
 import br.com.munif.framework.vicente.api.VicenteCreateWithExistingIdException;
 import br.com.munif.framework.vicente.api.VicenteNotFoundException;
 import br.com.munif.framework.vicente.api.VicenteRightsException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -33,13 +34,6 @@ public class ExceptionTranslator {
 
     private final Logger log = LoggerFactory.getLogger(ExceptionTranslator.class);
 
-    //TODO
-//    @ExceptionHandler( org.springframework.dao.DataIntegrityViolationException )
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    @ResponseBody
-//    public ErrorVM dataIntegrityViolationException(DataIntegrityViolationException ex) {
-//        return new ErrorVM(ErrorConstants.ERR_DATA_INTEGRITY_VIOLATION);
-//    }
     @ExceptionHandler(ConcurrencyFailureException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
@@ -72,6 +66,13 @@ public class ExceptionTranslator {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorVM processMissingServletRequestPartException(MissingServletRequestPartException e) {
         return new ErrorVM("error.http." + HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorVM constraintViolationException(org.springframework.dao.DataIntegrityViolationException e) {
+        return new ErrorVM(ErrorConstants.ERR_DATA_INTEGRITY_VIOLATION, e.getMessage());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)

@@ -99,7 +99,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
                 query.setParameter("ui", VicThreadScope.ui.get());
             }
             if ("gi".equals(p.getName())) {
-                query.setParameter("gi", VicThreadScope.gi.get() + ",");
+                query.setParameter("gi", VicThreadScope.gi.get());
             }
             if ("oi".equals(p.getName())) {
                 VicTenancyType vtt = getPolicy(getDomainClass());
@@ -247,13 +247,13 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         T byId = load(String.valueOf(map.get("id")));
         try {
             patchReturningRecursively(map, byId);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
         return save(byId);
     }
 
-    private void patchReturningRecursively(Map<String, Object> map, Object t) throws NoSuchFieldException, IllegalAccessException {
+    private void patchReturningRecursively(Map<String, Object> map, Object t) throws IllegalAccessException {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             if (entry.getValue() instanceof Map) {
                 Field field = ReflectionUtil.getField(t.getClass(), entry.getKey());

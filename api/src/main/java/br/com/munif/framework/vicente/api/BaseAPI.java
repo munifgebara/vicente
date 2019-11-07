@@ -39,9 +39,9 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     @Transactional
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<T> delete(@PathVariable String id) {
-        T entity = service.load(id);
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        T entity = service.loadNoTenancy(id);
         if (entity == null) {
             throw new VicenteNotFoundException("Not found");
         }
@@ -50,17 +50,17 @@ public class BaseAPI<T extends BaseEntity> {
         }
         beforeDelete(entity);
         service.delete(entity);
-        return new ResponseEntity<>(entity, HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @Transactional
-    @DeleteMapping(value = "/async/{id}")
-    public Mono<ResponseEntity<T>> asyncDelete(@PathVariable String id) {
+    @DeleteMapping(value = "/async/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Mono<ResponseEntity<Void>> asyncDelete(@PathVariable String id) {
         return service.asyncMono(delete(id));
     }
 
     @Transactional
-    @PostMapping()
+    @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<T> save(@RequestBody @Valid T model) {
         beforeSave(model);
@@ -73,39 +73,39 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     @Transactional
-    @PostMapping(value = "/async")
+    @PostMapping(value = "/async", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<ResponseEntity<T>> asyncSave(@RequestBody @Valid T model) {
         return service.asyncMono(save(model));
     }
 
     @Transactional
-    @PutMapping(value = "", consumes = "application/json")
+    @PutMapping(value = "", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<T> updateWithoutId(@RequestBody @Valid T model) {
         return doUpdate(model);
     }
 
     @Transactional
-    @PutMapping(value = "/async", consumes = "application/json")
+    @PutMapping(value = "/async", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity<T>> asyncUpdateWithoutId(@RequestBody @Valid T model) {
         return service.asyncMono(doUpdate(model));
     }
 
     @Transactional
-    @PutMapping(value = "/{id}", consumes = "application/json")
+    @PutMapping(value = "/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<T> updateWithId(@PathVariable("id") String id, @RequestBody @Valid T model) {
         model.setId(id);
         return doUpdate(model);
     }
 
     @Transactional
-    @PutMapping(value = "/async/{id}", consumes = "application/json")
+    @PutMapping(value = "/async/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity<T>> asyncUpdateWithId(@PathVariable("id") String id, @RequestBody @Valid T model) {
         return service.asyncMono(updateWithId(id, model));
     }
 
     @Transactional
-    @PatchMapping(value = "/{id}", consumes = "application/json")
+    @PatchMapping(value = "/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Void> patch(@PathVariable("id") String id, @RequestBody @Valid Map model) {
         model.put("id", id);
         service.patch(model);
@@ -113,44 +113,42 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     @Transactional
-    @PatchMapping(value = "/async/{id}", consumes = "application/json")
+    @PatchMapping(value = "/async/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity<Void>> asyncPatch(@PathVariable("id") String id, @RequestBody @Valid Map model) {
         return service.asyncMono(patch(id, model));
     }
 
     @Transactional
-    @PatchMapping(value = "/returning/{id}", consumes = "application/json")
+    @PatchMapping(value = "/returning/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity patchReturning(@PathVariable("id") String id, @RequestBody @Valid Map model) {
         model.put("id", id);
         return ResponseEntity.ok(service.patchReturning(model));
     }
 
     @Transactional
-    @PatchMapping(value = "/async/returning/{id}", consumes = "application/json")
+    @PatchMapping(value = "/async/returning/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity> asyncPatchReturning(@PathVariable("id") String id, @RequestBody @Valid Map model) {
         return service.asyncMono(patchReturning(id, model));
     }
 
     private ResponseEntity<T> doUpdate(T model) {
-        try {
-            T entity = null;
-            HttpStatus ht = HttpStatus.OK;
-            T oldEntity = service.load(model.getId());
-            if (oldEntity != null) {
-                beforeUpdate(model.getId(), model);
-                BaseEntityHelper.overwriteJsonIgnoreFields(model, oldEntity);
-                entity = service.save(model);
-            } else {
-                beforeSave(model);
-
-                entity = service.save(model);
-                ht = HttpStatus.CREATED;
+        T entity = null;
+        HttpStatus ht = HttpStatus.OK;
+        T oldEntity = service.loadNoTenancy(model.getId());
+        if (oldEntity != null) {
+            if (!oldEntity.canUpdate()) {
+                throw new VicenteRightsException("PUT," + oldEntity.getId() + "," + oldEntity.r());
             }
-            return new ResponseEntity(entity, ht);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            beforeUpdate(model.getId(), model);
+            BaseEntityHelper.overwriteJsonIgnoreFields(model, oldEntity);
+            entity = service.save(model);
+        } else {
+            beforeSave(model);
+
+            entity = service.save(model);
+            ht = HttpStatus.CREATED;
         }
+        return new ResponseEntity(entity, ht);
     }
 
     @Transactional
@@ -204,9 +202,12 @@ public class BaseAPI<T extends BaseEntity> {
     @Transactional
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity load(@PathVariable String id, @RequestParam(required = false) String fields) {
-        T view = service.load(id);
-        if (view == null || !view.canRead()) {
+        T view = service.loadNoTenancy(id);
+        if (view == null) {
             throw new VicenteNotFoundException("Not found");
+        }
+        if (!view.canRead()) {
+            throw new VicenteRightsException("READ," + id + "," + view.r());
         }
 
         beforeReturnOne(view);
@@ -247,12 +248,12 @@ public class BaseAPI<T extends BaseEntity> {
         return service.asyncMono(draw(id));
     }
 
-    @GetMapping(value = "/new")
+    @GetMapping(value = "/new", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<T> initialState() {
         return ResponseEntity.ok(service.newEntity());
     }
 
-    @GetMapping(value = "/async/new")
+    @GetMapping(value = "/async/new", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity<T>> asyncInitialState() {
         return service.asyncMono(initialState());
     }

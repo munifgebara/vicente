@@ -15,6 +15,8 @@ Adicionado Hateoas (Há um acoplamento entre os módulos devido a limitações d
 Implementado métodos assíncronos no BaseService e BaseApi
 Implementado testes para novos métodos
 Removidos System.out.println (s)
+Correção permissões security
+Implementação de testes security
 
 1.0. release
 

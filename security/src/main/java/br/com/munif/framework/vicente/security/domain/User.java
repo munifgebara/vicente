@@ -57,6 +57,14 @@ public class User extends BaseEntity {
         return groups;
     }
 
+    public Group getGroupByIndex(int index) {
+        return (Group) getGroups().toArray()[index];
+    }
+
+    public Group getFirstGroup() {
+        return getGroups().stream().findFirst().orElse(null);
+    }
+
     public void setGroups(Set<Group> groups) {
         this.groups = groups;
     }
@@ -86,7 +94,7 @@ public class User extends BaseEntity {
         if (organization == null) {
             return null;
         }
-        return getOrganization().getId();
+        return getOrganization().getCode();
     }
 
 }

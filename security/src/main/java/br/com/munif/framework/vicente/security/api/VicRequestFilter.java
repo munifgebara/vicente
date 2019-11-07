@@ -49,9 +49,10 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
             User u = token.getUser();
             VicThreadScope.token.set(tokenValue);
             VicThreadScope.gi.set(u.stringGrupos());
-            VicThreadScope.ui.set(u.getId());
+            VicThreadScope.ui.set(u.getLogin());
             VicThreadScope.oi.set(u.stringOrganizacao());
             VicThreadScope.cg.set("" + request.getHeader("group"));
+            VicThreadScope.defaultRights.set(null);
         } else if (publics.contains(request.getRequestURI())) {
             VicThreadScope.gi.set("VIC_PUBLIC");
             VicThreadScope.ui.set("VIC_PUBLIC");

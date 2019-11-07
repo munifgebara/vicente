@@ -23,6 +23,11 @@ public class Group extends BaseEntity {
     public Group() {
     }
 
+    public Group(String name, String code) {
+        this.name = name;
+        this.code = code;
+    }
+
     public String getName() {
         return name;
     }

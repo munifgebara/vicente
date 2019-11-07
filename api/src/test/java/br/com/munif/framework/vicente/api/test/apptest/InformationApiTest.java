@@ -160,7 +160,7 @@ public class InformationApiTest {
         List<Information> all = repository.findAllNoTenancy();
         restMockMvc.perform(get("/api/information/" + all.get(0).getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isForbidden());
     }
 
     @Test

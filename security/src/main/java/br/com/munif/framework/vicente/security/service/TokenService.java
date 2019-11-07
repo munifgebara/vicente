@@ -1,5 +1,5 @@
 /* Arquivo gerado utilizando VICGERADOR por munif as 28/02/2018 02:07:54 */
- /* Para não gerar o arquivo novamente coloque na primeira linha um comentário com  VICIGNORE , pode ser essa mesmo */
+/* Para não gerar o arquivo novamente coloque na primeira linha um comentário com  VICIGNORE , pode ser essa mesmo */
 package br.com.munif.framework.vicente.security.service;
 
 import br.com.munif.framework.vicente.application.BaseService;
@@ -14,32 +14,27 @@ import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.*;
 import br.com.munif.framework.vicente.security.dto.LoginDto;
 import br.com.munif.framework.vicente.security.dto.LoginResponseDto;
-import br.com.munif.framework.vicente.security.repository.GroupRepository;
-import br.com.munif.framework.vicente.security.repository.OrganizationRepository;
-import br.com.munif.framework.vicente.security.repository.UserRepository;
 
 import java.util.*;
 
+import com.google.common.collect.Sets;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author GeradorVicente
  */
 @Service
 public class TokenService extends BaseService<Token> {
 
     private final UserService userService;
-    private final UserRepository userRepository;
-    private final GroupRepository groupRepository;
-    private final OrganizationRepository organizationRepository;
+    private final GroupService groupService;
+    private final OrganizationService organizationService;
 
-    public TokenService(VicRepository<Token> repository, OrganizationRepository organizationRepository, GroupRepository groupRepository, UserRepository userRepository, UserService userService) {
+    public TokenService(VicRepository<Token> repository, OrganizationService organizationService, GroupService groupService, UserService userService) {
         super(repository);
-        this.organizationRepository = organizationRepository;
-        this.groupRepository = groupRepository;
-        this.userRepository = userRepository;
+        this.organizationService = organizationService;
+        this.groupService = groupService;
         this.userService = userService;
     }
 
@@ -48,13 +43,10 @@ public class TokenService extends BaseService<Token> {
         Map verify = GoogleToken.verify(token);
         String email = (String) verify.get("email");
         if (email == null) {
-            r.message = "Erro em Usuário ou senha";
+            r.message = "Usuário não encontrado.";
             return r;
         }
-        VQuery vQuery = new VQuery(new Criteria("login", ComparisonOperator.EQUAL, email.trim()));
-        VicQuery query = new VicQuery();
-        query.setQuery(vQuery);
-        List<User> findByHql = userService.findByHql(query);
+        List<User> findByHql = findUsersByEmail(email);
 
         if (findByHql.size() == 0) {
             VicThreadScope.gi.set("GOOGLE");
@@ -62,28 +54,17 @@ public class TokenService extends BaseService<Token> {
             VicThreadScope.oi.set("GOOGLE.");
             VicThreadScope.defaultRights.set(RightsHelper.OWNER_ALL + RightsHelper.GROUP_READ_UPDATE + RightsHelper.OTHER_READ);
             User u = new User();
-
             u.setLogin((String) verify.get("email"));
             u.setPassword(PasswordGenerator.generate("123")); //TODO MUDAR
-
-            Group g0 = new Group();
-
-            g0.setCode(email.replaceAll("\\.", "_"));
-            g0.setName(email);
-            groupRepository.save(g0);
-
-            Organization o1 = new Organization();
-
+            Group g0 = groupService.createGroupByEmail(email);
             String fa = verify.get("family_name").toString();
-            o1.setCode(fa.replaceAll(" ", "_"));
-            o1.setName(fa);
-            organizationRepository.save(o1);
+            Organization o1 = organizationService.createOrganizationByEmail(fa);
 
             u.setGroups(new HashSet<>());
             u.getGroups().add(g0);
             u.setOrganization(o1);
 
-            u = userRepository.save(u);
+            u = userService.save(u);
             r.message = "Usuário criado, Login OK";
             r.ok = true;
             r.token = criaToken(u);
@@ -91,10 +72,18 @@ public class TokenService extends BaseService<Token> {
             r.message = "Login OK";
             r.ok = true;
             r.token = criaToken(findByHql.get(0));
-        } else if (findByHql.size() > 0) {
+        } else {
             r.message = "Multiplos Usuários";
         }
         return r;
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> findUsersByEmail(String email) {
+        VQuery vQuery = new VQuery(new Criteria("login", ComparisonOperator.EQUAL, email.trim()));
+        VicQuery query = new VicQuery();
+        query.setQuery(vQuery);
+        return userService.findByHql(query);
     }
 
     public LoginResponseDto loga(LoginDto login) {
@@ -109,13 +98,7 @@ public class TokenService extends BaseService<Token> {
             r.message = "Usuário não encontrado.";
             return r;
         } else if (findByHql.size() == 1) {
-            if (!PasswordGenerator.validate(login.password, findByHql.get(0).getPassword())) {
-                r.message = "Senha inválida.";
-                return r;
-            }
-            r.message = "Login OK";
-            r.ok = true;
-            r.token = criaToken(findByHql.get(0));
+            return createTokenToExistentUser(login, findByHql);
         } else {
             r.message = "Multiplos Usuários.";
         }
@@ -144,4 +127,42 @@ public class TokenService extends BaseService<Token> {
         return loadNoTenancy(tokenValue);
     }
 
+    @Transactional
+    public LoginResponseDto sigin(LoginDto login) {
+        VicThreadScope.ui.set(login.login);
+        VicThreadScope.gi.set(login.login.replaceAll("\\.", "_"));
+        VicThreadScope.cg.set(login.login.replaceAll("\\.", "_"));
+        VicThreadScope.oi.set(login.login.replaceAll("\\.", "_") + ".");
+        VicThreadScope.defaultRights.set(RightsHelper.OWNER_READ);
+        List<User> usersByEmail = findUsersByEmail(login.login);
+        if (usersByEmail.size() == 0) {
+            User u = new User();
+            u.setLogin(login.login);
+            Group group = groupService.createGroupByEmail(login.login);
+            Organization organization = organizationService.createOrganizationByEmail(login.login);
+            u.setPassword(PasswordGenerator.generate(login.password));
+            u.setGroups(Sets.newHashSet(group));
+            u.setOrganization(organization);
+            u = userService.save(u);
+            LoginResponseDto r = new LoginResponseDto();
+            r.message = "Usuário criado, Login OK";
+            r.ok = true;
+            r.token = criaToken(u);
+            return r;
+        } else {
+            return createTokenToExistentUser(login, usersByEmail);
+        }
+    }
+
+    public LoginResponseDto createTokenToExistentUser(LoginDto login, List<User> usersByEmail) {
+        LoginResponseDto r = new LoginResponseDto();
+        if (!PasswordGenerator.validate(login.password, usersByEmail.get(0).getPassword())) {
+            r.message = "Senha inválida.";
+            return r;
+        }
+        r.message = "Login OK";
+        r.ok = true;
+        r.token = criaToken(usersByEmail.get(0));
+        return r;
+    }
 }

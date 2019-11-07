@@ -6,14 +6,22 @@ import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
 import br.com.munif.framework.vicente.security.domain.Organization;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author GeradorVicente
  */
 @Service
-public class OrganizationService extends BaseService<Organization>{
+public class OrganizationService extends BaseService<Organization> {
     public OrganizationService(VicRepository<Organization> repository) {
         super(repository);
+    }
+
+    @Transactional
+    public Organization createOrganizationByEmail(String email) {
+        Organization o1 = new Organization();
+        o1.setCode(email.replaceAll(" ", "_") + ".");
+        o1.setName("Organization " + email);
+        return repository.save(o1);
     }
 }

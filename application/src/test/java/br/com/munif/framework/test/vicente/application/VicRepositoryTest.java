@@ -99,7 +99,7 @@ public class VicRepositoryTest {
     @Transactional
     public void findALl3() {
         VicThreadScope.ui.set("U11");
-        VicThreadScope.gi.set("G19");
+        VicThreadScope.gi.set("G19,");
         List<Pessoa> findAll = pessoaService.findAll();
         assertEquals(11, findAll.size());
     }
@@ -108,7 +108,7 @@ public class VicRepositoryTest {
     @Transactional
     public void findALl4() {
         VicThreadScope.ui.set("U00");
-        VicThreadScope.gi.set("G11");
+        VicThreadScope.gi.set("G11,");
         List<Pessoa> findAll = pessoaService.findAll();
         //System.out.println("---->" + findAll);
         assertEquals(11, findAll.size());
@@ -127,7 +127,7 @@ public class VicRepositoryTest {
     @Transactional
     public void findALl6() {
         VicThreadScope.ui.set("U1001");
-        VicThreadScope.gi.set("G11,G15");
+        VicThreadScope.gi.set("G11,G15,");
         List<Pessoa> findAll = pessoaService.findAll();
         //System.out.println("---->" + findAll);
         assertEquals(21, findAll.size());
@@ -137,7 +137,7 @@ public class VicRepositoryTest {
     @Transactional
     public void findByHql() {
         VicThreadScope.ui.set("U1001");
-        VicThreadScope.gi.set("G11,G15");
+        VicThreadScope.gi.set("G11,G15,");
         List<Pessoa> findAll = pessoaService.findByHql(new VicQuery());
         assertEquals(21, findAll.size());
     }
@@ -168,7 +168,7 @@ public class VicRepositoryTest {
     @Transactional
     public void findByHqlAndQuery() {
         VicThreadScope.ui.set("U1001");
-        VicThreadScope.gi.set("G11,G15");
+        VicThreadScope.gi.set("G11,G15,");
         VicQuery vicQuery = new VicQuery();
         vicQuery.setHql("obj.nome like '%3%'");
         vicQuery.setQuery(new VQuery(new Criteria("nome", ComparisonOperator.CONTAINS, "4")));
@@ -180,7 +180,7 @@ public class VicRepositoryTest {
     @Transactional
     public void findByHql2AndQueryWithLeftJoin() {
         VicThreadScope.ui.set("U1001");
-        VicThreadScope.gi.set("G11,G15");
+        VicThreadScope.gi.set("G11,G15,");
         VicQuery q = new VicQuery();
         q.setMaxResults(2);
         q.setHql("obj.nome like '%'");
@@ -206,7 +206,7 @@ public class VicRepositoryTest {
     @Transactional
     public void findByQuery1() {
         VicThreadScope.ui.set("U1001");
-        VicThreadScope.gi.set("G11,G15");
+        VicThreadScope.gi.set("G11,G15,");
         VicQuery q = new VicQuery();
         q.setQuery(new VQuery(new Criteria("nome", ComparisonOperator.NOT_CONTAINS, "1")));
         List<Pessoa> findAll = pessoaService.findByHql(q);
@@ -217,7 +217,7 @@ public class VicRepositoryTest {
     @Transactional
     public void findByQuery2In() {
         VicThreadScope.ui.set("U1001");
-        VicThreadScope.gi.set("G11,G15");
+        VicThreadScope.gi.set("G11,G15,");
         VicQuery q = new VicQuery();
         q.setQuery(new VQuery(
                 new Criteria(
