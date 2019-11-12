@@ -3,9 +3,12 @@ package br.com.munif.framework.vicente.security.domain;
 import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -14,21 +17,18 @@ import java.util.Set;
 @Entity
 @Audited
 @VicTenancyPolicy(VicTenancyType.COMMUM)
+@Table(name = "vic_user")
 public class User extends BaseEntity {
 
     @Column(name = "login", unique = true)
     private String login;
     @Column(name = "password")
+    @JsonIgnore
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Group> groups;
     @ManyToOne
-    @JoinTable(
-            name = "user_organization",
-            joinColumns = {
-                    @JoinColumn(name = "user_id"),
-                    @JoinColumn(name = "organization_id")
-            })
+    @JoinColumn(name = "org_id")
     private Organization organization;
 
     public User() {
@@ -59,8 +59,21 @@ public class User extends BaseEntity {
         return groups;
     }
 
+    public Group getGroupByIndex(int index) {
+        return (Group) getGroups().toArray()[index];
+    }
+
+    public Group getFirstGroup() {
+        return getGroups().stream().findFirst().orElse(null);
+    }
+
     public void setGroups(Set<Group> groups) {
         this.groups = groups;
+    }
+
+    public void assignGroups(Collection<Group> groups) {
+        if (this.groups == null) this.groups = new HashSet<>();
+        this.groups.addAll(groups);
     }
 
     public Organization getOrganization() {
@@ -88,7 +101,7 @@ public class User extends BaseEntity {
         if (organization == null) {
             return null;
         }
-        return getOrganization().getId();
+        return getOrganization().getCode();
     }
 
 }

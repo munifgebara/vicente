@@ -10,6 +10,10 @@ public class VicThreadScope {
      * Currente group, if set new records will be marked with this, if not, the first gi will be used
      */
     public static final ThreadLocal<String> cg = new ThreadLocal<>();
+    /**
+     * Current user token
+     */
+    public static final ThreadLocal<String> token = new ThreadLocal<>();
 
     /**
      * Group identifier, the current groups for operations.

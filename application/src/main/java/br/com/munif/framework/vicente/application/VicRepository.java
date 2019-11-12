@@ -18,7 +18,9 @@ public interface VicRepository<T extends BaseEntity> extends JpaRepository<T, Se
     List<T> findAllNoTenancy();
     List<T> findAllNoPublic();
     List<T> findByHql(VicQuery query);
+    List<T> findByHqlNoTenancy(VicQuery query);
     void patch(Map<String, Object> map);
     T patchReturning(Map<String, Object> map);
-    public T load(String id);
+    T load(String id);
+    T loadNoTenancy(String id);
 }

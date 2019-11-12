@@ -6,6 +6,8 @@
 package br.com.munif.framework.vicente.api.test;
 
 import br.com.munif.framework.vicente.api.VicAutoSeed;
+import br.com.munif.framework.vicente.api.test.apptest.domain.Carro;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;

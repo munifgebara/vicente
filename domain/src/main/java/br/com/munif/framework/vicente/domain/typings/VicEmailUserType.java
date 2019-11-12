@@ -81,7 +81,7 @@ public class VicEmailUserType implements CompositeUserType {
         final String description = resultSet.getString(names[0]);
         for (int i = 0; i < names.length; i++) {
             if (resultSet.getObject(names[i]) != null) {
-                return new VicEmail(description, resultSet.getString(1));
+                return new VicEmail(description, resultSet.getString(names[i]));
             }
         }
         return new VicEmail();
@@ -95,7 +95,7 @@ public class VicEmailUserType implements CompositeUserType {
         } else {
             final VicEmail object = (VicEmail) value;
             preparedStatement.setString(property + 0, object.getDescription());
-            preparedStatement.setString(property + 1, Optional.of(object.getSocial()).orElse(SocialNetworking.EMAIL).name());
+            preparedStatement.setString(property + 1, Optional.ofNullable(object.getSocial()).orElse(SocialNetworking.EMAIL).name());
 
         }
     }

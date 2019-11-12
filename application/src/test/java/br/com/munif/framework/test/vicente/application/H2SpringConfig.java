@@ -49,7 +49,7 @@ public class H2SpringConfig {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         Properties properties = new Properties();
         properties.put("eclipselink.weaving", "false");
-        properties.put("hibernate.hbm2ddl.auto", "create");
+        properties.put("hibernate.hbm2ddl.auto", "create-drop");
         properties.put("hibernate.ejb.naming_strategy", "org.hibernate.cfg.ImprovedNamingStrategy");
         properties.put("hibernate.show_sql", "false");
         properties.put("hibernate.format_sql", "false");
@@ -61,7 +61,7 @@ public class H2SpringConfig {
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("br.com.munif.framework.vicente.domain", "br.com.munif.framework.test.vicente.domain");
+        factory.setPackagesToScan("br.com.munif.framework.vicente.domain", "br.com.munif.framework.test.vicente.domain",  "br.com.munif.framework.vicente.security.domain");
 
         factory.setDataSource(dataSource);
         factory.setJpaProperties(properties);

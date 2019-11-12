@@ -1,9 +1,6 @@
 package br.com.munif.framework.vicente.application;
 
-import br.com.munif.framework.vicente.core.VicQuery;
-import br.com.munif.framework.vicente.core.VicTenancyPolicy;
-import br.com.munif.framework.vicente.core.VicTenancyType;
-import br.com.munif.framework.vicente.core.VicThreadScope;
+import br.com.munif.framework.vicente.core.*;
 import br.com.munif.framework.vicente.core.vquery.*;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
@@ -102,7 +99,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
                 query.setParameter("ui", VicThreadScope.ui.get());
             }
             if ("gi".equals(p.getName())) {
-                query.setParameter("gi", VicThreadScope.gi.get() + ",");
+                query.setParameter("gi", VicThreadScope.gi.get());
             }
             if ("oi".equals(p.getName())) {
                 VicTenancyType vtt = getPolicy(getDomainClass());
@@ -181,7 +178,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
             params = vicQuery.getQuery().getParams();
         }
 
-        String hql = mountHQL(vicQuery, clause, joins, attrs, alias);
+        String hql = mountHQL(vicQuery, clause, joins, attrs, alias, true);
         Query query = entityManager.createQuery(hql);
         query.setFirstResult(vicQuery.getFirstResult());
         query.setMaxResults(vicQuery.getMaxResults());
@@ -194,7 +191,48 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         if (!VicRepositoryUtil.DEFAULT_ALIAS.equals(attrs)) {
             query = selectAttributes(query);
         }
-        System.out.println(hql);
+        return query.getResultList();
+    }
+
+    /**
+     * Find elements according using the VicQuery without tenancy
+     *
+     * @param vicQuery VicQuery
+     * @return domain elements according query
+     */
+    @Override
+    public List<T> findByHqlNoTenancy(VicQuery vicQuery) {
+        if (vicQuery.getMaxResults() == -1) {
+            vicQuery.setMaxResults(VicQuery.DEFAULT_QUERY_SIZE);
+        }
+
+        String clause = (vicQuery.getHql() != null ? vicQuery.getHql() : "1=1")
+                .concat(" and ")
+                .concat((vicQuery.getQuery() != null ? vicQuery.getQuery().toString() : "1=1"));
+
+        String joins = "";
+        String attrs = VicRepositoryUtil.DEFAULT_ALIAS;
+        String alias = VicRepositoryUtil.DEFAULT_ALIAS;
+        ParamList params = null;
+        if (vicQuery.getQuery() != null) {
+            attrs = vicQuery.getQuery().getFieldsWithAlias();
+            joins = vicQuery.getQuery().getJoins();
+            alias = vicQuery.getQuery().getAlias();
+            params = vicQuery.getQuery().getParams();
+        }
+
+        String hql = mountHQL(vicQuery, clause, joins, attrs, alias, false);
+        Query query = entityManager.createQuery(hql);
+        query.setFirstResult(vicQuery.getFirstResult());
+        query.setMaxResults(vicQuery.getMaxResults());
+        if (params != null) {
+            for (Param entry : params) {
+                query.setParameter(entry.getKeyToSearch(), entry.getValueToSearch());
+            }
+        }
+        if (!VicRepositoryUtil.DEFAULT_ALIAS.equals(attrs)) {
+            query = selectAttributes(query);
+        }
         return query.getResultList();
     }
 
@@ -225,13 +263,11 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
                 });
     }
 
-    private String mountHQL(VicQuery vicQuery, String clause, String joins, String attrs, String alias) {
+    private String mountHQL(VicQuery vicQuery, String clause, String joins, String attrs, String alias, boolean withTenancy) {
         return "select " + attrs + " FROM " + getDomainClass().getSimpleName() + " " + alias + " " + joins + " where \n"
-                + "(" + clause + ") and "
-                + "("
-                + geTenancyHQL(true, alias)
-                + ") "
-                + " ORDER BY " + alias + "." + vicQuery.getOrderBy() + " , " + alias + ".id asc";
+                + "(" + clause + ") "
+                + (withTenancy ? " and (" + geTenancyHQL(true, alias) + ") " : "") +
+                " ORDER BY " + alias + "." + vicQuery.getOrderBy() + " , " + alias + ".id asc";
     }
 
     @Override
@@ -251,20 +287,20 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         T byId = load(String.valueOf(map.get("id")));
         try {
             patchReturningRecursively(map, byId);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        return byId;
+        return save(byId);
     }
 
-    private void patchReturningRecursively(Map<String, Object> map, Object t) throws NoSuchFieldException, IllegalAccessException {
+    private void patchReturningRecursively(Map<String, Object> map, Object t) throws IllegalAccessException {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
-            if (entry instanceof Map) {
-                Field field = t.getClass().getField(entry.getKey());
+            if (entry.getValue() instanceof Map) {
+                Field field = ReflectionUtil.getField(t.getClass(), entry.getKey());
                 field.setAccessible(true);
                 patchReturningRecursively((Map<String, Object>) entry.getValue(), field.get(t));
             } else {
-                Field field = t.getClass().getField(entry.getKey());
+                Field field = ReflectionUtil.getField(t.getClass(), entry.getKey());
                 field.setAccessible(true);
                 field.set(t, entry.getValue());
             }
@@ -276,5 +312,10 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         VicQuery vicQuery = new VicQuery(new VQuery(new Criteria("id", ComparisonOperator.EQUAL, id)), 1);
         List<T> byHql = findByHql(vicQuery);
         return byHql.size() > 0 ? byHql.get(0) : null;
+    }
+
+    @Override
+    public T loadNoTenancy(String id) {
+        return findById(id).orElse(null);
     }
 }

@@ -45,7 +45,6 @@ public class VicSerializerTest {
      */
     @Test
     public void testGetInstance() {
-        System.out.println("getInstance");
         VicSerializer expResult = VicSerializer.getInstance();
         VicSerializer result = VicSerializer.getInstance();
         assertNotNull(result);
@@ -68,13 +67,8 @@ public class VicSerializerTest {
             BaseEntity.useSimpleId=true;
             p.setFamilia(f);
         });
-        System.out.println("\n\n\n\n\n");
-        System.out.println(VicSerializer.getInstance().serialize(vicente));
-        System.out.println("\n\n\n\n\n");
 
         VicSerializer.setIdentention(false);
-        System.out.println(VicSerializer.getInstance().serialize(vicente));
-
         assertEquals(VicSerializer.getInstance().serialize(vicente), VicSerializer.getInstance().serialize(vicente));
 
     }

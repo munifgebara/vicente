@@ -1,7 +1,7 @@
 package br.com.munif.framework.test.vicente.domain;
 
 import br.com.munif.framework.test.vicente.application.H2SpringConfig;
-import br.com.munif.framework.test.vicente.application.PontoService;
+import br.com.munif.framework.test.vicente.application.service.PontoService;
 import br.com.munif.framework.test.vicente.domain.model.Ponto;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import org.junit.Before;
@@ -22,12 +22,9 @@ import static org.junit.Assert.assertEquals;
 public class TimeTypesTest {
 
     private Ponto entity;
-    
+
     @Autowired
     private PontoService pontoService;
-    
-    
-
 
     @Before
     @Transactional
@@ -44,7 +41,7 @@ public class TimeTypesTest {
         List<Ponto> todos = pontoService.findAll();
         assertEquals(1, todos.size());
     }
-    
+
     @Test
     @Transactional
     public void calculaDiferenca() {
@@ -52,8 +49,8 @@ public class TimeTypesTest {
         Ponto primeiro = todos.get(0);
         long diferenca = ChronoUnit.HOURS.between(primeiro.getEntrada(), primeiro.getSaida());
         assertEquals(4, diferenca);
-        
+
     }
 
-    
+
 }

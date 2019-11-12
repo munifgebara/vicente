@@ -6,7 +6,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class VQueryTest {
 
@@ -42,7 +42,6 @@ public class VQueryTest {
     public void constructorLogicalOperatorCriteriaSubQuerys3() {
         vQuery = new VQuery(LogicalOperator.AND, new Criteria(), Arrays.asList(new VQuery(new Criteria("nome", ComparisonOperator.EQUAL, "Willian"))));
         vQuery = vQuery.and(new Criteria("idade", ComparisonOperator.GREATER, 20));
-        System.out.println(vQuery.getParams());
         assertEquals("((nome = 'Willian') AND (idade > 20))", vQuery.toStringWithoutParams());
     }
 
@@ -123,7 +122,6 @@ public class VQueryTest {
     public void testJoin22() {
         VQuery vQuery = new VQuery(new Criteria("name", ComparisonOperator.CONTAINS, "The book"))
                 .or(new Criteria("name", ComparisonOperator.CONTAINS, "books"));
-        System.out.println(vQuery);
     }
 
 
@@ -230,7 +228,6 @@ public class VQueryTest {
     @Test
     public void dateBetween() {
         VQuery campo8 = new VQuery(new Criteria()).and(new Criteria("campo8", ComparisonOperator.IN, new Date[]{new Date(1518291786286L), new Date(1518291786286L), new Date(1518291786286L)}));
-        System.out.println(campo8.toStringWithoutParams());
     }
 
     @Test
@@ -406,6 +403,5 @@ public class VQueryTest {
                 .and(new Criteria("name", ComparisonOperator.CONTAINS, "gebara"));
         assertEquals("(((name like 'munif%') OR (name like 'vicente%') OR (name like 'duda%')) AND (name like '%gebara%'))", gQuery.toStringWithoutParams());
     }
-
 
 }

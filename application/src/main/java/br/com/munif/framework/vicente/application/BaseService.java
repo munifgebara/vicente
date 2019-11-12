@@ -10,10 +10,14 @@ import br.com.munif.framework.vicente.domain.tenancyfields.VicField;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldType;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldValue;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
+import org.hibernate.criterion.Example;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -52,11 +56,30 @@ public abstract class BaseService<T extends BaseEntity> {
         return em;
     }
 
+    /**
+     * @return
+     * @Bean Scheduler jdbcScheduler(Environment env) {
+     * return Schedulers.fromExecutor(Executors.newFixedThreadPool(env.getRequiredProperty("jdbc.connection.pool.size", Integer.class)));
+     * }
+     */
+    public <T> Mono<T> asyncMono(T callable) {
+        return Mono.just(callable).publishOn(Schedulers.elastic());
+    }
+
+    public <T> Flux<T> asyncFlux(Iterable<T> callable) {
+        return Flux.fromIterable(callable).publishOn(Schedulers.elastic());
+    }
+
     @Transactional(readOnly = true)
     public List<T> findAllNoTenancy() {
         List<T> result = repository.findAllNoTenancy();
         readVicTenancyFields(result);
         return result;
+    }
+
+    @Transactional(readOnly = true)
+    public Flux<T> asyncFindAllNoTenancy() {
+        return asyncFlux(findAllNoTenancy());
     }
 
     @Transactional(readOnly = true)
@@ -67,10 +90,32 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
+    public Flux<T> asyncFindAllNoPublic() {
+        return asyncFlux(findAllNoPublic());
+    }
+
+    @Transactional(readOnly = true)
     public List<T> findByHql(VicQuery query) {
         List<T> result = repository.findByHql(query);
         readVicTenancyFields(result);
         return result;
+    }
+
+    @Transactional(readOnly = true)
+    public Flux<T> asyncFindByHql(VicQuery query) {
+        return asyncFlux(findByHql(query));
+    }
+
+    @Transactional(readOnly = true)
+    public List<T> findByHqlNoTenancy(VicQuery query) {
+        List<T> result = repository.findByHqlNoTenancy(query);
+        readVicTenancyFields(result);
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    public Flux<T> asyncFindByHqlNoTenancy(VicQuery query) {
+        return asyncFlux(findByHqlNoTenancy(query));
     }
 
     @Transactional(readOnly = true)
@@ -81,10 +126,27 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
+    public Flux<T> asyncFindAll() {
+        return asyncFlux(findAll());
+    }
+
+    @Transactional(readOnly = true)
     public T load(String id) {
         T entity = repository.load(id);
         readVicTenancyFields(entity);
         return entity;
+    }
+
+    @Transactional(readOnly = true)
+    public T loadNoTenancy(String id) {
+        T entity = repository.loadNoTenancy(id);
+        readVicTenancyFields(entity);
+        return entity;
+    }
+
+    @Transactional(readOnly = true)
+    public Mono<T> asyncLoad(String id) {
+        return asyncMono(load(id));
     }
 
     @Transactional
@@ -93,6 +155,12 @@ public abstract class BaseService<T extends BaseEntity> {
             //deleteVicTenancyFields(resource);
         }
         repository.delete(resource);
+    }
+
+    @Transactional
+    public Mono<Void> asyncDelete(T resource) {
+        delete(resource);
+        return Mono.empty();
     }
 
     @Transactional
@@ -107,19 +175,40 @@ public abstract class BaseService<T extends BaseEntity> {
         return entity;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
+    public Mono<T> asyncSave(T resource) {
+        return asyncMono(save(resource));
+    }
+
+    @Transactional
     public void patch(Map<String, Object> map) {
         repository.patch(map);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
+    public Mono<Void> asyncPatch(Map<String, Object> map) {
+        patch(map);
+        return Mono.empty();
+    }
+
+    @Transactional
     public T patchReturning(Map<String, Object> map) {
         return repository.patchReturning(map);
+    }
+
+    @Transactional
+    public Mono<T> asyncPatchReturning(Map<String, Object> map) {
+        return asyncMono(patchReturning(map));
     }
 
     @Transactional(readOnly = true)
     public T findOne(String id) {
         return repository.load(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Mono<T> asyncFindOne(String id) {
+        return asyncMono(findOne(id));
     }
 
     @Transactional(readOnly = true)
@@ -133,17 +222,31 @@ public abstract class BaseService<T extends BaseEntity> {
     }
 
     @Transactional(readOnly = true)
+    public Flux<T> asyncFind(Class classe, String hql, int maxResults) {
+        return asyncFlux(find(classe, hql, maxResults));
+    }
+
+    @Transactional(readOnly = true)
     public List<T> findFirst10(Class classe, String hql) {
         return find(classe, hql, 10);
+    }
+
+    @Transactional(readOnly = true)
+    public Flux<T> asyncFindFirst10(Class classe, String hql) {
+        return asyncFlux(findFirst10(classe, hql));
     }
 
     public Long count() {
         return repository.count();
     }
 
+    public Mono<Long> asyncCount() {
+        return asyncMono(count());
+    }
+
     public T newEntity() {
         try {
-            BaseEntity.useSimpleId = true;
+//            BaseEntity.useSimpleId = true;
             T newInstance = clazz().newInstance();
             if (newInstance instanceof VicTenancyFieldsBaseEntity) {
                 VicTenancyFieldsBaseEntity n = (VicTenancyFieldsBaseEntity) newInstance;
@@ -164,6 +267,10 @@ public abstract class BaseService<T extends BaseEntity> {
         return null;
     }
 
+    public Mono<T> asyncNewEntity() {
+        return asyncMono(newEntity());
+    }
+
     public T newEntityForTest() {
         try {
             BaseEntity.useSimpleId = true;
@@ -176,8 +283,25 @@ public abstract class BaseService<T extends BaseEntity> {
         return null;
     }
 
+    public Mono<T> asyncNewEntityForTest() {
+        return asyncMono(newEntityForTest());
+    }
+
+
+    @Transactional(readOnly = true)
+    public String draw(String id) {
+        T entity = repository.findById(id).orElse(null);
+        readVicTenancyFields(entity);
+        return new DatabaseDiagramBuilder().draw(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public Mono<String> asyncDraw(String id) {
+        return asyncMono(draw(id));
+    }
+
     @SuppressWarnings("unchecked")
-    public Class<T> clazz() {
+    private Class<T> clazz() {
         return (Class<T>) Utils.inferGenericType(getClass());
     }
 
@@ -219,13 +343,6 @@ public abstract class BaseService<T extends BaseEntity> {
     private void fillCollections(T newinstance) {
         Utils.fillColectionsWithEmpty(newinstance);
 
-    }
-
-    @Transactional(readOnly = true)
-    public String draw(String id) {
-        T entity = repository.findById(id).orElse(null);
-        readVicTenancyFields(entity);
-        return new DatabaseDiagramBuilder().draw(entity);
     }
 
 }

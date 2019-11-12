@@ -1,5 +1,9 @@
 package br.com.munif.framework.vicente.api.errors;
 
+import br.com.munif.framework.vicente.api.VicenteCreateWithExistingIdException;
+import br.com.munif.framework.vicente.api.VicenteNotFoundException;
+import br.com.munif.framework.vicente.api.VicenteRightsException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -30,13 +34,6 @@ public class ExceptionTranslator {
 
     private final Logger log = LoggerFactory.getLogger(ExceptionTranslator.class);
 
-    //TODO
-//    @ExceptionHandler( org.springframework.dao.DataIntegrityViolationException )
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    @ResponseBody
-//    public ErrorVM dataIntegrityViolationException(DataIntegrityViolationException ex) {
-//        return new ErrorVM(ErrorConstants.ERR_DATA_INTEGRITY_VIOLATION);
-//    }
     @ExceptionHandler(ConcurrencyFailureException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
@@ -71,6 +68,13 @@ public class ExceptionTranslator {
         return new ErrorVM("error.http." + HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorVM constraintViolationException(org.springframework.dao.DataIntegrityViolationException e) {
+        return new ErrorVM(ErrorConstants.ERR_DATA_INTEGRITY_VIOLATION, e.getMessage());
+    }
+
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -83,6 +87,27 @@ public class ExceptionTranslator {
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public ErrorVM processMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
         return new ErrorVM(ErrorConstants.ERR_METHOD_NOT_SUPPORTED, exception.getMessage());
+    }
+
+    @ExceptionHandler(VicenteRightsException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorVM vicenteRightsException(VicenteRightsException exception) {
+        return new ErrorVM(ErrorConstants.ERR_NOT_ALLOWED, exception.getMessage());
+    }
+
+    @ExceptionHandler(VicenteNotFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorVM vicenteNotFoundException(VicenteNotFoundException exception) {
+        return new ErrorVM(ErrorConstants.ERR_NOT_FOUND, exception.getMessage());
+    }
+
+    @ExceptionHandler(VicenteCreateWithExistingIdException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorVM vicenteCreateWithExistingIdException(VicenteCreateWithExistingIdException exception) {
+        return new ErrorVM(ErrorConstants.ERR_CONFLICT, exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

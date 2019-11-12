@@ -7,10 +7,12 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
-import br.com.munif.framework.vicente.api.test.apptest.TestUtil;
+import br.com.munif.framework.vicente.api.test.apptest.api.InformationApi;
+import br.com.munif.framework.vicente.api.test.apptest.domain.Information;
+import br.com.munif.framework.vicente.api.test.apptest.repository.InformationRepository;
+import br.com.munif.framework.vicente.api.test.apptest.service.InformationService;
 import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-import br.com.munif.framework.vicente.domain.BaseEntity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +20,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,7 +30,6 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -62,8 +62,6 @@ public class InformationApiTest {
 
     @Before
     public void setup() {
-        System.out.println("----> SETUP ");
-
         MockitoAnnotations.initMocks(this);
 
         final InformationApi api = new InformationApi(service);
@@ -129,7 +127,6 @@ public class InformationApiTest {
     public void T1() throws Exception {
         myOwnership();
         List<Information> all = repository.findAll();
-        System.out.println("T1--->" + describeInformations(all));
         assertNotEquals(0, all.size());
     }
 
@@ -140,7 +137,7 @@ public class InformationApiTest {
 
         MvcResult r = restMockMvc.perform(get("/api/information")).andReturn();
         String contentAsString = r.getResponse().getContentAsString();
-        System.out.println("T2---->" + contentAsString);
+
         assertNotEquals("[]", contentAsString);
 
     }
@@ -150,7 +147,7 @@ public class InformationApiTest {
     public void T3() throws Exception {
         myOwnership();
         List<Information> all = repository.findAll();
-        System.out.println("T3---->" + describeInformations(all));
+
         restMockMvc.perform(delete("/api/information/" + all.get(1).getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isForbidden());
@@ -161,10 +158,9 @@ public class InformationApiTest {
     public void T4() throws Exception {
         myOwnership();
         List<Information> all = repository.findAllNoTenancy();
-        System.out.println("T4---->" + describeInformations(all));
         restMockMvc.perform(get("/api/information/" + all.get(0).getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -172,7 +168,6 @@ public class InformationApiTest {
     public void T5() throws Exception {
         myOwnership();
         List<Information> all = repository.findAll();
-        System.out.println("T5---->" + describeInformations(all));
         restMockMvc.perform(get("/api/information/" + all.get(1).getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
@@ -183,7 +178,6 @@ public class InformationApiTest {
     public void T6() throws Exception {
         myOwnership();
         List<Information> all = repository.findAll();
-        System.out.println("T3---->" + describeInformations(all));
         restMockMvc.perform(delete("/api/information/" + all.get(2).getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNoContent());

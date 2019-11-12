@@ -31,7 +31,6 @@ public class VicTemporalEntityTest {
         ContratoTestEntity contrato=new ContratoTestEntity();
         contrato.setStartTime(60135793200000l-10000);
         contrato.setEndTime(60135793200000l+10000);
-        System.out.println("isValid"+contrato);
         assertTrue(contrato.valid());
     }
     public void isExactValid(){
@@ -39,7 +38,6 @@ public class VicTemporalEntityTest {
         ContratoTestEntity contrato=new ContratoTestEntity();
         contrato.setStartTime(60135793200000l);
         contrato.setEndTime(60135793200000l);
-        System.out.println("isValid"+contrato);
         assertTrue(contrato.valid());
     }
 
@@ -49,7 +47,6 @@ public class VicTemporalEntityTest {
         ContratoTestEntity contrato=new ContratoTestEntity();
         contrato.setStartTime(60135793200000l-20000);
         contrato.setEndTime(60135793200000l-10000);
-        System.out.println("isInvalid "+contrato);
         assertFalse(contrato.valid());
     }
     @Test
@@ -58,7 +55,6 @@ public class VicTemporalEntityTest {
         ContratoTestEntity contrato=new ContratoTestEntity();
         contrato.setStartTime(60135793200000l+10000);
         contrato.setEndTime(60135793200000l-10000);
-        System.out.println("hasInvalidDefinition "+contrato);
         assertFalse(contrato.valid());
     }
     @Test
@@ -67,7 +63,6 @@ public class VicTemporalEntityTest {
         ContratoTestEntity contrato=new ContratoTestEntity();
         contrato.setStartTime(60135793200000l+10000);
         contrato.setEndTime(60135793200000l-10000);
-        System.out.println("hasInvalidDefinition "+contrato);
         assertFalse(contrato.valid());
     }
     

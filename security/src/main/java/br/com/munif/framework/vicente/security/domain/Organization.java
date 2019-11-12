@@ -6,12 +6,14 @@ import org.hibernate.envers.Audited;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * @author munif
  */
 @Entity
 @Audited
+@Table(name = "vic_org")
 public class Organization extends BaseEntity {
 
     @Column(name = "name")

@@ -22,7 +22,6 @@ public class UtilsTest {
     @Test
     public void testGetAllFields() {
         List<Field> allFields = Utils.getAllFields(Aluno.class);
-        System.out.println(""+allFields);
         assertEquals(2, allFields.size());
     }
 

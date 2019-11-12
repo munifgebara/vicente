@@ -59,8 +59,8 @@ public class EntitiesToJSON {
 
     private void processClasses(List<Class> classes) {
         for (Class c : classes) {
-            System.out.println("\"" + c.getSimpleName().toLowerCase() + "\":{");
-            System.out.println("}");
+//            System.out.println("\"" + c.getSimpleName().toLowerCase() + "\":{");
+//            System.out.println("}");
         }
     }
 

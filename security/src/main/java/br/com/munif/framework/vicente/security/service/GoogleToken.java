@@ -56,7 +56,6 @@ public class GoogleToken {
 
 
             } else {
-                System.out.println("Invalid ID token.");
                 response.put("exception", "Invalid ID token.");
             }
         } catch (GeneralSecurityException | IOException ex) {
