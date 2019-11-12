@@ -6,7 +6,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class VQueryTest {
 
@@ -403,6 +403,5 @@ public class VQueryTest {
                 .and(new Criteria("name", ComparisonOperator.CONTAINS, "gebara"));
         assertEquals("(((name like 'munif%') OR (name like 'vicente%') OR (name like 'duda%')) AND (name like '%gebara%'))", gQuery.toStringWithoutParams());
     }
-
 
 }
