@@ -44,7 +44,7 @@ public class UserApi extends BaseAPI<User> {
     @Transactional
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<User> save(@Valid User model) {
+    public ResponseEntity<User> save(@RequestBody @Valid User model) {
         model.setPassword(PasswordGenerator.generate(model.getPassword()));
         return super.save(model);
     }
