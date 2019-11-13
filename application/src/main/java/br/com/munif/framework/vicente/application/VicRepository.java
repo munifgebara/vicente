@@ -23,4 +23,5 @@ public interface VicRepository<T extends BaseEntity> extends JpaRepository<T, Se
     T patchReturning(Map<String, Object> map);
     T load(String id);
     T loadNoTenancy(String id);
+    Boolean isNew(String id);
 }

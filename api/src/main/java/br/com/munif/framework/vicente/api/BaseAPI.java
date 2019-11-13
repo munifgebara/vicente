@@ -219,6 +219,18 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     @Transactional
+    @GetMapping(value = "/is-new/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Boolean> isNew(@PathVariable String id) {
+        return ResponseEntity.ok(service.isNew(id));
+    }
+
+    @Transactional
+    @GetMapping(value = "/async/is-new/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Mono<ResponseEntity> asyncIsNew(@PathVariable String id) {
+        return service.asyncMono(isNew(id));
+    }
+
+    @Transactional
     @GetMapping(value = "/async/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity> asyncLoad(@PathVariable String id, @RequestParam(required = false) String fields) {
         return service.asyncMono(load(id, fields));

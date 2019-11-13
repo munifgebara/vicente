@@ -20,6 +20,9 @@ Implementação de testes security
 Security Gis and Cgs adjusts
 Reactive routes
 Atualização do tipo de Parâmetros no Vquery
+Rota, métodos service e repository isNew, testes
+Criptografia senha no post do UserService
+Alteração do campo password do User para WRITE_ONLY
 
 1.0. release
 

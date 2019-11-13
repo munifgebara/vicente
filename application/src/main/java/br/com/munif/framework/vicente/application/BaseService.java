@@ -345,6 +345,11 @@ public abstract class BaseService<T extends BaseEntity> {
 
     }
 
+    @Transactional(readOnly = true)
+    public Boolean isNew(String id) {
+        return repository.isNew(id);
+    }
+
 }
 
 //88B797E428E850E5494404A5

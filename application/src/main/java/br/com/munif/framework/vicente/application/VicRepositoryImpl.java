@@ -318,4 +318,12 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
     public T loadNoTenancy(String id) {
         return findById(id).orElse(null);
     }
+
+    @Override
+    public Boolean isNew(String id) {
+        Query query = entityManager.createQuery("select count(obj) from " + getDomainClass().getSimpleName() + " obj where obj.id = :id");
+        query.setParameter("id", id);
+        Long singleResult = (Long) query.getSingleResult();
+        return singleResult <= 0;
+    }
 }

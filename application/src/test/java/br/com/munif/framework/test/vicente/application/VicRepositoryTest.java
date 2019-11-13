@@ -22,8 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author munif
@@ -288,5 +287,16 @@ public class VicRepositoryTest {
         assertNotEquals(load.getNome(), pessoa.getNome());
         assertEquals(load.getApelido(), pessoa.getApelido());
         assertEquals(load.getDocumento(), pessoa.getDocumento());
+    }
+
+    @Test
+    public void isNew() {
+        Pessoa p2 = pessoaService.newEntity();
+        p2.setNome("Pessoa Não existente");
+        p2.setRights(0);
+        assertTrue(pessoaService.isNew(p2.getId()));
+        
+        pessoaService.save(p2);
+        assertFalse(pessoaService.isNew(p2.getId()));
     }
 }
