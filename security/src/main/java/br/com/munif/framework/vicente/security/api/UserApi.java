@@ -4,19 +4,20 @@ package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.api.BaseAPI;
 import br.com.munif.framework.vicente.application.BaseService;
+import br.com.munif.framework.vicente.security.domain.PasswordGenerator;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.dto.PrivilegesAssignmentDto;
 import br.com.munif.framework.vicente.security.service.GroupService;
 import br.com.munif.framework.vicente.security.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * @author GeradorVicente
@@ -39,4 +40,12 @@ public class UserApi extends BaseAPI<User> {
         return ResponseEntity.ok().build();
     }
 
+    @Override
+    @Transactional
+    @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<User> save(@Valid User model) {
+        model.setPassword(PasswordGenerator.generate(model.getPassword()));
+        return super.save(model);
+    }
 }

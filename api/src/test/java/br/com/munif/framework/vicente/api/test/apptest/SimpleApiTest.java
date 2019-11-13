@@ -320,6 +320,36 @@ public class SimpleApiTest {
 
     @Test
     @Transactional
+    public void isNew() throws Exception {
+        long qtdOld = bookRepository.count();
+        String contentAsString = restMockMvc.perform(get("/api/books/new")).andReturn().getResponse().getContentAsString();
+        Map<String, Object> map = TestUtil.convertStringToMap(contentAsString);
+        map.put("name", "BEFORE DELETE");
+        restMockMvc.perform(put("/api/books/1")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(map)))
+                .andExpect(status().isCreated());
+        long qtdNew = bookRepository.count();
+        assert (qtdNew == qtdOld + 1);
+        restMockMvc.perform(get("/api/books/is-new/{id}", "1")
+                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$").value(false))
+                .andExpect(status().isOk());
+
+        restMockMvc.perform(delete("/api/books/{id}", "1")
+                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(status().isNoContent());
+
+        restMockMvc.perform(get("/api/books/is-new/{id}", "1")
+                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$").value(true))
+                .andExpect(status().isOk());
+        qtdNew = bookRepository.count();
+        assert (qtdNew == qtdOld);
+    }
+
+    @Test
+    @Transactional
     public void deleteOneAsync() throws Exception {
         long qtdOld = bookRepository.count();
         String contentAsString = restMockMvc.perform(get("/api/books/new")).andReturn().getResponse().getContentAsString();
