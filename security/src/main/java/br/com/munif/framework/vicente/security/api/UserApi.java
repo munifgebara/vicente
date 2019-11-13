@@ -48,4 +48,13 @@ public class UserApi extends BaseAPI<User> {
         model.setPassword(PasswordGenerator.generate(model.getPassword()));
         return super.save(model);
     }
+
+    @Transactional
+    @PutMapping(value = "/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<User> updateWithId(@PathVariable("id") String id, @RequestBody @Valid User model) {
+        if (service.isNew(id)) {
+            model.setPassword(PasswordGenerator.generate(model.getPassword()));
+        }
+        return super.updateWithId(id, model);
+    }
 }
