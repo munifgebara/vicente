@@ -3,11 +3,13 @@ package br.com.munif.framework.vicente.api.errors;
 import br.com.munif.framework.vicente.api.VicenteCreateWithExistingIdException;
 import br.com.munif.framework.vicente.api.VicenteNotFoundException;
 import br.com.munif.framework.vicente.api.VicenteRightsException;
+import org.hibernate.QueryException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.ConcurrencyFailureException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
@@ -108,6 +110,20 @@ public class ExceptionTranslator {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorVM vicenteCreateWithExistingIdException(VicenteCreateWithExistingIdException exception) {
         return new ErrorVM(ErrorConstants.ERR_CONFLICT, exception.getMessage());
+    }
+
+    @ExceptionHandler(QueryException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorVM queryException(QueryException exception) {
+        return new ErrorVM(ErrorConstants.ERR_DATA_INTEGRITY_VIOLATION, exception.getMessage());
+    }
+
+    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorVM invalidDataAccessApiUsageException(InvalidDataAccessApiUsageException exception) {
+        return new ErrorVM(ErrorConstants.ERR_DATA_INTEGRITY_VIOLATION, exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

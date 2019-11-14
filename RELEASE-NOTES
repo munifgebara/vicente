@@ -23,6 +23,7 @@ Atualização do tipo de Parâmetros no Vquery
 Rota, métodos service e repository isNew, testes
 Criptografia senha no post do UserService
 Alteração do campo password do User para WRITE_ONLY
+Tratamento msg api: QueryException e InvalidDataAccessApiUsageException
 
 1.0. release
 
