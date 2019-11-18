@@ -53,7 +53,6 @@ public class BaseAPI<T extends BaseEntity> {
         return ResponseEntity.noContent().build();
     }
 
-    @Transactional
     @DeleteMapping(value = "/async/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity<Void>> asyncDelete(@PathVariable String id) {
         return service.asyncMono(delete(id));
@@ -72,7 +71,6 @@ public class BaseAPI<T extends BaseEntity> {
         return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
-    @Transactional
     @PostMapping(value = "/async", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<ResponseEntity<T>> asyncSave(@RequestBody @Valid T model) {
@@ -85,7 +83,6 @@ public class BaseAPI<T extends BaseEntity> {
         return doUpdate(model);
     }
 
-    @Transactional
     @PutMapping(value = "/async", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity<T>> asyncUpdateWithoutId(@RequestBody @Valid T model) {
         return service.asyncMono(doUpdate(model));
@@ -98,7 +95,6 @@ public class BaseAPI<T extends BaseEntity> {
         return doUpdate(model);
     }
 
-    @Transactional
     @PutMapping(value = "/async/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity<T>> asyncUpdateWithId(@PathVariable("id") String id, @RequestBody @Valid T model) {
         return service.asyncMono(updateWithId(id, model));
@@ -112,7 +108,6 @@ public class BaseAPI<T extends BaseEntity> {
         return ResponseEntity.noContent().build();
     }
 
-    @Transactional
     @PatchMapping(value = "/async/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity<Void>> asyncPatch(@PathVariable("id") String id, @RequestBody @Valid Map model) {
         return service.asyncMono(patch(id, model));
@@ -125,7 +120,6 @@ public class BaseAPI<T extends BaseEntity> {
         return ResponseEntity.ok(service.patchReturning(model));
     }
 
-    @Transactional
     @PatchMapping(value = "/async/returning/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity> asyncPatchReturning(@PathVariable("id") String id, @RequestBody @Valid Map model) {
         return service.asyncMono(patchReturning(id, model));
@@ -157,7 +151,6 @@ public class BaseAPI<T extends BaseEntity> {
         return getVicReturnByQuery(query);
     }
 
-    @Transactional
     @GetMapping(value = "/async", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity<VicReturn<T>>> asyncFindHQL(HttpServletRequest request, VicQuery query) {
         return service.asyncMono(findHQL(request, query));
@@ -169,7 +162,6 @@ public class BaseAPI<T extends BaseEntity> {
         return getVicReturnByQuery(query);
     }
 
-    @Transactional
     @PostMapping(value = "/async/vquery", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity<VicReturn<T>>> asyncFindVQuery(@RequestBody VicQuery query) {
         return service.asyncMono(findVQuery(query));
@@ -224,13 +216,11 @@ public class BaseAPI<T extends BaseEntity> {
         return ResponseEntity.ok(service.isNew(id));
     }
 
-    @Transactional
     @GetMapping(value = "/async/is-new/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity> asyncIsNew(@PathVariable String id) {
         return service.asyncMono(isNew(id));
     }
 
-    @Transactional
     @GetMapping(value = "/async/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Mono<ResponseEntity> asyncLoad(@PathVariable String id, @RequestParam(required = false) String fields) {
         return service.asyncMono(load(id, fields));
@@ -254,7 +244,6 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     @ResponseBody
-    @Transactional
     @GetMapping(value = "/async/draw/{id}", produces = "image/svg+xml")
     public Mono<ResponseEntity<String>> asyncDraw(@PathVariable String id) {
         return service.asyncMono(draw(id));

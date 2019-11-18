@@ -24,6 +24,7 @@ Rota, métodos service e repository isNew, testes
 Criptografia senha no post do UserService
 Alteração do campo password do User para WRITE_ONLY
 Tratamento msg api: QueryException e InvalidDataAccessApiUsageException
+Como não há um TransactionManager adaptável para reactive routes, foi retirado @Transaction para rotas assincronas
 
 1.0. release
 
