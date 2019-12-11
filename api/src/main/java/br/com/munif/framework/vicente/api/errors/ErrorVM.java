@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * @author munif
  * View Model for transferring error message with a list of field errors.
  */
 public class ErrorVM implements Serializable {

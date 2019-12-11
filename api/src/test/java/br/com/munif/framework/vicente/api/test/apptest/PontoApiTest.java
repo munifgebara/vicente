@@ -7,10 +7,12 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
-import br.com.munif.framework.vicente.api.test.apptest.LibaryApp;
-import br.com.munif.framework.vicente.api.test.apptest.TestUtil;
+import br.com.munif.framework.vicente.api.test.apptest.api.PontoApi;
+import br.com.munif.framework.vicente.api.test.apptest.domain.Ponto;
+import br.com.munif.framework.vicente.api.test.apptest.repository.PontoRepository;
+import br.com.munif.framework.vicente.api.test.apptest.service.PontoService;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
+
 import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +20,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -33,13 +34,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Ignore;
+
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = LibaryApp.class)
+@SpringBootTest(classes = InformationApp.class)
 public class PontoApiTest {
 
     public static final String DEAFAULT_NAME = "Meu Ponto";
@@ -155,7 +156,6 @@ public class PontoApiTest {
         repository.saveAndFlush(ponto);
         MvcResult r = restMockMvc.perform(get("/api/ponto/"+ponto.getId())).andReturn();
         String contentAsString = r.getResponse().getContentAsString();
-        System.out.println("---->" + contentAsString);
         String writeValueAsString = this.jacksonMessageConverter.getObjectMapper().writeValueAsString(ponto);
         assertEquals(writeValueAsString, contentAsString);
 

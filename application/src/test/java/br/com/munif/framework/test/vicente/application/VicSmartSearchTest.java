@@ -5,6 +5,7 @@
  */
 package br.com.munif.framework.test.vicente.application;
 
+import br.com.munif.framework.test.vicente.application.repository.*;
 import br.com.munif.framework.test.vicente.domain.model.smartsearch.Categoria;
 import br.com.munif.framework.test.vicente.domain.model.smartsearch.Cliente;
 import br.com.munif.framework.test.vicente.domain.model.smartsearch.GrupoClientes;
@@ -13,9 +14,12 @@ import br.com.munif.framework.test.vicente.domain.model.smartsearch.Pedido;
 import br.com.munif.framework.test.vicente.domain.model.smartsearch.Produto;
 import br.com.munif.framework.vicente.application.search.VicAutoSeed;
 import br.com.munif.framework.vicente.application.search.VicSmartSearch;
+import br.com.munif.framework.vicente.application.search.dijkstra.Dijkstra;
+import br.com.munif.framework.vicente.application.search.dijkstra.Graph;
+import br.com.munif.framework.vicente.application.search.dijkstra.Node;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,11 +39,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author munif
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MySQLSpringConfig.class})
+@ContextConfiguration(classes = {H2SpringConfig.class})
 public class VicSmartSearchTest {
 
     @Autowired
@@ -66,7 +71,6 @@ public class VicSmartSearchTest {
     public void setUp() {
         BaseEntity.useSimpleId = true;
         try {
-            System.out.println("Setup of Test class " + this.getClass().getSimpleName() + " ");
             VicThreadScope.ui.set("U1");
             VicThreadScope.gi.set("G1");
             loadSeedCategoria();
@@ -90,11 +94,10 @@ public class VicSmartSearchTest {
     @Transactional
     public void teste1() {
         List<Map<String, Object>> smartSearch = vss.smartSearch("Cliente", "Categoria", "", "", 10);
-        System.out.println(smartSearch.toString());
         //"select cliente.nome as nomCliente,categoria.nome as cat,count(categoria.nome) as quantidade",
         //"where categoria.nome='egg'  group by cliente.nome,categoria.nome order by categoria.nome");
         for (Object obj : smartSearch) {
-            System.out.println(obj.toString());
+//            System.out.println(obj.toString());
         }
         assertTrue(!smartSearch.isEmpty());
     }
@@ -106,7 +109,7 @@ public class VicSmartSearchTest {
                 "select cliente.nome as nomCliente,categoria.nome as cat,count(categoria.nome) as quantidade",
                 "where categoria.nome='egg'  group by cliente.nome,categoria.nome order by quantidade");
         for (Object obj : smartSearch) {
-            System.out.println(obj.toString());
+//            System.out.println(obj.toString());
         }
         assertTrue(!smartSearch.isEmpty());
     }
@@ -118,7 +121,7 @@ public class VicSmartSearchTest {
                 "select cliente.nome as nomCliente,categoria.nome as cat,count(categoria.nome) as quantidade",
                 "where categoria.nome='egg'  group by cliente.nome,categoria.nome order by quantidade");
         for (Object obj : smartSearch) {
-            System.out.println(obj.toString());
+//            System.out.println(obj.toString());
         }
         assertTrue(!smartSearch.isEmpty());
     }
@@ -130,15 +133,49 @@ public class VicSmartSearchTest {
                 "select grupoclientes.nomeGrupo as nomeCliente,categoria.nome as cat,count(categoria.nome) as quantidade",
                 "where categoria.nome='egg'  group by grupoclientes.nomeGrupo,categoria.nome order by quantidade");
         for (Object obj : smartSearch) {
-            System.out.println(obj.toString());
+//            System.out.println(obj.toString());
         }
         assertTrue(!smartSearch.isEmpty());
+    }
+
+    @Test
+    public void teste5() {
+        Node nodeA = new Node("A");
+        Node nodeB = new Node("B");
+        Node nodeC = new Node("C");
+        Node nodeD = new Node("D");
+        Node nodeE = new Node("E");
+        Node nodeF = new Node("F");
+
+        nodeA.addDestination(nodeB, 10);
+        nodeA.addDestination(nodeC, 15);
+
+        nodeB.addDestination(nodeD, 12);
+        nodeB.addDestination(nodeF, 15);
+
+        nodeC.addDestination(nodeE, 10);
+
+        nodeD.addDestination(nodeE, 2);
+        nodeD.addDestination(nodeF, 1);
+
+        nodeF.addDestination(nodeE, 5);
+
+        Graph graph = new Graph();
+
+        graph.addNode(nodeA);
+        graph.addNode(nodeB);
+        graph.addNode(nodeC);
+        graph.addNode(nodeD);
+        graph.addNode(nodeE);
+        graph.addNode(nodeF);
+
+        graph = Dijkstra.calculateShortestPathFromSource(graph, nodeD);
+        assertNotNull(graph);
     }
 
     @Transactional
     public void loadSeedCategoria() throws IOException {
         BaseEntity.useSimpleId = true;
-        System.out.println("---->loadSeedCategoria()" + categoriaRepository.count());
         if (categoriaRepository.count() > 0) {
             return;
         }
@@ -151,7 +188,6 @@ public class VicSmartSearchTest {
     @Transactional
     public void loadSeedProduto() throws IOException {
         BaseEntity.useSimpleId = true;
-        System.out.println("---->loadSeedProduto()" + produtoRepository.count());
         if (produtoRepository.count() > 0) {
             return;
         }
@@ -171,7 +207,6 @@ public class VicSmartSearchTest {
     @Transactional
     public void loadSeedPedido() throws IOException {
         BaseEntity.useSimpleId = true;
-        System.out.println("---->loadSeedPedido() " + pedidoRepository.count());
         if (pedidoRepository.count() > 0) {
             return;
         }
@@ -193,14 +228,13 @@ public class VicSmartSearchTest {
                 VicAutoSeed.randomFill(ip);
                 p.getItens().add(itemPedidoRepository.save(ip));
             }
-            
+
         }
     }
 
     @Transactional
     public void loadSeedCliente() throws IOException {
         BaseEntity.useSimpleId = true;
-        System.out.println("---->loadSeedCliente() " + clienteRepository.count());
         if (clienteRepository.count() > 0) {
             return;
         }
@@ -219,7 +253,6 @@ public class VicSmartSearchTest {
 
     @Transactional
     public void loadSeedGrupoClientes() throws IOException {
-        System.out.println("---->loadSeedGrupoClientes() " + grupoClientesRepository.count());
         if (grupoClientesRepository.count() > 0) {
             return;
         }

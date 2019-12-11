@@ -1,5 +1,8 @@
 package br.com.munif.framework.test.vicente.application;
 
+import br.com.munif.framework.test.vicente.application.service.ConsultorService;
+import br.com.munif.framework.test.vicente.application.service.FuncionarioService;
+import br.com.munif.framework.test.vicente.application.service.PessoaService;
 import br.com.munif.framework.test.vicente.domain.model.Consultor;
 import br.com.munif.framework.test.vicente.domain.model.Funcionario;
 import br.com.munif.framework.test.vicente.domain.model.Pessoa;
@@ -21,7 +24,7 @@ import static org.junit.Assert.assertEquals;
  * @author munif
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MySQLSpringConfig.class})
+@ContextConfiguration(classes = {H2SpringConfig.class})
 public class VicTenancyPolicyTest {
 
     @Autowired
@@ -34,7 +37,6 @@ public class VicTenancyPolicyTest {
     @Before
     @Transactional
     public void setUp() {
-        System.out.println("Setup of Test class " + this.getClass().getSimpleName() + " " + funcionarioService.quantidade());
         if (funcionarioService.findAll().size() > 0) {
             return;
         }

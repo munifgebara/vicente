@@ -1,5 +1,9 @@
 package br.com.munif.framework.vicente.core.vquery;
 
+/**
+ *
+ * @author wmfsystem
+ */
 public enum CriteriaJoinOperator {
     ON(" on "),
     AND(" and "),

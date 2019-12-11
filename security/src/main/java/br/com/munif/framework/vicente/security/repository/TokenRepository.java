@@ -7,11 +7,10 @@ import br.com.munif.framework.vicente.security.domain.Token;
 import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author GeradorVicente
  */
 @SuppressWarnings("unused")
 @Repository
-public interface TokenRepository extends VicRepository<Token>{
-    
+public interface TokenRepository extends VicRepository<Token> {
+
 }

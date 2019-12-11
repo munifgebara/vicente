@@ -5,35 +5,27 @@
  */
 package br.com.munif.framework.vicente.domain;
 
-import br.com.munif.framework.vicente.core.RightsHelper;
-import br.com.munif.framework.vicente.core.VicThreadScope;
-import static br.com.munif.framework.vicente.core.RightsHelper.*;
-import br.com.munif.framework.vicente.core.UIDHelper;
-import br.com.munif.framework.vicente.core.VicTenancyPolicy;
-import br.com.munif.framework.vicente.core.VicTenancyType;
-import java.util.Date;
-import java.util.Objects;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.Version;
-
+import br.com.munif.framework.vicente.core.*;
 import br.com.munif.framework.vicente.domain.typings.*;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.Column;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Objects;
+
+import static br.com.munif.framework.vicente.core.RightsHelper.*;
+
 /**
- *
  * @author munif
  */
 @MappedSuperclass
 @TypeDefs({
-    @TypeDef(name = "vicaddress", defaultForType = VicAddress.class, typeClass = VicAddressUserType.class),
-    @TypeDef(name = "vicemail", defaultForType = VicEmail.class, typeClass = VicEmailUserType.class),
-    @TypeDef(name = "vicphone", defaultForType = VicPhone.class, typeClass = VicPhoneUserType.class)
+        @TypeDef(name = "vicaddress", defaultForType = VicAddress.class, typeClass = VicAddressUserType.class),
+        @TypeDef(name = "vicemail", defaultForType = VicEmail.class, typeClass = VicEmailUserType.class),
+        @TypeDef(name = "vicphone", defaultForType = VicPhone.class, typeClass = VicPhoneUserType.class)
 })
 public class BaseEntity {
 
@@ -72,11 +64,14 @@ public class BaseEntity {
     private Integer version;
 
     public BaseEntity() {
+        init();
+    }
+
+    private void init() {
         if (useSimpleId) {
             id = UIDHelper.getSimpleID(this.getClass());
-        }
-        else{
-            id=UIDHelper.getUID();
+        } else {
+            id = UIDHelper.getUID();
         }
         gi = stringNull(RightsHelper.getMainGi());
         ui = stringNull(VicThreadScope.ui.get());
@@ -88,6 +83,7 @@ public class BaseEntity {
         active = true;
         version = null;
     }
+
 
     private String stringNull(String v) {
         if (v == null) {

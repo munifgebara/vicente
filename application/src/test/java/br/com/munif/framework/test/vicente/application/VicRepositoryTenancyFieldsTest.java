@@ -1,5 +1,7 @@
 package br.com.munif.framework.test.vicente.application;
 
+import br.com.munif.framework.test.vicente.application.repository.PessoaRepository;
+import br.com.munif.framework.test.vicente.application.service.PessoaService;
 import br.com.munif.framework.test.vicente.domain.model.Pessoa;
 import br.com.munif.framework.vicente.application.victenancyfields.VicFieldRepository;
 import br.com.munif.framework.vicente.application.victenancyfields.VicFieldService;
@@ -21,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author munif
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MySQLSpringConfig.class})
+@ContextConfiguration(classes = {H2SpringConfig.class})
 public class VicRepositoryTenancyFieldsTest {
 
     @Autowired
@@ -104,7 +106,7 @@ public class VicRepositoryTenancyFieldsTest {
         VicThreadScope.gi.set("GXT");
         List<Pessoa> findAll = pessoaService.findAllNoPublic();
         for (Pessoa p : findAll) {
-            System.out.println("" + p.getId() + " " + p.getNome() + " " + p.getVicTenancyFields());
+//            System.out.println("" + p.getId() + " " + p.getNome() + " " + p.getVicTenancyFields());
         }
         assertEquals(1, findAll.size());
     }
@@ -116,7 +118,7 @@ public class VicRepositoryTenancyFieldsTest {
         VicThreadScope.gi.set("GZT");
         List<Pessoa> findAll = pessoaService.findAllNoPublic();
         for (Pessoa p : findAll) {
-            System.out.println("" + p.getId() + " " + p.getNome() + " " + p.getVicTenancyFields());
+//            System.out.println("" + p.getId() + " " + p.getNome() + " " + p.getVicTenancyFields());
         }
         assertEquals(2, findAll.size());
     }
@@ -127,7 +129,6 @@ public class VicRepositoryTenancyFieldsTest {
         VicThreadScope.ui.set("UZT");
         VicThreadScope.gi.set("GZT");
         Pessoa p = pessoaService.newEntity();
-        System.out.println("--->" + p);
         assertEquals("novo", p.getVicTenancyFields().get("time").getValue());
     }
 
@@ -137,7 +138,6 @@ public class VicRepositoryTenancyFieldsTest {
         VicThreadScope.ui.set("UXT");
         VicThreadScope.gi.set("GXT");
         Pessoa p = pessoaService.newEntity();
-        System.out.println("--->" + p);
         assertEquals("sem", p.getVicTenancyFields().get("religião").getValue());
     }
 

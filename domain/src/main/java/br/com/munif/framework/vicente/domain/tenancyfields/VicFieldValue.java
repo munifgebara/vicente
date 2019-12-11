@@ -1,21 +1,13 @@
 package br.com.munif.framework.vicente.domain.tenancyfields;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.math.BigDecimal;
-import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
- *
  * @author munif
  */
 @Entity

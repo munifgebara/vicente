@@ -3,52 +3,53 @@ package br.com.munif.framework.vicente.security.domain;
 import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.typings.VicEmail;
-import java.time.ZonedDateTime;
-import java.util.Set;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.*;
+
+/**
+ * @author munif
+ */
 @Entity
 @Audited
 @VicTenancyPolicy(VicTenancyType.COMMUM)
+@Table(name = "vic_token")
 public class Token extends BaseEntity {
 
-    private String token;
-
+    @Column(name = "value")
+    private String value;
     @ManyToOne
-    private Usuario usuario;
-    private Long expiracao;
+    @JoinColumn(name = "user_id")
+    private User user;
+    @Column(name = "expiration")
+    private Long expiration;
 
     public Token() {
-        expiracao = System.currentTimeMillis() + 5 * 60 * 1000;
+        expiration = System.currentTimeMillis() + 5 * 60 * 1000;
     }
 
-    public String getToken() {
-        return token;
+    public String getValue() {
+        return value;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public User getUser() {
+        return user;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Long getExpiracao() {
-        return expiracao;
+    public Long getExpiration() {
+        return expiration;
     }
 
-    public void setExpiracao(Long expiracao) {
-        this.expiracao = expiracao;
+    public void setExpiration(Long expiration) {
+        this.expiration = expiration;
     }
 
 }

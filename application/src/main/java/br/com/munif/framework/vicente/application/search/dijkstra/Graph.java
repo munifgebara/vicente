@@ -3,6 +3,9 @@ package br.com.munif.framework.vicente.application.search.dijkstra;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author munif
+ */
 public class Graph {
 
     private Set<Node> nodes = new HashSet<>();
@@ -23,6 +26,6 @@ public class Graph {
     public String toString() {
         return "Graph{" + "nodes=" + nodes + '}';
     }
-    
-    
+
+
 }

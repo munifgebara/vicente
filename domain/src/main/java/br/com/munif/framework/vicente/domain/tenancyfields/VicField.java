@@ -1,16 +1,12 @@
 package br.com.munif.framework.vicente.domain.tenancyfields;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.*;
+import java.util.Objects;
+
 /**
- *
  * @author munif
  */
 @Entity

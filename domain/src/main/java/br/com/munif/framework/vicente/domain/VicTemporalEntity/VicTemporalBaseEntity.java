@@ -2,15 +2,15 @@ package br.com.munif.framework.vicente.domain.VicTemporalEntity;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonGetter;
+
+import javax.persistence.MappedSuperclass;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import javax.persistence.MappedSuperclass;
 
 /**
- *
  * @author munif
  */
 @MappedSuperclass
@@ -50,13 +50,13 @@ public class VicTemporalBaseEntity extends BaseEntity {
 
     @JsonGetter
     public String start() {
-        return  ZonedDateTime.ofInstant(Instant.ofEpochMilli(startTime), ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE);
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(startTime), ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE);
     }
 
     @JsonGetter
     public String end() {
-        return  ZonedDateTime.ofInstant(Instant.ofEpochMilli(endTime), ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE);
-        
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(endTime), ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE);
+
     }
 
     @Override

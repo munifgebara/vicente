@@ -4,16 +4,13 @@
     <parent>
         <groupId>br.com.munif.framework</groupId>
         <artifactId>vicente</artifactId>
-        <version>1.0.0</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
     <name>Vicente Domain</name>
     <groupId>br.com.munif.framework.vicente</groupId>
     <artifactId>domain</artifactId>
     <packaging>jar</packaging>
     <dependencies>
-        
-        
-        <!-- DEPENDENCIAS DE Módulos    -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>core</artifactId>
@@ -37,6 +34,14 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
     </dependencies>
 </project>

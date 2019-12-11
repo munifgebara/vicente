@@ -1,29 +1,30 @@
 package br.com.munif.framework.vicente.api;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Version;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import javax.persistence.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.*;
 
+/**
+ * @author munif
+ */
 public class VicAutoSeed {
 
-    //private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final Logger LOG = LoggerFactory.getLogger(VicAutoSeed.class);
-
     private static final Random random = new Random(1);
+    public static String DICTIONARY[] = {
+            "Categoria+nome", "product+type",
+            "Produto+nome", "product+name",
+            "Cliente+nome", "customer",
+            "Cliente+cidade", "city"
+    };
 
     public static BigDecimal getRandomBigDecimal(double min, double max) {
         return new BigDecimal(min + random.nextDouble() * (max - min));
@@ -152,12 +153,12 @@ public class VicAutoSeed {
 
             if (k <= input.length) {
                 // first index sequence: 0, 1, 2, ...
-                for (int i = 0; (s[i] = i) < k - 1; i++);
+                for (int i = 0; (s[i] = i) < k - 1; i++) ;
                 subLists.add(getSubList(input, s));
-                for (;;) {
+                for (; ; ) {
                     int i;
                     // find position of item that can be incremented
-                    for (i = k - 1; i >= 0 && s[i] == input.length - k + i; i--);
+                    for (i = k - 1; i >= 0 && s[i] == input.length - k + i; i--) ;
                     if (i < 0) {
                         break;
                     }
@@ -184,10 +185,6 @@ public class VicAutoSeed {
         return result;
     }
 
-    public static void main(String args[]) {
-
-    }
-
     private static String translates(String p) {
         for (int i = 0; i < DICTIONARY.length; i += 2) {
             if (p.equalsIgnoreCase(DICTIONARY[i])) {
@@ -197,12 +194,5 @@ public class VicAutoSeed {
         return p;
 
     }
-
-    public static String DICTIONARY[] = {
-        "Categoria+nome", "product+type",
-        "Produto+nome", "product+name",
-        "Cliente+nome", "customer",
-        "Cliente+cidade", "city"
-    };
 
 }

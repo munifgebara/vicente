@@ -7,52 +7,43 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.VicAutoSeed;
-import br.com.munif.framework.vicente.api.test.apptest.Book;
-import br.com.munif.framework.vicente.api.test.apptest.BookApi;
-import br.com.munif.framework.vicente.api.test.apptest.BookRepository;
-import br.com.munif.framework.vicente.api.test.apptest.BookService;
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
-import br.com.munif.framework.vicente.api.test.apptest.LibaryApp;
-import br.com.munif.framework.vicente.api.test.apptest.TestUtil;
+import br.com.munif.framework.vicente.api.test.apptest.api.BookApi;
+import br.com.munif.framework.vicente.api.test.apptest.domain.Book;
+import br.com.munif.framework.vicente.api.test.apptest.repository.BookRepository;
+import br.com.munif.framework.vicente.api.test.apptest.service.BookService;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
 import br.com.munif.framework.vicente.core.vquery.Criteria;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
-
 import static org.junit.Assert.assertNotNull;
-import org.junit.Ignore;
-
-import org.springframework.test.web.servlet.ResultActions;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = LibaryApp.class)
+@SpringBootTest(classes = InformationApp.class)
 public class BookApiTest {
 
     public static final String DEAFAULT_NAME = "The Book";
@@ -94,7 +85,7 @@ public class BookApiTest {
                 .setMessageConverters(jacksonMessageConverter).build();
 
         Book b = new Book();
-        bookRepository.save(VicAutoSeed.getInteligentInstances(b, 10));
+        bookRepository.saveAll(VicAutoSeed.getInteligentInstances(b, 10));
 
     }
 
@@ -135,7 +126,7 @@ public class BookApiTest {
     public void create() throws Exception {
         int databaseSizeBeforeCreate = count();
         Book createEntity = createEntity();
-        
+        createEntity.setId(null);
         // Create the Book
         restMockMvc.perform(post("/api/books")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -159,7 +150,7 @@ public class BookApiTest {
         restMockMvc.perform(post("/api/books")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(book)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
 
         List<Book> list = findAll();
         assertThat(list).hasSize(databaseSizeBeforeCreate);
@@ -218,7 +209,7 @@ public class BookApiTest {
         int databaseSizeBeforeUpdate = findAll().size();
 
         // Update the book
-        Book updatedBook = bookRepository.findOne(book.getId());
+        Book updatedBook = bookRepository.findById(book.getId()).orElse(null);
         updatedBook.setName("NEW NAME");
         restMockMvc.perform(put("/api/books/" + book.getId())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -256,7 +247,7 @@ public class BookApiTest {
         // Get the book
         restMockMvc.perform(delete("/api/books/{id}", book.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         // Validate the database is empty
         List<Book> bookList = findAll();
@@ -272,8 +263,6 @@ public class BookApiTest {
         Book book2 = new Book();
 
         book2.setId(book1.getId());
-        System.out.println("BOOK1 "+book1);
-        System.out.println("BOOK2 "+book2);
         assertThat(book1).isEqualTo(book2);
         book2.setId("2L");
         assertThat(book1).isNotEqualTo(book2);
@@ -285,22 +274,27 @@ public class BookApiTest {
     @Transactional
     public void getHQL() throws Exception {
         // Initialize the database
-        bookRepository.saveAndFlush(book);
+        restMockMvc.perform(post("/api/books")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(this.book)))
+                .andExpect(status().isCreated());
 
         restMockMvc.perform(get("/api/books?hql=name like '%'&sort=id,desc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.values.[*].id").value(hasItem(book.getId())))
+                .andExpect(jsonPath("$.values.[*].id").value(hasItem(this.book.getId())))
                 .andExpect(jsonPath("$.values.[*].name").value(hasItem(DEAFAULT_NAME)));
 
     }
-
 
     @Test
     @Transactional
     public void getVQuery() throws Exception {
         // Initialize the database
-        bookRepository.saveAndFlush(book);
+        restMockMvc.perform(post("/api/books")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(this.book)))
+                .andExpect(status().isCreated());
 
         VicQuery v = new VicQuery();
         VQuery vQuery = new VQuery(new Criteria("name", ComparisonOperator.CONTAINS, "The Book"))

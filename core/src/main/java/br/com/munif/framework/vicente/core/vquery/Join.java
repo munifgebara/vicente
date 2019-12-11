@@ -4,6 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ *
+ * @author wmfsystem
+ */
 public class Join implements Queryable<Join>, Joinable<Join> {
 
     /**
@@ -17,8 +21,8 @@ public class Join implements Queryable<Join>, Joinable<Join> {
 
     public Join() {
     }
-    
-    
+
+
 
     public Join(String table, JoinType type) {
         this.table = table;
@@ -93,6 +97,29 @@ public class Join implements Queryable<Join>, Joinable<Join> {
         }
         return true;
     }
-    
-    
+
+    public JoinType getType() {
+        return type;
+    }
+
+    public void setType(JoinType type) {
+        this.type = type;
+    }
+
+    public String getTable() {
+        return table;
+    }
+
+    public void setTable(String table) {
+        this.table = table;
+    }
+
+    @Override
+    public List<CriteriaJoin> getSubQuerys() {
+        return subQuerys;
+    }
+
+    public void setSubQuerys(List<CriteriaJoin> subQuerys) {
+        this.subQuerys = subQuerys;
+    }
 }

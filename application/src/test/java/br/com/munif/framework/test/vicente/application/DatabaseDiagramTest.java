@@ -1,6 +1,6 @@
 package br.com.munif.framework.test.vicente.application;
 
-import br.com.munif.framework.test.vicente.domain.model.Pessoa;
+import br.com.munif.framework.test.vicente.application.repository.*;
 import br.com.munif.framework.test.vicente.domain.model.smartsearch.Categoria;
 import br.com.munif.framework.test.vicente.domain.model.smartsearch.Cliente;
 import br.com.munif.framework.test.vicente.domain.model.smartsearch.GrupoClientes;
@@ -9,17 +9,10 @@ import br.com.munif.framework.test.vicente.domain.model.smartsearch.Pedido;
 import br.com.munif.framework.test.vicente.domain.model.smartsearch.Produto;
 import br.com.munif.framework.vicente.application.DatabaseDiagramBuilder;
 import br.com.munif.framework.vicente.application.search.VicAutoSeed;
-import br.com.munif.framework.vicente.application.search.VicSmartSearch;
-import br.com.munif.framework.vicente.core.RightsHelper;
-import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-import br.com.munif.framework.vicente.core.vquery.*;
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
-import java.io.File;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import org.junit.Before;
@@ -33,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.io.FileUtils;
+
 import org.junit.Assert;
 
 import static org.junit.Assert.assertEquals;
@@ -44,7 +37,7 @@ import org.junit.Ignore;
  */
 @Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MySQLSpringConfig.class})
+@ContextConfiguration(classes = {H2SpringConfig.class})
 public class DatabaseDiagramTest {
 
     @Autowired
@@ -69,7 +62,6 @@ public class DatabaseDiagramTest {
     @Transactional
     public void setUp() {
         try {
-            System.out.println("Setup of Test class " + this.getClass().getSimpleName() + " ");
             VicThreadScope.ui.set("U1");
             VicThreadScope.gi.set("G1");
             loadSeedCategoria();
@@ -102,7 +94,6 @@ public class DatabaseDiagramTest {
 //        }
 
         String draw = new DatabaseDiagramBuilder().draw(pedidoRepository.findAllNoTenancy().get(0));
-        System.out.println(draw);
         Assert.assertNotNull(draw);
 
     }

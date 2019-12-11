@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
+ * @author munif
  * View Model for sending a parameterized error message.
  */
 public class ParameterizedErrorVM implements Serializable {

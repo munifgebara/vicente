@@ -1,7 +1,32 @@
 ==========================================
 Vicente - Framework Java
+2.0.0-SNAPSHOT
+Suporte ao Java 13
+Organização dos arquivos de dependências pom.xml
+Atualização para a última versão do spring boot para suporte do java 13
+Inclusão das buscas patch e patch com retorno para update de entidades imparciais
+Alteração do retorno da exclusão de OK para NO_CONTENT
+Inclusão de parâmetros automáticos no VQuery para cacheamento de consultas
+Inclusão do filtro do tenancy na busca de uma entidade
+Padronização do método de busca de uma entidade, nome oficial: load(ID)
+Correção em tipos como VicPhoneUserType que estavam com problema no preenchimento do tipo
+Grande parte do framework inclusive do segurança (rotas, serviços, etc) foram alteradas para inglês
+Adicionado Hateoas (Há um acoplamento entre os módulos devido a limitações da nova versão do spring)
+Implementado métodos assíncronos no BaseService e BaseApi
+Implementado testes para novos métodos
+Removidos System.out.println (s)
+Correção permissões security
+Implementação de testes security
+Security Gis and Cgs adjusts
+Reactive routes
+Atualização do tipo de Parâmetros no Vquery
+Rota, métodos service e repository isNew, testes
+Criptografia senha no post do UserService
+Alteração do campo password do User para WRITE_ONLY
+Tratamento msg api: QueryException e InvalidDataAccessApiUsageException
+Como não há um TransactionManager adaptável para reactive routes, foi retirado @Transaction para rotas assincronas
 
-1.0.0 release
+1.0. release
 
 0.14.0-SNAPSHOT
 Pre release

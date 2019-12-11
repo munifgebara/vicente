@@ -13,28 +13,27 @@ OTHER_DELETE 1
 package br.com.munif.framework.vicente.core;
 
 /**
- *
  * @author munif
  */
 public class RightsHelper {
 
     //                                     876543210
-    public static final int ALL_READ =   0b100100100;
-    public static final int OWNER_READ = 0b100000000; //256
-    public static final int OWNER_UPDATE = 0b010000000; //128
-    public static final int OWNER_DELETE = 0b001000000; //64
-    public static final int OWNER_ALL = 0b111000000;
-    public static final int OWNER_READ_UPDATE = 0b110000000;
-
-    public static final int GROUP_READ = 0b000100000;  //32
-    public static final int GROUP_UPDATE = 0b000010000; //16 
-    public static final int GROUP_DELETE = 0b000001000; //8
-    public static final int GROUP_ALL = 0b000111000;
-    public static final int GROUP_READ_UPDATE = 0b000110000;
-
-    public static final int OTHER_READ = 0b000000100;   //4
-    public static final int OTHER_UPDATE = 0b000000010; //2
     public static final int OTHER_DELETE = 0b000000001; //1
+    public static final int OTHER_UPDATE = 0b000000010; //2
+    public static final int OTHER_READ = 0b000000100;   //4
+
+    public static final int GROUP_DELETE = 0b000001000; //8
+    public static final int GROUP_UPDATE = 0b000010000; //16
+    public static final int GROUP_READ = 0b000100000;  //32
+    public static final int GROUP_READ_UPDATE = 0b000110000; //48
+    public static final int GROUP_ALL = 0b000111000; //56
+
+    public static final int OWNER_DELETE = 0b001000000; //64
+    public static final int OWNER_UPDATE = 0b010000000; //128
+    public static final int OWNER_READ = 0b100000000; //256
+    public static final int ALL_READ = 0b100100100; //292
+    public static final int OWNER_READ_UPDATE = 0b110000000; //384
+    public static final int OWNER_ALL = 0b111000000; //448
 
     public static int getDefault() {
         if (VicThreadScope.defaultRights.get() != null) {
@@ -49,20 +48,21 @@ public class RightsHelper {
 
     public static String getMainGi() {
         String cg = VicThreadScope.cg.get();
-        if (cg != null) {
+        if (cg != null && !cg.isEmpty()) {
             return cg;
         }
         String get = VicThreadScope.gi.get();
-        if (get == null) {
-            return null;
+        if (get != null) {
+            if (get.contains(",")) {
+                return get.substring(0, get.indexOf(','));
+            } else {
+                return get;
+            }
         }
-        if (get.contains(",")) {
-            return get.substring(0, get.indexOf(','));
-        }
-        return get;
+        return null;
     }
-    
-     public static String getStringRights(Integer rights, String ui, String gi) {
+
+    public static String getStringRights(Integer rights, String ui, String gi) {
         Integer r = rights != null ? rights : 0;
         String toReturn = "";
         toReturn += "ui:" + ui + "(";
@@ -82,8 +82,7 @@ public class RightsHelper {
         toReturn += ") ";
         return toReturn;
     }
-    
-    
+
 
 }
 

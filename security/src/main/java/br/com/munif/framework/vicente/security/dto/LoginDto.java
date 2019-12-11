@@ -6,25 +6,24 @@
 package br.com.munif.framework.vicente.security.dto;
 
 /**
- *
  * @author munif
  */
 public class LoginDto {
 
     public String login;
-    public String senha;
+    public String password;
 
     public LoginDto() {
     }
 
-    public LoginDto(String login, String senha) {
+    public LoginDto(String login, String password) {
         this.login = login;
-        this.senha = senha;
+        this.password = password;
     }
 
     @Override
     public String toString() {
-        return "LoginDto{" + "login=" + login + ", senha=" + senha + '}';
+        return "LoginDto{" + "login=" + login + ", senha=" + password + '}';
     }
 
 }
