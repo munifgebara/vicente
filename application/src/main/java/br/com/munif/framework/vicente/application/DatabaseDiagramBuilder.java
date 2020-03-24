@@ -54,7 +54,7 @@ public class DatabaseDiagramBuilder {
     }
 
     private void writeHeader(Writer fileWriter) throws IOException {
-        fileWriter.write("//Gerado automaticamente  munif@munifgebara.com.br\n\n"
+        fileWriter.write("//Gerado automaticamente  munif@vicentegebara.com.br\n\n"
                 + ""
                 + "digraph G{\n"
                 + "fontname = \"Bitstream Vera Sans\"\n"

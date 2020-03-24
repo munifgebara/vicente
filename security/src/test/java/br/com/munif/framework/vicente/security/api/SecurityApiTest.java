@@ -107,13 +107,13 @@ public class SecurityApiTest {
         System.out.println("");
         ResultActions tokenRequest = restMockMvc.perform(post("/api/token/login/bypassword")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(new LoginDto("admin@munif.com.br", "qwe123"))));
+                .content(TestUtil.convertObjectToJsonBytes(new LoginDto("admin@vicente.com.br", "qwe123"))));
         tokenRequest.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.ok").value(Boolean.TRUE))
                 .andExpect(jsonPath("$.message").value("Login OK"))
                 .andExpect(jsonPath("$.code").value(0))
-                .andExpect(jsonPath("$.token.user.login").value("admin@munif.com.br"))
+                .andExpect(jsonPath("$.token.user.login").value("admin@vicente.com.br"))
                 .andExpect(jsonPath("$.token.user.password").doesNotExist());
         Map<String, Object> tokenMap = TestUtil.convertStringToMap(tokenRequest.andReturn().getResponse().getContentAsString());
         Map token = (Map) tokenMap.get("token");

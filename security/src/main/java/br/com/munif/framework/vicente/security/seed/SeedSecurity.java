@@ -75,14 +75,14 @@ public class SeedSecurity {
         o2.setUpper(o1);
         organizationRepository.save(o2);
 
-        User admin = new User("admin@munif.com.br", PasswordGenerator.generate("qwe123"));
+        User admin = new User("admin@vicente.com.br", PasswordGenerator.generate("qwe123"));
         admin.setGroups(new HashSet<>());
         admin.getGroups().add(g0);
         admin.getGroups().add(g2);
         admin.setOrganization(o1);
         userRepository.save(admin);
 
-        User user = new User("munif@munif.com.br", PasswordGenerator.generate("qwe123"));
+        User user = new User("munif@vicente.com.br", PasswordGenerator.generate("qwe123"));
         user.setGroups(new HashSet<>());
         user.getGroups().add(g1);
         user.setOrganization(o2);

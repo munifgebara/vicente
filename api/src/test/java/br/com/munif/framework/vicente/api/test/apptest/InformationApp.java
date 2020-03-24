@@ -67,7 +67,7 @@ public class InformationApp {
     public void initApplication() {
 //        Book teste = new Book("Book Test");
 //        teste.setRights(RightsHelper.getDefault());
-//        teste.setUi("admin@munif.com.br");
+//        teste.setUi("admin@vicente.com.br");
 //        teste.setGi("G2");
 //        bookRepository.save(teste);
 //        seedSecurity.seedSecurity();
