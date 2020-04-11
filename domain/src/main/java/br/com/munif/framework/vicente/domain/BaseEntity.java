@@ -76,7 +76,7 @@ public class BaseEntity {
         gi = stringNull(RightsHelper.getMainGi());
         ui = stringNull(VicThreadScope.ui.get());
         oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";
-        rights = RightsHelper.getDefault();
+        rights = RightsHelper.getScopeDefault();
         extra = "Framework";
         cd = new Date();
         ud = new Date();
