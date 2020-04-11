@@ -87,9 +87,6 @@ public class BaseEntitySerializerTest {
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-//    @Autowired
-//    private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
     @Autowired
     private EntityManager em;
 

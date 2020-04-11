@@ -85,7 +85,7 @@ public class User extends BaseEntity {
         this.organization = organization;
     }
 
-    public String stringGrupos() {
+    public String stringGroups() {
         if (this.getGroups() == null) {
             return null;
         }
@@ -98,7 +98,7 @@ public class User extends BaseEntity {
 
     }
 
-    public String stringOrganizacao() {
+    public String stringOrganization() {
         if (organization == null) {
             return null;
         }
