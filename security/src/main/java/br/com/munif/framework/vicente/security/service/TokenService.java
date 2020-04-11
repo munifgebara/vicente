@@ -134,6 +134,11 @@ public class TokenService extends BaseService<Token> {
         VicThreadScope.cg.set(login.login.replaceAll("\\.", "_"));
         VicThreadScope.oi.set(login.login.replaceAll("\\.", "_") + ".");
         VicThreadScope.defaultRights.set(RightsHelper.OWNER_READ);
+        return createAndLogin(login);
+    }
+
+    @Transactional
+    public LoginResponseDto createAndLogin(LoginDto login) {
         List<User> usersByEmail = findUsersByEmail(login.login);
         if (usersByEmail.size() == 0) {
             User u = new User();
