@@ -28,8 +28,9 @@ public class Profile extends BaseEntity {
     public Profile() {
     }
 
-    public Profile(String name, List<OperationFilter> filters) {
+    public Profile(String name, User user, List<OperationFilter> filters) {
         this.name = name;
+        this.user = user;
         this.filters = filters;
     }
 

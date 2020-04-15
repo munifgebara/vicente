@@ -28,10 +28,9 @@ public class Operation extends BaseEntity {
     public Operation() {
     }
 
-    public Operation(String api, String method, Software software) {
+    public Operation(String api, String method) {
         this.api = api;
         this.method = method;
-        this.software = software;
     }
 
     public Software getSoftware() {

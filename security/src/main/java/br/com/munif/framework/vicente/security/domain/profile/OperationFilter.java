@@ -27,6 +27,8 @@ public class OperationFilter extends BaseEntity {
     private OperationType operationType = OperationType.ALLOW;
     @Column(name = "requested_count")
     private Integer requestedCount;
+    @Column(name = "max_requests")
+    private Integer maxRequests;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -34,9 +36,8 @@ public class OperationFilter extends BaseEntity {
     public OperationFilter() {
     }
 
-    public OperationFilter(Operation operation, Profile profile, OperationType operationType) {
+    public OperationFilter(Operation operation, OperationType operationType) {
         this.operation = operation;
-        this.profile = profile;
         this.operationType = operationType;
     }
 
@@ -78,5 +79,13 @@ public class OperationFilter extends BaseEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Integer getMaxRequests() {
+        return maxRequests;
+    }
+
+    public void setMaxRequests(Integer maxRequests) {
+        this.maxRequests = maxRequests;
     }
 }

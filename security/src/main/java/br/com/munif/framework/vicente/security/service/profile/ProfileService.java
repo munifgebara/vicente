@@ -4,9 +4,10 @@ package br.com.munif.framework.vicente.security.service.profile;
 
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
-import br.com.munif.framework.vicente.security.domain.profile.Operation;
+import br.com.munif.framework.vicente.security.domain.profile.OperationFilter;
 import br.com.munif.framework.vicente.security.domain.profile.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author GeradorVicente
@@ -15,5 +16,15 @@ import org.springframework.stereotype.Service;
 public class ProfileService extends BaseService<Profile> {
     public ProfileService(VicRepository<Profile> repository) {
         super(repository);
+    }
+
+    @Override
+    @Transactional
+    public Profile save(Profile resource) {
+        for (OperationFilter filter : resource.getFilters()) {
+            filter.setProfile(resource);
+            filter.setUser(resource.getUser());
+        }
+        return super.save(resource);
     }
 }

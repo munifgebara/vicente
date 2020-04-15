@@ -11,6 +11,8 @@ import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.security.SecurityApp;
 import br.com.munif.framework.vicente.security.domain.Group;
 import br.com.munif.framework.vicente.security.domain.Token;
+import br.com.munif.framework.vicente.security.domain.User;
+import br.com.munif.framework.vicente.security.domain.profile.*;
 import br.com.munif.framework.vicente.security.dto.LoginDto;
 import br.com.munif.framework.vicente.security.dto.PrivilegesAssignmentDto;
 import br.com.munif.framework.vicente.security.seed.SeedSecurity;
@@ -29,6 +31,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -307,6 +310,33 @@ public class SecurityApiTest {
         Map map = collect.get(0);
         assertEquals(group.getName(), map.get("name"));
         assertEquals(group.getCode(), map.get("code"));
+    }
+
+
+    @Test
+    public void operations() throws Exception {
+        Software software = new Software("Mine", Arrays.asList(
+                new Operation("UserApi", "sigin"),
+                new Operation("UserApi", "teste2")
+        ));
+
+        ResultActions createRequestSoftware = restMockMvc.perform(post("/api/software")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(software))
+                .header("Authorization", tokenWillian.getValue())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8));
+
+        User user = tokenWillian.getUser();
+        Profile profile = new Profile("Profile teste", user, Arrays.asList(
+                new OperationFilter(software.getOperations().get(0), OperationType.NOT_ALLOW),
+                new OperationFilter(software.getOperations().get(1), OperationType.NOT_ALLOW)
+        ));
+
+        ResultActions createRequestProfile = restMockMvc.perform(post("/api/profile")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(profile))
+                .header("Authorization", tokenWillian.getValue())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8));
     }
 
 }
