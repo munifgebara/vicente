@@ -11,16 +11,15 @@ import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.vquery.*;
 import br.com.munif.framework.vicente.domain.typings.PhoneType;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.LockModeType;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +31,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {H2SpringConfig.class})
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class VicRepositoryTest {
 
     @Autowired
@@ -298,14 +298,13 @@ public class VicRepositoryTest {
         p2.setNome("Pessoa Não existente");
         p2.setRights(0);
         assertTrue(pessoaService.isNew(p2.getId()));
-        
+
         pessoaService.save(p2);
         assertFalse(pessoaService.isNew(p2.getId()));
     }
 
-
     @Test
-    public void deleteByHQL() {
+    public void zdeleteByHQL() {
         VicThreadScope.ui.set("U1001");
         VicThreadScope.gi.set("G11,G15,");
         List<Pessoa> findAll = pessoaService.findByHql(new VicQuery());
