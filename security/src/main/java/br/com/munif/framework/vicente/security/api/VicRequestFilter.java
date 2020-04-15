@@ -43,7 +43,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
             return true;
         }
         VicThreadScope.ip.set(request.getRemoteAddr());
-        String tokenValue = "" + request.getHeader("Authorization");
+        String tokenValue = getAuthorization(request);
         Token token = tokenService.findUserByToken(tokenValue);
         if (token != null) {
             User u = token.getUser();
@@ -69,8 +69,6 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
             VicThreadScope.cg.set(null);
         }
         HandlerMethod hm;
-
-
         if (handler instanceof HandlerMethod) {
             hm = (HandlerMethod) handler;
         } else {
@@ -83,6 +81,12 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         String operationKey = apiName + "_" + hm.getMethod().getName();
 
         return true;
+    }
+
+    private String getAuthorization(HttpServletRequest request) {
+        String tokenValue = "" + request.getHeader("Authorization");
+        if (tokenValue.equals("null")) tokenValue = "" + request.getParameter("Authorization");
+        return tokenValue;
     }
 
 }
