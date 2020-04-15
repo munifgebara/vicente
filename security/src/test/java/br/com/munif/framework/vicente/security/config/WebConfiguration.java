@@ -2,6 +2,7 @@ package br.com.munif.framework.vicente.security.config;
 
 import br.com.munif.framework.vicente.security.api.VicRequestFilter;
 import br.com.munif.framework.vicente.security.service.TokenService;
+import br.com.munif.framework.vicente.security.service.profile.OperationFilterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,8 @@ public class WebConfiguration extends WebMvcConfigurerAdapter implements WebAppl
 
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private OperationFilterService operationFilterService;
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/",
@@ -70,7 +73,7 @@ public class WebConfiguration extends WebMvcConfigurerAdapter implements WebAppl
 
     @Bean
     public VicRequestFilter requestFilter() {
-        return new VicRequestFilter(tokenService);
+        return new VicRequestFilter(tokenService, operationFilterService);
     }
 
 }

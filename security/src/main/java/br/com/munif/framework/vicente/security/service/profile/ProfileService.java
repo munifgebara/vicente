@@ -14,8 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class ProfileService extends BaseService<Profile> {
-    public ProfileService(VicRepository<Profile> repository) {
+
+    private final OperationFilterService operationFilterService;
+
+    public ProfileService(VicRepository<Profile> repository, OperationFilterService operationFilterService) {
         super(repository);
+        this.operationFilterService = operationFilterService;
     }
 
     @Override
@@ -24,6 +28,7 @@ public class ProfileService extends BaseService<Profile> {
         for (OperationFilter filter : resource.getFilters()) {
             filter.setProfile(resource);
             filter.setUser(resource.getUser());
+            filter = operationFilterService.save(filter);
         }
         return super.save(resource);
     }

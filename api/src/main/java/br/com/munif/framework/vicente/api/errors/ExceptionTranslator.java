@@ -1,6 +1,7 @@
 package br.com.munif.framework.vicente.api.errors;
 
 import br.com.munif.framework.vicente.api.VicenteCreateWithExistingIdException;
+import br.com.munif.framework.vicente.api.VicenteErrorOnRequestException;
 import br.com.munif.framework.vicente.api.VicenteNotFoundException;
 import br.com.munif.framework.vicente.api.VicenteRightsException;
 import org.hibernate.QueryException;
@@ -110,6 +111,13 @@ public class ExceptionTranslator {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorVM vicenteCreateWithExistingIdException(VicenteCreateWithExistingIdException exception) {
         return new ErrorVM(ErrorConstants.ERR_CONFLICT, exception.getMessage());
+    }
+
+    @ExceptionHandler(VicenteErrorOnRequestException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorVM vicenteCreateWithExistingIdException(VicenteErrorOnRequestException exception) {
+        return new ErrorVM(ErrorConstants.ERR_BAD_REQUEST, exception.getMessage());
     }
 
     @ExceptionHandler(QueryException.class)

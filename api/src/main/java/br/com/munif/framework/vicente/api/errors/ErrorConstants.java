@@ -13,6 +13,7 @@ public final class ErrorConstants {
     public static final String ERR_NOT_ALLOWED="error.notAllowed";
     public static final String ERR_NOT_FOUND="error.notFound";
     public static final String ERR_CONFLICT="error.conflict";
+    public static final String ERR_BAD_REQUEST="error.badRequest";
 
     private ErrorConstants() {
     }

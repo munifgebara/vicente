@@ -6,6 +6,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import javax.swing.text.html.Option;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author munif
@@ -32,8 +36,14 @@ public class OperationFilter extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @OneToMany(mappedBy = "operationFilter", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<ForwardRequest> forwardRequests;
 
     public OperationFilter() {
+    }
+
+    public OperationFilter(List<ForwardRequest> forwardRequests) {
+        this.forwardRequests = forwardRequests;
     }
 
     public OperationFilter(Operation operation, OperationType operationType) {
@@ -87,5 +97,17 @@ public class OperationFilter extends BaseEntity {
 
     public void setMaxRequests(Integer maxRequests) {
         this.maxRequests = maxRequests;
+    }
+
+    public List<ForwardRequest> getForwardRequests() {
+        return forwardRequests;
+    }
+
+    public List<ForwardRequest> getEmptyForwardRequests() {
+        return Optional.ofNullable(forwardRequests).orElse(new ArrayList<>());
+    }
+
+    public void setForwardRequests(List<ForwardRequest> forwardRequests) {
+        this.forwardRequests = forwardRequests;
     }
 }

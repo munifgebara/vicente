@@ -11,12 +11,19 @@ import br.com.munif.framework.vicente.security.domain.Group;
 import br.com.munif.framework.vicente.security.domain.Organization;
 import br.com.munif.framework.vicente.security.domain.PasswordGenerator;
 import br.com.munif.framework.vicente.security.domain.User;
+import br.com.munif.framework.vicente.security.domain.profile.Operation;
+import br.com.munif.framework.vicente.security.domain.profile.Software;
 import br.com.munif.framework.vicente.security.repository.GroupRepository;
 import br.com.munif.framework.vicente.security.repository.OrganizationRepository;
 import br.com.munif.framework.vicente.security.repository.UserRepository;
+import br.com.munif.framework.vicente.security.service.profile.SoftwareService;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -30,11 +37,15 @@ public class SeedSecurity {
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
     private final OrganizationRepository organizationRepository;
+    private final RequestMappingHandlerMapping handlerMapping;
+    private final SoftwareService softwareService;
 
-    public SeedSecurity(OrganizationRepository organizationRepository, GroupRepository groupRepository, UserRepository userRepository) {
+    public SeedSecurity(OrganizationRepository organizationRepository, GroupRepository groupRepository, UserRepository userRepository, RequestMappingHandlerMapping handlerMapping, SoftwareService softwareService) {
         this.organizationRepository = organizationRepository;
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
+        this.handlerMapping = handlerMapping;
+        this.softwareService = softwareService;
     }
 
     public void seedSecurity() {
@@ -80,13 +91,22 @@ public class SeedSecurity {
         admin.getGroups().add(g0);
         admin.getGroups().add(g2);
         admin.setOrganization(o1);
-        userRepository.save(admin);
+        admin = userRepository.save(admin);
 
         User user = new User("munif@vicente.com.br", PasswordGenerator.generate("qwe123"));
         user.setGroups(new HashSet<>());
         user.getGroups().add(g1);
         user.setOrganization(o2);
-        userRepository.save(user);
+        user = userRepository.save(user);
+
+        Software software1 = new Software("VicSecurity", new HashSet<>());
+        Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.getHandlerMethods();
+        for (Map.Entry<RequestMappingInfo, HandlerMethod> hm : handlerMethods.entrySet()) {
+            String apiName = hm.getValue().getBeanType().getName().substring(hm.getValue().getBeanType().getName().lastIndexOf(".") + 1);
+            String method = hm.getValue().getMethod().getName();
+            software1.getOperations().add(new Operation(apiName, method));
+        }
+        softwareService.save(software1);
     }
 
 }

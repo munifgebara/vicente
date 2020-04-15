@@ -1,5 +1,8 @@
 package br.com.munif.framework.vicente.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author munif
@@ -48,4 +51,8 @@ public class VicThreadScope {
      * If set, time constrains will be ignored in querys
      */
     public static final ThreadLocal<Boolean> ignoreTime = new ThreadLocal<>();
+    /**
+     * Map of thread options
+     */
+    public static final ThreadLocal<Map<String, Boolean>> options = ThreadLocal.withInitial(HashMap::new);
 }

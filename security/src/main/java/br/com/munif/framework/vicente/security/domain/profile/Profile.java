@@ -21,7 +21,7 @@ public class Profile extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToMany(mappedBy = "profile")
+    @OneToMany(mappedBy = "profile", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JsonIgnoreProperties({"profile"})
     private List<OperationFilter> filters;
 

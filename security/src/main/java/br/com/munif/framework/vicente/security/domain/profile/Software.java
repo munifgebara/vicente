@@ -1,14 +1,14 @@
 package br.com.munif.framework.vicente.security.domain.profile;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author munif
@@ -20,14 +20,14 @@ public class Software extends BaseEntity {
 
     @Column(name = "name")
     private String name;
-    @OneToMany(mappedBy = "software")
+    @OneToMany(mappedBy = "software", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JsonIgnoreProperties({"software"})
-    private List<Operation> operations;
+    private Set<Operation> operations;
 
     public Software() {
     }
 
-    public Software(String name, List<Operation> operations) {
+    public Software(String name, Set<Operation> operations) {
         this.name = name;
         this.operations = operations;
     }
@@ -40,11 +40,16 @@ public class Software extends BaseEntity {
         this.name = name;
     }
 
-    public List<Operation> getOperations() {
+    public Set<Operation> getOperations() {
         return operations;
     }
 
-    public void setOperations(List<Operation> operations) {
+    @JsonIgnore
+    public Operation getOperation(int index) {
+        return new ArrayList<Operation>(this.operations).get(index);
+    }
+
+    public void setOperations(Set<Operation> operations) {
         this.operations = operations;
     }
 }
