@@ -24,4 +24,5 @@ public interface VicRepository<T extends BaseEntity> extends JpaRepository<T, Se
     T load(String id);
     T loadNoTenancy(String id);
     Boolean isNew(String id);
+    public void deleteByHQL(VicQuery vicQuery);
 }

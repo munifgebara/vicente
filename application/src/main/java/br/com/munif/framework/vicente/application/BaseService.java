@@ -13,6 +13,8 @@ import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseE
 import org.hibernate.criterion.Example;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -20,6 +22,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
@@ -99,6 +102,11 @@ public abstract class BaseService<T extends BaseEntity> {
         List<T> result = repository.findByHql(query);
         readVicTenancyFields(result);
         return result;
+    }
+
+    @Transactional
+    public void deleteByHql(VicQuery query) {
+        repository.deleteByHQL(query);
     }
 
     @Transactional(readOnly = true)

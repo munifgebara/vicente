@@ -54,13 +54,13 @@ public class Pessoa extends VicTenancyFieldsBaseEntity {
     private VicPhone telefone;
 
 
-    @OneToMany
+    @OneToMany(orphanRemoval = true)
     private List<Endereco> outrosEnderecos;
 
-    @OneToMany
+    @OneToMany(orphanRemoval = true)
     private List<Email> outrosEmails;
 
-    @OneToMany
+    @OneToMany(orphanRemoval = true)
     private List<Telefone> outrosTelefones;
 
     public Pessoa() {

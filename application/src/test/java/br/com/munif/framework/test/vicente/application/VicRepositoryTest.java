@@ -14,10 +14,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.LockModeType;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -298,5 +301,18 @@ public class VicRepositoryTest {
         
         pessoaService.save(p2);
         assertFalse(pessoaService.isNew(p2.getId()));
+    }
+
+
+    @Test
+    public void deleteByHQL() {
+        VicThreadScope.ui.set("U1001");
+        VicThreadScope.gi.set("G11,G15,");
+        List<Pessoa> findAll = pessoaService.findByHql(new VicQuery());
+        assertEquals(21, findAll.size());
+        pessoaService.deleteByHql(new VicQuery(new VQuery(new Criteria("id", ComparisonOperator.EQUAL, findAll.get(0).getId()))));
+
+        List<Pessoa> findAll2 = pessoaService.findByHql(new VicQuery());
+        assertEquals(20, findAll2.size());
     }
 }
