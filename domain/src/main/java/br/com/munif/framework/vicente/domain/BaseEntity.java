@@ -14,6 +14,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
@@ -28,7 +29,7 @@ import static br.com.munif.framework.vicente.core.RightsHelper.*;
         @TypeDef(name = "vicemail", defaultForType = VicEmail.class, typeClass = VicEmailUserType.class),
         @TypeDef(name = "vicphone", defaultForType = VicPhone.class, typeClass = VicPhoneUserType.class)
 })
-public class BaseEntity {
+public class BaseEntity implements Serializable {
 
     public static boolean useSimpleId = false;
 
