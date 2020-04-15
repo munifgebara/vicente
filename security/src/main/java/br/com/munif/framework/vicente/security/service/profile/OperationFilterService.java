@@ -11,7 +11,6 @@ import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.domain.profile.ForwardRequest;
 import br.com.munif.framework.vicente.security.domain.profile.OperationFilter;
-import com.google.common.collect.Iterables;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,8 +38,10 @@ public class OperationFilterService extends BaseService<OperationFilter> {
                         .and(new Criteria("operation.api", ComparisonOperator.EQUAL, api))
                         .and(new Criteria("operation.method", ComparisonOperator.EQUAL, method))
         ));
-        OperationFilter last = Iterables.getLast(byHqlNoTenancy, new OperationFilter(new ArrayList<>()));
-        return last;
+        if (byHqlNoTenancy.size() > 0) {
+            return byHqlNoTenancy.get(byHqlNoTenancy.size() - 1);
+        }
+        return new OperationFilter(new ArrayList<>());
     }
 
     @Override
