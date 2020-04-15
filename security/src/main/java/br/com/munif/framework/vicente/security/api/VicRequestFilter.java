@@ -63,8 +63,8 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         }
         VicThreadScope.ip.set(request.getRemoteAddr());
         String tokenValue = getAuthorization(request);
-        Token token = tokenService.findUserByToken(tokenValue);
-        if (token != null) {
+        if (tokenValue != null) {
+            Token token = tokenService.findUserByToken(tokenValue);
             User u = token.getUser();
             VicThreadScope.token.set(tokenValue);
             VicThreadScope.gi.set(u.stringGroups());
@@ -75,6 +75,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
             else
                 VicThreadScope.cg.set(null);
             VicThreadScope.defaultRights.set(null);
+            return filterRequest(request, handler, tokenValue, token);
         } else if (publics.contains(request.getRequestURI())) {
             VicThreadScope.gi.set("VIC_PUBLIC");
             VicThreadScope.ui.set("VIC_PUBLIC");
@@ -87,7 +88,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
             VicThreadScope.oi.set(null);
             VicThreadScope.cg.set(null);
         }
-        return filterRequest(request, handler, tokenValue, token);
+        return true;
     }
 
     public boolean filterRequest(HttpServletRequest request, Object handler, String tokenValue, Token token) throws IOException {
@@ -131,8 +132,8 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
 
 
     private String getAuthorization(HttpServletRequest request) {
-        String tokenValue = "" + request.getHeader("Authorization");
-        if (tokenValue.equals("null")) tokenValue = "" + request.getParameter("Authorization");
+        String tokenValue = request.getHeader("Authorization");
+        if (tokenValue == null) tokenValue = request.getParameter("Authorization");
         return tokenValue;
     }
 
