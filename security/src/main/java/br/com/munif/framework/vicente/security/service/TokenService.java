@@ -14,12 +14,14 @@ import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.*;
 import br.com.munif.framework.vicente.security.dto.LoginDto;
 import br.com.munif.framework.vicente.security.dto.LoginResponseDto;
-
-import java.util.*;
-
 import com.google.common.collect.Sets;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author GeradorVicente
@@ -98,7 +100,7 @@ public class TokenService extends BaseService<Token> {
             r.message = "Usuário não encontrado.";
             return r;
         } else if (findByHql.size() == 1) {
-            return createTokenToExistentUser(login, findByHql);
+            return createTokenToExistentUser(login, findByHql.get(0));
         } else {
             r.message = "Multiplos Usuários.";
         }
@@ -139,35 +141,35 @@ public class TokenService extends BaseService<Token> {
 
     @Transactional
     public LoginResponseDto createAndLogin(LoginDto login) {
-        List<User> usersByEmail = findUsersByEmail(login.login);
-        if (usersByEmail.size() == 0) {
-            User u = new User();
-            u.setLogin(login.login);
-            Group group = groupService.createGroupByEmail(login.login);
-            Organization organization = organizationService.createOrganizationByEmail(login.login);
-            u.setPassword(PasswordGenerator.generate(login.password));
-            u.setGroups(Sets.newHashSet(group));
-            u.setOrganization(organization);
-            u = userService.save(u);
-            LoginResponseDto r = new LoginResponseDto();
-            r.message = "Usuário criado, Login OK";
-            r.ok = true;
-            r.token = criaToken(u);
-            return r;
-        } else {
-            return createTokenToExistentUser(login, usersByEmail);
-        }
+        User userByLogin = createUserByLogin(login);
+        return createTokenToExistentUser(login, userByLogin);
     }
 
-    public LoginResponseDto createTokenToExistentUser(LoginDto login, List<User> usersByEmail) {
+    public User createUserByLogin(LoginDto login) {
+        List<User> usersByEmail = findUsersByEmail(login.login);
+        if (usersByEmail.size() > 0) {
+            return usersByEmail.get(0);
+        }
+        User u = new User();
+        u.setLogin(login.login);
+        Group group = groupService.createGroupByEmail(login.login);
+        Organization organization = organizationService.createOrganizationByEmail(login.login);
+        u.setPassword(PasswordGenerator.generate(login.password));
+        u.setGroups(Sets.newHashSet(group));
+        u.setOrganization(organization);
+        u = userService.save(u);
+        return u;
+    }
+
+    public LoginResponseDto createTokenToExistentUser(LoginDto login, User user) {
         LoginResponseDto r = new LoginResponseDto();
-        if (!PasswordGenerator.validate(login.password, usersByEmail.get(0).getPassword())) {
+        if (!PasswordGenerator.validate(login.password, user.getPassword())) {
             r.message = "Senha inválida.";
             return r;
         }
         r.message = "Login OK";
         r.ok = true;
-        r.token = criaToken(usersByEmail.get(0));
+        r.token = criaToken(user);
         return r;
     }
 }
