@@ -32,9 +32,6 @@ public class OperationFilter extends BaseEntity {
     private Integer requestedCount;
     @Column(name = "max_requests")
     private Integer maxRequests;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "operationFilter", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<ForwardRequest> forwardRequests;
 
@@ -80,14 +77,6 @@ public class OperationFilter extends BaseEntity {
 
     public void setRequestedCount(Integer requestedCount) {
         this.requestedCount = requestedCount;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Integer getMaxRequests() {

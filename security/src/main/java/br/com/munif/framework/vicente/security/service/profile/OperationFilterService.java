@@ -34,7 +34,7 @@ public class OperationFilterService extends BaseService<OperationFilter> {
     public OperationFilter findByOperationKeyAndToken(String api, String method, Token token) {
         if (token == null || token.getUser() == null) return new OperationFilter(new ArrayList<>());
         List<OperationFilter> byHqlNoTenancy = findByHqlNoTenancy(new VicQuery(
-                new VQuery(new Criteria("user.id", ComparisonOperator.EQUAL, token.getUser().getId()))
+                new VQuery(new Criteria("profile.user.id", ComparisonOperator.EQUAL, token.getUser().getId()))
                         .and(new Criteria("operation.api", ComparisonOperator.EQUAL, api))
                         .and(new Criteria("operation.method", ComparisonOperator.EQUAL, method))
         ));

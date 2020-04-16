@@ -27,7 +27,6 @@ public class ProfileService extends BaseService<Profile> {
     public Profile save(Profile resource) {
         for (OperationFilter filter : resource.getFilters()) {
             filter.setProfile(resource);
-            filter.setUser(resource.getUser());
             filter = operationFilterService.save(filter);
         }
         return super.save(resource);
