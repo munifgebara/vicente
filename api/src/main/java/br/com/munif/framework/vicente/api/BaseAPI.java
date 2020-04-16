@@ -191,7 +191,7 @@ public class BaseAPI<T extends BaseEntity> {
         return ResponseEntity.ok(new VicReturn<T>(result, result.size(), query.getFirstResult(), hasMore));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity load(@PathVariable String id, @RequestParam(required = false) String fields) {
         T view = service.loadNoTenancy(id);
