@@ -119,7 +119,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
                 log.info("Error on request:" + forwardRequest);
             }
         }
-        if (OperationType.NOT_ALLOW.equals(operationFilter.getOperationType())) {
+        if (OperationType.DENY.equals(operationFilter.getOperationType())) {
             throw new VicenteRightsException("You do not have the rights to request this resource.");
         }
         return true;

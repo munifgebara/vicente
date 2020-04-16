@@ -423,8 +423,8 @@ public class SecurityApiTest {
 
         User user = tokenJose.getUser();
         Profile profile = new Profile("Profile teste", user, Arrays.asList(
-                new OperationFilter(operationService.findOne(software.getOperation(0).getId()), OperationType.NOT_ALLOW),
-                new OperationFilter(operationService.findOne(software.getOperation(1).getId()), OperationType.NOT_ALLOW)
+                new OperationFilter(operationService.findOne(software.getOperation(0).getId()), OperationType.DENY),
+                new OperationFilter(operationService.findOne(software.getOperation(1).getId()), OperationType.DENY)
         ));
 
         ResultActions createRequestProfile = restMockMvc.perform(post("/api/profile")
