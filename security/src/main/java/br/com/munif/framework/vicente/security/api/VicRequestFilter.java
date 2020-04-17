@@ -13,15 +13,15 @@ import br.com.munif.framework.vicente.core.VicThreadScopeOptions;
 import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.domain.profile.ForwardRequest;
-import br.com.munif.framework.vicente.security.domain.profile.RequestAction;
 import br.com.munif.framework.vicente.security.domain.profile.OperationFilter;
 import br.com.munif.framework.vicente.security.domain.profile.OperationType;
+import br.com.munif.framework.vicente.security.domain.profile.RequestAction;
 import br.com.munif.framework.vicente.security.service.TokenService;
 import br.com.munif.framework.vicente.security.service.profile.OperationFilterService;
-import org.apache.commons.io.IOUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -29,7 +29,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +75,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
             else
                 VicThreadScope.cg.set(null);
             VicThreadScope.defaultRights.set(null);
-            return filterRequest(request, handler, tokenValue, token);
+            return filterRequest(request, response, handler, tokenValue, token);
         } else if (publics.contains(request.getRequestURI())) {
             VicThreadScope.gi.set("VIC_PUBLIC");
             VicThreadScope.ui.set("VIC_PUBLIC");
@@ -92,7 +91,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         return true;
     }
 
-    public boolean filterRequest(HttpServletRequest request, Object handler, String tokenValue, Token token) throws IOException {
+    public boolean filterRequest(HttpServletRequest request, HttpServletResponse response, Object handler, String tokenValue, Token token) throws IOException {
         HandlerMethod hm;
         if (handler instanceof HandlerMethod) {
             hm = (HandlerMethod) handler;
@@ -112,9 +111,8 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
                 if (forwardRequest.getDefaultAuthorizationHeader() != null) {
                     headers.set(forwardRequest.getAuthorizationHeaderName(), forwardRequest.getDefaultAuthorizationHeader());
                 }
-                String s = IOUtils.toString(request.getInputStream(), Charset.defaultCharset());
                 try {
-                    restTemplate().exchange(forwardRequest.getUrl(), forwardRequest.getMethod(), new HttpEntity<>(s, headers), Map.class);
+                    restTemplate().exchange(forwardRequest.getUrl(), forwardRequest.getMethod(), new HttpEntity<>(((MockHttpServletRequest) request).getContentAsString(), headers), Map.class);
                 } catch (Exception ex) {
                     if (VicThreadScopeOptions.ENABLE_FORWARD_REQUEST_EXCEPTION.getValue()) {
                         throw new VicenteErrorOnRequestException("Was not possible to request the " + forwardRequest.getUrl());

@@ -24,6 +24,7 @@ import br.com.munif.framework.vicente.security.service.profile.OperationService;
 import br.com.munif.framework.vicente.security.service.profile.ProfileService;
 import br.com.munif.framework.vicente.security.service.profile.SoftwareService;
 import org.assertj.core.util.Sets;
+import org.hibernate.Hibernate;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -41,10 +42,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -381,7 +379,7 @@ public class SecurityApiTest {
         List<OperationFilter> allNoTenancy = operationFilterService.findAllNoTenancy();
         for (OperationFilter operationFilter : allNoTenancy) {
             operationFilter.setActions(Arrays.asList(
-                    new ForwardRequest("http://127.0.0.1:8080/api/group/" + newGroup.get("id"), HttpMethod.PUT)
+                    new ForwardRequest("http://127roskjdfaskldnomeerradonaoexistenteup-wmfteste/" + newGroup.get("id"), HttpMethod.PUT)
             ));
             operationFilterService.save(operationFilter);
         }
@@ -407,7 +405,7 @@ public class SecurityApiTest {
     @Test
     public void testLoperationsAllowNotAllow() throws Exception {
         Software software = new Software("Mine", Sets.newHashSet(
-                Arrays.asList(new Operation("GroupApi", "findHQL"),
+                Arrays.asList(new Operation("GroupApi", "save"),
                         new Operation("UserApi", "teste2"))
         ));
 
@@ -433,23 +431,35 @@ public class SecurityApiTest {
         String reqProfile = createRequestProfile.andReturn().getResponse().getContentAsString();
         Map<String, Object> responseProfile = TestUtil.convertStringToMap(reqProfile);
 
-        restMockMvc.perform(get("/api/group")
+        restMockMvc.perform(post("/api/group")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .header("Authorization", tokenJose.getValue())
+                .content(TestUtil.convertObjectToJsonBytes(new Group("aaaaaaa1", "aaaaaaa1")))
                 .contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.message").value("error.notAllowed"));
 
         List<OperationFilter> allNoTenancy = operationFilterService.findAllNoTenancy();
         for (OperationFilter operationFilter : allNoTenancy) {
-            operationFilter.setOperationType(OperationType.ALLOW);
-            operationFilter = operationFilterService.save(operationFilter);
+            OperationFilter op = operationFilterService.loadNoTenancy(operationFilter.getId());
+            op.setOperationType(OperationType.ALLOW);
+            op = operationFilterService.save(op);
         }
 
-        restMockMvc.perform(get("/api/group")
+        restMockMvc.perform(post("/api/group")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(new Group("aaaaaaa3", "aaaaaaa3")))
                 .header("Authorization", tokenJose.getValue())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.message").doesNotExist());
+
+        for (OperationFilter operationFilter : allNoTenancy) {
+            OperationFilter op = operationFilterService.loadNoTenancy(operationFilter.getId());
+            op.setActions(Collections.singletonList(
+                    new ForwardRequest("http://localhost:3000", HttpMethod.POST)
+            ));
+            op = operationFilterService.save(op);
+        }
+
     }
 
 }
