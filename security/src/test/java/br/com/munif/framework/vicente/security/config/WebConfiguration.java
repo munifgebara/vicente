@@ -73,7 +73,7 @@ public class WebConfiguration extends WebMvcConfigurerAdapter implements WebAppl
 
     @Bean
     public VicRequestFilter requestFilter() {
-        return new VicRequestFilter(tokenService, operationFilterService);
+        return new VicRequestFilter(tokenService);
     }
 
 }

@@ -24,7 +24,6 @@ import br.com.munif.framework.vicente.security.service.profile.OperationService;
 import br.com.munif.framework.vicente.security.service.profile.ProfileService;
 import br.com.munif.framework.vicente.security.service.profile.SoftwareService;
 import org.assertj.core.util.Sets;
-import org.hibernate.Hibernate;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -431,7 +430,7 @@ public class SecurityApiTest {
         String reqProfile = createRequestProfile.andReturn().getResponse().getContentAsString();
         Map<String, Object> responseProfile = TestUtil.convertStringToMap(reqProfile);
 
-        restMockMvc.perform(post("/api/group")
+        ResultActions perform = restMockMvc.perform(post("/api/group")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .header("Authorization", tokenJose.getValue())
                 .content(TestUtil.convertObjectToJsonBytes(new Group("aaaaaaa1", "aaaaaaa1")))
@@ -459,6 +458,14 @@ public class SecurityApiTest {
             ));
             op = operationFilterService.save(op);
         }
+//        VicThreadScopeOptions.ENABLE_FORWARD_REQUEST_EXCEPTION.setValue(true);
+//        ResultActions authorization = restMockMvc.perform(post("/api/group")
+//                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+//                .header("Authorization", tokenJose.getValue())
+//                .content(TestUtil.convertObjectToJsonBytes(new Group("aaaaaaa2", "aaaaaaa2")))
+//                .contentType(TestUtil.APPLICATION_JSON_UTF8))
+//                .andExpect(jsonPath("$.message").doesNotExist());
+//        String contentAsString = authorization.andReturn().getResponse().getContentAsString();
 
     }
 

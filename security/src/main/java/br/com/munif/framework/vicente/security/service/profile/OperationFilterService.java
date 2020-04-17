@@ -8,7 +8,6 @@ import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
 import br.com.munif.framework.vicente.core.vquery.Criteria;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
-import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.domain.profile.OperationFilter;
 import br.com.munif.framework.vicente.security.domain.profile.RequestAction;
 import org.hibernate.Hibernate;
@@ -31,10 +30,9 @@ public class OperationFilterService extends BaseService<OperationFilter> {
     }
 
     @Transactional(readOnly = true)
-    public OperationFilter findByOperationKeyAndToken(String api, String method, Token token) {
-        if (token == null || token.getUser() == null) return new OperationFilter(new ArrayList<>());
+    public OperationFilter findByOperationKeyAndLogin(String api, String method, String login) {
         List<OperationFilter> byHqlNoTenancy = findByHqlNoTenancy(new VicQuery(
-                new VQuery(new Criteria("profile.user.id", ComparisonOperator.EQUAL, token.getUser().getId()))
+                new VQuery(new Criteria("profile.user.login", ComparisonOperator.EQUAL, login))
                         .and(new Criteria("operation.api", ComparisonOperator.EQUAL, api))
                         .and(new Criteria("operation.method", ComparisonOperator.EQUAL, method))
         ));
