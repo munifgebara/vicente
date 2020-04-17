@@ -4,7 +4,7 @@ package br.com.munif.framework.vicente.security.api.profile;
 
 import br.com.munif.framework.vicente.api.BaseAPI;
 import br.com.munif.framework.vicente.application.BaseService;
-import br.com.munif.framework.vicente.security.domain.profile.ForwardRequest;
+import br.com.munif.framework.vicente.security.domain.profile.RequestAction;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,11 +15,11 @@ import java.util.logging.Logger;
  */
 @RestController
 @RequestMapping("/api/forward-request")
-public class ForwardRequestApi extends BaseAPI<ForwardRequest> {
+public class ForwardRequestApi extends BaseAPI<RequestAction> {
 
     private final Logger log = Logger.getLogger(ForwardRequestApi.class.getSimpleName());
 
-    public ForwardRequestApi(BaseService<ForwardRequest> service) {
+    public ForwardRequestApi(BaseService<RequestAction> service) {
         super(service);
     }
 }

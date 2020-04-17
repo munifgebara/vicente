@@ -13,6 +13,7 @@ import br.com.munif.framework.vicente.core.VicThreadScopeOptions;
 import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.domain.profile.ForwardRequest;
+import br.com.munif.framework.vicente.security.domain.profile.RequestAction;
 import br.com.munif.framework.vicente.security.domain.profile.OperationFilter;
 import br.com.munif.framework.vicente.security.domain.profile.OperationType;
 import br.com.munif.framework.vicente.security.service.TokenService;
@@ -103,20 +104,23 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
             apiName = apiName.substring(0, apiName.indexOf("$$"));
         }
         OperationFilter operationFilter = operationFilterService.findByOperationKeyAndToken(apiName, hm.getMethod().getName(), token);
-        for (ForwardRequest forwardRequest : operationFilter.getForwardRequests()) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.set(forwardRequest.getAuthorizationHeaderName(), tokenValue);
-            if (forwardRequest.getDefaultAuthorizationHeader() != null) {
-                headers.set(forwardRequest.getAuthorizationHeaderName(), forwardRequest.getDefaultAuthorizationHeader());
-            }
-            String s = IOUtils.toString(request.getInputStream(), Charset.defaultCharset());
-            try {
-                restTemplate().exchange(forwardRequest.getUrl(), forwardRequest.getMethod(), new HttpEntity<>(s, headers), Map.class);
-            } catch (Exception ex) {
-                if (VicThreadScopeOptions.ENABLE_FORWARD_REQUEST_EXCEPTION.getValue()) {
-                    throw new VicenteErrorOnRequestException("Was not possible to request the " + forwardRequest.getUrl());
+        for (RequestAction action : operationFilter.getActions()) {
+            if (action instanceof ForwardRequest) {
+                ForwardRequest forwardRequest = (ForwardRequest) action;
+                HttpHeaders headers = new HttpHeaders();
+                headers.set(forwardRequest.getAuthorizationHeaderName(), tokenValue);
+                if (forwardRequest.getDefaultAuthorizationHeader() != null) {
+                    headers.set(forwardRequest.getAuthorizationHeaderName(), forwardRequest.getDefaultAuthorizationHeader());
                 }
-                log.info("Error on request:" + forwardRequest);
+                String s = IOUtils.toString(request.getInputStream(), Charset.defaultCharset());
+                try {
+                    restTemplate().exchange(forwardRequest.getUrl(), forwardRequest.getMethod(), new HttpEntity<>(s, headers), Map.class);
+                } catch (Exception ex) {
+                    if (VicThreadScopeOptions.ENABLE_FORWARD_REQUEST_EXCEPTION.getValue()) {
+                        throw new VicenteErrorOnRequestException("Was not possible to request the " + forwardRequest.getUrl());
+                    }
+                    log.info("Error on request:" + forwardRequest);
+                }
             }
         }
         if (OperationType.DENY.equals(operationFilter.getOperationType())) {

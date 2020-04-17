@@ -4,15 +4,15 @@ package br.com.munif.framework.vicente.security.service.profile;
 
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
-import br.com.munif.framework.vicente.security.domain.profile.ForwardRequest;
+import br.com.munif.framework.vicente.security.domain.profile.RequestAction;
 import org.springframework.stereotype.Service;
 
 /**
  * @author GeradorVicente
  */
 @Service
-public class ForwardRequestService extends BaseService<ForwardRequest> {
-    public ForwardRequestService(VicRepository<ForwardRequest> repository) {
+public class RequestActionService extends BaseService<RequestAction> {
+    public RequestActionService(VicRepository<RequestAction> repository) {
         super(repository);
     }
 }

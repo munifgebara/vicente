@@ -9,8 +9,8 @@ import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
 import br.com.munif.framework.vicente.core.vquery.Criteria;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.Token;
-import br.com.munif.framework.vicente.security.domain.profile.ForwardRequest;
 import br.com.munif.framework.vicente.security.domain.profile.OperationFilter;
+import br.com.munif.framework.vicente.security.domain.profile.RequestAction;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +23,11 @@ import java.util.List;
  */
 @Service
 public class OperationFilterService extends BaseService<OperationFilter> {
-    private final ForwardRequestService forwardRequestService;
+    private final RequestActionService requestActionService;
 
-    public OperationFilterService(VicRepository<OperationFilter> repository, ForwardRequestService forwardRequestService) {
+    public OperationFilterService(VicRepository<OperationFilter> repository, RequestActionService requestActionService) {
         super(repository);
-        this.forwardRequestService = forwardRequestService;
+        this.requestActionService = requestActionService;
     }
 
     @Transactional(readOnly = true)
@@ -39,7 +39,9 @@ public class OperationFilterService extends BaseService<OperationFilter> {
                         .and(new Criteria("operation.method", ComparisonOperator.EQUAL, method))
         ));
         if (byHqlNoTenancy.size() > 0) {
-            return byHqlNoTenancy.get(byHqlNoTenancy.size() - 1);
+            OperationFilter operationFilter = byHqlNoTenancy.get(byHqlNoTenancy.size() - 1);
+            Hibernate.initialize(operationFilter.getActions());
+            return operationFilter;
         }
         return new OperationFilter(new ArrayList<>());
     }
@@ -47,12 +49,20 @@ public class OperationFilterService extends BaseService<OperationFilter> {
     @Override
     @Transactional
     public OperationFilter save(OperationFilter resource) {
-        if (resource.getForwardRequests() != null) {
-            for (ForwardRequest forwardRequest : resource.getForwardRequests()) {
+        if (resource.getActions() != null) {
+            for (RequestAction forwardRequest : resource.getActions()) {
                 forwardRequest.setOperationFilter(resource);
-                forwardRequest = forwardRequestService.save(forwardRequest);
+                forwardRequest = requestActionService.save(forwardRequest);
             }
         }
         return super.save(resource);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public OperationFilter loadNoTenancy(String id) {
+        OperationFilter operationFilter = super.loadNoTenancy(id);
+        Hibernate.initialize(operationFilter.getActions());
+        return operationFilter;
     }
 }

@@ -1,8 +1,9 @@
 package br.com.munif.framework.vicente.security.domain.profile;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.security.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -32,14 +33,15 @@ public class OperationFilter extends BaseEntity {
     private Integer requestedCount;
     @Column(name = "max_requests")
     private Integer maxRequests;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "operationFilter", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<ForwardRequest> forwardRequests;
+    @OneToMany(mappedBy = "operationFilter", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<RequestAction> actions;
 
     public OperationFilter() {
     }
 
-    public OperationFilter(List<ForwardRequest> forwardRequests) {
-        this.forwardRequests = forwardRequests;
+    public OperationFilter(List<RequestAction> actions) {
+        this.actions = actions;
     }
 
     public OperationFilter(Operation operation, OperationType operationType) {
@@ -87,15 +89,11 @@ public class OperationFilter extends BaseEntity {
         this.maxRequests = maxRequests;
     }
 
-    public List<ForwardRequest> getForwardRequests() {
-        return forwardRequests;
+    public List<RequestAction> getActions() {
+        return actions;
     }
 
-    public List<ForwardRequest> getEmptyForwardRequests() {
-        return Optional.ofNullable(forwardRequests).orElse(new ArrayList<>());
-    }
-
-    public void setForwardRequests(List<ForwardRequest> forwardRequests) {
-        this.forwardRequests = forwardRequests;
+    public void setActions(List<RequestAction> actions) {
+        this.actions = actions;
     }
 }

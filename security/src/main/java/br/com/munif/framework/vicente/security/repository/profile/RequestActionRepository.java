@@ -3,7 +3,7 @@
 package br.com.munif.framework.vicente.security.repository.profile;
 
 import br.com.munif.framework.vicente.application.VicRepository;
-import br.com.munif.framework.vicente.security.domain.profile.ForwardRequest;
+import br.com.munif.framework.vicente.security.domain.profile.RequestAction;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ForwardRequestRepository extends VicRepository<ForwardRequest> {
+public interface RequestActionRepository extends VicRepository<RequestAction> {
 
 }

@@ -24,7 +24,6 @@ import br.com.munif.framework.vicente.security.service.profile.OperationService;
 import br.com.munif.framework.vicente.security.service.profile.ProfileService;
 import br.com.munif.framework.vicente.security.service.profile.SoftwareService;
 import org.assertj.core.util.Sets;
-import org.hibernate.Hibernate;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -42,7 +41,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -382,7 +380,7 @@ public class SecurityApiTest {
 
         List<OperationFilter> allNoTenancy = operationFilterService.findAllNoTenancy();
         for (OperationFilter operationFilter : allNoTenancy) {
-            operationFilter.setForwardRequests(Arrays.asList(
+            operationFilter.setActions(Arrays.asList(
                     new ForwardRequest("http://127.0.0.1:8080/api/group/" + newGroup.get("id"), HttpMethod.PUT)
             ));
             operationFilterService.save(operationFilter);
