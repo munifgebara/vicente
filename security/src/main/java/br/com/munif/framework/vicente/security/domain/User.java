@@ -94,7 +94,10 @@ public class User extends BaseEntity {
         }
 
         return s;
+    }
 
+    public String stringGroupByEmail() {
+        return this.login.replaceAll("\\.", "_");
     }
 
     public String stringOrganization() {
