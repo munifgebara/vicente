@@ -14,10 +14,8 @@ import javax.persistence.*;
 @Table(name = "vic_operation")
 public class Operation extends BaseEntity {
 
-    @Column(name = "api")
-    private String api;
-    @Column(name = "method")
-    private String method;
+    @Column(name = "key")
+    private String key;
     @ManyToOne
     @JoinColumn(name = "software_id")
     @JsonIgnoreProperties({"operations"})
@@ -28,9 +26,8 @@ public class Operation extends BaseEntity {
     public Operation() {
     }
 
-    public Operation(String api, String method) {
-        this.api = api;
-        this.method = method;
+    public Operation(String key) {
+        this.key = key;
     }
 
     public Software getSoftware() {
@@ -41,20 +38,12 @@ public class Operation extends BaseEntity {
         this.software = software;
     }
 
-    public String getApi() {
-        return api;
+    public String getKey() {
+        return key;
     }
 
-    public void setApi(String api) {
-        this.api = api;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public void setMethod(String method) {
-        this.method = method;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public Integer getMaxRequests() {

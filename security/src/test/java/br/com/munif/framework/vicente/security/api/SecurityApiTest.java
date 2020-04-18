@@ -7,8 +7,13 @@
 package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.api.errors.ErrorConstants;
+import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.VicThreadScopeOptions;
+import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
+import br.com.munif.framework.vicente.core.vquery.Criteria;
+import br.com.munif.framework.vicente.core.vquery.CriteriaField;
+import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.SecurityApp;
 import br.com.munif.framework.vicente.security.domain.Group;
 import br.com.munif.framework.vicente.security.domain.Token;
@@ -23,7 +28,8 @@ import br.com.munif.framework.vicente.security.service.profile.OperationFilterSe
 import br.com.munif.framework.vicente.security.service.profile.OperationService;
 import br.com.munif.framework.vicente.security.service.profile.ProfileService;
 import br.com.munif.framework.vicente.security.service.profile.SoftwareService;
-import org.assertj.core.util.Sets;
+import com.google.common.collect.Sets;
+import org.hibernate.Hibernate;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -39,6 +45,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
@@ -163,7 +170,7 @@ public class SecurityApiTest {
 
     @Test
     public void testDremoveOrganizationFromNewUser() throws Exception {
-        ResultActions tokenRequest = restMockMvc.perform(delete("/api/organization/" + tokenWillian.getUser().getOrganization().getId())
+        ResultActions tokenRequest = restMockMvc.perform(delete("/api/organization/" + Objects.requireNonNull(tokenWillian.getUser().getOrganizations().stream().findFirst().orElse(null)).getId())
                 .header("Authorization", tokenWillian.getValue())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8));
         tokenRequest.andExpect(status().isForbidden())
@@ -341,8 +348,8 @@ public class SecurityApiTest {
     @Test
     public void testKrequestAnotherOnRequest() throws Exception {
         Software software = new Software("Mine", Sets.newHashSet(
-                Arrays.asList(new Operation("GroupApi", "load"),
-                        new Operation("UserApi", "teste2"))
+                Arrays.asList(new Operation("GroupApi_load"),
+                        new Operation("UserApi_teste2"))
         ));
 
         ResultActions createRequestSoftware = restMockMvc.perform(post("/api/software")
@@ -354,7 +361,7 @@ public class SecurityApiTest {
         Map<String, Object> responseSoftware = TestUtil.convertStringToMap(reqSoftware);
 
         User user = tokenLucas.getUser();
-        Profile profile = new Profile("Profile teste", user, Arrays.asList(
+        Profile profile = new Profile("Profile teste", user, Sets.newHashSet(
                 new OperationFilter(operationService.findOne(software.getOperation(0).getId()), OperationType.ALLOW),
                 new OperationFilter(operationService.findOne(software.getOperation(1).getId()), OperationType.ALLOW)
         ));
@@ -404,8 +411,8 @@ public class SecurityApiTest {
     @Test
     public void testLoperationsAllowNotAllow() throws Exception {
         Software software = new Software("Mine", Sets.newHashSet(
-                Arrays.asList(new Operation("GroupApi", "save"),
-                        new Operation("UserApi", "teste2"))
+                Arrays.asList(new Operation("GroupApi_save"),
+                        new Operation("UserApi_teste2"))
         ));
 
         ResultActions createRequestSoftware = restMockMvc.perform(post("/api/software")
@@ -417,7 +424,7 @@ public class SecurityApiTest {
         Map<String, Object> responseSoftware = TestUtil.convertStringToMap(reqSoftware);
 
         User user = tokenJose.getUser();
-        Profile profile = new Profile("Profile teste", user, Arrays.asList(
+        Profile profile = new Profile("Profile teste", user, Sets.newHashSet(
                 new OperationFilter(operationService.findOne(software.getOperation(0).getId()), OperationType.DENY),
                 new OperationFilter(operationService.findOne(software.getOperation(1).getId()), OperationType.DENY)
         ));

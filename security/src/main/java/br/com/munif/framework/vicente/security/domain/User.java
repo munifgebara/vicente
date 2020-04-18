@@ -3,13 +3,13 @@ package br.com.munif.framework.vicente.security.domain;
 import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -28,9 +28,8 @@ public class User extends BaseEntity {
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Group> groups;
-    @ManyToOne
-    @JoinColumn(name = "org_id")
-    private Organization organization;
+    @ManyToMany
+    private Set<Organization> organizations;
 
     public User() {
     }
@@ -77,12 +76,12 @@ public class User extends BaseEntity {
         this.groups.addAll(groups);
     }
 
-    public Organization getOrganization() {
-        return organization;
+    public Set<Organization> getOrganizations() {
+        return organizations;
     }
 
-    public void setOrganization(Organization organization) {
-        this.organization = organization;
+    public void setOrganizations(Set<Organization> organizations) {
+        this.organizations = organizations;
     }
 
     public String stringGroups() {
@@ -99,10 +98,10 @@ public class User extends BaseEntity {
     }
 
     public String stringOrganization() {
-        if (organization == null) {
+        if (organizations == null) {
             return null;
         }
-        return getOrganization().getCode();
+        return Objects.requireNonNull(getOrganizations().stream().findFirst().orElse(null)).getCode();
     }
 
 }

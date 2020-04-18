@@ -3,10 +3,11 @@ package br.com.munif.framework.vicente.security.domain.profile;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.security.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.common.collect.Sets;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author munif
@@ -18,19 +19,18 @@ public class Profile extends BaseEntity {
 
     @Column(name = "name")
     private String name;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToMany
+    private Set<User> users;
     @OneToMany(mappedBy = "profile", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JsonIgnoreProperties({"profile"})
-    private List<OperationFilter> filters;
+    private Set<OperationFilter> filters;
 
     public Profile() {
     }
 
-    public Profile(String name, User user, List<OperationFilter> filters) {
+    public Profile(String name, User user, Set<OperationFilter> filters) {
         this.name = name;
-        this.user = user;
+        this.users = Sets.newHashSet(user);
         this.filters = filters;
     }
 
@@ -42,19 +42,19 @@ public class Profile extends BaseEntity {
         this.name = name;
     }
 
-    public List<OperationFilter> getFilters() {
+    public Set<OperationFilter> getFilters() {
         return filters;
     }
 
-    public void setFilters(List<OperationFilter> filters) {
+    public void setFilters(Set<OperationFilter> filters) {
         this.filters = filters;
     }
 
-    public User getUser() {
-        return user;
+    public Set<User> getUsers() {
+        return users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }

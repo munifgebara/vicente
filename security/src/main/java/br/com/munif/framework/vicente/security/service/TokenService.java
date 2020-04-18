@@ -15,6 +15,7 @@ import br.com.munif.framework.vicente.security.domain.*;
 import br.com.munif.framework.vicente.security.dto.LoginDto;
 import br.com.munif.framework.vicente.security.dto.LoginResponseDto;
 import com.google.common.collect.Sets;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,7 +65,7 @@ public class TokenService extends BaseService<Token> {
 
             u.setGroups(new HashSet<>());
             u.getGroups().add(g0);
-            u.setOrganization(o1);
+            u.setOrganizations(Collections.singleton(o1));
 
             u = userService.save(u);
             r.message = "Usuário criado, Login OK";
@@ -125,6 +126,7 @@ public class TokenService extends BaseService<Token> {
         return lr;
     }
 
+    @Transactional(readOnly = true)
     public Token findUserByToken(String tokenValue) {
         return loadNoTenancy(tokenValue);
     }
@@ -145,6 +147,7 @@ public class TokenService extends BaseService<Token> {
         return createTokenToExistentUser(login, userByLogin);
     }
 
+    @Transactional
     public User createUserByLogin(LoginDto login) {
         List<User> usersByEmail = findUsersByEmail(login.login);
         if (usersByEmail.size() > 0) {
@@ -156,11 +159,12 @@ public class TokenService extends BaseService<Token> {
         Organization organization = organizationService.createOrganizationByEmail(login.login);
         u.setPassword(PasswordGenerator.generate(login.password));
         u.setGroups(Sets.newHashSet(group));
-        u.setOrganization(organization);
+        u.setOrganizations(Collections.singleton(organization));
         u = userService.save(u);
         return u;
     }
 
+    @Transactional
     public LoginResponseDto createTokenToExistentUser(LoginDto login, User user) {
         LoginResponseDto r = new LoginResponseDto();
         if (!PasswordGenerator.validate(login.password, user.getPassword())) {
@@ -171,5 +175,21 @@ public class TokenService extends BaseService<Token> {
         r.ok = true;
         r.token = criaToken(user);
         return r;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Token load(String id) {
+        Token load = super.load(id);
+        Hibernate.initialize(load.getUser().getOrganizations());
+        return load;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Token loadNoTenancy(String id) {
+        Token load = super.loadNoTenancy(id);
+        Hibernate.initialize(load.getUser().getOrganizations());
+        return load;
     }
 }

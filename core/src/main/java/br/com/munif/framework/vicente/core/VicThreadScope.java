@@ -36,6 +36,10 @@ public class VicThreadScope {
      * The ip that make the request.
      */
     public static final ThreadLocal<String> ip = new ThreadLocal<>();
+    /**
+     * The key of the operation.
+     */
+    public static final ThreadLocal<String> key = new ThreadLocal<>();
     
     /**
      * The time for operations. The system time will be ignored if this is present.

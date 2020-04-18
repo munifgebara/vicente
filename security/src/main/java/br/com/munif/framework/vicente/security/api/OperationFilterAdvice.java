@@ -52,7 +52,7 @@ public class OperationFilterAdvice implements ResponseBodyAdvice<Object> {
         if (api.contains("$$")) {
             api = api.substring(0, api.indexOf("$$"));
         }
-        OperationFilter operationFilter = operationFilterService.findByOperationKeyAndLogin(api, method, login);
+        OperationFilter operationFilter = operationFilterService.findByKeyAndLogin(api + "_" + method, login);
         for (RequestAction action : operationFilter.getActions()) {
             if (action instanceof ForwardRequest) {
                 ForwardRequest forwardRequest = (ForwardRequest) action;

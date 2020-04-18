@@ -22,6 +22,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -90,13 +91,13 @@ public class SeedSecurity {
         admin.setGroups(new HashSet<>());
         admin.getGroups().add(g0);
         admin.getGroups().add(g2);
-        admin.setOrganization(o1);
+        admin.setOrganizations(Collections.singleton(o1));
         admin = userRepository.save(admin);
 
         User user = new User("munif@vicente.com.br", PasswordGenerator.generate("qwe123"));
         user.setGroups(new HashSet<>());
         user.getGroups().add(g1);
-        user.setOrganization(o2);
+        user.setOrganizations(Collections.singleton(o2));
         user = userRepository.save(user);
 
         Software software1 = new Software("VicSecurity", new HashSet<>());
@@ -104,7 +105,7 @@ public class SeedSecurity {
         for (Map.Entry<RequestMappingInfo, HandlerMethod> hm : handlerMethods.entrySet()) {
             String apiName = hm.getValue().getBeanType().getName().substring(hm.getValue().getBeanType().getName().lastIndexOf(".") + 1);
             String method = hm.getValue().getMethod().getName();
-            software1.getOperations().add(new Operation(apiName, method));
+            software1.getOperations().add(new Operation(apiName + "_" + method));
         }
         softwareService.save(software1);
     }
