@@ -6,6 +6,7 @@ import br.com.munif.framework.vicente.api.BaseAPI;
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.security.domain.profile.Operation;
 import br.com.munif.framework.vicente.security.domain.profile.OperationFilter;
+import br.com.munif.framework.vicente.security.service.interfaces.IOperationFilterService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +21,7 @@ public class OperationFilterApi extends BaseAPI<OperationFilter> {
 
     private final Logger log = Logger.getLogger(OperationFilterApi.class.getSimpleName());
 
-    public OperationFilterApi(BaseService<OperationFilter> service) {
+    public OperationFilterApi(IOperationFilterService service) {
         super(service);
     }
 }

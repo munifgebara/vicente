@@ -6,6 +6,7 @@ import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
 import br.com.munif.framework.vicente.security.domain.profile.Operation;
 import br.com.munif.framework.vicente.security.domain.profile.Software;
+import br.com.munif.framework.vicente.security.service.interfaces.ISoftwareService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author GeradorVicente
  */
 @Service
-public class SoftwareService extends BaseService<Software> {
+public class SoftwareService extends BaseService<Software> implements ISoftwareService {
     private final OperationService operationService;
 
     public SoftwareService(VicRepository<Software> repository, OperationService operationService) {

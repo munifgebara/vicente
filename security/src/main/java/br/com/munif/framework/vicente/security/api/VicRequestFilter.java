@@ -10,6 +10,7 @@ import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.service.TokenService;
+import br.com.munif.framework.vicente.security.service.interfaces.ITokenService;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,11 +24,11 @@ import java.util.logging.Logger;
  */
 public class VicRequestFilter extends HandlerInterceptorAdapter {
 
-    private final TokenService tokenService;
+    private final ITokenService tokenService;
 
     private final Logger log = Logger.getLogger(VicRequestFilter.class.getSimpleName());
 
-    public VicRequestFilter(TokenService tokenService) {
+    public VicRequestFilter(ITokenService tokenService) {
         this.tokenService = tokenService;
     }
 
@@ -47,7 +48,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         VicThreadScope.ip.set(request.getRemoteAddr());
         String tokenValue = getAuthorization(request);
         if (tokenValue != null) {
-            Token token = tokenService.findUserByToken(tokenValue);
+            Token token = tokenService.findTokenByValue(tokenValue);
             User u = token.getUser();
             VicThreadScope.token.set(tokenValue);
             VicThreadScope.gi.set(u.stringGroups());

@@ -9,6 +9,7 @@ import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
 import br.com.munif.framework.vicente.core.vquery.Criteria;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.Group;
+import br.com.munif.framework.vicente.security.service.interfaces.IGroupService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +19,7 @@ import java.util.List;
  * @author GeradorVicente
  */
 @Service
-public class GroupService extends BaseService<Group> {
+public class GroupService extends BaseService<Group> implements IGroupService {
     public GroupService(VicRepository<Group> repository) {
         super(repository);
     }

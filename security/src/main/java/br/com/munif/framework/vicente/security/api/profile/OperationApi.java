@@ -3,8 +3,8 @@
 package br.com.munif.framework.vicente.security.api.profile;
 
 import br.com.munif.framework.vicente.api.BaseAPI;
-import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.security.domain.profile.Operation;
+import br.com.munif.framework.vicente.security.service.interfaces.IOperationService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +19,7 @@ public class OperationApi extends BaseAPI<Operation> {
 
     private final Logger log = Logger.getLogger(OperationApi.class.getSimpleName());
 
-    public OperationApi(BaseService<Operation> service) {
+    public OperationApi(IOperationService service) {
         super(service);
     }
 }

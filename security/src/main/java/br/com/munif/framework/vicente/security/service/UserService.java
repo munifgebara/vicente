@@ -11,6 +11,7 @@ import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.Group;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.dto.PrivilegesAssignmentDto;
+import br.com.munif.framework.vicente.security.service.interfaces.IUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,7 @@ import java.util.List;
  * @author GeradorVicente
  */
 @Service
-public class UserService extends BaseService<User> {
+public class UserService extends BaseService<User> implements IUserService {
 
     private GroupService groupService;
 
@@ -30,15 +31,24 @@ public class UserService extends BaseService<User> {
     }
 
     @Transactional
-    public User assignPrivileges(PrivilegesAssignmentDto privilegesAssignmentDto) {
+    public void assignPrivileges(PrivilegesAssignmentDto privilegesAssignmentDto) {
         List<Group> groups = groupService.getGroupsByCode(privilegesAssignmentDto.groupCode);
         User user = getUserByLogin(privilegesAssignmentDto.login);
         user.assignGroups(groups);
-        return save(user);
+        save(user);
     }
 
     @Transactional(readOnly = true)
     public User getUserByLogin(String login) {
         return findByHqlNoTenancy(new VicQuery(new VQuery(new Criteria("login", ComparisonOperator.EQUAL, login)))).stream().findFirst().orElse(null);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<User> findUsersByEmail(String email) {
+        VQuery vQuery = new VQuery(new Criteria("login", ComparisonOperator.EQUAL, email.trim()));
+        VicQuery query = new VicQuery();
+        query.setQuery(vQuery);
+        return findByHqlNoTenancy(query);
     }
 }

@@ -8,7 +8,7 @@ import br.com.munif.framework.vicente.security.domain.profile.ForwardRequest;
 import br.com.munif.framework.vicente.security.domain.profile.OperationFilter;
 import br.com.munif.framework.vicente.security.domain.profile.OperationType;
 import br.com.munif.framework.vicente.security.domain.profile.RequestAction;
-import br.com.munif.framework.vicente.security.service.profile.OperationFilterService;
+import br.com.munif.framework.vicente.security.service.interfaces.IOperationFilterService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpEntity;
@@ -25,9 +25,9 @@ import java.util.Map;
 
 @ControllerAdvice
 public class OperationFilterAdvice implements ResponseBodyAdvice<Object> {
-    private final OperationFilterService operationFilterService;
+    private final IOperationFilterService operationFilterService;
 
-    public OperationFilterAdvice(OperationFilterService operationFilterService) {
+    public OperationFilterAdvice(IOperationFilterService operationFilterService) {
         this.operationFilterService = operationFilterService;
     }
 

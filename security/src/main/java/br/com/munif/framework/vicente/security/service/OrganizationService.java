@@ -5,6 +5,7 @@ package br.com.munif.framework.vicente.security.service;
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
 import br.com.munif.framework.vicente.security.domain.Organization;
+import br.com.munif.framework.vicente.security.service.interfaces.IOrganizationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author GeradorVicente
  */
 @Service
-public class OrganizationService extends BaseService<Organization> {
+public class OrganizationService extends BaseService<Organization> implements IOrganizationService {
     public OrganizationService(VicRepository<Organization> repository) {
         super(repository);
     }

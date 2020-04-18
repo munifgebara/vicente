@@ -6,6 +6,7 @@
 package br.com.munif.framework.vicente.api;
 
 import br.com.munif.framework.vicente.application.BaseService;
+import br.com.munif.framework.vicente.application.VicServiceable;
 import br.com.munif.framework.vicente.core.ReflectionUtil;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
@@ -32,10 +33,12 @@ import java.util.stream.Collectors;
 @Scope("prototype")
 public class BaseAPI<T extends BaseEntity> {
 
-    public final BaseService<T> service;
+    public BaseService<T> service;
 
-    public BaseAPI(BaseService<T> service) {
-        this.service = service;
+    public BaseAPI(VicServiceable service) {
+        if (service instanceof BaseService) {
+            this.service = (BaseService<T>) service;
+        }
     }
 
     @Transactional

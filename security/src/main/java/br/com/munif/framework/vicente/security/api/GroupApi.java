@@ -5,6 +5,7 @@ package br.com.munif.framework.vicente.security.api;
 import br.com.munif.framework.vicente.api.BaseAPI;
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.security.domain.Group;
+import br.com.munif.framework.vicente.security.service.interfaces.IGroupService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +21,7 @@ public class GroupApi extends BaseAPI<Group> {
     private final Logger log = Logger.getLogger(GroupApi.class.getSimpleName());
     private static final String ENTITY_NAME = "group";
 
-    public GroupApi(BaseService<Group> service) {
+    public GroupApi(IGroupService service) {
         super(service);
     }
 }

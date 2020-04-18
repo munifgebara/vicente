@@ -8,6 +8,7 @@ import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.dto.LoginDto;
 import br.com.munif.framework.vicente.security.dto.LoginResponseDto;
 import br.com.munif.framework.vicente.security.service.TokenService;
+import br.com.munif.framework.vicente.security.service.interfaces.ITokenService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
@@ -23,23 +24,23 @@ public class TokenApi extends BaseAPI<Token> {
 
     private final Logger log = LogManager.getLogger(TokenApi.class);
     private static final String ENTITY_NAME = "token";
-    private final TokenService tokenService;
+    private final ITokenService tokenService;
 
-    public TokenApi(BaseService<Token> service) {
+    public TokenApi(ITokenService service) {
         super(service);
-        this.tokenService = (TokenService) service;
+        this.tokenService = (ITokenService) service;
     }
 
     @Transactional
     @RequestMapping(value = "/login/bypassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LoginResponseDto loga(@RequestBody LoginDto login) {
-        return tokenService.loga(login);
+        return tokenService.login(login);
     }
 
     @Transactional
     @RequestMapping(value = "/login/bygoogle", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LoginResponseDto logaGoogle(@RequestBody String token) {
-        return tokenService.logaGoogle(token);
+        return tokenService.loginOnGoogle(token);
     }
 
     @Transactional

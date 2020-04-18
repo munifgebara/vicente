@@ -14,6 +14,7 @@ import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.*;
 import br.com.munif.framework.vicente.security.dto.LoginDto;
 import br.com.munif.framework.vicente.security.dto.LoginResponseDto;
+import br.com.munif.framework.vicente.security.service.interfaces.ITokenService;
 import com.google.common.collect.Sets;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ import java.util.Map;
  * @author GeradorVicente
  */
 @Service
-public class TokenService extends BaseService<Token> {
+public class TokenService extends BaseService<Token> implements ITokenService {
 
     private final UserService userService;
     private final GroupService groupService;
@@ -41,7 +42,7 @@ public class TokenService extends BaseService<Token> {
         this.userService = userService;
     }
 
-    public LoginResponseDto logaGoogle(String token) {
+    public LoginResponseDto loginOnGoogle(String token) {
         LoginResponseDto r = new LoginResponseDto();
         Map verify = GoogleToken.verify(token);
         String email = (String) verify.get("email");
@@ -49,7 +50,7 @@ public class TokenService extends BaseService<Token> {
             r.message = "Usuário não encontrado.";
             return r;
         }
-        List<User> findByHql = findUsersByEmail(email);
+        List<User> findByHql = userService.findUsersByEmail(email);
 
         if (findByHql.size() == 0) {
             VicThreadScope.gi.set("GOOGLE");
@@ -70,26 +71,18 @@ public class TokenService extends BaseService<Token> {
             u = userService.save(u);
             r.message = "Usuário criado, Login OK";
             r.ok = true;
-            r.token = criaToken(u);
+            r.token = createToken(u);
         } else if (findByHql.size() == 1) {
             r.message = "Login OK";
             r.ok = true;
-            r.token = criaToken(findByHql.get(0));
+            r.token = createToken(findByHql.get(0));
         } else {
             r.message = "Multiplos Usuários";
         }
         return r;
     }
 
-    @Transactional(readOnly = true)
-    public List<User> findUsersByEmail(String email) {
-        VQuery vQuery = new VQuery(new Criteria("login", ComparisonOperator.EQUAL, email.trim()));
-        VicQuery query = new VicQuery();
-        query.setQuery(vQuery);
-        return userService.findByHqlNoTenancy(query);
-    }
-
-    public LoginResponseDto loga(LoginDto login) {
+    public LoginResponseDto login(LoginDto login) {
         LoginResponseDto r = new LoginResponseDto();
 
         VQuery vQuery = new VQuery(LogicalOperator.AND, new Criteria(),
@@ -109,7 +102,7 @@ public class TokenService extends BaseService<Token> {
     }
 
     @Transactional
-    public Token criaToken(User user) {
+    public Token createToken(User user) {
         Token t = newEntity();
         t.setValue(t.getId());
         t.setUser(user);
@@ -127,7 +120,7 @@ public class TokenService extends BaseService<Token> {
     }
 
     @Transactional(readOnly = true)
-    public Token findUserByToken(String tokenValue) {
+    public Token findTokenByValue(String tokenValue) {
         return loadNoTenancy(tokenValue);
     }
 
@@ -149,7 +142,7 @@ public class TokenService extends BaseService<Token> {
 
     @Transactional
     public User createUserByLogin(LoginDto login) {
-        List<User> usersByEmail = findUsersByEmail(login.login);
+        List<User> usersByEmail = userService.findUsersByEmail(login.login);
         if (usersByEmail.size() > 0) {
             return usersByEmail.get(0);
         }
@@ -173,7 +166,7 @@ public class TokenService extends BaseService<Token> {
         }
         r.message = "Login OK";
         r.ok = true;
-        r.token = criaToken(user);
+        r.token = createToken(user);
         return r;
     }
 

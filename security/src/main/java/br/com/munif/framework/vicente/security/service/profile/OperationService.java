@@ -5,13 +5,14 @@ package br.com.munif.framework.vicente.security.service.profile;
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
 import br.com.munif.framework.vicente.security.domain.profile.Operation;
+import br.com.munif.framework.vicente.security.service.interfaces.IOperationService;
 import org.springframework.stereotype.Service;
 
 /**
  * @author GeradorVicente
  */
 @Service
-public class OperationService extends BaseService<Operation> {
+public class OperationService extends BaseService<Operation> implements IOperationService {
     public OperationService(VicRepository<Operation> repository) {
         super(repository);
     }

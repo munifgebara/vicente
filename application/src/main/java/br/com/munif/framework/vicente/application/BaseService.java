@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  */
 @Service
 @Scope("prototype")
-public abstract class BaseService<T extends BaseEntity> {
+public abstract class BaseService<T extends BaseEntity> implements VicServiceable<T> {
 
     protected final VicRepository<T> repository;
     @Autowired

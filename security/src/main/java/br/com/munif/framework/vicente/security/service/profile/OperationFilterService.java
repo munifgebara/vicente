@@ -5,9 +5,13 @@ package br.com.munif.framework.vicente.security.service.profile;
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
 import br.com.munif.framework.vicente.core.VicQuery;
-import br.com.munif.framework.vicente.core.vquery.*;
+import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
+import br.com.munif.framework.vicente.core.vquery.Criteria;
+import br.com.munif.framework.vicente.core.vquery.VEntityQuery;
+import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.profile.OperationFilter;
 import br.com.munif.framework.vicente.security.domain.profile.RequestAction;
+import br.com.munif.framework.vicente.security.service.interfaces.IOperationFilterService;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +23,7 @@ import java.util.List;
  * @author GeradorVicente
  */
 @Service
-public class OperationFilterService extends BaseService<OperationFilter> {
+public class OperationFilterService extends BaseService<OperationFilter> implements IOperationFilterService {
     private final RequestActionService requestActionService;
 
     public OperationFilterService(VicRepository<OperationFilter> repository, RequestActionService requestActionService) {

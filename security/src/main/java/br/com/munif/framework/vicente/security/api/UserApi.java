@@ -9,6 +9,7 @@ import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.dto.PrivilegesAssignmentDto;
 import br.com.munif.framework.vicente.security.service.GroupService;
 import br.com.munif.framework.vicente.security.service.UserService;
+import br.com.munif.framework.vicente.security.service.interfaces.IUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -29,14 +30,14 @@ public class UserApi extends BaseAPI<User> {
     private final Logger log = LogManager.getLogger(UserApi.class);
     private static final String ENTITY_NAME = "user";
 
-    public UserApi(BaseService<User> service) {
+    public UserApi(IUserService service) {
         super(service);
     }
 
     @Transactional
     @RequestMapping(value = "/assign-privileges", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Void> assignPrivileges(@RequestBody PrivilegesAssignmentDto privileges) {
-        ((UserService) service).assignPrivileges(privileges);
+        ((IUserService) service).assignPrivileges(privileges);
         return ResponseEntity.ok().build();
     }
 
