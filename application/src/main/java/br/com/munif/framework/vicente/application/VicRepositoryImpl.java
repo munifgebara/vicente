@@ -63,8 +63,10 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
             sb.append("or (:gi like concat('%'," + alias + ".gi,',%') and mod(" + alias + ".rights/8,8)/4>=1) \n");
         }
 
-        if (vtt.equals(VicTenancyType.HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.ORGANIZATIONAL) || vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
+        if (vtt.equals(VicTenancyType.HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.ORGANIZATIONAL)) {
             sb.append("or (" + alias + ".oi like :oi)\n");
+        } else if (vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
+            sb.append("and (" + alias + ".oi like :oi)\n");
         }
         if (publics) {
             sb.append("or (1=1    and    mod(" + alias + ".rights  ,8)/4>=1)\n");
