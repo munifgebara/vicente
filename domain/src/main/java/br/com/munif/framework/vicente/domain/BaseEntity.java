@@ -51,15 +51,12 @@ public class BaseEntity implements Serializable {
 
     protected String extra;
 
-    @JsonIgnore
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     protected Date cd;
 
-    @JsonIgnore
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     protected Date ud;
 
-    @JsonIgnore
     protected Boolean active;
 
     @Version
