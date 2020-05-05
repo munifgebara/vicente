@@ -15,6 +15,7 @@ public class VicQuery {
     private int firstResult = 0;
     private int maxResults = -1;
     private String orderBy = DEFAULT_ORDER_BY;
+    private String sortDir = "asc";
 
     public VicQuery() {
     }
@@ -87,4 +88,11 @@ public class VicQuery {
         return "VicQuery{" + "hql=" + hql + ", firstResult=" + firstResult + ", maxResults=" + maxResults + ", orderBy=" + orderBy + '}';
     }
 
+    public String getSortDir() {
+        return sortDir;
+    }
+
+    public void setSortDir(String sortDir) {
+        this.sortDir = sortDir;
+    }
 }
