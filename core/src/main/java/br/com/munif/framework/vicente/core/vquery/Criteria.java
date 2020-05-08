@@ -16,12 +16,13 @@ public class Criteria {
     private String fieldFn;
     private String valueFn;
     private Param param;
-    private Boolean phonetic = false;
+    private Boolean phonetic;
 
     private void onInit() {
         comparisonOperator = ComparisonOperator.EQUAL;
         fieldFn = null;
         valueFn = null;
+        phonetic = false;
         param = new Param(null, value.getClass().getSimpleName());
     }
 
