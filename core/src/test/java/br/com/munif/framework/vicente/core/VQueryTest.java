@@ -404,4 +404,9 @@ public class VQueryTest {
         assertEquals("(((name like 'munif%') OR (name like 'vicente%') OR (name like 'duda%')) AND (name like '%gebara%'))", gQuery.toStringWithoutParams());
     }
 
+    @Test
+    public void testFluent5WithPhonetic() {
+        VQuery gQuery = new VQuery(new Criteria("name", ComparisonOperator.STARTS_WITH, "willian").addPhonetic());
+        assertEquals("(name like 'VILIAN%')", gQuery.toStringWithoutParams());
+    }
 }

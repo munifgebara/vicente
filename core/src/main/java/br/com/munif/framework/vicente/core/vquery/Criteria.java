@@ -1,6 +1,6 @@
 package br.com.munif.framework.vicente.core.vquery;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import br.com.munif.framework.vicente.core.phonetics.PortuguesePhonetic;
 
 import java.util.Map;
 
@@ -16,6 +16,7 @@ public class Criteria {
     private String fieldFn;
     private String valueFn;
     private Param param;
+    private Boolean phonetic = false;
 
     private void onInit() {
         comparisonOperator = ComparisonOperator.EQUAL;
@@ -54,6 +55,9 @@ public class Criteria {
     }
 
     public Object getValue() {
+        if (this.phonetic) {
+            value = PortuguesePhonetic.translate(String.valueOf(value));
+        }
         return valueFn != null ? String.format(valueFn, value) : value;
     }
 
@@ -96,6 +100,11 @@ public class Criteria {
     public Criteria addIgnoreCase() {
         fieldFn = String.format(fieldFn, "lower(%s)");
         valueFn = String.format(valueFn, "lower(%s)");
+        return this;
+    }
+
+    public Criteria addPhonetic() {
+        this.phonetic = true;
         return this;
     }
 
