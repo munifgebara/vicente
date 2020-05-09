@@ -11,9 +11,9 @@ public class PortuguesePhonetic implements StringEncoder {
     private static final String ACCENT_U = "ÚÛÙŨÜ";
 
     public static String translate(String str) {
-        PortuguesePhonetic portuguesePhonetic = new PortuguesePhonetic();
+        PortuguesePhonetic foneticaPortuguesa = new PortuguesePhonetic();
         try {
-            return portuguesePhonetic.encode(str).trim();
+            return foneticaPortuguesa.encode(str.toUpperCase()).trim();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -223,18 +223,18 @@ public class PortuguesePhonetic implements StringEncoder {
             return false;
         }
 
-        private boolean consonantN(char current) {
-            if (this.next() == 'H') {
-                this.buffer.append('N').append('I');
+        private boolean consonantM(char current) {
+            if (this.isSpace(this.next())) {
+                this.buffer.append('N');
                 this.index++;
                 return true;
             }
             return false;
         }
 
-        private boolean consonantM(char current) {
-            if (this.isSpace(this.next())) {
-                this.buffer.append('N');
+        private boolean consonantN(char current) {
+            if (this.next() == 'H') {
+                this.buffer.append('N').append('I');
                 this.index++;
                 return true;
             }
@@ -319,6 +319,7 @@ public class PortuguesePhonetic implements StringEncoder {
             return false;
         }
 
+        //TODO nao cai quando é final 1° nome
         private boolean consonantY(char current) {
             char next = this.next();
             char prev = this.prev();

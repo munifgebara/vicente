@@ -1,7 +1,6 @@
 package br.com.munif.framework.vicente.domain.validators.impl;
 
-import br.com.gileade.gileadeweb.domain.model.validators.annotations.EnumNotNull;
-import io.gumga.core.GumgaThreadScope;
+import br.com.munif.framework.vicente.domain.validators.annotations.EnumNotNull;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -17,14 +16,6 @@ public class EnumNotNullValidator implements ConstraintValidator<EnumNotNull, En
 
     @Override
     public boolean isValid(Enum<?> anEnum, ConstraintValidatorContext constraintValidatorContext) {
-
-        if (GumgaThreadScope.configuration.get() != null) {
-            Boolean desabilitaCamposObrigatorios = (Boolean) GumgaThreadScope.configuration.get().get("desabilitaCamposObrigatorios");
-            if (desabilitaCamposObrigatorios != null && desabilitaCamposObrigatorios) {
-                return true;
-            }
-        }
-
         return anEnum != null;
     }
 }
