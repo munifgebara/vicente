@@ -1,8 +1,11 @@
 # Vicente - Framework Java
+(https://docs.google.com/presentation/d/e/2PACX-1vSTGej5dHDZWv9plk0laYA6i9klYOZozMQ9qxQqWfBdrFeIxMzEh8incrt-idSAQrus9uX_AWwozIQq/pub?start=true&loop=true&delayms=5000)
 
 [![](https://avatars2.githubusercontent.com/u/1757453?s=460&v=4)](https://github.com/munifgebara/vicente)
 
  * Framework para desenvolvimento de aplicações Java
+ [![](https://raw.githubusercontent.com/munifgebara/munifgebara.github.io/master/images/tena.png)](https://github.com/munifgebara/vicente)
+ 
  * Políticas de ternancy integradas
  * Facilitadores para busca objeto-relacional
  * Criação e gerenciamento de recursos, serviços e repositórios
