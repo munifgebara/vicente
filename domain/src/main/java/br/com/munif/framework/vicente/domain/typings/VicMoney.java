@@ -1,28 +1,31 @@
 package br.com.munif.framework.vicente.domain.typings;
 
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.Objects;
 
 public class VicMoney extends VicDomain {
 
     private Long amount;
-    private VicCurrencyType currencyType;
+    @Enumerated(EnumType.STRING)
+    private VicCurrencyType type;
 
     public VicMoney() {
         this.amount = 0L;
-        this.currencyType = VicCurrencyType.BRL;
+        this.type = VicCurrencyType.BRL;
     }
 
     public VicMoney(VicMoney other) {
         if (other != null) {
             this.amount = other.amount;
-            this.currencyType = other.currencyType;
+            this.type = other.type;
         }
     }
 
-    public VicMoney(Long amount, VicCurrencyType currencyType) {
+    public VicMoney(Long amount, VicCurrencyType type) {
         this.amount = amount;
-        this.currencyType = currencyType;
+        this.type = type;
     }
 
     public Long getAmount() {
@@ -33,21 +36,21 @@ public class VicMoney extends VicDomain {
         this.amount = amount;
     }
 
-    public VicCurrencyType getCurrencyType() {
-        return currencyType;
+    public VicCurrencyType getType() {
+        return type;
     }
 
-    public void setCurrencyType(VicCurrencyType currencyType) {
-        this.currencyType = currencyType;
+    public void setType(VicCurrencyType type) {
+        this.type = type;
     }
 
 
     public void setCurrencyType(String currencyType) {
-        this.setCurrencyType(VicCurrencyType.valueOf(currencyType));
+        this.setType(VicCurrencyType.valueOf(currencyType));
     }
 
     public Double getDouble() {
-        return currencyType.getDouble(this);
+        return type.getDouble(this);
     }
 
     public Double getDouble(VicCurrencyType currencyType) {
@@ -62,7 +65,7 @@ public class VicMoney extends VicDomain {
     public int hashCode() {
         int hash = 5;
         hash = 23 * hash + Objects.hashCode(this.amount);
-        hash = 23 * hash + Objects.hashCode(this.currencyType);
+        hash = 23 * hash + Objects.hashCode(this.type);
         return hash;
     }
 
@@ -78,7 +81,7 @@ public class VicMoney extends VicDomain {
         if (!Objects.equals(this.amount, other.amount)) {
             return false;
         }
-        if (!Objects.equals(this.currencyType, other.currencyType)) {
+        if (!Objects.equals(this.type, other.type)) {
             return false;
         }
         return true;
@@ -88,7 +91,7 @@ public class VicMoney extends VicDomain {
     public String toString() {
         return "VicEmail{" +
                 "amount='" + amount + '\'' +
-                ", currencyType='" + currencyType + '\'' +
+                ", currencyType='" + type + '\'' +
                 '}';
     }
 }

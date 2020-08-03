@@ -3,6 +3,7 @@ package br.com.munif.framework.test.vicente.domain.model;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
 import br.com.munif.framework.vicente.domain.typings.VicAddress;
 import br.com.munif.framework.vicente.domain.typings.VicEmail;
+import br.com.munif.framework.vicente.domain.typings.VicMoney;
 import br.com.munif.framework.vicente.domain.typings.VicPhone;
 import org.hibernate.annotations.Columns;
 import org.hibernate.envers.Audited;
@@ -53,6 +54,11 @@ public class Pessoa extends VicTenancyFieldsBaseEntity {
     })
     private VicPhone telefone;
 
+    @Columns(columns = {
+            @Column(name = "value_amount"),
+            @Column(name = "value_currency_type")
+    })
+    private VicMoney money;
 
     @OneToMany(orphanRemoval = true)
     private List<Endereco> outrosEnderecos;
@@ -144,5 +150,13 @@ public class Pessoa extends VicTenancyFieldsBaseEntity {
 
     public void setOutrosTelefones(List<Telefone> outrosTelefones) {
         this.outrosTelefones = outrosTelefones;
+    }
+
+    public VicMoney getMoney() {
+        return money;
+    }
+
+    public void setMoney(VicMoney money) {
+        this.money = money;
     }
 }

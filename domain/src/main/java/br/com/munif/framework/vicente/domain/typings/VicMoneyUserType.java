@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Optional;
 
 public class VicMoneyUserType implements CompositeUserType {
@@ -18,7 +19,7 @@ public class VicMoneyUserType implements CompositeUserType {
     public String[] getPropertyNames() {
         return new String[]{
                 "amount",
-                "currencyType"};
+                "type"};
     }
 
     @Override
@@ -34,7 +35,7 @@ public class VicMoneyUserType implements CompositeUserType {
             case 0:
                 return ((VicMoney) component).getAmount();
             case 1:
-                return ((VicMoney) component).getCurrencyType();
+                return ((VicMoney) component).getType();
             default:
                 return null;
 
@@ -79,10 +80,10 @@ public class VicMoneyUserType implements CompositeUserType {
 
     @Override
     public Object nullSafeGet(ResultSet resultSet, String[] names, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException, SQLException {
-        final Long description = Long.valueOf(resultSet.getString(names[0]));
+        final Long description = resultSet.getLong(names[0]);
         for (int i = 0; i < names.length; i++) {
             if (resultSet.getObject(names[i]) != null) {
-                return new VicMoney(description, VicCurrencyType.valueOf(resultSet.getString(names[i])));
+                return new VicMoney(description, VicCurrencyType.valueOf(resultSet.getString(names[i + 1])));
             }
         }
         return new VicMoney();
@@ -91,12 +92,12 @@ public class VicMoneyUserType implements CompositeUserType {
     @Override
     public void nullSafeSet(PreparedStatement preparedStatement, Object value, int property, SharedSessionContractImplementor sharedSessionContractImplementor) throws HibernateException, SQLException {
         if (null == value) {
-            preparedStatement.setNull(property, java.sql.Types.BIGINT);
+            preparedStatement.setNull(property + 0, Types.BIGINT);
             preparedStatement.setNull(property + 1, java.sql.Types.VARCHAR);
         } else {
             final VicMoney object = (VicMoney) value;
-            preparedStatement.setLong(property, object.getAmount());
-            preparedStatement.setString(property + 1, String.valueOf(Optional.ofNullable(object.getCurrencyType()).orElse(VicCurrencyType.BRL)));
+            preparedStatement.setLong(property + 0, object.getAmount());
+            preparedStatement.setString(property + 1, Optional.of(object.getType()).orElse(VicCurrencyType.BRL).name());
 
         }
     }
@@ -106,8 +107,10 @@ public class VicMoneyUserType implements CompositeUserType {
         if (value == null) {
             return null;
         }
+
         final VicMoney recepty = (VicMoney) value;
-        return new VicMoney(recepty);
+        final VicMoney toReturn = new VicMoney(recepty);
+        return toReturn;
     }
 
     @Override

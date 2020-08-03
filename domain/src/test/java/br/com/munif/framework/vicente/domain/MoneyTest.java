@@ -13,7 +13,7 @@ public class MoneyTest {
         VicMoney vicMoney = new VicMoney();
 
         assertSame(0L, vicMoney.getAmount());
-        assertEquals(VicCurrencyType.BRL, vicMoney.getCurrencyType());
+        assertEquals(VicCurrencyType.BRL, vicMoney.getType());
     }
 
     @Test
@@ -21,7 +21,7 @@ public class MoneyTest {
         VicMoney vicMoney = new VicMoney();
         vicMoney.setAmount(120L);
 
-        assertEquals(VicCurrencyType.BRL, vicMoney.getCurrencyType());
+        assertEquals(VicCurrencyType.BRL, vicMoney.getType());
         assertEquals(Double.valueOf(1.2), vicMoney.getDouble());
     }
 
@@ -30,7 +30,7 @@ public class MoneyTest {
         VicMoney vicMoney = new VicMoney();
         vicMoney.setAmount(132L);
 
-        assertEquals(VicCurrencyType.BRL, vicMoney.getCurrencyType());
+        assertEquals(VicCurrencyType.BRL, vicMoney.getType());
         assertEquals(Double.valueOf(1.32), vicMoney.getDouble());
     }
 
@@ -39,7 +39,7 @@ public class MoneyTest {
         VicMoney vicMoney = new VicMoney();
         vicMoney.setAmount(132L);
 
-        assertEquals(VicCurrencyType.BRL, vicMoney.getCurrencyType());
+        assertEquals(VicCurrencyType.BRL, vicMoney.getType());
         assertEquals(Double.valueOf(1.32 * 2), vicMoney.getDouble(VicCurrencyType.USD, 2.0));
     }
 
@@ -48,7 +48,7 @@ public class MoneyTest {
         VicMoney vicMoney = new VicMoney();
         vicMoney.setAmount(132L);
 
-        assertEquals(VicCurrencyType.BRL, vicMoney.getCurrencyType());
+        assertEquals(VicCurrencyType.BRL, vicMoney.getType());
         assertEquals(Double.valueOf(1.32 * 2.3), vicMoney.getDouble(VicCurrencyType.USD, 2.3));
     }
     @Test
@@ -56,7 +56,7 @@ public class MoneyTest {
         VicMoney vicMoney = new VicMoney();
         vicMoney.setAmount(132L);
 
-        assertEquals(VicCurrencyType.BRL, vicMoney.getCurrencyType());
+        assertEquals(VicCurrencyType.BRL, vicMoney.getType());
         assertEquals(Double.valueOf(1.32 * 2.33), vicMoney.getDouble(VicCurrencyType.USD, 2.33));
     }
 
