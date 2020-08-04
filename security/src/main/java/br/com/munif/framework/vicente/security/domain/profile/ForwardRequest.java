@@ -12,7 +12,6 @@ import javax.persistence.*;
  */
 @Entity
 @Audited
-@Table(name = "vic_request_action")
 public class ForwardRequest extends RequestAction {
 
     @Column(name = "url")

@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Entity
 @Audited
 @Table(name = "vic_request_action")
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ForwardRequest.class, name = "ForwardRequest")
 })
