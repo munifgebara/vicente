@@ -21,7 +21,6 @@ public class Software extends BaseEntity {
     @Column(name = "name")
     private String name;
     @OneToMany(mappedBy = "software", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    @JsonIgnoreProperties({"software"})
     private Set<Operation> operations;
 
     public Software() {
