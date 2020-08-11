@@ -1,9 +1,8 @@
-/*
+package br.com.munif.framework.vicente.api;/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.munif.framework.vicente.api;
 
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicServiceable;
@@ -18,6 +17,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -30,19 +32,23 @@ import java.util.stream.Collectors;
  */
 @RestController
 @Scope("prototype")
-public class BaseAPI<T extends BaseEntity> {
+public class BaseResource<T extends BaseEntity> {
 
     public BaseService<T> service;
 
-    public BaseAPI(VicServiceable service) {
+    public BaseResource(VicServiceable service) {
         if (service instanceof BaseService) {
             this.service = (BaseService<T>) service;
         }
     }
 
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
+        return mono(doDelete(id));
+    }
+
     @Transactional
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    protected ResponseEntity<Void> doDelete(String id) {
         T entity = service.loadNoTenancy(id);
         if (entity == null) {
             throw new VicenteNotFoundException("Not found");
@@ -55,10 +61,14 @@ public class BaseAPI<T extends BaseEntity> {
         return ResponseEntity.noContent().build();
     }
 
-    @Transactional
-    @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<T> save(@RequestBody @Valid T model) {
+    public Mono<ResponseEntity<T>> save(@RequestBody @Valid T model) {
+        return mono(doSave(model));
+    }
+
+    @Transactional
+    public ResponseEntity<T> doSave(T model) {
         beforeSave(model);
         if (service.load(model.getId()) != null) {
             throw new VicenteCreateWithExistingIdException("create With Existing Id=" + model.getId());
@@ -68,32 +78,9 @@ public class BaseAPI<T extends BaseEntity> {
         return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
-    @Transactional
-    @PutMapping(value = "", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<T> updateWithoutId(@RequestBody @Valid T model) {
-        return doUpdate(model);
-    }
-
-    @Transactional
-    @PutMapping(value = "/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<T> updateWithId(@PathVariable("id") String id, @RequestBody @Valid T model) {
-        model.setId(id);
-        return doUpdate(model);
-    }
-
-    @Transactional
-    @PatchMapping(value = "/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Void> patch(@PathVariable("id") String id, @RequestBody @Valid Map model) {
-        model.put("id", id);
-        service.patch(model);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Transactional
-    @PatchMapping(value = "/returning/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity patchReturning(@PathVariable("id") String id, @RequestBody @Valid Map model) {
-        model.put("id", id);
-        return ResponseEntity.ok(service.patchReturning(model));
+    @PutMapping(consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<T>> updateWithoutId(@RequestBody @Valid T model) {
+        return mono(doUpdate(model));
     }
 
     private ResponseEntity<T> doUpdate(T model) {
@@ -116,20 +103,63 @@ public class BaseAPI<T extends BaseEntity> {
         return new ResponseEntity(entity, ht);
     }
 
-    @Transactional
-    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<VicReturn<T>> findHQL(HttpServletRequest request, VicQuery query) {
-        return getVicReturnByQuery(query);
+    @PutMapping(value = "/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<T>> updateWithId(@PathVariable("id") String id, @RequestBody @Valid T model) {
+        return mono(doUpdateWithId(id, model));
     }
 
     @Transactional
-    @PostMapping(value = "/vquery", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<VicReturn<T>> findVQuery(@RequestBody VicQuery query) {
-        return getVicReturnByQuery(query);
+    public ResponseEntity<T> doUpdateWithId(String id, T model) {
+        model.setId(id);
+        return doUpdate(model);
+    }
+
+    @PatchMapping(value = "/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<Void>> patch(@PathVariable("id") String id, @RequestBody @Valid Map model) {
+        return mono(doPatch(id, model));
     }
 
     @Transactional
-    public ResponseEntity<VicReturn<T>> getVicReturnByQuery(@RequestBody VicQuery query) {
+    public ResponseEntity<Void> doPatch(String id, Map model) {
+        model.put("id", id);
+        service.patch(model);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(value = "/returning/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity> patchReturning(@PathVariable("id") String id, @RequestBody @Valid Map model) {
+        return mono(doPatchReturning(id, model));
+    }
+
+    @Transactional
+    public ResponseEntity doPatchReturning(String id, Map model) {
+        model.put("id", id);
+        return ResponseEntity.ok(service.patchReturning(model));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<VicReturn<T>>> findByHQL(HttpServletRequest request, VicQuery query) {
+        return mono(doFindByHQL(request, query));
+    }
+
+    @Transactional
+    public ResponseEntity<VicReturn<T>> doFindByHQL(HttpServletRequest request, VicQuery query) {
+        return getVicReturnByVQuery(query);
+    }
+
+    @PostMapping(value = "/vquery", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<VicReturn<T>>> findByVQuery(@RequestBody VicQuery query) {
+        return mono(doFindByVQuery(query));
+    }
+
+
+    @Transactional
+    public ResponseEntity<VicReturn<T>> doFindByVQuery(@RequestBody VicQuery query) {
+        return getVicReturnByVQuery(query);
+    }
+
+    @Transactional
+    public ResponseEntity<VicReturn<T>> getVicReturnByVQuery(@RequestBody VicQuery query) {
         if (query.getHql() == null || query.getHql().trim().isEmpty()) {
             query.setHql(VicQuery.DEFAULT_QUERY);
         }
@@ -152,9 +182,13 @@ public class BaseAPI<T extends BaseEntity> {
         return ResponseEntity.ok(new VicReturn<T>(result, result.size(), query.getFirstResult(), hasMore));
     }
 
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity> load(@PathVariable String id, @RequestParam(required = false) String fields) {
+        return mono(doLoad(id, fields));
+    }
+
     @Transactional(readOnly = true)
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity load(@PathVariable String id, @RequestParam(required = false) String fields) {
+    public ResponseEntity doLoad(String id, String fields) {
         T view = service.loadNoTenancy(id);
         if (view == null) {
             throw new VicenteNotFoundException("Not found");
@@ -171,12 +205,6 @@ public class BaseAPI<T extends BaseEntity> {
         return ResponseEntity.ok(view);
     }
 
-    @Transactional
-    @GetMapping(value = "/is-new/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Boolean> isNew(@PathVariable String id) {
-        return ResponseEntity.ok(service.isNew(id));
-    }
-
     private Map<String, Object> getFields(String fields, T view) {
         String[] split = fields.split(",");
         return getFields(split, view);
@@ -186,16 +214,35 @@ public class BaseAPI<T extends BaseEntity> {
         return ReflectionUtil.objectFieldsToMap(fields, view);
     }
 
-    @ResponseBody
+
+    @GetMapping(value = "/is-new/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<Boolean>> isNew(@PathVariable String id) {
+        return mono(isNewData(id));
+    }
+
     @Transactional
+    public ResponseEntity<Boolean> isNewData(@PathVariable String id) {
+        return ResponseEntity.ok(service.isNew(id));
+    }
+
+    @ResponseBody
     @GetMapping(value = "/draw/{id}", produces = "image/svg+xml")
-    public ResponseEntity<String> draw(@PathVariable String id) {
+    public Mono<ResponseEntity<String>> draw(@PathVariable String id) {
+        return mono(doDraw(id));
+    }
+
+    @Transactional
+    public ResponseEntity<String> doDraw(@PathVariable String id) {
         String svg = service.draw(id);
         return ResponseEntity.ok(svg);
     }
 
-    @GetMapping(value = "/new", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<T> initialState() {
+    @GetMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<T>> initialState() {
+        return mono(getInitialState());
+    }
+
+    public ResponseEntity<T> getInitialState() {
         return ResponseEntity.ok(service.newEntity());
     }
 
@@ -213,6 +260,14 @@ public class BaseAPI<T extends BaseEntity> {
     }
 
     protected void beforeDelete(T entity) {
+    }
+
+    public <T> Mono<T> mono(T callable) {
+        return Mono.just(callable).publishOn(Schedulers.elastic());
+    }
+
+    public <T> Flux<T> flux(Iterable<T> callable) {
+        return Flux.fromIterable(callable).publishOn(Schedulers.elastic());
     }
 
 }
