@@ -79,12 +79,8 @@ public class VicEmailUserType implements CompositeUserType {
     @Override
     public Object nullSafeGet(ResultSet resultSet, String[] names, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException, SQLException {
         final String description = resultSet.getString(names[0]);
-        for (int i = 0; i < names.length; i++) {
-            if (resultSet.getObject(names[i]) != null) {
-                return new VicEmail(description, resultSet.getString(names[i]));
-            }
-        }
-        return new VicEmail();
+        final String type = resultSet.getString(names[1]);
+        return new VicEmail(description, type);
     }
 
     @Override
