@@ -5,8 +5,8 @@ import java.util.Objects;
 public class VicAddress extends VicDomain {
 
     private String zipCode;
-    private String premisseType;
-    private String premisse;
+    private String premiseType;
+    private String premise;
     private String number;
     private String information;
     private String neighbourhood;
@@ -25,8 +25,8 @@ public class VicAddress extends VicDomain {
     public VicAddress(VicAddress other) {
         if (other != null) {
             this.zipCode = other.zipCode;
-            this.premisseType = other.premisseType;
-            this.premisse = other.premisse;
+            this.premiseType = other.premiseType;
+            this.premise = other.premise;
             this.number = other.number;
             this.information = other.information;
             this.neighbourhood = other.neighbourhood;
@@ -40,10 +40,10 @@ public class VicAddress extends VicDomain {
         }
     }
 
-    public VicAddress(String zipCode, String premisseType, String premisse, String number, String information, String neighbourhood, String localization, String state, String country) {
+    public VicAddress(String zipCode, String premiseType, String premise, String number, String information, String neighbourhood, String localization, String state, String country) {
         this.zipCode = zipCode;
-        this.premisseType = premisseType;
-        this.premisse = premisse;
+        this.premiseType = premiseType;
+        this.premise = premise;
         this.number = number;
         this.information = information;
         this.neighbourhood = neighbourhood;
@@ -52,10 +52,10 @@ public class VicAddress extends VicDomain {
         this.country = country;
     }
 
-    public VicAddress(String zipCode, String premisseType, String premisse, String number, String information, String neighbourhood, String localization, String state, String country, Double latitude, Double longitude, String formalCode) {
+    public VicAddress(String zipCode, String premiseType, String premise, String number, String information, String neighbourhood, String localization, String state, String country, Double latitude, Double longitude, String formalCode) {
         this.zipCode = zipCode;
-        this.premisseType = premisseType;
-        this.premisse = premisse;
+        this.premiseType = premiseType;
+        this.premise = premise;
         this.number = number;
         this.information = information;
         this.neighbourhood = neighbourhood;
@@ -67,10 +67,10 @@ public class VicAddress extends VicDomain {
         this.formalCode = formalCode;
     }
 
-    public VicAddress(String zipCode, String premisseType, String premisse, String number, String information, String neighbourhood, String localization, String state, String country, Double latitude, Double longitude, String formalCode, String stateCode) {
+    public VicAddress(String zipCode, String premiseType, String premise, String number, String information, String neighbourhood, String localization, String state, String country, Double latitude, Double longitude, String formalCode, String stateCode) {
         this.zipCode = zipCode;
-        this.premisseType = premisseType;
-        this.premisse = premisse;
+        this.premiseType = premiseType;
+        this.premise = premise;
         this.number = number;
         this.information = information;
         this.neighbourhood = neighbourhood;
@@ -91,20 +91,20 @@ public class VicAddress extends VicDomain {
         this.zipCode = zipCode;
     }
 
-    public String getPremisseType() {
-        return premisseType;
+    public String getPremiseType() {
+        return premiseType;
     }
 
-    public void setPremisseType(String premisseType) {
-        this.premisseType = premisseType;
+    public void setPremiseType(String premiseType) {
+        this.premiseType = premiseType;
     }
 
-    public String getPremisse() {
-        return premisse;
+    public String getPremise() {
+        return premise;
     }
 
-    public void setPremisse(String premisse) {
-        this.premisse = premisse;
+    public void setPremise(String premise) {
+        this.premise = premise;
     }
 
     public String getNumber() {
@@ -191,8 +191,8 @@ public class VicAddress extends VicDomain {
     public int hashCode() {
         int hash = 5;
         hash = 23 * hash + Objects.hashCode(this.zipCode);
-        hash = 23 * hash + Objects.hashCode(this.premisseType);
-        hash = 23 * hash + Objects.hashCode(this.premisse);
+        hash = 23 * hash + Objects.hashCode(this.premiseType);
+        hash = 23 * hash + Objects.hashCode(this.premise);
         hash = 23 * hash + Objects.hashCode(this.number);
         hash = 23 * hash + Objects.hashCode(this.information);
         hash = 23 * hash + Objects.hashCode(this.neighbourhood);
@@ -218,10 +218,10 @@ public class VicAddress extends VicDomain {
         if (!Objects.equals(this.zipCode, other.zipCode)) {
             return false;
         }
-        if (!Objects.equals(this.premisseType, other.premisseType)) {
+        if (!Objects.equals(this.premiseType, other.premiseType)) {
             return false;
         }
-        if (!Objects.equals(this.premisse, other.premisse)) {
+        if (!Objects.equals(this.premise, other.premise)) {
             return false;
         }
         if (!Objects.equals(this.number, other.number)) {
@@ -259,7 +259,7 @@ public class VicAddress extends VicDomain {
 
     @Override
     public String toString() {
-        return "VicAddress{" + "zipCode=" + zipCode + ", premisseType=" + premisseType + ", premisse=" + premisse + ", number=" + number + ", information=" + information + ", neighbourhood=" + neighbourhood + ", localization=" + localization + ", state=" + state + ", country=" + country + ", latitude=" + latitude + ", longitude=" + longitude + ", formalCode=" + formalCode + ", stateCode=" + stateCode + '}';
+        return "VicAddress{" + "zipCode=" + zipCode + ", premiseType=" + premiseType + ", premise=" + premise + ", number=" + number + ", information=" + information + ", neighbourhood=" + neighbourhood + ", localization=" + localization + ", state=" + state + ", country=" + country + ", latitude=" + latitude + ", longitude=" + longitude + ", formalCode=" + formalCode + ", stateCode=" + stateCode + '}';
     }
 
 }
