@@ -17,7 +17,7 @@ public class VicEmailUserType implements CompositeUserType {
     public String[] getPropertyNames() {
         return new String[]{
                 "description",
-                "social"};
+                "type"};
     }
 
     @Override
@@ -33,7 +33,7 @@ public class VicEmailUserType implements CompositeUserType {
             case 0:
                 return ((VicEmail) component).getDescription();
             case 1:
-                return ((VicEmail) component).getSocial();
+                return ((VicEmail) component).getType();
             default:
                 return null;
 
@@ -47,7 +47,7 @@ public class VicEmailUserType implements CompositeUserType {
                 ((VicEmail) component).setDescription((String) setValue);
                 break;
             case 1:
-                ((VicEmail) component).setSocial(SocialNetworking.valueOf((String) setValue));
+                ((VicEmail) component).setType(SocialNetworking.valueOf((String) setValue));
                 break;
         }
     }
@@ -95,7 +95,7 @@ public class VicEmailUserType implements CompositeUserType {
         } else {
             final VicEmail object = (VicEmail) value;
             preparedStatement.setString(property + 0, object.getDescription());
-            preparedStatement.setString(property + 1, Optional.ofNullable(object.getSocial()).orElse(SocialNetworking.EMAIL).name());
+            preparedStatement.setString(property + 1, Optional.ofNullable(object.getType()).orElse(SocialNetworking.EMAIL).name());
 
         }
     }
