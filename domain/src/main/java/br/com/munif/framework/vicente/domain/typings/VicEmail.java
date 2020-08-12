@@ -23,7 +23,7 @@ public class VicEmail extends VicDomain {
 
     public VicEmail(String description, String type) {
         this.description = description;
-        this.type = SocialNetworking.valueOf(type);
+        this.type = type != null ? SocialNetworking.valueOf(type) : null;
     }
 
     public VicEmail(String description, SocialNetworking type) {
