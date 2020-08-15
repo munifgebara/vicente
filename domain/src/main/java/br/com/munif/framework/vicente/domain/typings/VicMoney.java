@@ -3,16 +3,17 @@ package br.com.munif.framework.vicente.domain.typings;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class VicMoney extends VicDomain {
 
-    private Long amount;
+    private BigDecimal amount;
     @Enumerated(EnumType.STRING)
     private VicCurrencyType type;
 
     public VicMoney() {
-        this.amount = 0L;
+        this.amount = BigDecimal.ZERO;
         this.type = VicCurrencyType.BRL;
     }
 
@@ -23,16 +24,16 @@ public class VicMoney extends VicDomain {
         }
     }
 
-    public VicMoney(Long amount, VicCurrencyType type) {
+    public VicMoney(BigDecimal amount, VicCurrencyType type) {
         this.amount = amount;
         this.type = type;
     }
 
-    public Long getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -47,18 +48,6 @@ public class VicMoney extends VicDomain {
 
     public void setCurrencyType(String currencyType) {
         this.setType(VicCurrencyType.valueOf(currencyType));
-    }
-
-    public Double getDouble() {
-        return type.getDouble(this);
-    }
-
-    public Double getDouble(VicCurrencyType currencyType) {
-        return currencyType.getDouble(this);
-    }
-
-    public Double getDouble(VicCurrencyType currencyType, Double unitValue) {
-        return currencyType.getDouble(this, unitValue);
     }
 
     @Override

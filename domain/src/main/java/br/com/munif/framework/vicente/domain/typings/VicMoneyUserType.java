@@ -2,12 +2,13 @@ package br.com.munif.framework.vicente.domain.typings;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.type.LongType;
+import org.hibernate.type.BigDecimalType;
 import org.hibernate.type.StringType;
 import org.hibernate.type.Type;
 import org.hibernate.usertype.CompositeUserType;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,7 +26,7 @@ public class VicMoneyUserType implements CompositeUserType {
     @Override
     public Type[] getPropertyTypes() {
         return new Type[]{
-                LongType.INSTANCE,
+                BigDecimalType.INSTANCE,
                 StringType.INSTANCE};
     }
 
@@ -46,7 +47,7 @@ public class VicMoneyUserType implements CompositeUserType {
     public void setPropertyValue(Object component, int property, Object setValue) throws HibernateException {
         switch (property) {
             case 0:
-                ((VicMoney) component).setAmount((Long) setValue);
+                ((VicMoney) component).setAmount((BigDecimal) setValue);
                 break;
             case 1:
                 ((VicMoney) component).setCurrencyType((String) setValue);
@@ -80,7 +81,7 @@ public class VicMoneyUserType implements CompositeUserType {
 
     @Override
     public Object nullSafeGet(ResultSet resultSet, String[] names, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException, SQLException {
-        final Long description = resultSet.getLong(names[0]);
+        final BigDecimal description = resultSet.getBigDecimal(names[0]);
         for (int i = 0; i < names.length; i++) {
             if (resultSet.getObject(names[i]) != null) {
                 return new VicMoney(description, VicCurrencyType.valueOf(resultSet.getString(names[i + 1])));
@@ -96,7 +97,7 @@ public class VicMoneyUserType implements CompositeUserType {
             preparedStatement.setNull(property + 1, java.sql.Types.VARCHAR);
         } else {
             final VicMoney object = (VicMoney) value;
-            preparedStatement.setLong(property + 0, object.getAmount());
+            preparedStatement.setBigDecimal(property + 0, object.getAmount());
             preparedStatement.setString(property + 1, Optional.of(object.getType()).orElse(VicCurrencyType.BRL).name());
 
         }
