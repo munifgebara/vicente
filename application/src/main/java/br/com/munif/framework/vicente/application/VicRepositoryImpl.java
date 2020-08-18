@@ -285,7 +285,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         return " where \n"
                 + "(" + clause + ") "
                 + (withTenancy ? " and (" + geTenancyHQL(true, alias) + ") " : "") +
-                (withOrder ? " ORDER BY " + alias + "." + vicQuery.getOrderBy() + " , " + alias + ".id " + vicQuery.getSortDir() : "");
+                (withOrder ? " ORDER BY " + alias + "." + vicQuery.getOrderBy() + " " + vicQuery.getSortDir() : "");
     }
 
     @Override
