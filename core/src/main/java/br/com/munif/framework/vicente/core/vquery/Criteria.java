@@ -23,7 +23,7 @@ public class Criteria {
         fieldFn = null;
         valueFn = null;
         phonetic = false;
-        param = new Param(null, value.getClass().getSimpleName());
+        param = new Param(null, value.getClass(), field);
     }
 
     public Criteria() {

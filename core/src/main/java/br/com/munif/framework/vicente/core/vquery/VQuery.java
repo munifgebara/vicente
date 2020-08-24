@@ -262,7 +262,7 @@ public class VQuery {
                     getParams(((VEntityQuery) value), params);
                 } else {
                     ComparisonOperator.mount(value, toReturn, vQuery.getCriteria().getComparisonOperator());
-                    vQuery.getCriteria().getParam().setType(value.getClass().getSimpleName());
+                    vQuery.getCriteria().getParam().setType(value.getClass());
                     params.add(vQuery.getCriteria().getParam().setBuilderValue(toReturn.toString()));
                 }
             }

@@ -187,7 +187,17 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         setTenancyParameters(query);
         if (params != null) {
             for (Param entry : params) {
-                query.setParameter(entry.getKeyToSearch(), entry.getValueToSearch());
+                try {
+                    query.setParameter(entry.getKeyToSearch(), entry.getValueToSearch());
+                } catch (IllegalArgumentException ex) {
+                    String field = entry.getField().replace(alias + ".", entry.getField());
+                    try {
+                        entry.setType(getDomainClass().getDeclaredField(field).getType());
+                        query.setParameter(entry.getKeyToSearch(), entry.getValueToSearch());
+                    } catch (NoSuchFieldException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         if (!VicRepositoryUtil.DEFAULT_ALIAS.equals(attrs)) {

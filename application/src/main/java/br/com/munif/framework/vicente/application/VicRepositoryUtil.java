@@ -23,7 +23,7 @@ public class VicRepositoryUtil {
                 if (entry.getValue() instanceof Map) {
                     getSetUpdate((Map<String, Object>) entry.getValue(), builder, entry.getKey(), params);
                 } else {
-                    Param param = new Param(entry.getValue(), entry.getValue().getClass().getSimpleName());
+                    Param param = new Param(entry.getValue(), entry.getValue().getClass());
                     params.add(param);
                     builder.append(prefix + "." + entry.getKey() + " = " + param.getKey() + ",");
                 }

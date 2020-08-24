@@ -4,24 +4,31 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 public class Param {
     private String key;
+    private String field;
     private Object value;
-    private String type;
+    private Class type;
 
     public Param() {
     }
 
-    public Param(String key, Object value, String type) {
+    public Param(String key, Object value, Class type) {
         onInit(key, value, type);
     }
 
-    private void onInit(String key, Object value, String type) {
+    private void onInit(String key, Object value, Class type) {
         this.key = key;
         this.value = value;
         this.type = type;
     }
 
-    public Param(Object value, String type) {
+    public Param(Object value, Class type) {
         onInit(generateParamId(), value, type);
+    }
+
+
+    public Param(String key, Class<?> aClass, Object field) {
+        onInit(generateParamId(), value, type);
+        this.field = String.valueOf(field);
     }
 
     public static String generateParamId() {
@@ -45,8 +52,9 @@ public class Param {
     }
 
     public Object getValueToSearch() {
-        if ("String".equals(type)) return ((String) value).substring(1, ((String) value).length() - 1);
-        if ("Integer".equals(type)) value = Integer.valueOf(String.valueOf(value));
+        if (String.class.equals(type)) return ((String) value).substring(1, ((String) value).length() - 1);
+        if (Integer.class.equals(type)) value = Integer.valueOf(String.valueOf(value));
+        if (type.isEnum()) value = Enum.valueOf(type, String.valueOf(value).replace("'",""));
         return value;
     }
 
@@ -59,11 +67,19 @@ public class Param {
         return this;
     }
 
-    public String getType() {
+    public Class getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Class type) {
         this.type = type;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
     }
 }

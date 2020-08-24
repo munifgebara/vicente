@@ -6,6 +6,7 @@ import br.com.munif.framework.test.vicente.application.service.PessoaService;
 import br.com.munif.framework.test.vicente.domain.model.Consultor;
 import br.com.munif.framework.test.vicente.domain.model.Funcionario;
 import br.com.munif.framework.test.vicente.domain.model.Pessoa;
+import br.com.munif.framework.test.vicente.domain.model.Tipo;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import org.junit.Before;
@@ -50,6 +51,11 @@ public class VicTenancyPolicyTest {
             funcionarioService.save(f);
 
             Consultor c = consultorService.newEntity();
+            if (i % 2 == 0) {
+                c.setTipo(Tipo.A);
+            } else {
+                c.setTipo(Tipo.B);
+            }
             c.setNome("Consultor " + i);
             consultorService.save(c);
         }
@@ -145,5 +151,4 @@ public class VicTenancyPolicyTest {
         List<Consultor> findAllNoPublic = consultorService.findAllNoPublic();
         assertEquals(100, findAllNoPublic.size());
     }
-
 }
