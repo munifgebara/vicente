@@ -23,8 +23,9 @@ import reactor.core.scheduler.Schedulers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -169,14 +170,14 @@ public class BaseResource<T extends BaseEntity> {
         int maxResults = query.getMaxResults();
         query.setMaxResults(maxResults + 1);
         query.setHql(query.getHql().replace("\"", ""));
-        List<T> result = service.findByHql(query);
+        Set<T> result = new HashSet<>(service.findByHql(query));
         boolean hasMore = result.size() > maxResults;
         if (hasMore) {
             result.remove(maxResults);
         }
         if (query.getQuery() != null && query.getQuery().getFields() != null) {
             String[] fields = query.getQuery().getFields();
-            List<Map<String, Object>> collect = result.stream().map(s -> getFields(fields, s)).collect(Collectors.toList());
+            Set<Map<String, Object>> collect = result.stream().map(s -> getFields(fields, s)).collect(Collectors.toSet());
             return ResponseEntity.ok(new VicReturn(collect, collect.size(), query.getFirstResult(), hasMore));
         }
         return ResponseEntity.ok(new VicReturn<T>(result, result.size(), query.getFirstResult(), hasMore));

@@ -5,14 +5,14 @@
  */
 package br.com.munif.framework.vicente.core;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author munif
  */
 public class VicReturn<T> {
 
-    private List<T> values;
+    private Set<T> values;
     private Integer quantity;
     private Integer total;
     private Integer firstResult;
@@ -21,7 +21,7 @@ public class VicReturn<T> {
     public VicReturn() {
     }
 
-    public VicReturn(List<T> values, Integer quantity, Integer firstResult, Boolean hasMore) {
+    public VicReturn(Set<T> values, Integer quantity, Integer firstResult, Boolean hasMore) {
         this.values = values;
         this.quantity = quantity;
         this.firstResult = firstResult;
@@ -29,7 +29,7 @@ public class VicReturn<T> {
         this.total = null;
     }
 
-    public List<T> getValues() {
+    public Set<T> getValues() {
         return values;
     }
 
