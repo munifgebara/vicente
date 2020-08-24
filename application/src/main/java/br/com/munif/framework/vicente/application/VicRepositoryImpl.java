@@ -190,7 +190,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
                 try {
                     query.setParameter(entry.getKeyToSearch(), entry.getValueToSearch());
                 } catch (IllegalArgumentException ex) {
-                    String field = entry.getField().replace(alias + ".", entry.getField());
+                    String field = entry.getField().replace(alias + ".", "");
                     try {
                         entry.setType(getDomainClass().getDeclaredField(field).getType());
                         query.setParameter(entry.getKeyToSearch(), entry.getValueToSearch());

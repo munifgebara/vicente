@@ -44,6 +44,7 @@ public class Criteria {
     }
 
     public void setField(Object field) {
+        this.param.setField(String.valueOf(field));
         this.field = field;
     }
 
