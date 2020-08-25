@@ -23,7 +23,7 @@ public class Criteria {
         fieldFn = null;
         valueFn = null;
         phonetic = false;
-        param = new Param(null, value.getClass(), field);
+        param = new Param(null, value != null ? value.getClass() : Object.class, field);
     }
 
     public Criteria() {
@@ -57,6 +57,7 @@ public class Criteria {
     }
 
     public Object getValue() {
+        if (value == null) return null;
         if (this.phonetic) {
             value = PortuguesePhonetic.translate(String.valueOf(value));
         }

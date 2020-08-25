@@ -52,6 +52,7 @@ public class Param {
     }
 
     public Object getValueToSearch() {
+        if (value == null) return null;
         if (String.class.equals(type)) return ((String) value).substring(1, ((String) value).length() - 1);
         if (Integer.class.equals(type)) value = Integer.valueOf(String.valueOf(value));
         if (type.isEnum()) value = Enum.valueOf(type, String.valueOf(value).replace("'",""));

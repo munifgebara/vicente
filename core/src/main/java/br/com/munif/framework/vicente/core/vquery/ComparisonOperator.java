@@ -19,13 +19,13 @@ public enum ComparisonOperator {
     IN(" in "),
     IN_ELEMENTS(" in elements"),
     IS(" is "),
+    IS_NOT(" is not "),
     BETWEEN(" between "),
     NOT_EQUAL(" <> "),
     NOT_STARTS_WITH(" not like "),
     NOT_ENDS_WITH(" not like "),
     NOT_CONTAINS(" not like "),
     NOT_IN(" not in "),
-    NOT_IS(" not is "),
     NOT_BETWEEN(" not between ");
 
     public final String comparator;

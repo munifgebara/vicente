@@ -1,6 +1,5 @@
 package br.com.munif.framework.vicente.core.vquery;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -258,11 +257,14 @@ public class VQuery {
             if (vQuery.getCriteria() != null) {
                 StringBuilder toReturn = new StringBuilder();
                 Object value = vQuery.getCriteria().getValue();
-                if (value instanceof VEntityQuery) {
+                if (value == null)
+                    params.add(vQuery.getCriteria().getParam().setBuilderValue(null));
+                else if (value instanceof VEntityQuery) {
                     getParams(((VEntityQuery) value), params);
                 } else {
                     ComparisonOperator.mount(value, toReturn, vQuery.getCriteria().getComparisonOperator());
-                    vQuery.getCriteria().getParam().setType(value.getClass());
+                    if (value != null) vQuery.getCriteria().getParam().setType(value.getClass());
+                    else vQuery.getCriteria().getParam().setType(Object.class);
                     params.add(vQuery.getCriteria().getParam().setBuilderValue(toReturn.toString()));
                 }
             }
