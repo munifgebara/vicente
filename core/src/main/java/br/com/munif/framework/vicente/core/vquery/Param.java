@@ -53,9 +53,9 @@ public class Param {
 
     public Object getValueToSearch() {
         if (value == null) return null;
-        if (String.class.equals(type)) return ((String) value).substring(1, ((String) value).length() - 1);
-        if (Integer.class.equals(type)) value = Integer.valueOf(String.valueOf(value));
-        if (type.isEnum()) value = Enum.valueOf(type, String.valueOf(value).replace("'",""));
+        if (String.class.equals(getType())) return ((String) value).substring(1, ((String) value).length() - 1);
+        if (Integer.class.equals(getType())) value = Integer.valueOf(String.valueOf(value));
+        if (getType().isEnum()) value = Enum.valueOf(getType(), String.valueOf(value).replace("'",""));
         return value;
     }
 
@@ -69,7 +69,7 @@ public class Param {
     }
 
     public Class getType() {
-        return type;
+        return type != null ? type : value != null ? value.getClass() : null;
     }
 
     public void setType(Class type) {

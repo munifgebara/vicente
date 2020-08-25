@@ -57,8 +57,7 @@ public class Criteria {
     }
 
     public Object getValue() {
-        if (value == null) return null;
-        if (this.phonetic) {
+        if (this.value instanceof String && this.phonetic) {
             value = PortuguesePhonetic.translate(String.valueOf(value));
         }
         return valueFn != null ? String.format(valueFn, value) : value;

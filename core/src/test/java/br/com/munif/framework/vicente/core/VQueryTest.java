@@ -3,6 +3,7 @@ package br.com.munif.framework.vicente.core;
 import br.com.munif.framework.vicente.core.vquery.*;
 import org.junit.Test;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -421,5 +422,11 @@ public class VQueryTest {
     public void testFluentNull2() {
         VQuery gQuery = new VQuery(new Criteria("name", ComparisonOperator.EQUAL, null).addPhonetic());
         assertNull(gQuery.getParams().get(0).getValueToSearch());
+    }
+
+    @Test
+    public void testFluentLocalDate() {
+        VQuery gQuery = new VQuery(new Criteria("name", ComparisonOperator.EQUAL, LocalDate.now()).addPhonetic());
+        assertEquals(LocalDate.now(), gQuery.getParams().get(0).getValueToSearch());
     }
 }

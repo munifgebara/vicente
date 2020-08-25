@@ -255,27 +255,30 @@ public class VQuery {
     public void getParams(VQuery vQuery, ParamList params) {
         if (vQuery != null) {
             if (vQuery.getCriteria() != null) {
-                StringBuilder toReturn = new StringBuilder();
                 Object value = vQuery.getCriteria().getValue();
-                if (value == null)
-                    params.add(vQuery.getCriteria().getParam().setBuilderValue(null));
-                else if (value instanceof VEntityQuery) {
+                if (value instanceof VEntityQuery) {
                     getParams(((VEntityQuery) value), params);
-                } else {
+                } else if (value != null
+                        && (value instanceof CriteriaField || value instanceof String
+                        || value instanceof Date || value.getClass().isArray())) {
+                    StringBuilder toReturn = new StringBuilder();
                     ComparisonOperator.mount(value, toReturn, vQuery.getCriteria().getComparisonOperator());
+                    params.add(vQuery.getCriteria().getParam().setBuilderValue(toReturn.toString()));
+                } else {
                     if (value != null) vQuery.getCriteria().getParam().setType(value.getClass());
                     else vQuery.getCriteria().getParam().setType(Object.class);
-                    params.add(vQuery.getCriteria().getParam().setBuilderValue(toReturn.toString()));
+                    params.add(vQuery.getCriteria().getParam().setBuilderValue(value));
                 }
             }
-            for (VQuery subQuery : vQuery.getSubQuerys()) {
-                getParams(subQuery, params);
-            }
-            for (Join join : vQuery.joins) {
-                for (CriteriaJoin subQuery : join.getSubQuerys()) {
-                    params.addAll(subQuery.getParams());
-                }
+        }
+        for (VQuery subQuery : vQuery.getSubQuerys()) {
+            getParams(subQuery, params);
+        }
+        for (Join join : vQuery.joins) {
+            for (CriteriaJoin subQuery : join.getSubQuerys()) {
+                params.addAll(subQuery.getParams());
             }
         }
     }
 }
+
