@@ -429,4 +429,12 @@ public class VQueryTest {
         VQuery gQuery = new VQuery(new Criteria("name", ComparisonOperator.EQUAL, LocalDate.now()).addPhonetic());
         assertEquals(LocalDate.now(), gQuery.getParams().get(0).getValueToSearch());
     }
+
+    @Test
+    public void testeLocalDateStr1() {
+        LocalDate parse = LocalDate.parse("2020-09-01");
+        VQuery gQuery = new VQuery(new Criteria("name", ComparisonOperator.EQUAL, "2020-09-01"));
+        gQuery.getParams().get(0).setType(LocalDate.class);
+        assertEquals(parse, gQuery.getParams().get(0).getValueToSearch());
+    }
 }

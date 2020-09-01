@@ -2,6 +2,9 @@ package br.com.munif.framework.vicente.core.vquery;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+
 public class Param {
     private String key;
     private String field;
@@ -55,7 +58,9 @@ public class Param {
         if (value == null) return null;
         if (String.class.equals(getType())) return ((String) value).substring(1, ((String) value).length() - 1);
         if (Integer.class.equals(getType())) value = Integer.valueOf(String.valueOf(value));
-        if (getType().isEnum()) value = Enum.valueOf(getType(), String.valueOf(value).replace("'",""));
+        if (LocalDate.class.equals(getType())) value = LocalDate.parse(String.valueOf(value).replace("'",""));
+        if (ZonedDateTime.class.equals(getType())) value = ZonedDateTime.parse(String.valueOf(value).replace("'",""));
+        if (getType().isEnum()) value = Enum.valueOf(getType(), String.valueOf(value).replace("'", ""));
         return value;
     }
 
