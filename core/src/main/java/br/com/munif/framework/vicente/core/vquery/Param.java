@@ -4,6 +4,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Param {
     private String key;
@@ -61,6 +63,12 @@ public class Param {
         if (LocalDate.class.equals(getType()))
             value = LocalDate.parse(String.valueOf(value).replace("'", "").split("T")[0]);
         if (ZonedDateTime.class.equals(getType())) value = ZonedDateTime.parse(String.valueOf(value).replace("'", ""));
+        if (LinkedHashMap.class.equals(getType()) && value != null) {
+            LinkedHashMap map = ((LinkedHashMap) value);
+            if (map.containsKey("field")) {
+                value = String.valueOf(map.get("field"));
+            }
+        }
         if (getType().isEnum()) value = Enum.valueOf(getType(), String.valueOf(value).replace("'", ""));
         return value;
     }
