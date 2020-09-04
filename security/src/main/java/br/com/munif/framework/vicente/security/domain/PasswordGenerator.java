@@ -54,6 +54,9 @@ public class PasswordGenerator {
     }
 
     public static String generate(String password) {
+        if (password == null || "".equals(password)) {
+            return null;
+        }
         try {
             return generateStorngPasswordHash(password);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {

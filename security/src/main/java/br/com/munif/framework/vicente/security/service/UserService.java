@@ -12,6 +12,7 @@ import br.com.munif.framework.vicente.security.domain.Group;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.dto.PrivilegesAssignmentDto;
 import br.com.munif.framework.vicente.security.service.interfaces.IUserService;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,5 +51,26 @@ public class UserService extends BaseService<User> implements IUserService {
         VicQuery query = new VicQuery();
         query.setQuery(vQuery);
         return findByHqlNoTenancy(query);
+    }
+
+    @Override
+    @Transactional
+    public User loadNoTenancy(String id) {
+        User user = super.loadNoTenancy(id);
+        if (user != null) {
+            Hibernate.initialize(user.getGroups());
+            Hibernate.initialize(user.getOrganizations());
+        }
+        return user;
+    }
+
+    @Override
+    @Transactional
+    public User save(User resource) {
+        User user = loadNoTenancy(resource.getId());
+        if (user != null && resource.getPassword() == null) {
+            resource.setPassword(user.getPassword());
+        }
+        return super.save(resource);
     }
 }

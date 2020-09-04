@@ -7,6 +7,7 @@ import br.com.munif.framework.vicente.application.VicRepository;
 import br.com.munif.framework.vicente.security.domain.profile.OperationFilter;
 import br.com.munif.framework.vicente.security.domain.profile.Profile;
 import br.com.munif.framework.vicente.security.service.interfaces.IProfileService;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,5 +32,15 @@ public class ProfileService extends BaseService<Profile> implements IProfileServ
             filter = operationFilterService.save(filter);
         }
         return super.save(resource);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Profile loadNoTenancy(String id) {
+        Profile profile = super.loadNoTenancy(id);
+        if (profile != null) {
+            Hibernate.initialize(profile.getFilters());
+        }
+        return profile;
     }
 }
