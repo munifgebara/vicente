@@ -68,4 +68,10 @@ public class OperationFilterService extends BaseService<OperationFilter> impleme
         Hibernate.initialize(operationFilter.getActions());
         return operationFilter;
     }
+
+    @Transactional
+    public void incrementRequestedCount(OperationFilter operationFilter) {
+        operationFilter.setRequestedCount(operationFilter.getRequestedCount() + 1);
+        save(operationFilter);
+    }
 }

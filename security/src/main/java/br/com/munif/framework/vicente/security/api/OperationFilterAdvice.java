@@ -74,6 +74,13 @@ public class OperationFilterAdvice implements ResponseBodyAdvice<Object> {
         if (OperationType.DENY.equals(operationFilter.getOperationType())) {
             throw new VicenteRightsException("You do not have the rights to request this resource.");
         }
+        if (operationFilter.getMaxRequests() != null) {
+            if (operationFilter.getRequestedCount() > operationFilter.getMaxRequests()) {
+                throw new VicenteRightsException("You exceed the max requests to this resource.");
+            } else {
+                operationFilterService.incrementRequestedCount(operationFilter);
+            }
+        }
         return true;
     }
 

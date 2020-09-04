@@ -7,9 +7,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author munif
@@ -74,7 +72,7 @@ public class OperationFilter extends BaseEntity {
     }
 
     public Integer getRequestedCount() {
-        return requestedCount;
+        return requestedCount != null ? requestedCount : 0;
     }
 
     public void setRequestedCount(Integer requestedCount) {

@@ -40,6 +40,9 @@ public class ProfileService extends BaseService<Profile> implements IProfileServ
         Profile profile = super.loadNoTenancy(id);
         if (profile != null) {
             Hibernate.initialize(profile.getFilters());
+            for (OperationFilter filter : profile.getFilters()) {
+                Hibernate.initialize(filter.getActions());
+            }
             Hibernate.initialize(profile.getUsers());
         }
         return profile;
