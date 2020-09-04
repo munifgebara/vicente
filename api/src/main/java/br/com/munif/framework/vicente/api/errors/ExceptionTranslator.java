@@ -5,7 +5,6 @@ import br.com.munif.framework.vicente.api.VicenteErrorOnRequestException;
 import br.com.munif.framework.vicente.api.VicenteNotFoundException;
 import br.com.munif.framework.vicente.api.VicenteRightsException;
 import org.hibernate.QueryException;
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;

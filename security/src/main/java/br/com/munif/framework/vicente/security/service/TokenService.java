@@ -47,7 +47,7 @@ public class TokenService extends BaseService<Token> implements ITokenService {
         Map verify = GoogleToken.verify(token);
         String email = (String) verify.get("email");
         if (email == null) {
-            r.message = "Usuário não encontrado.";
+            r.message = "User not found.";
             return r;
         }
         List<User> findByHql = userService.findUsersByEmail(email);
@@ -69,7 +69,7 @@ public class TokenService extends BaseService<Token> implements ITokenService {
             u.setOrganizations(Collections.singleton(o1));
 
             u = userService.save(u);
-            r.message = "Usuário criado, Login OK";
+            r.message = "User created, Login OK";
             r.ok = true;
             r.token = createToken(u);
         } else if (findByHql.size() == 1) {
@@ -77,7 +77,7 @@ public class TokenService extends BaseService<Token> implements ITokenService {
             r.ok = true;
             r.token = createToken(findByHql.get(0));
         } else {
-            r.message = "Multiplos Usuários";
+            r.message = "Multiple Users.";
         }
         return r;
     }
@@ -91,12 +91,12 @@ public class TokenService extends BaseService<Token> implements ITokenService {
         query.setQuery(vQuery);
         List<User> findByHql = userService.findByHqlNoTenancy(query);
         if (findByHql.size() == 0) {
-            r.message = "Usuário não encontrado.";
+            r.message = "User not found.";
             return r;
         } else if (findByHql.size() == 1) {
             return createTokenToExistentUser(login, findByHql.get(0));
         } else {
-            r.message = "Multiplos Usuários.";
+            r.message = "Multiple users.";
         }
         return r;
     }
@@ -113,7 +113,7 @@ public class TokenService extends BaseService<Token> implements ITokenService {
         Token tok = repository.load(VicThreadScope.token.get());
         LoginResponseDto lr = new LoginResponseDto();
         lr.code = 0;
-        lr.message = "Volte sempre";
+        lr.message = "Come back soon.";
         lr.ok = true;
         lr.token = null;
         return lr;
@@ -159,9 +159,11 @@ public class TokenService extends BaseService<Token> implements ITokenService {
 
     @Transactional
     public LoginResponseDto createTokenToExistentUser(LoginDto login, User user) {
+        Hibernate.initialize(user.getOrganizations());
+        Hibernate.initialize(user.getGroups());
         LoginResponseDto r = new LoginResponseDto();
         if (!PasswordGenerator.validate(login.password, user.getPassword())) {
-            r.message = "Senha inválida.";
+            r.message = "Wrong Password.";
             return r;
         }
         r.message = "Login OK";
