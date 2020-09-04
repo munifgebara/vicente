@@ -98,7 +98,7 @@ public class VicMoneyUserType implements CompositeUserType {
         } else {
             final VicMoney object = (VicMoney) value;
             preparedStatement.setBigDecimal(property + 0, object.getAmount());
-            preparedStatement.setString(property + 1, Optional.of(object.getType()).orElse(VicCurrencyType.BRL).name());
+            preparedStatement.setString(property + 1, Optional.ofNullable(object.getType()).orElse(VicCurrencyType.BRL).name());
 
         }
     }
