@@ -76,6 +76,11 @@ public class User extends BaseEntity {
         this.groups.addAll(groups);
     }
 
+    public void assignOrganizations(Collection<Organization> organizations) {
+        if (this.organizations == null) this.organizations = new HashSet<>();
+        this.organizations.addAll(organizations);
+    }
+
     public Set<Organization> getOrganizations() {
         return organizations;
     }

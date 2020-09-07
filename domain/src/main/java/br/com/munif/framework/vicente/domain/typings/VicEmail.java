@@ -1,5 +1,7 @@
 package br.com.munif.framework.vicente.domain.typings;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.Objects;
@@ -47,6 +49,7 @@ public class VicEmail extends VicDomain {
         this.type = type;
     }
 
+    @JsonIgnore
     public Boolean isValid() {
         return this.getType().isValid(this.getDescription());
     }

@@ -7,11 +7,10 @@ import br.com.munif.framework.vicente.security.domain.Organization;
 import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author GeradorVicente
  */
 @SuppressWarnings("unused")
 @Repository
-public interface OrganizationRepository extends VicRepository<Organization>{
-    
+public interface OrganizationRepository extends VicRepository<Organization> {
+    Organization getOrganizationByCode(String code);
 }
