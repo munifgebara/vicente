@@ -5,12 +5,14 @@ package br.com.munif.framework.vicente.security.service;
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
 import br.com.munif.framework.vicente.core.VicQuery;
+import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
 import br.com.munif.framework.vicente.core.vquery.Criteria;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.Group;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.dto.PrivilegesAssignmentDto;
+import br.com.munif.framework.vicente.security.repository.UserRepository;
 import br.com.munif.framework.vicente.security.service.interfaces.IUserService;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
@@ -31,12 +33,21 @@ public class UserService extends BaseService<User> implements IUserService {
         this.groupService = groupService;
     }
 
+    public UserRepository getRepository() {
+        return (UserRepository) repository;
+    }
+
     @Transactional
     public void assignPrivileges(PrivilegesAssignmentDto privilegesAssignmentDto) {
         List<Group> groups = groupService.getGroupsByCode(privilegesAssignmentDto.groupCode);
         User user = getUserByLogin(privilegesAssignmentDto.login);
         user.assignGroups(groups);
         save(user);
+    }
+
+    @Transactional
+    public User getCurrentUser() {
+        return getRepository().getUserByLogin(VicThreadScope.ui.get());
     }
 
     @Transactional(readOnly = true)
