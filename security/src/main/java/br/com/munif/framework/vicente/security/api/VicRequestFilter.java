@@ -9,7 +9,6 @@ import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.domain.User;
-import br.com.munif.framework.vicente.security.service.TokenService;
 import br.com.munif.framework.vicente.security.service.interfaces.ITokenService;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -40,7 +39,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         String requestURI = request.getRequestURI();
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS,HEAD");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, authorization, Connection, group");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, authorization, Connection, group, organization");
 
         if ("OPTIONS".equalsIgnoreCase(method)) {
             return true;
@@ -54,12 +53,12 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
             VicThreadScope.gi.set(u.stringGroups());
             VicThreadScope.ui.set(u.getLogin());
             VicThreadScope.oi.set(u.stringOrganization());
-            if (request.getHeader("group") != null)
-                VicThreadScope.cg.set("" + request.getHeader("group"));
+            if (getGroup(request) != null)
+                VicThreadScope.cg.set("" + getGroup(request));
             else
                 VicThreadScope.cg.set(null);
-            if (request.getHeader("organization") != null)
-                VicThreadScope.oi.set("" + request.getHeader("organization"));
+            if (getOrganization(request) != null)
+                VicThreadScope.oi.set("" + getOrganization(request));
             VicThreadScope.defaultRights.set(null);
         } else if (publics.contains(request.getRequestURI())) {
             VicThreadScope.gi.set("VIC_PUBLIC");
@@ -80,6 +79,18 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
     private String getAuthorization(HttpServletRequest request) {
         String tokenValue = request.getHeader("Authorization");
         if (tokenValue == null) tokenValue = request.getParameter("Authorization");
+        return tokenValue;
+    }
+
+    private String getGroup(HttpServletRequest request) {
+        String tokenValue = request.getHeader("group");
+        if (tokenValue == null) tokenValue = request.getParameter("group");
+        return tokenValue;
+    }
+
+    private String getOrganization(HttpServletRequest request) {
+        String tokenValue = request.getHeader("organization");
+        if (tokenValue == null) tokenValue = request.getParameter("organization");
         return tokenValue;
     }
 
