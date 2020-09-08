@@ -161,6 +161,11 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
      */
     @Override
     public List<T> findByHql(VicQuery vicQuery) {
+        return genericFindByHql(vicQuery);
+    }
+
+    @Override
+    public <G> List<G> genericFindByHql(VicQuery vicQuery) {
         if (vicQuery.getEntity() == null) vicQuery.setEntity(getDomainClass().getSimpleName());
         if (vicQuery.getMaxResults() == -1) {
             vicQuery.setMaxResults(VicQuery.DEFAULT_QUERY_SIZE);

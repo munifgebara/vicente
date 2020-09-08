@@ -14,9 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -74,6 +71,11 @@ public abstract class BaseService<T extends BaseEntity> implements VicServiceabl
         List<T> result = repository.findByHql(query);
         readVicTenancyFields(result);
         return result;
+    }
+
+    @Transactional(readOnly = true)
+    public <G> List<G> genericFindByHql(VicQuery query) {
+        return repository.genericFindByHql(query);
     }
 
     @Transactional
