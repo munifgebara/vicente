@@ -74,8 +74,8 @@ public abstract class BaseService<T extends BaseEntity> implements VicServiceabl
     }
 
     @Transactional(readOnly = true)
-    public <G> List<G> genericFindByHql(VicQuery query) {
-        return repository.genericFindByHql(query);
+    public <G> List<G> genericFindByHql(VicQuery query, Class clazz) {
+        return repository.genericFindByHql(query, clazz);
     }
 
     @Transactional

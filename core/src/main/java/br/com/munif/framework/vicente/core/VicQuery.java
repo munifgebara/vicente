@@ -13,7 +13,6 @@ public class VicQuery {
     private static final String DEFAULT_ORDER_BY = "id";
     private String hql = DEFAULT_QUERY;
     private VQuery query;
-    @JsonIgnore
     private String entity;
     private int firstResult = 0;
     private int maxResults = -1;

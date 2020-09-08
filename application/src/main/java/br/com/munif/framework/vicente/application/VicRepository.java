@@ -20,7 +20,7 @@ public interface VicRepository<T extends BaseEntity> extends JpaRepository<T, Se
 
     List<T> findByHql(VicQuery query);
 
-    <G> List<G> genericFindByHql(VicQuery query);
+    <G> List<G> genericFindByHql(VicQuery query, Class clazz);
 
     List<T> findByHqlNoTenancy(VicQuery query);
 
