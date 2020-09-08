@@ -1,6 +1,7 @@
 package br.com.munif.framework.vicente.core;
 
 import br.com.munif.framework.vicente.core.vquery.VQuery;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author munif
@@ -12,6 +13,8 @@ public class VicQuery {
     private static final String DEFAULT_ORDER_BY = "id";
     private String hql = DEFAULT_QUERY;
     private VQuery query;
+    @JsonIgnore
+    private String entity;
     private int firstResult = 0;
     private int maxResults = -1;
     private String orderBy = DEFAULT_ORDER_BY;
@@ -94,5 +97,13 @@ public class VicQuery {
 
     public void setSortDir(String sortDir) {
         this.sortDir = sortDir;
+    }
+
+    public String getEntity() {
+        return entity;
+    }
+
+    public void setEntity(String entity) {
+        this.entity = entity;
     }
 }

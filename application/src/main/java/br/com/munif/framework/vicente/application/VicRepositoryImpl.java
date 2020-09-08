@@ -161,6 +161,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
      */
     @Override
     public List<T> findByHql(VicQuery vicQuery) {
+        if (vicQuery.getEntity() == null) vicQuery.setEntity(getDomainClass().getSimpleName());
         if (vicQuery.getMaxResults() == -1) {
             vicQuery.setMaxResults(VicQuery.DEFAULT_QUERY_SIZE);
         }
@@ -276,15 +277,15 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
     }
 
     private String mountSelectWithWhere(VicQuery vicQuery, String clause, String joins, String attrs, String alias, boolean withTenancy) {
-        return mountSelect(joins, attrs, alias) + mountWhere(vicQuery, clause, joins, attrs, alias, withTenancy, true);
+        return mountSelect(joins, attrs, alias, vicQuery.getEntity()) + mountWhere(vicQuery, clause, joins, attrs, alias, withTenancy, true);
     }
 
     private String mountDeleteWithWhere(VicQuery vicQuery, String clause, String joins, String attrs, String alias) {
         return mountDelete(alias) + mountWhere(vicQuery, clause, joins, attrs, alias, true, false);
     }
 
-    private String mountSelect(String joins, String attrs, String alias) {
-        return "select " + attrs + " FROM " + getDomainClass().getSimpleName() + " " + alias + " " + joins + " ";
+    private String mountSelect(String joins, String attrs, String alias, String entity) {
+        return "select " + attrs + " FROM " + (entity == null ? getDomainClass().getSimpleName() : entity) + " " + alias + " " + joins + " ";
     }
 
     private String mountDelete(String alias) {
@@ -301,7 +302,9 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
     @Override
     public void patch(Map<String, Object> map) {
         SetUpdateQuery setUpdate = VicRepositoryUtil.getSetUpdate(map);
-        String str = " update " + getDomainClass().getSimpleName() + " " + VicRepositoryUtil.DEFAULT_ALIAS + " set " + setUpdate + " where " + VicRepositoryUtil.DEFAULT_ALIAS + ".id = '" + map.get("id") + "' and " + geTenancyHQL(false, VicRepositoryUtil.DEFAULT_ALIAS);
+        String str = " update " + getDomainClass().getSimpleName() + " " + VicRepositoryUtil.DEFAULT_ALIAS + " set "
+                + setUpdate + " where " + VicRepositoryUtil.DEFAULT_ALIAS + ".id = '" + map.get("id") + "' and "
+                + geTenancyHQL(false, VicRepositoryUtil.DEFAULT_ALIAS);
         Query query = entityManager.createQuery(str);
         for (Param param : setUpdate.getParams()) {
             query.setParameter(param.getKeyToSearch(), param.getValue());
