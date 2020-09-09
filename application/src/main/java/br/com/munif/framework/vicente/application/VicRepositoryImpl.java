@@ -203,6 +203,8 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
                     } catch (NoSuchFieldException e) {
                         hql = hql.replace(entry.getKey(), String.valueOf(entry.getValue()));
                         Query newQuery = entityManager.createQuery(hql, clazz);
+                        newQuery.setFirstResult(vicQuery.getFirstResult());
+                        newQuery.setMaxResults(vicQuery.getMaxResults());
                         for (Parameter<?> parameter : query.getParameters()) {
                             Object parameterValue = query.getParameterValue(parameter);
                             if (parameterValue != null)
