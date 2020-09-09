@@ -201,7 +201,14 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
                         entry.setType(getDomainClass().getDeclaredField(field).getType());
                         query.setParameter(entry.getKeyToSearch(), entry.getValueToSearch());
                     } catch (NoSuchFieldException e) {
-                        e.printStackTrace();
+                        hql = hql.replace(entry.getKey(), String.valueOf(entry.getValue()));
+                        Query newQuery = entityManager.createQuery(hql, clazz);
+                        for (Parameter<?> parameter : query.getParameters()) {
+                            Object parameterValue = query.getParameterValue(parameter);
+                            if (parameterValue != null)
+                                newQuery.setParameter(parameter.getName(), parameterValue);
+                        }
+                        query = newQuery;
                     }
                 }
             }
