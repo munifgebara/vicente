@@ -5,6 +5,7 @@ import br.com.munif.framework.vicente.domain.BaseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
+import javax.persistence.Query;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ public interface VicRepository<T extends BaseEntity> extends JpaRepository<T, Se
 
     List<T> findByHql(VicQuery query);
 
-    <G> List<G> genericFindByHql(VicQuery query, Class clazz);
+    Query getQuery(VicQuery vicQuery, Class clazz);
 
     List<T> findByHqlNoTenancy(VicQuery query);
 

@@ -161,11 +161,11 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
      */
     @Override
     public List<T> findByHql(VicQuery vicQuery) {
-        return genericFindByHql(vicQuery, getDomainClass());
+        return getQuery(vicQuery, getDomainClass()).getResultList();
     }
 
     @Override
-    public <G> List<G> genericFindByHql(VicQuery vicQuery, Class clazz) {
+    public Query getQuery(VicQuery vicQuery, Class clazz) {
         if (vicQuery.getEntity() == null) vicQuery.setEntity(getDomainClass().getSimpleName());
         if (vicQuery.getMaxResults() == -1) {
             vicQuery.setMaxResults(VicQuery.DEFAULT_QUERY_SIZE);
@@ -209,7 +209,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         if (!VicRepositoryUtil.DEFAULT_ALIAS.equals(attrs)) {
             query = selectAttributes(query);
         }
-        return query.getResultList();
+        return query;
     }
 
     /**
