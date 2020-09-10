@@ -2,12 +2,10 @@ package br.com.munif.framework.vicente.security.domain.profile;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -15,7 +13,12 @@ import java.util.Set;
  */
 @Entity
 @Audited
-@Table(name = "vic_software")
+@Table(name = "vic_software", indexes = {
+        @Index(name = "idx_vic_software_oi", columnList = "oi"),
+        @Index(name = "idx_vic_software_ui", columnList = "ui"),
+        @Index(name = "idx_vic_software_gi", columnList = "gi"),
+        @Index(name = "idx_vic_software_rights", columnList = "rights")
+})
 public class Software extends BaseEntity {
 
     @Column(name = "name")

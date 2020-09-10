@@ -13,7 +13,14 @@ import javax.persistence.*;
 @Entity
 @Audited
 @VicTenancyPolicy(VicTenancyType.COMMUM)
-@Table(name = "vic_token")
+@Table(name = "vic_token", indexes = {
+        @Index(name = "idx_vic_token_oi", columnList = "oi"),
+        @Index(name = "idx_vic_token_ui", columnList = "ui"),
+        @Index(name = "idx_vic_token_gi", columnList = "gi"),
+        @Index(name = "idx_vic_token_rights", columnList = "rights"),
+        @Index(name = "idx_vic_token_value", columnList = "value"),
+        @Index(name = "idx_vic_token_user_id", columnList = "user_id"),
+})
 public class Token extends BaseEntity {
 
     @Column(name = "value")

@@ -18,7 +18,12 @@ import java.util.Set;
 @Entity
 @Audited
 @VicTenancyPolicy(VicTenancyType.COMMUM)
-@Table(name = "vic_user")
+@Table(name = "vic_user", indexes = {
+        @Index(name = "idx_vic_user_oi", columnList = "oi"),
+        @Index(name = "idx_vic_user_ui", columnList = "ui"),
+        @Index(name = "idx_vic_user_gi", columnList = "gi"),
+        @Index(name = "idx_vic_user_rights", columnList = "rights")
+})
 public class User extends BaseEntity {
 
     @Column(name = "login", unique = true)

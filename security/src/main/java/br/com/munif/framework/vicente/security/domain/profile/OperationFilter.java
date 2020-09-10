@@ -14,7 +14,14 @@ import java.util.List;
  */
 @Entity
 @Audited
-@Table(name = "vic_operation_filter")
+@Table(name = "vic_operation_filter", indexes = {
+        @Index(name = "idx_vic_operation_filter_oi", columnList = "oi"),
+        @Index(name = "idx_vic_operation_filter_ui", columnList = "ui"),
+        @Index(name = "idx_vic_operation_filter_gi", columnList = "gi"),
+        @Index(name = "idx_vic_operation_filter_rights", columnList = "rights"),
+        @Index(name = "idx_vic_operation_filter_operation", columnList = "operation_id"),
+        @Index(name = "idx_vic_operation_filter_profile", columnList = "profile_id")
+})
 public class OperationFilter extends BaseEntity {
 
     @ManyToOne

@@ -14,7 +14,12 @@ import java.util.Set;
  */
 @Entity
 @Audited
-@Table(name = "vic_profile")
+@Table(name = "vic_profile", indexes = {
+        @Index(name = "idx_vic_profile_oi", columnList = "oi"),
+        @Index(name = "idx_vic_profile_ui", columnList = "ui"),
+        @Index(name = "idx_vic_profile_gi", columnList = "gi"),
+        @Index(name = "idx_vic_profile_rights", columnList = "rights")
+})
 public class Profile extends BaseEntity {
 
     @Column(name = "name")

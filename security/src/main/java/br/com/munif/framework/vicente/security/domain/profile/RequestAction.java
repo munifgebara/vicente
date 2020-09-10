@@ -1,27 +1,35 @@
 package br.com.munif.framework.vicente.security.domain.profile;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author munif
  */
 @Entity
 @Audited
-@Table(name = "vic_request_action")
+@Table(name = "vic_request_action", indexes = {
+        @Index(name = "idx_vic_request_action_oi", columnList = "oi"),
+        @Index(name = "idx_vic_request_action_ui", columnList = "ui"),
+        @Index(name = "idx_vic_request_action_gi", columnList = "gi"),
+        @Index(name = "idx_vic_request_action_rights", columnList = "rights"),
+        @Index(name = "idx_vic_request_action_rights", columnList = "operation_filter_id")
+})
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ForwardRequest.class, name = "ForwardRequest")
 })
 public class RequestAction extends BaseEntity {
 
-    @ManyToOne
     @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "operation_filter_id")
     private OperationFilter operationFilter;
 
     public RequestAction() {

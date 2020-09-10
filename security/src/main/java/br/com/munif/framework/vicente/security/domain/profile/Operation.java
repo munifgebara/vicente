@@ -2,7 +2,6 @@ package br.com.munif.framework.vicente.security.domain.profile;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -12,14 +11,20 @@ import javax.persistence.*;
  */
 @Entity
 @Audited
-@Table(name = "vic_operation")
+@Table(name = "vic_operation", indexes = {
+        @Index(name = "idx_vic_operation_oi", columnList = "oi"),
+        @Index(name = "idx_vic_operation_ui", columnList = "ui"),
+        @Index(name = "idx_vic_operation_gi", columnList = "gi"),
+        @Index(name = "idx_vic_operation_rights", columnList = "rights"),
+        @Index(name = "idx_vic_operation_software", columnList = "software_id")
+})
 public class Operation extends BaseEntity {
 
     @Column(name = "key")
     private String key;
     @ManyToOne
-    @JoinColumn(name = "software_id")
     @JsonIgnore
+    @JoinColumn(name = "software_id")
     private Software software;
     @Column(name = "max_requests")
     private Integer maxRequests;

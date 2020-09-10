@@ -5,6 +5,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 /**
@@ -12,7 +13,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Audited
-@Table(name = "vic_group")
+@Table(name = "vic_group", indexes = {
+        @Index(name = "idx_vic_group_oi", columnList = "oi"),
+        @Index(name = "idx_vic_group_ui", columnList = "ui"),
+        @Index(name = "idx_vic_group_gi", columnList = "gi"),
+        @Index(name = "idx_vic_group_rights", columnList = "rights")
+})
 public class Group extends BaseEntity {
 
     @Column(name = "name")
