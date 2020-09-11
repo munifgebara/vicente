@@ -6,6 +6,7 @@ import org.hibernate.envers.RevisionTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 
@@ -20,9 +21,12 @@ public class VicRevisionEntity implements Serializable {
     private Long id;
     @RevisionTimestamp
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date momento;
+    @Column(name = "rev_timestamp")
+    private Date timestamp;
+    @Column(name = "rev_ip")
     private String ip;
-    private String user;
+    @Column(name = "rev_ui")
+    private String ui;
 
     public Long getId() {
         return id;
@@ -32,12 +36,12 @@ public class VicRevisionEntity implements Serializable {
         this.id = id;
     }
 
-    public Date getMomento() {
-        return momento;
+    public Date getTimestamp() {
+        return timestamp;
     }
 
-    public void setMomento(Date momento) {
-        this.momento = momento;
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getIp() {
@@ -48,12 +52,12 @@ public class VicRevisionEntity implements Serializable {
         this.ip = ip;
     }
 
-    public String getUser() {
-        return user;
+    public String getUi() {
+        return ui;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUi(String user) {
+        this.ui = user;
     }
 
 
