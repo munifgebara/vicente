@@ -7,10 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author munif
@@ -69,7 +66,11 @@ public class User extends BaseEntity {
     }
 
     public Group getFirstGroup() {
-        return getGroups().stream().findFirst().orElse(null);
+        return getGroups().stream().min(Comparator.comparing(BaseEntity::getId)).orElse(null);
+    }
+
+    public Organization getFirstOrganization() {
+        return getOrganizations().stream().min(Comparator.comparing(BaseEntity::getId)).orElse(null);
     }
 
     public void setGroups(Set<Group> groups) {
@@ -98,12 +99,11 @@ public class User extends BaseEntity {
         if (this.getGroups() == null) {
             return null;
         }
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (Group g : this.getGroups()) {
-            s += g.getCode() + ",";
+            s.append(g.getCode()).append(",");
         }
-
-        return s;
+        return s.toString();
     }
 
     public String stringGroupByEmail() {
