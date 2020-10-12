@@ -33,7 +33,7 @@
         <jaxb-runtime>2.4.0-b180725.0644</jaxb-runtime>
         <json-path>2.0.0</json-path>
         <jsp-api>2.2</jsp-api>
-        <junit>4.12</junit>
+        <junit>4.13.1</junit>
         <mockito-core>1.10.19</mockito-core>
         <mysql-connector-java>5.1.43</mysql-connector-java>
         <mysql-connector-java>5.1.43</mysql-connector-java>
