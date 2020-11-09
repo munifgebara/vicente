@@ -40,7 +40,7 @@ public class ExceptionTranslator {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
     public ErrorVM processConcurrencyError(ConcurrencyFailureException ex) {
-        return new ErrorVM(ErrorConstants.ERR_CONCURRENCY_FAILURE);
+        return new ErrorVM(ErrorConstants.ERR_CONCURRENCY_FAILURE, ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -49,7 +49,7 @@ public class ExceptionTranslator {
     public ErrorVM processValidationError(MethodArgumentNotValidException ex) {
         BindingResult result = ex.getBindingResult();
         List<FieldError> fieldErrors = result.getFieldErrors();
-        ErrorVM dto = new ErrorVM(ErrorConstants.ERR_VALIDATION);
+        ErrorVM dto = new ErrorVM(ErrorConstants.ERR_VALIDATION, ex.getMessage());
         for (FieldError fieldError : fieldErrors) {
             dto.add(fieldError.getObjectName(), fieldError.getField(), fieldError.getCode());
         }
