@@ -10,7 +10,9 @@ import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
 import br.com.munif.framework.vicente.core.vquery.Criteria;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.Group;
+import br.com.munif.framework.vicente.security.domain.PasswordGenerator;
 import br.com.munif.framework.vicente.security.domain.User;
+import br.com.munif.framework.vicente.security.domain.dto.ChangePasswordDto;
 import br.com.munif.framework.vicente.security.dto.PrivilegesAssignmentDto;
 import br.com.munif.framework.vicente.security.repository.UserRepository;
 import br.com.munif.framework.vicente.security.service.interfaces.IUserService;
@@ -91,5 +93,21 @@ public class UserService extends BaseService<User> implements IUserService {
         User user = loadNoTenancy(id);
         user.setImageUrl(imageUrl);
         return super.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(String id, ChangePasswordDto changePasswordDto) {
+        VicQuery vicQuery = new VicQuery(new VQuery(new Criteria("id", ComparisonOperator.EQUAL, id))
+                .or(new Criteria("login", ComparisonOperator.EQUAL, id))
+                .and(new Criteria("password", ComparisonOperator.EQUAL, PasswordGenerator.generate(changePasswordDto.currentPassword))));
+        List<User> byHql = findByHql(vicQuery);
+        if (byHql.size() > 0) {
+            User user = byHql.get(0);
+            user.setPassword(changePasswordDto.newPassword);
+            save(user);
+        } else {
+            throw new RuntimeException("User not found");
+        }
     }
 }
