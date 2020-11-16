@@ -32,6 +32,8 @@ public class User extends BaseEntity {
     private Set<Group> groups;
     @ManyToMany
     private Set<Organization> organizations;
+    @Column(name = "image_url")
+    private String imageUrl;
 
     public User() {
     }
@@ -117,4 +119,11 @@ public class User extends BaseEntity {
         return Objects.requireNonNull(getOrganizations().stream().findFirst().orElse(null)).getCode();
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }
