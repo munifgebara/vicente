@@ -8,5 +8,8 @@ import java.util.List;
 
 public interface IUserService extends VicServiceable<User> {
     List<User> findUsersByEmail(String email);
+
     void assignPrivileges(PrivilegesAssignmentDto privileges);
+
+    User updateImage(String id, String imageUrl);
 }

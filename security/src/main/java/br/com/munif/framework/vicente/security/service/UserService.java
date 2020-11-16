@@ -84,4 +84,12 @@ public class UserService extends BaseService<User> implements IUserService {
         }
         return super.save(resource);
     }
+
+    @Override
+    @Transactional
+    public User updateImage(String id, String imageUrl) {
+        User user = loadNoTenancy(id);
+        user.setImageUrl(imageUrl);
+        return super.save(user);
+    }
 }

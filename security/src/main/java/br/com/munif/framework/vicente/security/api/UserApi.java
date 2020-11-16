@@ -3,12 +3,9 @@
 package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.api.BaseAPI;
-import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.security.domain.PasswordGenerator;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.dto.PrivilegesAssignmentDto;
-import br.com.munif.framework.vicente.security.service.GroupService;
-import br.com.munif.framework.vicente.security.service.UserService;
 import br.com.munif.framework.vicente.security.service.interfaces.IUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 /**
  * @author GeradorVicente
@@ -58,5 +56,9 @@ public class UserApi extends BaseAPI<User> {
         return super.updateWithId(id, model);
     }
 
-
+    @Transactional
+    @PutMapping(value = "/update-image/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<User> updateImage(@PathVariable("id") String id, @RequestBody Map<String, String> requestMap) {
+        return ResponseEntity.ok(((IUserService) service).updateImage(id, requestMap.get("imageUrl")));
+    }
 }
