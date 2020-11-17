@@ -2,8 +2,8 @@ package br.com.munif.framework.vicente.security.service;
 
 import br.com.munif.framework.vicente.core.ZipFiles;
 import br.com.munif.framework.vicente.security.domain.dto.SentEmailDto;
-import br.com.munif.framework.vicente.security.service.properties.SentEmailProperties;
 import br.com.munif.framework.vicente.security.service.interfaces.IEmailService;
+import br.com.munif.framework.vicente.security.service.properties.SentEmailProperties;
 import org.springframework.stereotype.Service;
 
 import javax.activation.DataHandler;
@@ -90,6 +90,12 @@ public class SentEmailService implements IEmailService {
     @Override
     public void sendPasswordRecover(String email, String password) {
         SentEmailDto emailDto = new SentEmailDto(email, this.emailProperties.getRecoverPasswordSubject());
+        emailDto.append("subject", this.emailProperties.getRecoverPasswordSubject());
+        emailDto.append("text", this.emailProperties.getRecoverPasswordMessage());
+        emailDto.append("password", password);
+        String separator = System.getProperty("file.separator");
+        emailDto.setTemplate(System.getProperty("user.home") + separator + "vicfiles"
+                + separator + "templates" + separator + "recover-password.template.html");
         send(emailDto);
     }
 

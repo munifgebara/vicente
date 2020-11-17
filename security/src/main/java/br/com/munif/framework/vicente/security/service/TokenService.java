@@ -199,7 +199,7 @@ public class TokenService extends BaseService<Token> implements ITokenService {
     public void recoverPassword(String id) {
         User user = userService.findUserByIdOrEmail(id);
         if (user != null) {
-            String generatedPassword = RandomStringUtils.random(10);
+            String generatedPassword = RandomStringUtils.randomAlphanumeric(10);
             user.setPassword(PasswordGenerator.generate(generatedPassword));
             user = userService.save(user);
             iEmailService.sendPasswordRecover(user.getLogin(), generatedPassword);

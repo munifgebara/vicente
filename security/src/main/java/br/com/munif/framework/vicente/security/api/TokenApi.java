@@ -61,7 +61,7 @@ public class TokenApi extends BaseAPI<Token> {
     }
 
     @Transactional
-    @GetMapping(value = "/recover-password/{id:.+}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/recover-password/{id:.+}")
     public ResponseEntity<Void> recoverPassword(@PathVariable("id") String id) {
         tokenService.recoverPassword(id);
         return ResponseEntity.noContent().build();
