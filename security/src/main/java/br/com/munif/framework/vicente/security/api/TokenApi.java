@@ -3,15 +3,14 @@
 package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.api.BaseAPI;
-import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.security.domain.Token;
-import br.com.munif.framework.vicente.security.dto.LoginDto;
-import br.com.munif.framework.vicente.security.dto.LoginResponseDto;
-import br.com.munif.framework.vicente.security.service.TokenService;
+import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
+import br.com.munif.framework.vicente.security.domain.dto.LoginResponseDto;
 import br.com.munif.framework.vicente.security.service.interfaces.ITokenService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,4 +60,10 @@ public class TokenApi extends BaseAPI<Token> {
         return loga(new LoginDto(login, senha));
     }
 
+    @Transactional
+    @GetMapping(value = "/recover-password/{id:.+}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Void> recoverPassword(@PathVariable("id") String id) {
+        tokenService.recoverPassword(id);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -14,7 +14,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -31,7 +31,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         this.tokenService = tokenService;
     }
 
-    private List<String> publics = Collections.singletonList("/api/token/login/bypassword");
+    private List<String> publics = Arrays.asList("/api/token/login/bypassword", "/api/token/recover-password");
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

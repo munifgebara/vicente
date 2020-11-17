@@ -3,7 +3,7 @@ package br.com.munif.framework.vicente.security.service.interfaces;
 import br.com.munif.framework.vicente.application.VicServiceable;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.domain.dto.ChangePasswordDto;
-import br.com.munif.framework.vicente.security.dto.PrivilegesAssignmentDto;
+import br.com.munif.framework.vicente.security.domain.dto.PrivilegesAssignmentDto;
 
 import java.util.List;
 

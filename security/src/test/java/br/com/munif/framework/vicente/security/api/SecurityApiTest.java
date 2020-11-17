@@ -7,20 +7,15 @@
 package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.api.errors.ErrorConstants;
-import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.VicThreadScopeOptions;
-import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
-import br.com.munif.framework.vicente.core.vquery.Criteria;
-import br.com.munif.framework.vicente.core.vquery.CriteriaField;
-import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.SecurityApp;
 import br.com.munif.framework.vicente.security.domain.Group;
 import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.domain.profile.*;
-import br.com.munif.framework.vicente.security.dto.LoginDto;
-import br.com.munif.framework.vicente.security.dto.PrivilegesAssignmentDto;
+import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
+import br.com.munif.framework.vicente.security.domain.dto.PrivilegesAssignmentDto;
 import br.com.munif.framework.vicente.security.seed.SeedSecurity;
 import br.com.munif.framework.vicente.security.service.TokenService;
 import br.com.munif.framework.vicente.security.service.UserService;
@@ -29,7 +24,6 @@ import br.com.munif.framework.vicente.security.service.profile.OperationService;
 import br.com.munif.framework.vicente.security.service.profile.ProfileService;
 import br.com.munif.framework.vicente.security.service.profile.SoftwareService;
 import com.google.common.collect.Sets;
-import org.hibernate.Hibernate;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -45,7 +39,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;

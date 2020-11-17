@@ -6,7 +6,7 @@ import br.com.munif.framework.vicente.api.BaseAPI;
 import br.com.munif.framework.vicente.security.domain.PasswordGenerator;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.domain.dto.ChangePasswordDto;
-import br.com.munif.framework.vicente.security.dto.PrivilegesAssignmentDto;
+import br.com.munif.framework.vicente.security.domain.dto.PrivilegesAssignmentDto;
 import br.com.munif.framework.vicente.security.service.interfaces.IUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

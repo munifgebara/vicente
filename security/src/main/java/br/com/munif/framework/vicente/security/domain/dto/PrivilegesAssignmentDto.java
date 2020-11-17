@@ -1,4 +1,4 @@
-package br.com.munif.framework.vicente.security.dto;
+package br.com.munif.framework.vicente.security.domain.dto;
 
 public class PrivilegesAssignmentDto {
     public String groupCode;

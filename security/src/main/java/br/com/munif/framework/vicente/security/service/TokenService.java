@@ -12,10 +12,13 @@ import br.com.munif.framework.vicente.core.vquery.Criteria;
 import br.com.munif.framework.vicente.core.vquery.LogicalOperator;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.*;
-import br.com.munif.framework.vicente.security.dto.LoginDto;
-import br.com.munif.framework.vicente.security.dto.LoginResponseDto;
+import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
+import br.com.munif.framework.vicente.security.domain.dto.LoginResponseDto;
+import br.com.munif.framework.vicente.security.domain.exceptions.UserNotFoundException;
+import br.com.munif.framework.vicente.security.service.interfaces.IEmailService;
 import br.com.munif.framework.vicente.security.service.interfaces.ITokenService;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,12 +37,15 @@ public class TokenService extends BaseService<Token> implements ITokenService {
     private final UserService userService;
     private final GroupService groupService;
     private final OrganizationService organizationService;
+    private final IEmailService iEmailService;
 
-    public TokenService(VicRepository<Token> repository, OrganizationService organizationService, GroupService groupService, UserService userService) {
+    public TokenService(VicRepository<Token> repository, OrganizationService organizationService,
+                        GroupService groupService, UserService userService, IEmailService iEmailService) {
         super(repository);
         this.organizationService = organizationService;
         this.groupService = groupService;
         this.userService = userService;
+        this.iEmailService = iEmailService;
     }
 
     public LoginResponseDto loginOnGoogle(String token) {
@@ -186,5 +192,19 @@ public class TokenService extends BaseService<Token> implements ITokenService {
         Token load = super.loadNoTenancy(id);
         Hibernate.initialize(load.getUser().getOrganizations());
         return load;
+    }
+
+    @Override
+    @Transactional
+    public void recoverPassword(String id) {
+        User user = userService.findUserByIdOrEmail(id);
+        if (user != null) {
+            String generatedPassword = RandomStringUtils.random(10);
+            user.setPassword(PasswordGenerator.generate(generatedPassword));
+            user = userService.save(user);
+            iEmailService.sendPasswordRecover(user.getLogin(), generatedPassword);
+        } else {
+            throw new UserNotFoundException();
+        }
     }
 }

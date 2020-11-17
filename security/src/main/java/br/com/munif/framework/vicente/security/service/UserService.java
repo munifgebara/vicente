@@ -13,9 +13,13 @@ import br.com.munif.framework.vicente.security.domain.Group;
 import br.com.munif.framework.vicente.security.domain.PasswordGenerator;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.domain.dto.ChangePasswordDto;
-import br.com.munif.framework.vicente.security.dto.PrivilegesAssignmentDto;
+import br.com.munif.framework.vicente.security.domain.dto.PrivilegesAssignmentDto;
+import br.com.munif.framework.vicente.security.domain.exceptions.UserNotFoundException;
+import br.com.munif.framework.vicente.security.domain.exceptions.WrongPasswordException;
 import br.com.munif.framework.vicente.security.repository.UserRepository;
+import br.com.munif.framework.vicente.security.service.interfaces.IEmailService;
 import br.com.munif.framework.vicente.security.service.interfaces.IUserService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,16 +102,26 @@ public class UserService extends BaseService<User> implements IUserService {
     @Override
     @Transactional
     public void changePassword(String id, ChangePasswordDto changePasswordDto) {
-        VicQuery vicQuery = new VicQuery(new VQuery(new Criteria("id", ComparisonOperator.EQUAL, id))
-                .or(new Criteria("login", ComparisonOperator.EQUAL, id))
-                .and(new Criteria("password", ComparisonOperator.EQUAL, PasswordGenerator.generate(changePasswordDto.currentPassword))));
-        List<User> byHql = findByHql(vicQuery);
-        if (byHql.size() > 0) {
-            User user = byHql.get(0);
-            user.setPassword(changePasswordDto.newPassword);
-            save(user);
+        User user = findUserByIdOrEmail(id);
+        if (user != null) {
+            boolean isValid = PasswordGenerator.validate(changePasswordDto.currentPassword, user.getPassword());
+            if (isValid) {
+                user.setPassword(PasswordGenerator.generate(changePasswordDto.newPassword));
+                save(user);
+            } else {
+                throw new WrongPasswordException();
+            }
         } else {
-            throw new RuntimeException("User not found");
+            throw new UserNotFoundException();
         }
+    }
+
+    @Transactional
+    public User findUserByIdOrEmail(String id) {
+        VicQuery vicQuery = new VicQuery(new VQuery(new Criteria("id", ComparisonOperator.EQUAL, id))
+                .or(new Criteria("login", ComparisonOperator.EQUAL, id)));
+        List<User> byHql = findByHqlNoTenancy(vicQuery);
+        User user = byHql.size() > 0 ? byHql.get(0) : null;
+        return user;
     }
 }
