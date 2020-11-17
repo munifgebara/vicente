@@ -36,10 +36,10 @@ public class SentEmailService implements IEmailService {
         final String password = emailProperties.getPassword();
 
         Properties prop = new Properties();
-        prop.put("mail.smtp.host", "smtp.gmail.com");
-        prop.put("mail.smtp.port", "587");
-        prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.starttls.enable", "true"); //TLS
+        prop.put("mail.smtp.host", this.emailProperties.getHost());
+        prop.put("mail.smtp.port", this.emailProperties.getPort());
+        prop.put("mail.smtp.auth", this.emailProperties.getAuth());
+        prop.put("mail.smtp.starttls.enable", this.emailProperties.getStarttls());
 
         Session session = Session.getInstance(prop,
                 new Authenticator() {

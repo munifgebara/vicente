@@ -11,6 +11,10 @@ public class SentEmailProperties {
     private String fileDir;
     private String recoverPasswordMessage;
     private String recoverPasswordSubject;
+    private String host;
+    private String port;
+    private String auth;
+    private String starttls;
 
     public SentEmailProperties() {
     }
@@ -53,5 +57,37 @@ public class SentEmailProperties {
 
     public void setRecoverPasswordSubject(String recoverPasswordSubject) {
         this.recoverPasswordSubject = recoverPasswordSubject;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    public String getAuth() {
+        return auth;
+    }
+
+    public void setAuth(String auth) {
+        this.auth = auth;
+    }
+
+    public String getStarttls() {
+        return starttls;
+    }
+
+    public void setStarttls(String starttls) {
+        this.starttls = starttls;
     }
 }
