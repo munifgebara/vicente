@@ -13,9 +13,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 import static br.com.munif.framework.vicente.core.RightsHelper.*;
@@ -52,11 +55,9 @@ public class BaseEntity implements Serializable {
 
     protected String extra;
 
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    protected Date cd;
+    protected ZonedDateTime cd;
 
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    protected Date ud;
+    protected ZonedDateTime ud;
 
     protected Boolean active;
 
@@ -78,8 +79,8 @@ public class BaseEntity implements Serializable {
         oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";
         rights = RightsHelper.getScopeDefault();
         extra = "Framework";
-        cd = new Date();
-        ud = new Date();
+        cd = ZonedDateTime.now();
+        ud = ZonedDateTime.now();
         active = true;
         version = null;
     }
@@ -146,19 +147,19 @@ public class BaseEntity implements Serializable {
         this.extra = extra;
     }
 
-    public Date getCd() {
+    public ZonedDateTime getCd() {
         return cd;
     }
 
-    public void setCd(Date cd) {
+    public void setCd(ZonedDateTime cd) {
         this.cd = cd;
     }
 
-    public Date getUd() {
+    public ZonedDateTime getUd() {
         return ud;
     }
 
-    public void setUd(Date ud) {
+    public void setUd(ZonedDateTime ud) {
         this.ud = ud;
     }
 

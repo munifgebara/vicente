@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -121,7 +121,7 @@ public abstract class BaseService<T extends BaseEntity> implements VicServiceabl
     @Transactional
     public T save(T resource) {
         if (resource != null) {
-            resource.setUd(new Date());
+            resource.setUd(ZonedDateTime.now());
         }
         T entity = repository.save(resource);
         if (entity instanceof VicTenancyFieldsBaseEntity) {
