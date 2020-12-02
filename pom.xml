@@ -41,7 +41,7 @@
         <spring-data-jpa>2.2.0.RELEASE</spring-data-jpa>
         <spring.boot.version>2.2.0.RELEASE</spring.boot.version>
         <spring.version>5.2.0.RELEASE</spring.version>
-        <validation-api>2.0.0.Final</validation-api>
+        <validation-api>2.0.1.Final</validation-api>
         <wix-embedded-mysql>4.2.0</wix-embedded-mysql>
         <spring-data-r2dbc>1.0.0.M1</spring-data-r2dbc>
     </properties>
