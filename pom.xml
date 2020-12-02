@@ -26,7 +26,7 @@
         <jackson-datatype-joda>2.9.0</jackson-datatype-joda>
         <jackson-datatype>2.9.4</jackson-datatype>
         <javaassist>3.25.0-GA</javaassist>
-        <javax.annotation-api>1.3.1</javax.annotation-api>
+        <javax.annotation-api>1.3.2</javax.annotation-api>
         <javax.servlet-api>3.1.0</javax.servlet-api>
         <jaxb-api>2.4.0-b180725.0427</jaxb-api>
         <jaxb-core>2.2.11</jaxb-core>
