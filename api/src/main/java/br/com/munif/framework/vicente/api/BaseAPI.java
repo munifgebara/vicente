@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -140,7 +141,7 @@ public class BaseAPI<T extends BaseEntity> {
         int maxResults = query.getMaxResults();
         query.setMaxResults(maxResults + 1);
         query.setHql(query.getHql().replace("\"", ""));
-        Set<T> result = new HashSet<>(service.findByHql(query));
+        Set<T> result = new LinkedHashSet<>(service.findByHql(query));
         boolean hasMore = result.size() > maxResults;
         if (hasMore) {
             result.remove(maxResults);
