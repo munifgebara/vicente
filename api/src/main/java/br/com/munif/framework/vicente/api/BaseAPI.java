@@ -5,7 +5,6 @@
  */
 package br.com.munif.framework.vicente.api;
 
-import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicServiceable;
 import br.com.munif.framework.vicente.core.ReflectionUtil;
 import br.com.munif.framework.vicente.core.VicQuery;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -34,12 +32,10 @@ import java.util.stream.Collectors;
 @Scope("prototype")
 public class BaseAPI<T extends BaseEntity> {
 
-    public BaseService<T> service;
+    public VicServiceable<T> service;
 
     public BaseAPI(VicServiceable service) {
-        if (service instanceof BaseService) {
-            this.service = (BaseService<T>) service;
-        }
+        this.service = service;
     }
 
     @Transactional
