@@ -17,9 +17,8 @@ import br.com.munif.framework.vicente.security.domain.dto.PrivilegesAssignmentDt
 import br.com.munif.framework.vicente.security.domain.exceptions.UserNotFoundException;
 import br.com.munif.framework.vicente.security.domain.exceptions.WrongPasswordException;
 import br.com.munif.framework.vicente.security.repository.UserRepository;
-import br.com.munif.framework.vicente.security.service.interfaces.IEmailService;
+import br.com.munif.framework.vicente.security.service.interfaces.IGroupService;
 import br.com.munif.framework.vicente.security.service.interfaces.IUserService;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +31,9 @@ import java.util.List;
 @Service
 public class UserService extends BaseService<User> implements IUserService {
 
-    private GroupService groupService;
+    private final IGroupService groupService;
 
-    public UserService(VicRepository<User> repository, GroupService groupService) {
+    public UserService(VicRepository<User> repository, IGroupService groupService) {
         super(repository);
         this.groupService = groupService;
     }
