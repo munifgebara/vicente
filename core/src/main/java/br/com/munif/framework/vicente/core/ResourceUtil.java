@@ -56,8 +56,9 @@ public class ResourceUtil {
         List<Path> collect = pathRecursivelyFromJar.collect(Collectors.toList());
 
         for (Path path : collect) {
-            if (!path.endsWith(subResourcesDir)) {
-                String fileBase = Thread.currentThread().getContextClassLoader().getResource("").getFile() + subResourcesDir + fileSeparator;
+            boolean isFile = !path.toFile().isDirectory();
+            if (!path.endsWith(subResourcesDir) || isFile) {
+                String fileBase = Thread.currentThread().getContextClassLoader().getResource("").getFile() + subResourcesDir + (isFile ? "" : fileSeparator);
                 File fileToExport = path.toFile();
                 fileBase = fileToExport.toString().replace(fileBase, "");
                 File exportedFile = new File(vicFiles + fileSeparator + fileBase);
