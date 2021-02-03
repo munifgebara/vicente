@@ -65,7 +65,7 @@ public class ResourceUtil {
                 if (!exportedFile.exists()) {
                     if (isFile(exportedFile.toURI().toString())) {
                         InputStream resourceAsStream = Thread.currentThread()
-                                .getContextClassLoader().getResourceAsStream(subResourcesDir + fileSeparator + fileBase);
+                                .getContextClassLoader().getResourceAsStream(subResourcesDir + fileBase);
                         FileUtils.copyInputStreamToFile(resourceAsStream, exportedFile);
                     } else {
                         exportedFile.mkdir();
