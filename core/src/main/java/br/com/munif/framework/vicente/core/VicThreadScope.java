@@ -58,4 +58,13 @@ public class VicThreadScope {
      * Map of thread options
      */
     public static final ThreadLocal<Map<String, Boolean>> options = ThreadLocal.withInitial(HashMap::new);
+
+    public static boolean isOnJUnitTest() {
+        for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+            if (element.getClassName().startsWith("org.junit.")) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
