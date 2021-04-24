@@ -1,6 +1,6 @@
 package br.com.munif.framework.vicente.core.vquery;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author wmfsystem
@@ -15,6 +15,12 @@ public class VEntityQuery extends VQuery {
     public VEntityQuery(Object entity, Criteria criteria) {
         this.entity = entity;
         this.setCriteria(criteria);
+    }
+
+    public VEntityQuery(Object entity, LogicalOperator logicalOperator, List<VQuery> vQuerys) {
+        this.entity = entity;
+        this.setLogicalOperator(logicalOperator);
+        this.setSubQuerys(vQuerys);
     }
 
     public VEntityQuery(Object entity, String alias) {
@@ -33,6 +39,14 @@ public class VEntityQuery extends VQuery {
         this.setAlias(alias);
         this.setFields(fields);
         this.setCriteria(criteria);
+    }
+
+    public VEntityQuery(Object entity, String alias, LogicalOperator logicalOperator, List<VQuery> vQuerys, String... fields) {
+        this.entity = entity;
+        this.setAlias(alias);
+        this.setFields(fields);
+        this.setLogicalOperator(logicalOperator);
+        this.setSubQuerys(vQuerys);
     }
 
     public Object getEntity() {

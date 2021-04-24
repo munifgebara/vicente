@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
@@ -311,6 +312,23 @@ public class VQueryTest {
                         )
                 );
         assertEquals("(((sexo in ('M','F')) AND (idade in (1,2,3))) OR (subitems in (select obj from OutraTabela obj where (1 = 1))) OR (id in (select hist.id as id from Historico hist where (hist.id = id))))", vQuery.toStringWithoutParams());
+    }
+
+    @Test
+    public void testVEntityQueryIn2() {
+        vQuery = new VQuery(new Criteria("sexo", ComparisonOperator.IN, new String[]{"M", "F"}))
+                .and(new Criteria("idade", ComparisonOperator.IN, new Integer[]{1, 2, 3}))
+                .or(new Criteria("subitems", ComparisonOperator.IN, new VEntityQuery("OutraTabela")))
+                .or(new Criteria("id", ComparisonOperator.IN,
+                                new VEntityQuery(
+                                        "Historico",
+                                        "hist",
+                                        LogicalOperator.AND,
+                                        Collections.singletonList(new VQuery(new Criteria("id", ComparisonOperator.EQUAL, new CriteriaField("id")))),
+                                        "id")
+                        )
+                );
+        assertEquals("(((sexo in ('M','F')) AND (idade in (1,2,3))) OR (subitems in (select obj from OutraTabela obj where (1 = 1))) OR (id in (select hist.id as id from Historico hist where (1 = 1) AND ((id = id)))))", vQuery.toStringWithoutParams());
     }
 
     @Test

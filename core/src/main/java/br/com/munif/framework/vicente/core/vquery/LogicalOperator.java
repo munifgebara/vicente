@@ -1,5 +1,7 @@
 package br.com.munif.framework.vicente.core.vquery;
 
+import java.util.stream.Collectors;
+
 /**
  *
  * @author wmfsystem
@@ -10,6 +12,9 @@ public enum LogicalOperator {
     public String getOperation(VQuery vQuery) {
         switch (this) {
             case SIMPLE:
+                if (vQuery.getSubQuerys().size() > 0) {
+                    System.out.println("aqui");
+                }
                 return "(" + vQuery.getAliasWithDot() + vQuery.getCriteria().toString() + ")";
             case NOT:
                 return "(!" + vQuery.getAliasWithDot() + vQuery.getCriteria().toString() + ")";
