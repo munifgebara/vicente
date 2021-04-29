@@ -1,0 +1,18 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "08:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: io.projectreactor:reactor-core
+    versions:
+    - 3.4.2
+    - 3.4.3
+    - 3.4.4
+  - dependency-name: com.google.api-client:google-api-client
+    versions:
+    - 1.31.2
+    - 1.31.3
