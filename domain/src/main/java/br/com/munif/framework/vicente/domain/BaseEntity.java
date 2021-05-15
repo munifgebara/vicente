@@ -208,6 +208,7 @@ public class BaseEntity implements Serializable {
         return true;
     }
 
+    @JsonGetter
     public String getClassName() {
         return this.getClass().getSimpleName();
     }

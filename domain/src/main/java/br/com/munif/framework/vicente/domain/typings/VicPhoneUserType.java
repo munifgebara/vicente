@@ -81,7 +81,10 @@ public class VicPhoneUserType implements CompositeUserType {
         final String description = resultSet.getString(names[0]);
         for (int i = 0; i < names.length; i++) {
             if (resultSet.getObject(names[i]) != null) {
-                return new VicPhone(description, resultSet.getString(names[i+1]));
+                try {
+                    return new VicPhone(description, resultSet.getString(names[i + 1]));
+                } catch (IndexOutOfBoundsException ignored) {
+                }
             }
         }
         return new VicPhone();
