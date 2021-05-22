@@ -1,6 +1,8 @@
 package br.com.munif.framework.vicente.application;
 
 import br.com.munif.framework.vicente.core.*;
+import br.com.munif.framework.vicente.core.phonetics.PhoneticBuilder;
+import br.com.munif.framework.vicente.core.phonetics.VicPhoneticPolicy;
 import br.com.munif.framework.vicente.core.vquery.*;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
@@ -9,6 +11,7 @@ import org.hibernate.transform.ResultTransformer;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.util.ReflectionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Parameter;
@@ -348,6 +351,35 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
                 Field field = ReflectionUtil.getField(t.getClass(), entry.getKey());
                 field.setAccessible(true);
                 field.set(t, entry.getValue());
+            }
+        }
+    }
+
+    @Override
+    public <S extends T> S save(S entity) {
+        setPhoneticField(entity);
+        return super.save(entity);
+    }
+
+    private <S extends T> void setPhoneticField(S entity) {
+        Class<T> domainClass = this.getDomainClass();
+        boolean assignableFromBaseEntity = BaseEntity.class.isAssignableFrom(domainClass);
+        if (assignableFromBaseEntity) {
+            VicPhoneticPolicy vicPhoneticPolicy = domainClass.getAnnotation(VicPhoneticPolicy.class);
+            if (vicPhoneticPolicy != null) {
+                String field = vicPhoneticPolicy.field();
+                try {
+                    Field declaredField = domainClass.getDeclaredField(field);
+                    declaredField.setAccessible(true);
+                    Object declaredFieldValue = declaredField.get(entity);
+                    Field phonetic = ReflectionUtils.findField(domainClass, vicPhoneticPolicy.phoneticField());
+                    phonetic.setAccessible(true);
+                    String translatedValue = PhoneticBuilder.build().translate(String.valueOf(declaredFieldValue));
+                    phonetic.set(entity, translatedValue);
+
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 package br.com.munif.framework.vicente.core.vquery;
 
+import br.com.munif.framework.vicente.core.phonetics.PhoneticBuilder;
 import br.com.munif.framework.vicente.core.phonetics.PortuguesePhonetic;
 
 import java.util.Map;
@@ -58,7 +59,7 @@ public class Criteria {
 
     public Object getValue() {
         if (this.value instanceof String && this.phonetic) {
-            value = PortuguesePhonetic.translate(String.valueOf(value));
+            value = PhoneticBuilder.build().translate(String.valueOf(value));
         }
         return valueFn != null ? String.format(valueFn, value) : value;
     }

@@ -1,8 +1,6 @@
 package br.com.munif.framework.vicente.core.phonetics;
 
-import org.apache.commons.codec.StringEncoder;
-
-public class PortuguesePhonetic implements StringEncoder {
+public class PortuguesePhonetic implements PhoneticTranslator {
 
     private static final String ACCENT_A = "ÁÂÀÃÄ";
     private static final String ACCENT_E = "ÉÈÊẼË";
@@ -10,10 +8,10 @@ public class PortuguesePhonetic implements StringEncoder {
     private static final String ACCENT_O = "ÓÔÒÕÖ";
     private static final String ACCENT_U = "ÚÛÙŨÜ";
 
-    public static String translate(String str) {
-        PortuguesePhonetic foneticaPortuguesa = new PortuguesePhonetic();
+    public String translate(String str) {
+        PortuguesePhonetic phonetic = new PortuguesePhonetic();
         try {
-            return foneticaPortuguesa.encode(str.toUpperCase()).trim();
+            return phonetic.encode(str.toUpperCase()).trim();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -51,6 +51,9 @@ public class BaseEntity implements Serializable {
     protected String ui;
 
     @JsonIgnore
+    protected String phonetic;
+
+    @JsonIgnore
     protected Integer rights;
 
     protected String extra;
@@ -116,6 +119,14 @@ public class BaseEntity implements Serializable {
 
     public void setUi(String ui) {
         this.ui = ui;
+    }
+
+    public String getPhonetic() {
+        return phonetic;
+    }
+
+    public void setPhonetic(String phonetic) {
+        this.phonetic = phonetic;
     }
 
     public String getOi() {
