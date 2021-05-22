@@ -98,7 +98,7 @@ public class VicPhoneUserType implements CompositeUserType {
         } else {
             final VicPhone object = (VicPhone) value;
             preparedStatement.setString(property + 0, object.getDescription());
-            preparedStatement.setString(property + 1, Optional.of(object.getType()).orElse(PhoneType.LANDLINE).name());
+            preparedStatement.setString(property + 1, Optional.ofNullable(object.getType()).orElse(PhoneType.CELLPHONE).name());
 
         }
     }
