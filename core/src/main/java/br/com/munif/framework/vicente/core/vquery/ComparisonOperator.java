@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- *
  * @author wmfsystem
  */
 public enum ComparisonOperator {
@@ -38,7 +37,7 @@ public enum ComparisonOperator {
         return comparator;
     }
 
-    public String getComparation(Object field, Object value) {
+    public String getComparation(Object field, Object value, String valueFn) {
         StringBuilder toReturn = new StringBuilder();
 
         String startsValue = (ComparisonOperator.IN_ELEMENTS.equals(this)) ? "(" : "";
@@ -50,9 +49,12 @@ public enum ComparisonOperator {
             toReturn = toReturn.append(field).append(this.getComparator()).append(startsValue);
         }
 
-        mount(value, toReturn);
+        StringBuilder valueBuilder = new StringBuilder();
+        mount(value, valueBuilder);
 
-        return toReturn.toString().concat(endsValue);
+        String finalValue = valueFn != null ? String.format(valueFn, valueBuilder) : valueBuilder.toString();
+
+        return toReturn.toString().concat(finalValue).concat(endsValue);
     }
 
     public static void mount(Object value, StringBuilder toReturn, ComparisonOperator comparisonOperator) {

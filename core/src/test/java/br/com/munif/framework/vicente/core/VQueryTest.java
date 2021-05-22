@@ -42,10 +42,11 @@ public class VQueryTest {
     }
 
     @Test
-    public void constructorLogicalOperatorCriteriaSubQuerys3() {
+    public void testValueFn() {
         vQuery = new VQuery(LogicalOperator.AND, new Criteria(), Arrays.asList(new VQuery(new Criteria("nome", ComparisonOperator.EQUAL, "Willian"))));
-        vQuery = vQuery.and(new Criteria("idade", ComparisonOperator.GREATER, 20));
-        assertEquals("((nome = 'Willian') AND (idade > 20))", vQuery.toStringWithoutParams());
+        vQuery.getCriteria().setFieldFn("upper(%s)");
+        vQuery.getCriteria().setValueFn("upper(%s)");
+        assertEquals("(upper(1) = upper(1)) AND ((nome = 'Willian'))", vQuery.toStringWithoutParams());
     }
 
     @Test
@@ -59,6 +60,13 @@ public class VQueryTest {
     public void constructorLogicalOperatorCriteria2() {
         vQuery = new VQuery(LogicalOperator.AND, new Criteria("nome", ComparisonOperator.EQUAL, "Willian"));
         assertEquals("nome = 'Willian'", vQuery.toStringWithoutParams());
+    }
+
+    @Test
+    public void testInElements() {
+        vQuery = new VQuery(LogicalOperator.AND, new Criteria("item", ComparisonOperator.IN_ELEMENTS, new CriteriaField("obj.list")));
+        ParamList params = vQuery.getParams();
+        assertEquals("'item' in elements(obj.list)", vQuery.toString());
     }
 
     @Test

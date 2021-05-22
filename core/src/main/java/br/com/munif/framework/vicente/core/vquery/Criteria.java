@@ -1,7 +1,6 @@
 package br.com.munif.framework.vicente.core.vquery;
 
 import br.com.munif.framework.vicente.core.phonetics.PhoneticBuilder;
-import br.com.munif.framework.vicente.core.phonetics.PortuguesePhonetic;
 
 import java.util.Map;
 
@@ -24,7 +23,8 @@ public class Criteria {
         fieldFn = null;
         valueFn = null;
         phonetic = false;
-        param = new Param(null, value != null ? value.getClass() : Object.class, field);
+        if (!(value instanceof CriteriaField))
+            param = new Param(null, value != null ? value.getClass() : Object.class, field);
     }
 
     public Criteria() {
@@ -61,7 +61,7 @@ public class Criteria {
         if (this.value instanceof String && this.phonetic) {
             value = PhoneticBuilder.build().translate(String.valueOf(value));
         }
-        return valueFn != null ? String.format(valueFn, value) : value;
+        return value;
     }
 
     public void setValue(Object value) {
@@ -113,7 +113,7 @@ public class Criteria {
 
     @Override
     public String toString() {
-        return comparisonOperator.getComparation(getField(), value instanceof VEntityQuery ? getValue() : getParam().getKey());
+        return comparisonOperator.getComparation(getField(), value instanceof VEntityQuery || value instanceof CriteriaField ? getValue() : getParam().getKey(), valueFn);
     }
 
     public Param getParam() {

@@ -259,12 +259,12 @@ public class VQuery {
                 if (value instanceof VEntityQuery) {
                     getParams(((VEntityQuery) value), params);
                 } else if (value != null
-                        && (value instanceof CriteriaField || value instanceof String
+                        && (value instanceof String
                         || value instanceof Date || value.getClass().isArray())) {
                     StringBuilder toReturn = new StringBuilder();
                     ComparisonOperator.mount(value, toReturn, vQuery.getCriteria().getComparisonOperator());
                     params.add(vQuery.getCriteria().getParam().setBuilderValue(toReturn.toString()));
-                } else {
+                } else if (!(value instanceof CriteriaField)) {
                     if (value != null) vQuery.getCriteria().getParam().setType(value.getClass());
                     else vQuery.getCriteria().getParam().setType(Object.class);
                     params.add(vQuery.getCriteria().getParam().setBuilderValue(value));
