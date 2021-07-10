@@ -6,10 +6,14 @@
 package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.core.RightsHelper;
+import br.com.munif.framework.vicente.core.Utils;
+import br.com.munif.framework.vicente.core.VicOperationKey;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.service.interfaces.ITokenService;
+import com.google.common.base.CaseFormat;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +50,17 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         }
         VicThreadScope.ip.set(request.getRemoteAddr());
         String tokenValue = getAuthorization(request);
+        HandlerMethod hm;
+        if (handler instanceof HandlerMethod) {
+            hm = (HandlerMethod) handler;
+            VicOperationKey operationKeyAnnotation = hm.getMethodAnnotation(VicOperationKey.class);
+            if (operationKeyAnnotation != null) {
+                VicThreadScope.key.set(operationKeyAnnotation.value());
+            } else {
+                String clazz = CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, Utils.inferGenericType(((HandlerMethod) handler).getBeanType()).getSimpleName());
+                VicThreadScope.key.set(clazz + "_" + method);
+            }
+        }
         if (tokenValue != null) {
             Token token = tokenService.findTokenByValue(tokenValue);
             User u = token.getUser();
@@ -74,7 +89,6 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         }
         return true;
     }
-
 
     private String getAuthorization(HttpServletRequest request) {
         String tokenValue = request.getHeader("Authorization");
