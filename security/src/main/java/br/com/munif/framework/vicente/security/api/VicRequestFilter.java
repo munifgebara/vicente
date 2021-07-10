@@ -58,7 +58,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
                 VicThreadScope.key.set(operationKeyAnnotation.value());
             } else {
                 String clazz = CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, Utils.inferGenericType(((HandlerMethod) handler).getBeanType()).getSimpleName());
-                VicThreadScope.key.set(clazz + "_" + method);
+                VicThreadScope.key.set(clazz + "_" + hm.getMethod().getName().toUpperCase() + "_" + method);
             }
         }
         if (tokenValue != null) {
