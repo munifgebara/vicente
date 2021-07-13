@@ -72,7 +72,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
             sb.append("and (" + alias + ".oi like :oi)\n");
         }
         if (publics) {
-            sb.append("or (1=1    and    mod(" + alias + ".rights  ,8)/4>=1)\n");
+            sb.append("or (mod(" + alias + ".rights  ,8)/4>=1)\n");
         }
         if (isVicTemporalEntity) {
             sb.append(") and (" + alias + ".startTime<=:et and :et<=" + alias + ".endTime) \n");

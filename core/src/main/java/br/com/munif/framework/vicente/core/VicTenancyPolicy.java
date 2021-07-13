@@ -12,4 +12,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface VicTenancyPolicy {
     VicTenancyType value() default VicTenancyType.GROUPS;
+
+    int rights() default RightsHelper.DEFAULT;
 }

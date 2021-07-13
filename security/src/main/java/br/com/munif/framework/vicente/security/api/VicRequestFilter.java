@@ -38,7 +38,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
     private List<String> publics = Arrays.asList("/api/token/login/bypassword", "/api/token/recover-password");
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String method = request.getMethod();
         String requestURI = request.getRequestURI();
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -57,8 +57,11 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
             if (operationKeyAnnotation != null) {
                 VicThreadScope.key.set(operationKeyAnnotation.value());
             } else {
-                String clazz = CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, Utils.inferGenericType(((HandlerMethod) handler).getBeanType()).getSimpleName());
-                VicThreadScope.key.set(clazz + "_" + hm.getMethod().getName().toUpperCase() + "_" + method);
+                try {
+                    String clazz = CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, Utils.inferGenericType(((HandlerMethod) handler).getBeanType()).getSimpleName());
+                    VicThreadScope.key.set(clazz + "_" + hm.getMethod().getName().toUpperCase() + "_" + method);
+                } catch (Exception ignored) {
+                }
             }
         }
         if (tokenValue != null) {

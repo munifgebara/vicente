@@ -5,6 +5,7 @@ import br.com.munif.framework.vicente.application.victenancyfields.VicFieldValue
 import br.com.munif.framework.vicente.core.Utils;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicScriptEngine;
+import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicField;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldType;
@@ -122,6 +123,8 @@ public abstract class BaseService<T extends BaseEntity> implements VicServiceabl
     public T save(T resource) {
         if (resource != null) {
             resource.setUd(ZonedDateTime.now());
+            VicTenancyPolicy vtp = clazz().getAnnotation(VicTenancyPolicy.class);
+            resource.setRights(vtp.rights());
         }
         T entity = repository.save(resource);
         if (entity instanceof VicTenancyFieldsBaseEntity) {
@@ -168,6 +171,8 @@ public abstract class BaseService<T extends BaseEntity> implements VicServiceabl
         try {
 //            BaseEntity.useSimpleId = true;
             T newInstance = clazz().newInstance();
+            VicTenancyPolicy vtp = clazz().getAnnotation(VicTenancyPolicy.class);
+            newInstance.setRights(vtp.rights());
             if (newInstance instanceof VicTenancyFieldsBaseEntity) {
                 VicTenancyFieldsBaseEntity n = (VicTenancyFieldsBaseEntity) newInstance;
                 List<VicField> res = vicFieldRepository.findByHql(new VicQuery("obj.clazz='" + clazz().getCanonicalName() + "'", 0, 1000000, "id"));

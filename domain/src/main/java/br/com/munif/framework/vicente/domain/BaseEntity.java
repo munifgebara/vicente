@@ -250,6 +250,9 @@ public class BaseEntity implements Serializable {
     public boolean canRead() {
         boolean commonGroup = commonGroup();
         boolean isOwner = isOwner();
+        boolean fromGroup = ((rights / 8) % 8) / 4 >= 1;
+        boolean fromPublic = (rights % 8) / 4 >= 1;
+        boolean fromUser = ((rights / 64) % 8) / 4 >= 1;
         return ((OTHER_READ | (commonGroup ? GROUP_READ : 0) | (isOwner ? OWNER_READ : 0)) & rights) > 0;
     }
 
