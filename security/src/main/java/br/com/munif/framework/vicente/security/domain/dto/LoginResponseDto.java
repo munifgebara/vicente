@@ -2,9 +2,13 @@ package br.com.munif.framework.vicente.security.domain.dto;
 
 import br.com.munif.framework.vicente.security.domain.Token;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LoginResponseDto {
     public boolean ok;
     public Token token;
+    public Map<String, Object> additionalInfo = new HashMap<>();
     public String message;
     public int code;
 
