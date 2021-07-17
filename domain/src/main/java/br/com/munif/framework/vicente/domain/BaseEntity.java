@@ -80,7 +80,8 @@ public class BaseEntity implements Serializable {
         gi = stringNull(RightsHelper.getMainGi());
         ui = stringNull(VicThreadScope.ui.get());
         oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";
-        rights = RightsHelper.getScopeDefault();
+        VicTenancyPolicy vtp = this.getClass().getAnnotation(VicTenancyPolicy.class);
+        rights = vtp != null ? vtp.rights() : RightsHelper.getScopeDefault();
         extra = "Framework";
         cd = ZonedDateTime.now();
         ud = ZonedDateTime.now();
