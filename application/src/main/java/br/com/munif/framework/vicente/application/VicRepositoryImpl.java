@@ -78,7 +78,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
             sb.append(") and (" + alias + ".startTime<=:et and :et<=" + alias + ".endTime) \n");
         }
         sb.append(
-                ")");
+                " and active is true)");
 
         return sb.toString();
     }
