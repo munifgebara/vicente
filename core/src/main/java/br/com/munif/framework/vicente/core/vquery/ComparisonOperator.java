@@ -25,7 +25,8 @@ public enum ComparisonOperator {
     NOT_ENDS_WITH(" not like "),
     NOT_CONTAINS(" not like "),
     NOT_IN(" not in "),
-    NOT_BETWEEN(" not between ");
+    NOT_BETWEEN(" not between "),
+    NONE("");
 
     public final String comparator;
 

@@ -113,7 +113,7 @@ public class Criteria {
 
     @Override
     public String toString() {
-        return comparisonOperator.getComparation(getField(), value instanceof VEntityQuery || value instanceof CriteriaField ? getValue() : getParam().getKey(), valueFn);
+        return comparisonOperator.getComparation(getField(), value instanceof VEntityQuery || value instanceof CriteriaField || ComparisonOperator.NONE.equals(comparisonOperator) ? getValue() : getParam().getKey(), valueFn);
     }
 
     public Param getParam() {

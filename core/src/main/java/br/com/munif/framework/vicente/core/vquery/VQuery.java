@@ -254,7 +254,7 @@ public class VQuery {
 
     public void getParams(VQuery vQuery, ParamList params) {
         if (vQuery != null) {
-            if (vQuery.getCriteria() != null) {
+            if (vQuery.getCriteria() != null && !ComparisonOperator.NONE.equals(vQuery.getCriteria().getComparisonOperator())) {
                 Object value = vQuery.getCriteria().getValue();
                 if (value instanceof VEntityQuery) {
                     getParams(((VEntityQuery) value), params);
