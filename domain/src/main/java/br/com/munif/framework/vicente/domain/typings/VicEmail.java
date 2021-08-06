@@ -1,7 +1,5 @@
 package br.com.munif.framework.vicente.domain.typings;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.Objects;
@@ -11,6 +9,8 @@ public class VicEmail extends VicDomain {
     private String description;
     @Enumerated(EnumType.STRING)
     private SocialNetworking type;
+    private Boolean isValid;
+    private String invalidReason;
 
     public VicEmail() {
 
@@ -49,9 +49,20 @@ public class VicEmail extends VicDomain {
         this.type = type;
     }
 
-    @JsonIgnore
-    public Boolean isValid() {
-        return this.getType().isValid(this.getDescription());
+    public Boolean getValid() {
+        return this.getType().isValid(this.getDescription()) && (isValid != null && isValid);
+    }
+
+    public void setValid(Boolean valid) {
+        isValid = valid;
+    }
+
+    public String getInvalidReason() {
+        return invalidReason;
+    }
+
+    public void setInvalidReason(String invalidReason) {
+        this.invalidReason = invalidReason;
     }
 
     @Override
