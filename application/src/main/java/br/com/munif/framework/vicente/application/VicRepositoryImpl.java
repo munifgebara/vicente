@@ -77,8 +77,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         if (isVicTemporalEntity) {
             sb.append(") and (" + alias + ".startTime<=:et and :et<=" + alias + ".endTime) \n");
         }
-        sb.append(
-                " and active is true)");
+        sb.append(" and " + alias + ".active is true)");
 
         return sb.toString();
     }
