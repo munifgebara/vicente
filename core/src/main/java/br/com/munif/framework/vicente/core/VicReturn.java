@@ -21,6 +21,10 @@ public class VicReturn<T> {
     public VicReturn() {
     }
 
+    public VicReturn(Set<T> values) {
+        this(values, values.size(), 0, false);
+    }
+
     public VicReturn(Set<T> values, Integer quantity, Integer firstResult, Boolean hasMore) {
         this.values = values;
         this.quantity = quantity;
