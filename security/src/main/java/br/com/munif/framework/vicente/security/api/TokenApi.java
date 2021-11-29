@@ -79,4 +79,10 @@ public class TokenApi extends BaseAPI<Token> {
     public ResponseEntity<Map> lostPassword(@PathVariable("ticket") String ticket, @PathVariable("password") String password) {
         return ResponseEntity.ok(tokenService.lostPassword(ticket, password));
     }
+
+    @Transactional
+    @GetMapping(value = "/change-organization/{token:.+}/{organizationId:.+}")
+    public ResponseEntity<Map> changeOrganization(@PathVariable("token") String token, @PathVariable("organizationId") String organizationId) {
+        return ResponseEntity.ok(tokenService.changeOrganization(token, organizationId));
+    }
 }
