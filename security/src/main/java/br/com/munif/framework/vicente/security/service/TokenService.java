@@ -207,4 +207,9 @@ public class TokenService extends BaseService<Token> implements ITokenService {
             throw new UserNotFoundException();
         }
     }
+
+    @Override
+    public Map searchTicket(String id) {
+        return null;
+    }
 }

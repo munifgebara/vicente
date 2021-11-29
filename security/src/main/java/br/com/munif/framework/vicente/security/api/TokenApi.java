@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 /**
  * @author GeradorVicente
  */
@@ -65,5 +67,11 @@ public class TokenApi extends BaseAPI<Token> {
     public ResponseEntity<Void> recoverPassword(@PathVariable("id") String id) {
         tokenService.recoverPassword(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Transactional
+    @GetMapping(value = "/search-ticket/{id:.+}")
+    public ResponseEntity<Map> searchTicket(@PathVariable("id") String id) {
+        return ResponseEntity.ok(tokenService.searchTicket(id));
     }
 }

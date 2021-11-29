@@ -6,6 +6,8 @@ import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
 import br.com.munif.framework.vicente.security.domain.dto.LoginResponseDto;
 
+import java.util.Map;
+
 public interface ITokenService extends VicServiceable<Token> {
     LoginResponseDto loginOnGoogle(String token);
 
@@ -20,4 +22,6 @@ public interface ITokenService extends VicServiceable<Token> {
     LoginResponseDto sigin(LoginDto login);
 
     void recoverPassword(String id);
+
+    Map searchTicket(String id);
 }
