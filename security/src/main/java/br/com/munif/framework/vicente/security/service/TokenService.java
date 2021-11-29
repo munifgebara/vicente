@@ -219,7 +219,7 @@ public class TokenService extends BaseService<Token> implements ITokenService {
     }
 
     @Override
-    public Map changeOrganization(String token, String organizationId) {
+    public Map changeOrganization(String organizationId) {
         return null;
     }
 }

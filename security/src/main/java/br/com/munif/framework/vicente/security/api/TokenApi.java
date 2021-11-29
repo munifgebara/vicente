@@ -74,6 +74,7 @@ public class TokenApi extends BaseAPI<Token> {
     public ResponseEntity<Map> searchTicket(@PathVariable("id") String id) {
         return ResponseEntity.ok(tokenService.searchTicket(id));
     }
+
     @Transactional
     @GetMapping(value = "/lost-password/{ticket:.+}/{password:.+}")
     public ResponseEntity<Map> lostPassword(@PathVariable("ticket") String ticket, @PathVariable("password") String password) {
@@ -81,8 +82,8 @@ public class TokenApi extends BaseAPI<Token> {
     }
 
     @Transactional
-    @GetMapping(value = "/change-organization/{token:.+}/{organizationId:.+}")
-    public ResponseEntity<Map> changeOrganization(@PathVariable("token") String token, @PathVariable("organizationId") String organizationId) {
-        return ResponseEntity.ok(tokenService.changeOrganization(token, organizationId));
+    @GetMapping(value = "/change-organization/{organizationId:.+}")
+    public ResponseEntity<Map> changeOrganization(@PathVariable("organizationId") String organizationId) {
+        return ResponseEntity.ok(tokenService.changeOrganization(organizationId));
     }
 }
