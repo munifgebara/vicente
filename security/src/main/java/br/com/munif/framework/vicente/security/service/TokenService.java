@@ -212,4 +212,9 @@ public class TokenService extends BaseService<Token> implements ITokenService {
     public Map searchTicket(String id) {
         return null;
     }
+
+    @Override
+    public Object lostPassword(String ticket, String password) {
+        return null;
+    }
 }

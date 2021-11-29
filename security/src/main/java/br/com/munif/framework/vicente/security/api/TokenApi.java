@@ -74,4 +74,9 @@ public class TokenApi extends BaseAPI<Token> {
     public ResponseEntity<Map> searchTicket(@PathVariable("id") String id) {
         return ResponseEntity.ok(tokenService.searchTicket(id));
     }
+    @Transactional
+    @GetMapping(value = "/lost-password/{ticket:.+}/{password:.+}")
+    public ResponseEntity<Map> lostPassword(@PathVariable("ticket") String ticket, @PathVariable("password") String password) {
+        return ResponseEntity.ok(tokenService.lostPassword(ticket, password));
+    }
 }

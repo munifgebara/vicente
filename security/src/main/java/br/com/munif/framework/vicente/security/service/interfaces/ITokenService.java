@@ -24,4 +24,6 @@ public interface ITokenService extends VicServiceable<Token> {
     void recoverPassword(String id);
 
     Map searchTicket(String id);
+
+    Object lostPassword(String ticket, String password);
 }
