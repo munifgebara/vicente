@@ -214,7 +214,7 @@ public class TokenService extends BaseService<Token> implements ITokenService {
     }
 
     @Override
-    public Object lostPassword(String ticket, String password) {
+    public Map lostPassword(String ticket, String password) {
         return null;
     }
 }

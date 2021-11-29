@@ -25,5 +25,5 @@ public interface ITokenService extends VicServiceable<Token> {
 
     Map searchTicket(String id);
 
-    Object lostPassword(String ticket, String password);
+    Map lostPassword(String ticket, String password);
 }
