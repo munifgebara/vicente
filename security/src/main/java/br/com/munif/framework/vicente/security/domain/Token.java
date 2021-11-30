@@ -28,6 +28,9 @@ public class Token extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @ManyToOne
+    @JoinColumn(name = "organization_id")
+    private Organization organization;
     @Column(name = "expiration")
     private Long expiration;
 
@@ -59,4 +62,11 @@ public class Token extends BaseEntity {
         this.expiration = expiration;
     }
 
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
+    }
 }

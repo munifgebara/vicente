@@ -68,12 +68,10 @@ public class User extends BaseEntity {
         return (Group) getGroups().toArray()[index];
     }
 
-    @JsonGetter
     public Group getFirstGroup() {
         return getGroups().stream().min(Comparator.comparing(BaseEntity::getId)).orElse(null);
     }
 
-    @JsonGetter
     public Organization getFirstOrganization() {
         return getOrganizations().stream().min(Comparator.comparing(BaseEntity::getId)).orElse(null);
     }
