@@ -3,6 +3,7 @@ package br.com.munif.framework.vicente.security.domain;
 import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.envers.Audited;
 
@@ -67,10 +68,12 @@ public class User extends BaseEntity {
         return (Group) getGroups().toArray()[index];
     }
 
+    @JsonGetter
     public Group getFirstGroup() {
         return getGroups().stream().min(Comparator.comparing(BaseEntity::getId)).orElse(null);
     }
 
+    @JsonGetter
     public Organization getFirstOrganization() {
         return getOrganizations().stream().min(Comparator.comparing(BaseEntity::getId)).orElse(null);
     }
