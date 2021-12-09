@@ -21,7 +21,7 @@
         <hibernate.version>5.2.13.Final</hibernate.version>
         <HikariCP>2.6.3</HikariCP>
         <jackson-annotations>2.9.4</jackson-annotations>
-        <jackson-databind>2.9.9</jackson-databind>
+        <jackson-databind>2.9.10.8</jackson-databind>
         <jackson-datatype-hibernate5>2.9.4</jackson-datatype-hibernate5>
         <jackson-datatype-joda>2.9.0</jackson-datatype-joda>
         <jackson-datatype>2.9.4</jackson-datatype>
