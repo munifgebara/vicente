@@ -60,24 +60,28 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         if (isVicTemporalEntity) {
             sb.append("(\n");
         }
-        sb.append("   (" + alias + ".ui=:ui and mod(" + alias + ".rights/64,8)/4>=1) \n");
+        if (vtt.equals(VicTenancyType.ONLY_HIERARCHICAL_TOP_DOWN)) {
+            sb.append(" (").append(alias).append(".oi like :oi)\n ");
+        } else {
+            sb.append("   (").append(alias).append(".ui=:ui and mod(").append(alias).append(".rights/64,8)/4>=1) \n");
 
-        if (vtt.equals(VicTenancyType.GROUPS) || vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
-            sb.append("or (:gi like concat('%'," + alias + ".gi,',%') and mod(" + alias + ".rights/8,8)/4>=1) \n");
-        }
+            if (vtt.equals(VicTenancyType.GROUPS) || vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
+                sb.append("or (:gi like concat('%',").append(alias).append(".gi,',%') and mod(").append(alias).append(".rights/8,8)/4>=1) \n");
+            }
 
-        if (vtt.equals(VicTenancyType.HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.ORGANIZATIONAL)) {
-            sb.append("or (" + alias + ".oi like :oi)\n");
-        } else if (vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
-            sb.append("and (" + alias + ".oi like :oi)\n");
+            if (vtt.equals(VicTenancyType.HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.ORGANIZATIONAL)) {
+                sb.append("or (").append(alias).append(".oi like :oi)\n");
+            } else if (vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
+                sb.append("and (").append(alias).append(".oi like :oi)\n");
+            }
         }
         if (publics) {
-            sb.append("or (mod(" + alias + ".rights  ,8)/4>=1)\n");
+            sb.append("or (mod(").append(alias).append(".rights  ,8)/4>=1)\n");
         }
         if (isVicTemporalEntity) {
-            sb.append(") and (" + alias + ".startTime<=:et and :et<=" + alias + ".endTime) \n");
+            sb.append(") and (").append(alias).append(".startTime<=:et and :et<=").append(alias).append(".endTime) \n");
         }
-        sb.append(" and " + alias + ".active is true)");
+        sb.append(" and ").append(alias).append(".active is true)");
 
         return sb.toString();
     }
