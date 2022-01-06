@@ -232,7 +232,7 @@ public class BaseEntity implements Serializable {
 
     public boolean isOwner() {
         String token_ui = VicThreadScope.ui.get();
-        return ui != null && token_ui != null && token_ui.equals(ui);
+        return token_ui != null && token_ui.equals(ui);
     }
 
     public boolean commonGroup() {
@@ -241,20 +241,25 @@ public class BaseEntity implements Serializable {
     }
 
     public boolean canDelete() {
-        return ((OTHER_DELETE | (commonGroup() ? GROUP_DELETE : 0) | (isOwner() ? OWNER_DELETE : 0)) & rights) > 0;
+        return canChangeBeingOnlyOi() || ((OTHER_DELETE | (commonGroup() ? GROUP_DELETE : 0) | (isOwner() ? OWNER_DELETE : 0)) & rights) > 0;
     }
 
     public boolean canUpdate() {
-        return ((OTHER_UPDATE | (commonGroup() ? GROUP_UPDATE : 0) | (isOwner() ? OWNER_UPDATE : 0)) & rights) > 0;
+        return canChangeBeingOnlyOi() || ((OTHER_UPDATE | (commonGroup() ? GROUP_UPDATE : 0) | (isOwner() ? OWNER_UPDATE : 0)) & rights) > 0;
     }
 
     public boolean canRead() {
         boolean commonGroup = commonGroup();
         boolean isOwner = isOwner();
-        boolean fromGroup = ((rights / 8) % 8) / 4 >= 1;
-        boolean fromPublic = (rights % 8) / 4 >= 1;
-        boolean fromUser = ((rights / 64) % 8) / 4 >= 1;
-        return ((OTHER_READ | (commonGroup ? GROUP_READ : 0) | (isOwner ? OWNER_READ : 0)) & rights) > 0;
+        return canChangeBeingOnlyOi()
+                || ((OTHER_READ | (commonGroup ? GROUP_READ : 0) | (isOwner ? OWNER_READ : 0)) & rights) > 0;
+    }
+
+    private boolean canChangeBeingOnlyOi() {
+        VicTenancyPolicy annotation = this.getClass().getAnnotation(VicTenancyPolicy.class);
+        VicTenancyType value = annotation != null ? annotation.value() : VicTenancyType.NONE;
+        return (VicTenancyType.ONLY_HIERARCHICAL_TOP_DOWN.equals(value) && this.getOi().startsWith(VicThreadScope.oi.get()))
+                || (VicTenancyType.ONLY_ORGANIZATIONAL.equals(value) && this.getOi().startsWith(VicThreadScope.getTopOi()));
     }
 
     @JsonGetter

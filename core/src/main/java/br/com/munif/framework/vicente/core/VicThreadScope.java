@@ -71,4 +71,10 @@ public class VicThreadScope {
         }
         return false;
     }
+
+    public static String getTopOi() {
+        String s = VicThreadScope.oi.get();
+        if (s == null) s = "";
+        return s.split("\\.")[0] + ".";
+    }
 }
