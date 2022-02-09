@@ -18,7 +18,7 @@
         <h2>1.4.199</h2>
         <hibernate-jpa-2.2-api>1.0.0.Beta1</hibernate-jpa-2.2-api>
         <hibernate-validator>5.2.5.Final</hibernate-validator>
-        <hibernate.version>5.2.13.Final</hibernate.version>
+        <hibernate.version>5.4.24.Final</hibernate.version>
         <HikariCP>2.6.3</HikariCP>
         <jackson-annotations>2.9.4</jackson-annotations>
         <jackson-databind>2.9.9</jackson-databind>
