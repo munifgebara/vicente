@@ -463,6 +463,7 @@ public class VQueryTest {
         gQuery.getParams().get(0).setType(LocalDate.class);
         assertEquals(parse, gQuery.getParams().get(0).getValueToSearch());
     }
+
     @Test
     public void testNone() {
         VQuery gQuery = new VQuery(new Criteria("I can do whatever I want", ComparisonOperator.NONE, ""));

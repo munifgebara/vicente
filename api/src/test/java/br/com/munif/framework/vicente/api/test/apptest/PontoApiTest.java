@@ -12,8 +12,6 @@ import br.com.munif.framework.vicente.api.test.apptest.domain.Ponto;
 import br.com.munif.framework.vicente.api.test.apptest.repository.PontoRepository;
 import br.com.munif.framework.vicente.api.test.apptest.service.PontoService;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-
-import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,21 +22,23 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
-import org.springframework.test.web.servlet.MvcResult;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = InformationApp.class)
 public class PontoApiTest {
@@ -64,6 +64,20 @@ public class PontoApiTest {
 
     private Ponto ponto;
 
+    public static Ponto createEntity(EntityManager em) {
+        Ponto ponto = new Ponto();
+
+        ponto.setNome(DEAFAULT_NAME);
+        return ponto;
+    }
+
+    public static Ponto createEntity() {
+        Ponto ponto = new Ponto();
+
+        ponto.setNome(DEAFAULT_NAME);
+        return ponto;
+    }
+
     @Before
     public void setup() {
         VicThreadScope.gi.set("GRUPO");
@@ -81,20 +95,6 @@ public class PontoApiTest {
 
         repository.save(p);
 
-    }
-
-    public static Ponto createEntity(EntityManager em) {
-        Ponto ponto = new Ponto();
-
-        ponto.setNome(DEAFAULT_NAME);
-        return ponto;
-    }
-
-    public static Ponto createEntity() {
-        Ponto ponto = new Ponto();
-
-        ponto.setNome(DEAFAULT_NAME);
-        return ponto;
     }
 
     private List<Ponto> findAll() {
@@ -124,8 +124,8 @@ public class PontoApiTest {
 
         // Create the Book
         restMockMvc.perform(post("/api/ponto")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(createEntity())))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(createEntity())))
                 .andExpect(status().isCreated());
 
         // Validate the Contato in the database
@@ -154,7 +154,7 @@ public class PontoApiTest {
     public void testaHora() throws Exception {
         // Initialize the database
         repository.saveAndFlush(ponto);
-        MvcResult r = restMockMvc.perform(get("/api/ponto/"+ponto.getId())).andReturn();
+        MvcResult r = restMockMvc.perform(get("/api/ponto/" + ponto.getId())).andReturn();
         String contentAsString = r.getResponse().getContentAsString();
         String writeValueAsString = this.jacksonMessageConverter.getObjectMapper().writeValueAsString(ponto);
         assertEquals(writeValueAsString, contentAsString);

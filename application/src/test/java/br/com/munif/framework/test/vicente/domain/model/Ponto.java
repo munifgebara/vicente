@@ -1,10 +1,11 @@
 package br.com.munif.framework.test.vicente.domain.model;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.Entity;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import javax.persistence.Entity;
-import org.hibernate.envers.Audited;
 
 @Entity
 @Audited

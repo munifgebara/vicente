@@ -6,12 +6,7 @@
 package br.com.munif.framework.test.vicente.application;
 
 import br.com.munif.framework.test.vicente.application.repository.*;
-import br.com.munif.framework.test.vicente.domain.model.smartsearch.Categoria;
-import br.com.munif.framework.test.vicente.domain.model.smartsearch.Cliente;
-import br.com.munif.framework.test.vicente.domain.model.smartsearch.GrupoClientes;
-import br.com.munif.framework.test.vicente.domain.model.smartsearch.ItemPedido;
-import br.com.munif.framework.test.vicente.domain.model.smartsearch.Pedido;
-import br.com.munif.framework.test.vicente.domain.model.smartsearch.Produto;
+import br.com.munif.framework.test.vicente.domain.model.smartsearch.*;
 import br.com.munif.framework.vicente.application.search.VicAutoSeed;
 import br.com.munif.framework.vicente.application.search.VicSmartSearch;
 import br.com.munif.framework.vicente.application.search.dijkstra.Dijkstra;
@@ -19,6 +14,13 @@ import br.com.munif.framework.vicente.application.search.dijkstra.Graph;
 import br.com.munif.framework.vicente.application.search.dijkstra.Node;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,15 +30,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.*;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author munif

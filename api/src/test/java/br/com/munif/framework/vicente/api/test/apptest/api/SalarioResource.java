@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/salario-resource")
 public class SalarioResource extends BaseResource<Salario> {
 
-    private final Logger log = LoggerFactory.getLogger(SalarioResource.class);
-
     private static final String ENTITY_NAME = "salario";
+    private final Logger log = LoggerFactory.getLogger(SalarioResource.class);
 
     public SalarioResource(BaseService<Salario> service) {
         super(service);

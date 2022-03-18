@@ -55,11 +55,6 @@ public class SecurityApp {
         this.env = env;
     }
 
-    @PostConstruct
-    public void initApplication() {
-        seedSecurity.seedSecurity();
-    }
-
     public static void main(String[] args) throws UnknownHostException {
         SpringApplication app = new SpringApplication(SecurityApp.class);
         DefaultProfileUtil.addDefaultProfile(app);
@@ -80,5 +75,10 @@ public class SecurityApp {
                 InetAddress.getLocalHost().getHostAddress(),
                 env.getProperty("remote.server.port"),
                 env.getActiveProfiles());
+    }
+
+    @PostConstruct
+    public void initApplication() {
+        seedSecurity.seedSecurity();
     }
 }

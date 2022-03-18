@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 
 @Entity
 @Audited
-public class Email extends BaseEntity{
+public class Email extends BaseEntity {
 
     @Columns(columns = {
             @Column(name = "description"),

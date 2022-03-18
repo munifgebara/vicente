@@ -150,13 +150,13 @@ public class BaseEntity implements Serializable {
         return extra;
     }
 
+    public void setExtra(String extra) {
+        this.extra = extra;
+    }
+
     public BaseEntity extra(String e) {
         this.extra = e;
         return this;
-    }
-
-    public void setExtra(String extra) {
-        this.extra = extra;
     }
 
     public ZonedDateTime getCd() {

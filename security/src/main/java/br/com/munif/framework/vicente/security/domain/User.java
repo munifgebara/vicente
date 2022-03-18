@@ -3,7 +3,6 @@ package br.com.munif.framework.vicente.security.domain;
 import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.envers.Audited;
 
@@ -64,6 +63,10 @@ public class User extends BaseEntity {
         return groups;
     }
 
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
+    }
+
     public Group getGroupByIndex(int index) {
         return (Group) getGroups().toArray()[index];
     }
@@ -74,10 +77,6 @@ public class User extends BaseEntity {
 
     public Organization getFirstOrganization() {
         return getOrganizations().stream().min(Comparator.comparing(BaseEntity::getId)).orElse(null);
-    }
-
-    public void setGroups(Set<Group> groups) {
-        this.groups = groups;
     }
 
     public void assignGroups(Collection<Group> groups) {

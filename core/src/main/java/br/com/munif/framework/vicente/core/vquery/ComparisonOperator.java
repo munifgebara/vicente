@@ -34,30 +34,6 @@ public enum ComparisonOperator {
         this.comparator = comparator;
     }
 
-    public String getComparator() {
-        return comparator;
-    }
-
-    public String getComparation(Object field, Object value, String valueFn) {
-        StringBuilder toReturn = new StringBuilder();
-
-        String startsValue = (ComparisonOperator.IN_ELEMENTS.equals(this)) ? "(" : "";
-        String endsValue = (ComparisonOperator.IN_ELEMENTS.equals(this)) ? ")" : "";
-        if (ComparisonOperator.IN_ELEMENTS.equals(this)) {
-            mount(field, toReturn, this);
-            toReturn.append(this.getComparator()).append(startsValue);
-        } else {
-            toReturn = toReturn.append(field).append(this.getComparator()).append(startsValue);
-        }
-
-        StringBuilder valueBuilder = new StringBuilder();
-        mount(value, valueBuilder);
-
-        String finalValue = valueFn != null ? String.format(valueFn, valueBuilder) : valueBuilder.toString();
-
-        return toReturn.toString().concat(finalValue).concat(endsValue);
-    }
-
     public static void mount(Object value, StringBuilder toReturn, ComparisonOperator comparisonOperator) {
         String pre = comparisonOperator.prefixString();
         String pos = comparisonOperator.posfixString();
@@ -86,6 +62,30 @@ public enum ComparisonOperator {
         } else {
             toReturn.append(value);
         }
+    }
+
+    public String getComparator() {
+        return comparator;
+    }
+
+    public String getComparation(Object field, Object value, String valueFn) {
+        StringBuilder toReturn = new StringBuilder();
+
+        String startsValue = (ComparisonOperator.IN_ELEMENTS.equals(this)) ? "(" : "";
+        String endsValue = (ComparisonOperator.IN_ELEMENTS.equals(this)) ? ")" : "";
+        if (ComparisonOperator.IN_ELEMENTS.equals(this)) {
+            mount(field, toReturn, this);
+            toReturn.append(this.getComparator()).append(startsValue);
+        } else {
+            toReturn = toReturn.append(field).append(this.getComparator()).append(startsValue);
+        }
+
+        StringBuilder valueBuilder = new StringBuilder();
+        mount(value, valueBuilder);
+
+        String finalValue = valueFn != null ? String.format(valueFn, valueBuilder) : valueBuilder.toString();
+
+        return toReturn.toString().concat(finalValue).concat(endsValue);
     }
 
     private void mount(Object value, StringBuilder toReturn) {

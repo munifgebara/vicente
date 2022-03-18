@@ -2,25 +2,29 @@
 
 [![](https://avatars2.githubusercontent.com/u/1757453?s=460&v=4)](https://github.com/munifgebara/vicente)
 
- * Framework para desenvolvimento de aplicações Java
- * Políticas de ternancy integradas
- * Facilitadores para busca objeto-relacional
- * Criação e gerenciamento de recursos, serviços e repositórios
- 
- 
-## Ferramentas disponíveis no Framework 
+* Framework para desenvolvimento de aplicações Java
+* Políticas de ternancy integradas
+* Facilitadores para busca objeto-relacional
+* Criação e gerenciamento de recursos, serviços e repositórios
+
+## Ferramentas disponíveis no Framework
+
 ### ** VQuery - Consulta O.O **
+
 VQuery é um mecanismo que permite a busca de dados objeto relacional
-  - As entidades a ser pesquisado o texto
-  - Os campos
-  - O texto
+
+- As entidades a ser pesquisado o texto
+- Os campos
+- O texto
 
 #### O que utilizar
 
-Atualmente existe uma rota que permite fazer consultas OO. É possível enviar um objeto query nas requisições de busca do tipo GET, entretanto, lembre-se que parâmetros tem tamanho limitado:
+Atualmente existe uma rota que permite fazer consultas OO. É possível enviar um objeto query nas requisições de busca do
+tipo GET, entretanto, lembre-se que parâmetros tem tamanho limitado:
 
-* [vquery] (Rota: ../minha-api/vquery) -  Rota que permite fazer uma requisição do tipo POST para buscas.
+* [vquery] (Rota: ../minha-api/vquery) - Rota que permite fazer uma requisição do tipo POST para buscas.
 * Exemplo de Objeto JSON do tipo VQuery:
+
 ```json
      {
         "subQuerys": [
@@ -82,6 +86,5 @@ License
 ----
 
 LGPL-3.0
-
 
 **Free Software, Hell Yeah!**

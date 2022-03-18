@@ -6,16 +6,16 @@
 package br.com.munif.framework.vicente.domain.entities;
 
 import br.com.munif.framework.vicente.core.Utils;
+
+import javax.persistence.Entity;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.Entity;
 
 /**
- *
  * @author munif
  */
 public class EntitiesToJSON {

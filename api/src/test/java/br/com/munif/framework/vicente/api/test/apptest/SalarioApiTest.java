@@ -13,9 +13,6 @@ import br.com.munif.framework.vicente.api.test.apptest.repository.SalarioReposit
 import br.com.munif.framework.vicente.api.test.apptest.service.SalarioService;
 import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,50 +23,45 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
-import org.springframework.test.web.servlet.MvcResult;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = InformationApp.class)
 public class SalarioApiTest {
 
     public static final String DEAFAULT_NAME = "Meu Salario";
-
+    private static int contador = 10000;
     @Autowired
     private SalarioRepository repository;
-
     @Autowired
     private SalarioService service;
 
+    //    @Autowired
+//    private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
-
-//    @Autowired
-//    private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
     @Autowired
     private EntityManager em;
-
     @Autowired
     private ExceptionTranslator exceptionTranslator;
-
     private MockMvc restMockMvc;
-
     private Salario salario = new Salario(DEAFAULT_NAME, BigDecimal.TEN);
-
-    private static int contador = 10000;
 
     @Before
     public void setup() {
@@ -115,8 +107,8 @@ public class SalarioApiTest {
 
         // Create the Salario
         restMockMvc.perform(post("/api/salario")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(new Salario(DEAFAULT_NAME, BigDecimal.TEN))))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(new Salario(DEAFAULT_NAME, BigDecimal.TEN))))
                 .andExpect(status().isCreated());
 
         // Validate the Contato in the database

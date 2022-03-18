@@ -9,16 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * @author munif
  */
 @RestController
 @RequestMapping("/api/information")
 public class InformationApi extends BaseAPI<Information> {
 
-    private final Logger log = LoggerFactory.getLogger(InformationApi.class);
-
     private static final String ENTITY_NAME = "information";
+    private final Logger log = LoggerFactory.getLogger(InformationApi.class);
 
     public InformationApi(BaseService<Information> service) {
         super(service);

@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/information-resource")
 public class InformationResource extends BaseResource<Information> {
 
-    private final Logger log = LoggerFactory.getLogger(InformationResource.class);
-
     private static final String ENTITY_NAME = "information";
+    private final Logger log = LoggerFactory.getLogger(InformationResource.class);
 
     public InformationResource(BaseService<Information> service) {
         super(service);

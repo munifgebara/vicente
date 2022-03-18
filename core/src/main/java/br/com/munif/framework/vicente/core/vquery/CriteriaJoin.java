@@ -50,7 +50,7 @@ public class CriteriaJoin {
                 Object value = vQuery.getCriteria().getValue();
                 if (value instanceof VEntityQuery) {
                     getParams(((CriteriaJoin) value), params);
-                } else if (!(value instanceof CriteriaField)){
+                } else if (!(value instanceof CriteriaField)) {
                     ComparisonOperator.mount(value, toReturn, vQuery.getCriteria().getComparisonOperator());
                     params.add(vQuery.getCriteria().getParam().setBuilderValue(toReturn.toString()));
                 }

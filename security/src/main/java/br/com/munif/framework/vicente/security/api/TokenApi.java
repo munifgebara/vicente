@@ -23,8 +23,8 @@ import java.util.Map;
 @RequestMapping("/api/token")
 public class TokenApi extends BaseAPI<Token> {
 
-    private final Logger log = LogManager.getLogger(TokenApi.class);
     private static final String ENTITY_NAME = "token";
+    private final Logger log = LogManager.getLogger(TokenApi.class);
     private final ITokenService tokenService;
 
     public TokenApi(ITokenService service) {

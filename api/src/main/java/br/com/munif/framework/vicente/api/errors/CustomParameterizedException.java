@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author munif
  * Custom, parameterized exception, which can be translated on the client side.
  * For example:

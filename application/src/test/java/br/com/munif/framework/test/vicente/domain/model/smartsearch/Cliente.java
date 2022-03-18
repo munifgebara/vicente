@@ -3,7 +3,10 @@ package br.com.munif.framework.test.vicente.domain.model.smartsearch;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 /**
@@ -18,7 +21,7 @@ public class Cliente extends BaseEntity {
 
     @Column(name = "cidade")
     private String cidade;
-    
+
     @OneToMany(mappedBy = "cliente")
     private List<Pedido> pedidos;
 
@@ -63,7 +66,5 @@ public class Cliente extends BaseEntity {
         return "Cliente{" + "nome=" + nome + '}';
     }
 
-    
-    
 
 }

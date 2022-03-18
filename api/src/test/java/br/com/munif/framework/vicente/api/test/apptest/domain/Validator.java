@@ -14,6 +14,8 @@ import javax.persistence.Entity;
 public class Validator extends BaseEntity {
 
 
+    @Column(nullable = false)
+    private String name;
 
     public Validator() {
     }
@@ -21,9 +23,6 @@ public class Validator extends BaseEntity {
     public Validator(String name) {
         this.name = name;
     }
-
-    @Column(nullable = false)
-    private String name;
 
     public String getName() {
         return name;

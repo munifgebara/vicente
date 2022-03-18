@@ -10,9 +10,8 @@ import br.com.munif.framework.test.vicente.domain.model.Funcionario;
 import br.com.munif.framework.vicente.application.VicRepository;
 
 /**
- *
  * @author munif
  */
-public interface FuncionarioRepository extends VicRepository<Funcionario>{
-    
+public interface FuncionarioRepository extends VicRepository<Funcionario> {
+
 }

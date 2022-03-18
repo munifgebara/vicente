@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/organization")
 public class OrganizationApi extends BaseAPI<Organization> {
 
-    private final Logger log = LogManager.getLogger(OrganizationApi.class);
     private static final String ENTITY_NAME = "organization";
+    private final Logger log = LogManager.getLogger(OrganizationApi.class);
 
     public OrganizationApi(IOrganizationService service) {
         super(service);

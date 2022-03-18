@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/pessoa-resource")
 public class PessoaResource extends BaseResource<PessoaGenerica> {
 
-    private final Logger log = LoggerFactory.getLogger(PessoaResource.class);
-
     private static final String ENTITY_NAME = "PessoaGenerica";
+    private final Logger log = LoggerFactory.getLogger(PessoaResource.class);
 
     public PessoaResource(BaseService<PessoaGenerica> service) {
         super(service);

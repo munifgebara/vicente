@@ -1,21 +1,14 @@
 package br.com.munif.framework.test.vicente.application;
 
 import br.com.munif.framework.test.vicente.application.repository.*;
-import br.com.munif.framework.test.vicente.domain.model.smartsearch.Categoria;
-import br.com.munif.framework.test.vicente.domain.model.smartsearch.Cliente;
-import br.com.munif.framework.test.vicente.domain.model.smartsearch.GrupoClientes;
-import br.com.munif.framework.test.vicente.domain.model.smartsearch.ItemPedido;
-import br.com.munif.framework.test.vicente.domain.model.smartsearch.Pedido;
-import br.com.munif.framework.test.vicente.domain.model.smartsearch.Produto;
+import br.com.munif.framework.test.vicente.domain.model.smartsearch.*;
 import br.com.munif.framework.vicente.application.DatabaseDiagramBuilder;
 import br.com.munif.framework.vicente.application.search.VicAutoSeed;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.BaseEntity;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +16,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.junit.Assert;
-
-import static org.junit.Assert.assertEquals;
-import org.junit.Ignore;
 
 /**
  * @author munif
@@ -100,7 +91,7 @@ public class DatabaseDiagramTest {
 
     @Transactional
     public void loadSeedCategoria() throws IOException {
-        BaseEntity.useSimpleId=true;
+        BaseEntity.useSimpleId = true;
         if (categoriaRepository.count() > 0) {
             return;
         }
@@ -112,7 +103,7 @@ public class DatabaseDiagramTest {
 
     @Transactional
     public void loadSeedProduto() throws IOException {
-        BaseEntity.useSimpleId=true;
+        BaseEntity.useSimpleId = true;
         if (produtoRepository.count() > 0) {
             return;
         }
@@ -129,7 +120,7 @@ public class DatabaseDiagramTest {
 
     @Transactional
     public void loadSeedPedido() throws IOException {
-        BaseEntity.useSimpleId=true;
+        BaseEntity.useSimpleId = true;
         if (pedidoRepository.count() > 0) {
             return;
         }
@@ -155,7 +146,7 @@ public class DatabaseDiagramTest {
 
     @Transactional
     public void loadSeedCliente() throws IOException {
-        BaseEntity.useSimpleId=true;
+        BaseEntity.useSimpleId = true;
         if (clienteRepository.count() > 0) {
             return;
         }

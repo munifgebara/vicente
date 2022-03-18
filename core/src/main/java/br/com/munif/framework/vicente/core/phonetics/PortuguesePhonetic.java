@@ -8,6 +8,27 @@ public class PortuguesePhonetic implements PhoneticTranslator {
     private static final String ACCENT_O = "ÓÔÒÕÖ";
     private static final String ACCENT_U = "ÚÛÙŨÜ";
 
+    public static String removeAccents(String[] split) {
+        StringBuilder novaString = new StringBuilder();
+
+        for (int i = 0; i < split.length; i++) {
+            if (ACCENT_A.contains(split[i])) {
+                split[i] = "A";
+            } else if (ACCENT_E.contains(split[i])) {
+                split[i] = "E";
+            } else if (ACCENT_I.contains(split[i])) {
+                split[i] = "I";
+            } else if (ACCENT_O.contains(split[i])) {
+                split[i] = "O";
+            } else if (ACCENT_U.contains(split[i])) {
+                split[i] = "U";
+            }
+            novaString.append(split[i]);
+        }
+
+        return novaString.toString();
+    }
+
     public String translate(String str) {
         PortuguesePhonetic phonetic = new PortuguesePhonetic();
         try {
@@ -30,27 +51,6 @@ public class PortuguesePhonetic implements PhoneticTranslator {
         }
         String replaced = str.toUpperCase() + " ";
         return new EncoderLetterByLetter(replaced).encode().trim();
-    }
-
-    public static String removeAccents(String[] split) {
-        StringBuilder novaString = new StringBuilder();
-
-        for (int i = 0; i < split.length; i++) {
-            if (ACCENT_A.contains(split[i])) {
-                split[i] = "A";
-            } else if (ACCENT_E.contains(split[i])) {
-                split[i] = "E";
-            } else if (ACCENT_I.contains(split[i])) {
-                split[i] = "I";
-            } else if (ACCENT_O.contains(split[i])) {
-                split[i] = "O";
-            } else if (ACCENT_U.contains(split[i])) {
-                split[i] = "U";
-            }
-            novaString.append(split[i]);
-        }
-
-        return novaString.toString();
     }
 
     private class EncoderLetterByLetter {

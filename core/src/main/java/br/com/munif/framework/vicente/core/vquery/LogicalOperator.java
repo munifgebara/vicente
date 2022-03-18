@@ -1,13 +1,14 @@
 package br.com.munif.framework.vicente.core.vquery;
 
-import java.util.stream.Collectors;
-
 /**
- *
  * @author wmfsystem
  */
 public enum LogicalOperator {
     SIMPLE, NOT, OR, AND;
+
+    public static String defaultOperation(VQuery vQuery) {
+        return "(" + vQuery.getCriteria() + ")";
+    }
 
     public String getOperation(VQuery vQuery) {
         switch (this) {
@@ -40,10 +41,5 @@ public enum LogicalOperator {
                 break;
         }
         return LogicalOperator.defaultOperation(vQuery);
-    }
-
-
-    public static String defaultOperation(VQuery vQuery) {
-        return "(" + vQuery.getCriteria() + ")";
     }
 }

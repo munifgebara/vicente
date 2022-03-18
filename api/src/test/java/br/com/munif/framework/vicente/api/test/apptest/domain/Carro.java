@@ -6,14 +6,14 @@
 package br.com.munif.framework.vicente.api.test.apptest.domain;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
+
 import java.util.Objects;
 
 /**
- *
  * @author munif
  */
-public class Carro extends BaseEntity{
-    
+public class Carro extends BaseEntity {
+
     public String placa;
     public String marca;
     public String modelo;
@@ -100,8 +100,6 @@ public class Carro extends BaseEntity{
         }
         return true;
     }
-    
-    
-    
-    
+
+
 }

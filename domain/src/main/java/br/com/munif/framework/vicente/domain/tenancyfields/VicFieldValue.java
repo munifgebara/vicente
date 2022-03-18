@@ -91,6 +91,21 @@ public class VicFieldValue extends BaseEntity {
         this.logicValue = logicValue;
     }
 
+    public Object getValue() {
+        switch (vicField.getFieldType()) {
+            case DATE:
+                return dateValue;
+            case LOGIC:
+                return logicValue;
+            case NUMBER:
+                return numberValue;
+            case SELECTION:
+            case TEXT:
+                return textValue;
+        }
+        return null;
+    }
+
     public void setValue(Object value) {
         switch (vicField.getFieldType()) {
             case DATE:
@@ -111,21 +126,6 @@ public class VicFieldValue extends BaseEntity {
                 textValue = (String) value;
                 break;
         }
-    }
-
-    public Object getValue() {
-        switch (vicField.getFieldType()) {
-            case DATE:
-                return dateValue;
-            case LOGIC:
-                return logicValue;
-            case NUMBER:
-                return numberValue;
-            case SELECTION:
-            case TEXT:
-                return textValue;
-        }
-        return null;
     }
 
     @Override

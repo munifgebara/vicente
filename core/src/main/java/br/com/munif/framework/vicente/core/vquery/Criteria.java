@@ -18,15 +18,6 @@ public class Criteria {
     private Param param;
     private Boolean phonetic;
 
-    private void onInit() {
-        comparisonOperator = ComparisonOperator.EQUAL;
-        fieldFn = null;
-        valueFn = null;
-        phonetic = false;
-        if (!(value instanceof CriteriaField))
-            param = new Param(null, value != null ? value.getClass() : Object.class, field);
-    }
-
     public Criteria() {
         field = 1;
         value = 1;
@@ -38,6 +29,15 @@ public class Criteria {
         this.value = value;
         onInit();
         this.comparisonOperator = comparisonOperator;
+    }
+
+    private void onInit() {
+        comparisonOperator = ComparisonOperator.EQUAL;
+        fieldFn = null;
+        valueFn = null;
+        phonetic = false;
+        if (!(value instanceof CriteriaField))
+            param = new Param(null, value != null ? value.getClass() : Object.class, field);
     }
 
     public Object getField() {

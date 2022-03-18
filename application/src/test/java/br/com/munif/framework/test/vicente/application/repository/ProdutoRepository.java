@@ -10,9 +10,8 @@ import br.com.munif.framework.test.vicente.domain.model.smartsearch.Produto;
 import br.com.munif.framework.vicente.application.VicRepository;
 
 /**
- *
  * @author munif
  */
-public interface ProdutoRepository extends VicRepository<Produto>{
-    
+public interface ProdutoRepository extends VicRepository<Produto> {
+
 }

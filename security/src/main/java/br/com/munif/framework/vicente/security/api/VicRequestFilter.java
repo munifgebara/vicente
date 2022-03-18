@@ -30,12 +30,11 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
     private final ITokenService tokenService;
 
     private final Logger log = Logger.getLogger(VicRequestFilter.class.getSimpleName());
+    private List<String> publics = Arrays.asList("/api/token/login/bypassword", "/api/token/recover-password");
 
     public VicRequestFilter(ITokenService tokenService) {
         this.tokenService = tokenService;
     }
-
-    private List<String> publics = Arrays.asList("/api/token/login/bypassword", "/api/token/recover-password");
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

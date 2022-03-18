@@ -1,10 +1,10 @@
 package br.com.munif.framework.vicente.core;
 
-import java.util.Date;
-import java.util.Map;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Interpretador Javascript para backend
@@ -19,7 +19,7 @@ public class VicScriptEngine {
      * Avalia o valor do script com o contexto de objetos java passados no map e
      * retora um objeto.
      *
-     * @param script script a ser executado
+     * @param script  script a ser executado
      * @param objects objetos java a serem inseridos no contexto javascript
      * @return valor resultante
      */
@@ -42,7 +42,7 @@ public class VicScriptEngine {
      * Avalia o valor do script com o contexto de objetos java passados no map e
      * retora uma data.
      *
-     * @param script script a ser executado
+     * @param script  script a ser executado
      * @param objects objetos java a serem inseridos no contexto javascript
      * @return valor resultante
      */

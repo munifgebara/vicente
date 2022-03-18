@@ -46,12 +46,12 @@ public class Software extends BaseEntity {
         return operations;
     }
 
+    public void setOperations(Set<Operation> operations) {
+        this.operations = operations;
+    }
+
     @JsonIgnore
     public Operation getOperation(int index) {
         return new ArrayList<Operation>(this.operations).get(index);
-    }
-
-    public void setOperations(Set<Operation> operations) {
-        this.operations = operations;
     }
 }

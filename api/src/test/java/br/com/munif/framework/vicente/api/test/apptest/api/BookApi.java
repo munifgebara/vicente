@@ -9,16 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * @author munif
  */
 @RestController
 @RequestMapping("/api/books")
 public class BookApi extends BaseAPI<Book> {
 
-    private final Logger log = LoggerFactory.getLogger(BookApi.class);
-
     private static final String ENTITY_NAME = "contato";
+    private final Logger log = LoggerFactory.getLogger(BookApi.class);
 
     public BookApi(BaseService<Book> service) {
         super(service);

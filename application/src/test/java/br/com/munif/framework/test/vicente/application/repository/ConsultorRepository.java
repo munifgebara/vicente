@@ -10,9 +10,8 @@ import br.com.munif.framework.test.vicente.domain.model.Consultor;
 import br.com.munif.framework.vicente.application.VicRepository;
 
 /**
- *
  * @author munif
  */
-public interface ConsultorRepository extends VicRepository<Consultor>{
-    
+public interface ConsultorRepository extends VicRepository<Consultor> {
+
 }

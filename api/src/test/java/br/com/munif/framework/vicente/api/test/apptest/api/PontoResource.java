@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/ponto-resource")
 public class PontoResource extends BaseResource<Ponto> {
 
-    private final Logger log = LoggerFactory.getLogger(PontoResource.class);
-
     private static final String ENTITY_NAME = "contato";
+    private final Logger log = LoggerFactory.getLogger(PontoResource.class);
 
     public PontoResource(BaseService<Ponto> service) {
         super(service);

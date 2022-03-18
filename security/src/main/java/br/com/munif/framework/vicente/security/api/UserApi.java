@@ -26,8 +26,8 @@ import java.util.Map;
 @RequestMapping("/api/user")
 public class UserApi extends BaseAPI<User> {
 
-    private final Logger log = LogManager.getLogger(UserApi.class);
     private static final String ENTITY_NAME = "user";
+    private final Logger log = LogManager.getLogger(UserApi.class);
 
     public UserApi(IUserService service) {
         super(service);

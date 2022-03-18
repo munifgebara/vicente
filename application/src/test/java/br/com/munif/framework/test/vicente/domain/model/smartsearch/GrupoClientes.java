@@ -1,10 +1,9 @@
 package br.com.munif.framework.test.vicente.domain.model.smartsearch;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
 
 /**
  * @author munif
@@ -19,7 +18,7 @@ public class GrupoClientes extends BaseEntity {
     }
 
     public GrupoClientes(String nomeGrupo) {
-        BaseEntity.useSimpleId=true;
+        BaseEntity.useSimpleId = true;
         this.nomeGrupo = nomeGrupo;
     }
 

@@ -9,16 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * @author munif
  */
 @RestController
 @RequestMapping("/api/salario")
 public class SalarioApi extends BaseAPI<Salario> {
 
-    private final Logger log = LoggerFactory.getLogger(SalarioApi.class);
-
     private static final String ENTITY_NAME = "salario";
+    private final Logger log = LoggerFactory.getLogger(SalarioApi.class);
 
     public SalarioApi(BaseService<Salario> service) {
         super(service);

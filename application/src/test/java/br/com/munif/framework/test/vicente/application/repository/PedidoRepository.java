@@ -10,9 +10,8 @@ import br.com.munif.framework.test.vicente.domain.model.smartsearch.Pedido;
 import br.com.munif.framework.vicente.application.VicRepository;
 
 /**
- *
  * @author munif
  */
-public interface PedidoRepository extends VicRepository<Pedido>{
-    
+public interface PedidoRepository extends VicRepository<Pedido> {
+
 }

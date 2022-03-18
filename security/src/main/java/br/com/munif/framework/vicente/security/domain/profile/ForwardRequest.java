@@ -1,11 +1,12 @@
 package br.com.munif.framework.vicente.security.domain.profile;
 
-import br.com.munif.framework.vicente.domain.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.envers.Audited;
 import org.springframework.http.HttpMethod;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 /**
  * @author munif

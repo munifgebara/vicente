@@ -1,10 +1,10 @@
 package br.com.munif.framework.vicente.api.test.apptest.domain;
 
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
-import java.math.BigDecimal;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import java.math.BigDecimal;
 
 /**
  * @author munif

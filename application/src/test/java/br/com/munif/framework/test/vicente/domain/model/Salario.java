@@ -1,12 +1,11 @@
 package br.com.munif.framework.test.vicente.domain.model;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
-import java.math.BigDecimal;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import java.math.BigDecimal;
 
 /**
  * @author munif
@@ -23,7 +22,7 @@ public class Salario extends VicTemporalBaseEntity {
     }
 
     public Salario(String nome, BigDecimal valor) {
-        BaseEntity.useSimpleId=true;
+        BaseEntity.useSimpleId = true;
         this.nome = nome;
         this.valor = valor;
     }

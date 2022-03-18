@@ -6,7 +6,6 @@
 package br.com.munif.framework.vicente.domain.VicTemporalEntity;
 
 /**
- *
  * @author munif
  */
 public class ContratoTestEntity extends VicTemporalBaseEntity {

@@ -98,6 +98,33 @@ public class BaseEntitySerializerTest {
     private Salario salario;
     private PessoaGenerica pessoa;
 
+    public static Book createBook() {
+        Book book = new Book();
+        book.setName(DEAFAULT_NAME);
+        return book;
+    }
+
+    public static PessoaGenerica createPessoa() {
+        PessoaGenerica pessoa = new PessoaGenerica();
+        pessoa.setNome("Willian");
+        return pessoa;
+    }
+
+    public static Salario createSalario() {
+        Salario salario = new Salario();
+        salario.setNome("Willian");
+        salario.setValor(BigDecimal.TEN);
+        return salario;
+    }
+
+    public static Ponto createPonto() {
+        Ponto ponto = new Ponto();
+        ponto.setNome("Willian");
+        ponto.setEntrada(ZonedDateTime.now());
+        ponto.setSaida(ZonedDateTime.now());
+        return ponto;
+    }
+
     @Before
     public void setup() {
         VicThreadScope.gi.set("GRUPO");
@@ -150,33 +177,6 @@ public class BaseEntitySerializerTest {
 
     }
 
-    public static Book createBook() {
-        Book book = new Book();
-        book.setName(DEAFAULT_NAME);
-        return book;
-    }
-
-    public static PessoaGenerica createPessoa() {
-        PessoaGenerica pessoa = new PessoaGenerica();
-        pessoa.setNome("Willian");
-        return pessoa;
-    }
-
-    public static Salario createSalario() {
-        Salario salario = new Salario();
-        salario.setNome("Willian");
-        salario.setValor(BigDecimal.TEN);
-        return salario;
-    }
-
-    public static Ponto createPonto() {
-        Ponto ponto = new Ponto();
-        ponto.setNome("Willian");
-        ponto.setEntrada(ZonedDateTime.now());
-        ponto.setSaida(ZonedDateTime.now());
-        return ponto;
-    }
-
     private List<Book> findAll() {
         Iterable<Book> findAll = bookRepository.findAll();
 
@@ -206,23 +206,23 @@ public class BaseEntitySerializerTest {
     public void getOne() throws Exception {
         // Initialize the database
         restMockMvcBook.perform(post("/api/books")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.book)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.book)))
                 .andExpect(status().isCreated());
 
         restMockMvcPonto.perform(post("/api/ponto")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.ponto)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.ponto)))
                 .andExpect(status().isCreated());
 
         restMockMvcPessoa.perform(post("/api/pessoagenerica")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.pessoa)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.pessoa)))
                 .andExpect(status().isCreated());
 
         restMockMvcSalario.perform(post("/api/salario")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.salario)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.salario)))
                 .andExpect(status().isCreated());
 
         ResultActions perform = restMockMvcBook.perform(get("/api/books/{id}", book.getId()).param("fields", "id"));
@@ -253,23 +253,23 @@ public class BaseEntitySerializerTest {
     public void getOneAsync() throws Exception {
         // Initialize the database
         restMockMvcBookResource.perform(post("/api/book-resource")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.book)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.book)))
                 .andExpect(status().isCreated());
 
         restMockMvcPontoResource.perform(post("/api/ponto-resource")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.ponto)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.ponto)))
                 .andExpect(status().isCreated());
 
         restMockMvcPessoaResource.perform(post("/api/pessoa-resource")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.pessoa)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.pessoa)))
                 .andExpect(status().isCreated());
 
         restMockMvcSalarioResource.perform(post("/api/salario-resource")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.salario)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.salario)))
                 .andExpect(status().isCreated());
 
         ResultActions perform = restMockMvcBookResource.perform(get("/api/book-resource/{id}", book.getId()).param("fields", "id"));

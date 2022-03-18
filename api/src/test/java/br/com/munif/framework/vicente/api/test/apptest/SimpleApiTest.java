@@ -88,8 +88,8 @@ public class SimpleApiTest {
         Map<String, Object> map = TestUtil.convertStringToMap(contentAsString);
         map.put("name", "POST");
         restMockMvc.perform(post("/api/books")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(map)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(map)))
                 .andExpect(status().isCreated());
         long qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld + 1);
@@ -103,8 +103,8 @@ public class SimpleApiTest {
         Map<String, Object> map = TestUtil.convertStringToMap(contentAsString);
         map.put("name", "PUT_NO_ID");
         restMockMvc.perform(put("/api/books")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(map)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(map)))
                 .andExpect(status().isCreated());
         long qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld + 1);
@@ -118,8 +118,8 @@ public class SimpleApiTest {
         Map<String, Object> map = TestUtil.convertStringToMap(contentAsString);
         map.put("name", "PUT_WITH_ID");
         restMockMvc.perform(put("/api/books/" + map.get("id"))
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(map)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(map)))
                 .andExpect(status().isCreated());
         long qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld + 1);
@@ -133,8 +133,8 @@ public class SimpleApiTest {
         Map<String, Object> map = TestUtil.convertStringToMap(contentAsString);
         map.put("name", "BEFORE UPDATE");
         restMockMvc.perform(put("/api/books/1")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(map)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(map)))
                 .andExpect(status().isCreated());
         long qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld + 1);
@@ -143,8 +143,8 @@ public class SimpleApiTest {
         map = TestUtil.convertStringToMap(contentAsString);
         map.put("name", "AFTER UPDATE");
         restMockMvc.perform(put("/api/books/1")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(map)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(map)))
                 .andExpect(status().isOk());
         qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld + 1);
@@ -158,8 +158,8 @@ public class SimpleApiTest {
         Map<String, Object> map = TestUtil.convertStringToMap(contentAsString);
         map.put("name", "BEFORE UPDATE");
         restMockMvc.perform(put("/api/books/1")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(map)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(map)))
                 .andExpect(status().isCreated());
 
         long qtdNew = bookRepository.count();
@@ -169,8 +169,8 @@ public class SimpleApiTest {
         map = TestUtil.convertStringToMap(contentAsString);
         map.put("name", "AFTER UPDATE");
         restMockMvc.perform(put("/api/books")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(map)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(map)))
                 .andExpect(status().isOk());
         qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld + 1);
@@ -184,13 +184,13 @@ public class SimpleApiTest {
         Map<String, Object> map = TestUtil.convertStringToMap(contentAsString);
         map.put("name", "BEFORE DELETE");
         restMockMvc.perform(put("/api/books/1")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(map)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(map)))
                 .andExpect(status().isCreated());
         long qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld + 1);
         restMockMvc.perform(delete("/api/books/{id}", "1")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                        .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNoContent());
         qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld);
@@ -204,22 +204,22 @@ public class SimpleApiTest {
         Map<String, Object> map = TestUtil.convertStringToMap(contentAsString);
         map.put("name", "BEFORE DELETE");
         restMockMvc.perform(put("/api/books/1")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(map)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(map)))
                 .andExpect(status().isCreated());
         long qtdNew = bookRepository.count();
         assert (qtdNew == qtdOld + 1);
         restMockMvc.perform(get("/api/books/is-new/{id}", "1")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                        .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$").value(false))
                 .andExpect(status().isOk());
 
         restMockMvc.perform(delete("/api/books/{id}", "1")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                        .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNoContent());
 
         restMockMvc.perform(get("/api/books/is-new/{id}", "1")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                        .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$").value(true))
                 .andExpect(status().isOk());
         qtdNew = bookRepository.count();

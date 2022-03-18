@@ -1,6 +1,7 @@
 package br.com.munif.framework.vicente.domain.experimental;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
+
 import java.io.Serializable;
 
 public class Pessoa extends BaseEntity implements Serializable {

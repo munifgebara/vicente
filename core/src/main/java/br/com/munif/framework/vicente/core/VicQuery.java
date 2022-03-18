@@ -1,7 +1,6 @@
 package br.com.munif.framework.vicente.core;
 
 import br.com.munif.framework.vicente.core.vquery.VQuery;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author munif

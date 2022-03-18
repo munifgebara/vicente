@@ -3,8 +3,6 @@
 package br.com.munif.framework.vicente.security.api.profile;
 
 import br.com.munif.framework.vicente.api.BaseAPI;
-import br.com.munif.framework.vicente.application.BaseService;
-import br.com.munif.framework.vicente.security.domain.profile.Operation;
 import br.com.munif.framework.vicente.security.domain.profile.OperationFilter;
 import br.com.munif.framework.vicente.security.service.interfaces.IOperationFilterService;
 import org.springframework.web.bind.annotation.RequestMapping;

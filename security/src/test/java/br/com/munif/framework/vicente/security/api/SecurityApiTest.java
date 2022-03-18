@@ -13,9 +13,9 @@ import br.com.munif.framework.vicente.security.SecurityApp;
 import br.com.munif.framework.vicente.security.domain.Group;
 import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.domain.User;
-import br.com.munif.framework.vicente.security.domain.profile.*;
 import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
 import br.com.munif.framework.vicente.security.domain.dto.PrivilegesAssignmentDto;
+import br.com.munif.framework.vicente.security.domain.profile.*;
 import br.com.munif.framework.vicente.security.seed.SeedSecurity;
 import br.com.munif.framework.vicente.security.service.TokenService;
 import br.com.munif.framework.vicente.security.service.UserService;
@@ -386,17 +386,17 @@ public class SecurityApiTest {
         VicThreadScopeOptions.ENABLE_FORWARD_REQUEST_EXCEPTION.setValue(true);
 
         restMockMvc.perform(get("/api/group/" + newGroup.get("id"))
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .header("Authorization", tokenLucas.getValue())
-                .contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .header("Authorization", tokenLucas.getValue())
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.message").value("error.badRequest"));
 
         VicThreadScopeOptions.ENABLE_FORWARD_REQUEST_EXCEPTION.setValue(false);
 
         restMockMvc.perform(get("/api/group/" + newGroup.get("id"))
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .header("Authorization", tokenLucas.getValue())
-                .contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .header("Authorization", tokenLucas.getValue())
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.message").doesNotExist());
 
     }
@@ -431,10 +431,10 @@ public class SecurityApiTest {
         Map<String, Object> responseProfile = TestUtil.convertStringToMap(reqProfile);
 
         ResultActions perform = restMockMvc.perform(post("/api/group")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .header("Authorization", tokenJose.getValue())
-                .content(TestUtil.convertObjectToJsonBytes(new Group("aaaaaaa1", "aaaaaaa1")))
-                .contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .header("Authorization", tokenJose.getValue())
+                        .content(TestUtil.convertObjectToJsonBytes(new Group("aaaaaaa1", "aaaaaaa1")))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.message").value("error.notAllowed"));
 
         List<OperationFilter> allNoTenancy = operationFilterService.findAllNoTenancy();
@@ -445,10 +445,10 @@ public class SecurityApiTest {
         }
 
         restMockMvc.perform(post("/api/group")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(new Group("aaaaaaa3", "aaaaaaa3")))
-                .header("Authorization", tokenJose.getValue())
-                .contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(new Group("aaaaaaa3", "aaaaaaa3")))
+                        .header("Authorization", tokenJose.getValue())
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.message").doesNotExist());
 
         for (OperationFilter operationFilter : allNoTenancy) {

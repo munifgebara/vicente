@@ -53,12 +53,12 @@ public class VEntityQuery extends VQuery {
         return entity;
     }
 
-    public Object getEntityName() {
-        return (entity instanceof String) ? entity : ((Class) entity).getSimpleName();
-    }
-
     public void setEntity(Object entity) {
         this.entity = entity;
+    }
+
+    public Object getEntityName() {
+        return (entity instanceof String) ? entity : ((Class) entity).getSimpleName();
     }
 
     @Override

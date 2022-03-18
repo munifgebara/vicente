@@ -20,6 +20,12 @@ public class VicAutoSeed {
     private static final Logger LOG = LoggerFactory.getLogger(VicAutoSeed.class);
 
     private static final Random random = new Random(1);
+    public static String[] DICTIONARY = {
+            "Categoria+nome", "product+type",
+            "Produto+nome", "product+names",
+            "Cliente+nome", "name",
+            "Cliente+cidade", "city"
+    };
 
     public static BigDecimal getRandomBigDecimal(double min, double max) {
         return new BigDecimal(min + random.nextDouble() * (max - min));
@@ -140,7 +146,7 @@ public class VicAutoSeed {
 
         for (int k = tamanhoMinimo; k <= tamanhoMaximo; k++) {
 
-            int[] s = new int[k];                  // here we'll keep indices 
+            int[] s = new int[k];                  // here we'll keep indices
             // pointing to elements in input array
 
             if (k <= input.length) {
@@ -190,12 +196,5 @@ public class VicAutoSeed {
         return p;
 
     }
-
-    public static String[] DICTIONARY = {
-            "Categoria+nome", "product+type",
-            "Produto+nome", "product+names",
-            "Cliente+nome", "name",
-            "Cliente+cidade", "city"
-    };
 
 }

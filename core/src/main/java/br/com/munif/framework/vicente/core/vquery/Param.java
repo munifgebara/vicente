@@ -5,7 +5,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class Param {
     private String key;
@@ -20,16 +19,9 @@ public class Param {
         onInit(key, value, type);
     }
 
-    private void onInit(String key, Object value, Class type) {
-        this.key = key;
-        this.value = value;
-        this.type = type;
-    }
-
     public Param(Object value, Class type) {
         onInit(generateParamId(), value, type);
     }
-
 
     public Param(String key, Class<?> aClass, Object field) {
         onInit(generateParamId(), value, type);
@@ -38,6 +30,12 @@ public class Param {
 
     public static String generateParamId() {
         return ":" + RandomStringUtils.randomAlphabetic(10).toLowerCase().concat(RandomStringUtils.randomNumeric(10));
+    }
+
+    private void onInit(String key, Object value, Class type) {
+        this.key = key;
+        this.value = value;
+        this.type = type;
     }
 
     public String getKey() {
@@ -50,6 +48,10 @@ public class Param {
 
     public Object getValue() {
         return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
     }
 
     public String getKeyToSearch() {
@@ -71,10 +73,6 @@ public class Param {
         }
         if (getType().isEnum()) value = Enum.valueOf(getType(), String.valueOf(value).replace("'", ""));
         return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
     }
 
     public Param setBuilderValue(Object value) {

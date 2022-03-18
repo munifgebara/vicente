@@ -15,9 +15,14 @@ public class VicSerializer {
     private static final String LN_TRUE = "\n";
     private static final String IDENT_FALSE = "";
     private static final String LN_FALSE = "";
+    private static final VicSerializer INSTANCE = new VicSerializer();
+    public static String QUOTE = "\"";
     private static String IDENT = IDENT_FALSE;
     private static String LN = LN_FALSE;
-    public static String QUOTE = "\"";
+    public Map<Object, String> visited = new HashMap<>();
+
+    private VicSerializer() {
+    }
 
     public static void setIdentention(boolean b) {
         if (b) {
@@ -29,15 +34,8 @@ public class VicSerializer {
         }
     }
 
-    private static final VicSerializer INSTANCE = new VicSerializer();
-
-    public Map<Object, String> visited = new HashMap<>();
-
     public static VicSerializer getInstance() {
         return INSTANCE;
-    }
-
-    private VicSerializer() {
     }
 
     public String serialize(Object object) {

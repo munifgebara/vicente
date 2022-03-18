@@ -98,14 +98,14 @@ public class VQuery {
         return joinStr.toString();
     }
 
+    public void setJoins(List<Join> joins) {
+        this.joins = joins;
+    }
+
     public String getJoinsWithoutParam() {
         StringBuilder joinStr = new StringBuilder();
         mountJoins(this, joinStr);
         return replaceParams(joinStr.toString());
-    }
-
-    public void setJoins(List<Join> joins) {
-        this.joins = joins;
     }
 
     private void searchUseDistinct(VQuery vQuery, Map<String, Boolean> map) {
@@ -238,12 +238,12 @@ public class VQuery {
         return alias == null ? "obj" : alias;
     }
 
-    public String getAliasWithDot() {
-        return (alias != null) ? alias + "." : "";
-    }
-
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public String getAliasWithDot() {
+        return (alias != null) ? alias + "." : "";
     }
 
     public ParamList getParams() {
