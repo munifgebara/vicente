@@ -44,6 +44,7 @@
         <validation-api>2.0.0.Final</validation-api>
         <wix-embedded-mysql>4.2.0</wix-embedded-mysql>
         <spring-data-r2dbc>1.0.0.M1</spring-data-r2dbc>
+        <stella.version>2.1.2</stella.version>
     </properties>
 
     <name>Vicente SaaS Framwork</name>
@@ -364,6 +365,11 @@
                 <artifactId>wix-embedded-mysql</artifactId>
                 <version>${wix-embedded-mysql}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>br.com.caelum.stella</groupId>
+                <artifactId>caelum-stella-core</artifactId>
+                <version>${stella.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
