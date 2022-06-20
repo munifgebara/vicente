@@ -35,7 +35,7 @@
         <jsp-api>2.2</jsp-api>
         <junit>4.12</junit>
         <mockito-core>1.10.19</mockito-core>
-        <mysql-connector-java>5.1.43</mysql-connector-java>
+        <mysql-connector-java>8.0.28</mysql-connector-java>
         <mysql-connector-java>5.1.43</mysql-connector-java>
         <reflections>0.9.11</reflections>
         <spring-data-jpa>2.2.0.RELEASE</spring-data-jpa>
