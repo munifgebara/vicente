@@ -1,5 +1,7 @@
 package br.com.munif.framework.test.vicente.domain.model;
 
+import br.com.munif.framework.vicente.core.VicTenancyPolicy;
+import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicTenancyFieldsBaseEntity;
 import br.com.munif.framework.vicente.domain.typings.VicAddress;
 import br.com.munif.framework.vicente.domain.typings.VicEmail;
@@ -17,6 +19,7 @@ import java.util.List;
  */
 @Entity
 @Audited
+@VicTenancyPolicy(VicTenancyType.COMMUM)
 public class Pessoa extends VicTenancyFieldsBaseEntity {
 
     //    @NotNull

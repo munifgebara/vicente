@@ -1,5 +1,7 @@
 package br.com.munif.framework.test.vicente.domain.model;
 
+import br.com.munif.framework.vicente.core.VicTenancyPolicy;
+import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
 import org.hibernate.envers.Audited;
@@ -12,6 +14,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Audited
+@VicTenancyPolicy(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN)
 public class Salario extends VicTemporalBaseEntity {
 
     private String nome;
