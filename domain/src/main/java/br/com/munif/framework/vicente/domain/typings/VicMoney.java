@@ -11,22 +11,26 @@ public class VicMoney extends VicDomain {
     private BigDecimal amount;
     @Enumerated(EnumType.STRING)
     private VicCurrencyType type;
+    private VicRecurring recurring;
 
     public VicMoney() {
         this.amount = BigDecimal.ZERO;
         this.type = VicCurrencyType.BRL;
+        this.recurring = VicRecurring.NONE;
     }
 
     public VicMoney(VicMoney other) {
         if (other != null) {
             this.amount = other.amount;
             this.type = other.type;
+            this.recurring = other.recurring;
         }
     }
 
-    public VicMoney(BigDecimal amount, VicCurrencyType type) {
+    public VicMoney(BigDecimal amount, VicCurrencyType type, VicRecurring recurring) {
         this.amount = amount;
         this.type = type;
+        this.recurring = recurring;
     }
 
     public BigDecimal getAmount() {
@@ -45,7 +49,6 @@ public class VicMoney extends VicDomain {
         this.type = type;
     }
 
-
     public void setCurrencyType(String currencyType) {
         this.setType(VicCurrencyType.valueOf(currencyType));
     }
@@ -55,6 +58,7 @@ public class VicMoney extends VicDomain {
         int hash = 5;
         hash = 23 * hash + Objects.hashCode(this.amount);
         hash = 23 * hash + Objects.hashCode(this.type);
+        hash = 23 * hash + Objects.hashCode(this.recurring);
         return hash;
     }
 
@@ -73,14 +77,14 @@ public class VicMoney extends VicDomain {
         if (!Objects.equals(this.type, other.type)) {
             return false;
         }
-        return true;
+        return Objects.equals(this.recurring, other.recurring);
     }
 
-    @Override
-    public String toString() {
-        return "VicEmail{" +
-                "amount='" + amount + '\'' +
-                ", currencyType='" + type + '\'' +
-                '}';
+    public VicRecurring getRecurring() {
+        return recurring;
+    }
+
+    public void setRecurring(VicRecurring recurring) {
+        this.recurring = recurring;
     }
 }

@@ -18,16 +18,20 @@ import java.util.Optional;
 public class VicMoneyUserType implements CompositeUserType {
     @Override
     public String[] getPropertyNames() {
-        return new String[]{
+        return new String[] {
                 "amount",
-                "type"};
+                "type",
+                "recurring"
+        };
     }
 
     @Override
     public Type[] getPropertyTypes() {
-        return new Type[]{
+        return new Type[] {
                 BigDecimalType.INSTANCE,
-                StringType.INSTANCE};
+                StringType.INSTANCE,
+                StringType.INSTANCE
+        };
     }
 
     @Override
@@ -37,6 +41,8 @@ public class VicMoneyUserType implements CompositeUserType {
                 return ((VicMoney) component).getAmount();
             case 1:
                 return ((VicMoney) component).getType();
+            case 2:
+                return ((VicMoney) component).getRecurring();
             default:
                 return null;
 
@@ -51,6 +57,10 @@ public class VicMoneyUserType implements CompositeUserType {
                 break;
             case 1:
                 ((VicMoney) component).setCurrencyType((String) setValue);
+                break;
+            case 2:
+                ((VicMoney) component).setRecurring(
+                        setValue != null ? VicRecurring.valueOf(String.valueOf(setValue)) : VicRecurring.NONE);
                 break;
         }
     }
@@ -80,25 +90,33 @@ public class VicMoneyUserType implements CompositeUserType {
     }
 
     @Override
-    public Object nullSafeGet(ResultSet resultSet, String[] names, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException, SQLException {
+    public Object nullSafeGet(ResultSet resultSet, String[] names,
+            SharedSessionContractImplementor sharedSessionContractImplementor, Object o)
+            throws HibernateException, SQLException {
         final BigDecimal description = resultSet.getBigDecimal(names[0]);
         for (int i = 0; i < names.length; i++) {
             if (resultSet.getObject(names[i]) != null) {
-                return new VicMoney(description, VicCurrencyType.valueOf(resultSet.getString(names[i + 1])));
+                return new VicMoney(description, VicCurrencyType.valueOf(resultSet.getString(names[i + 1])),
+                        VicRecurring.valueOf(resultSet.getString(names[i + 2])));
             }
         }
         return new VicMoney();
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement preparedStatement, Object value, int property, SharedSessionContractImplementor sharedSessionContractImplementor) throws HibernateException, SQLException {
+    public void nullSafeSet(PreparedStatement preparedStatement, Object value, int property,
+            SharedSessionContractImplementor sharedSessionContractImplementor) throws HibernateException, SQLException {
         if (null == value) {
             preparedStatement.setNull(property + 0, Types.BIGINT);
             preparedStatement.setNull(property + 1, java.sql.Types.VARCHAR);
+            preparedStatement.setNull(property + 2, java.sql.Types.VARCHAR);
         } else {
             final VicMoney object = (VicMoney) value;
             preparedStatement.setBigDecimal(property + 0, object.getAmount());
-            preparedStatement.setString(property + 1, Optional.ofNullable(object.getType()).orElse(VicCurrencyType.BRL).name());
+            preparedStatement.setString(property + 1,
+                    Optional.ofNullable(object.getType()).orElse(VicCurrencyType.BRL).name());
+            preparedStatement.setString(property + 2,
+                    Optional.ofNullable(object.getRecurring()).orElse(VicRecurring.NONE).name());
 
         }
     }
@@ -108,10 +126,8 @@ public class VicMoneyUserType implements CompositeUserType {
         if (value == null) {
             return null;
         }
-
         final VicMoney recepty = (VicMoney) value;
-        final VicMoney toReturn = new VicMoney(recepty);
-        return toReturn;
+        return new VicMoney(recepty);
     }
 
     @Override
@@ -120,17 +136,20 @@ public class VicMoneyUserType implements CompositeUserType {
     }
 
     @Override
-    public Serializable disassemble(Object o, SharedSessionContractImplementor sharedSessionContractImplementor) throws HibernateException {
+    public Serializable disassemble(Object o, SharedSessionContractImplementor sharedSessionContractImplementor)
+            throws HibernateException {
         return (Serializable) o;
     }
 
     @Override
-    public Object assemble(Serializable cached, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException {
+    public Object assemble(Serializable cached, SharedSessionContractImplementor sharedSessionContractImplementor,
+            Object o) throws HibernateException {
         return cached;
     }
 
     @Override
-    public Object replace(Object original, Object o1, SharedSessionContractImplementor sharedSessionContractImplementor, Object o2) throws HibernateException {
+    public Object replace(Object original, Object o1, SharedSessionContractImplementor sharedSessionContractImplementor,
+            Object o2) throws HibernateException {
         return this.deepCopy(original);
     }
 }
