@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -153,5 +154,15 @@ public class ExceptionTranslator {
             errorVM = new ErrorVM(ErrorConstants.ERR_INTERNAL_SERVER_ERROR, ex.getMessage());
         }
         return builder.body(errorVM);
+    }
+
+    @ExceptionHandler(VicRuntimeException.class)
+    @ResponseBody
+    public ErrorVM vicRuntimeException(HttpServletResponse response, VicRuntimeException ex) {
+        log.error("Error on operation", ex);
+        response.setStatus(ex.getHttpStatus().value());
+        ErrorVM errorResource = new ErrorVM(ex.getClass().getSimpleName(), ex.getMessage());
+        errorResource.setFieldErrors(ex.getFieldErrors());
+        return errorResource;
     }
 }

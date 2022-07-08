@@ -50,4 +50,8 @@ public class ErrorVM implements Serializable {
     public List<FieldErrorVM> getFieldErrors() {
         return fieldErrors;
     }
+
+    public void setFieldErrors(List<FieldErrorVM> fieldErrors) {
+        this.fieldErrors = fieldErrors;
+    }
 }
