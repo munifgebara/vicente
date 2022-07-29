@@ -94,14 +94,9 @@ public class VicPhoneUserType implements CompositeUserType {
 
     @Override
     public Object nullSafeGet(ResultSet resultSet, String[] names, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException, SQLException {
-        final String description = resultSet.getString(names[0]);
-        for (int i = 0; i < names.length; i++) {
-            if (resultSet.getObject(names[i]) != null) {
-                try {
-                    return new VicPhone(description, resultSet.getString(names[i + 1]), resultSet.getInt(names[i + 2]), resultSet.getString(names[i + 3]));
-                } catch (IndexOutOfBoundsException ignored) {
-                }
-            }
+        try {
+            return new VicPhone(resultSet.getString(names[0]), resultSet.getString(names[1]), resultSet.getInt(names[2]), resultSet.getString(names[3]));
+        } catch (IndexOutOfBoundsException ignored) {
         }
         return new VicPhone();
     }

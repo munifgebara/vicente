@@ -264,11 +264,11 @@ public class BaseResource<T extends BaseEntity> {
     }
 
     public <T> Mono<T> mono(T callable) {
-        return Mono.just(callable).publishOn(Schedulers.elastic());
+        return Mono.just(callable).publishOn(Schedulers.boundedElastic());
     }
 
     public <T> Flux<T> flux(Iterable<T> callable) {
-        return Flux.fromIterable(callable).publishOn(Schedulers.elastic());
+        return Flux.fromIterable(callable).publishOn(Schedulers.boundedElastic());
     }
 
 }
