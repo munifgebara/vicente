@@ -42,7 +42,7 @@
         <spring.version>5.3.21</spring.version>
         <validation-api>2.0.0.Final</validation-api>
         <wix-embedded-mysql>4.2.0</wix-embedded-mysql>
-        <spring-data-r2dbc>1.0.0.M1</spring-data-r2dbc>
+        <spring-data-r2dbc>1.5.2</spring-data-r2dbc>
         <stella.version>2.1.2</stella.version>
     </properties>
 
@@ -66,6 +66,16 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.oracle.database.r2dbc</groupId>
+                <artifactId>oracle-r2dbc</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-r2dbc</artifactId>
+                <version>${spring.boot.version}</version>
+            </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>domain</artifactId>
@@ -128,6 +138,13 @@
                 <scope>runtime</scope>
                 <version>${h2}</version>
             </dependency>
+            <dependency>
+                <groupId>io.r2dbc</groupId>
+                <artifactId>r2dbc-h2</artifactId>
+                <version>1.0.0.RC1</version>
+                <scope>test</scope>
+            </dependency>
+
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-envers</artifactId>
