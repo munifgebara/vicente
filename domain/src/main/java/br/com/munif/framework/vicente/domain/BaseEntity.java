@@ -39,7 +39,7 @@ public class BaseEntity implements Serializable {
     public static boolean useSimpleId = false;
 
     @Id
-    @Column(length = 100)
+    @Column(length = 150)
     protected String id;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
