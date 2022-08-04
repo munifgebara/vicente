@@ -17,7 +17,7 @@ import br.com.munif.framework.vicente.security.domain.dto.LoginResponseDto;
 import br.com.munif.framework.vicente.security.domain.exceptions.UserNotFoundException;
 import br.com.munif.framework.vicente.security.service.interfaces.IEmailService;
 import br.com.munif.framework.vicente.security.service.interfaces.ITokenService;
-import com.google.common.collect.Sets;
+import br.com.munif.framework.vicente.core.Sets;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;

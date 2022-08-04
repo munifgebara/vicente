@@ -1,9 +1,9 @@
 package br.com.munif.framework.vicente.security.domain.profile;
 
+import br.com.munif.framework.vicente.core.Sets;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.security.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.google.common.collect.Sets;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;

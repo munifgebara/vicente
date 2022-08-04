@@ -7,6 +7,7 @@
 package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.api.errors.ErrorConstants;
+import br.com.munif.framework.vicente.core.Sets;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.VicThreadScopeOptions;
 import br.com.munif.framework.vicente.security.SecurityApp;
@@ -23,7 +24,6 @@ import br.com.munif.framework.vicente.security.service.profile.OperationFilterSe
 import br.com.munif.framework.vicente.security.service.profile.OperationService;
 import br.com.munif.framework.vicente.security.service.profile.ProfileService;
 import br.com.munif.framework.vicente.security.service.profile.SoftwareService;
-import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -341,9 +341,9 @@ public class SecurityApiTest {
     @Test
     public void testKrequestAnotherOnRequest() throws Exception {
         Software software = new Software("Mine", Sets.newHashSet(
-                Arrays.asList(new Operation("GroupApi_load"),
-                        new Operation("UserApi_teste2"))
-        ));
+                new Operation("GroupApi_load"),
+                new Operation("UserApi_teste2"))
+        );
 
         ResultActions createRequestSoftware = restMockMvc.perform(post("/api/software")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -404,8 +404,8 @@ public class SecurityApiTest {
     @Test
     public void testLoperationsAllowNotAllow() throws Exception {
         Software software = new Software("Mine", Sets.newHashSet(
-                Arrays.asList(new Operation("GroupApi_save"),
-                        new Operation("UserApi_teste2"))
+                new Operation("GroupApi_save"),
+                new Operation("UserApi_teste2")
         ));
 
         ResultActions createRequestSoftware = restMockMvc.perform(post("/api/software")
