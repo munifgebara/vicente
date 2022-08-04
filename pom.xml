@@ -14,7 +14,6 @@
         <commons-fileupload>1.3.3</commons-fileupload>
         <commons-io>2.5</commons-io>
         <el-api>2.2</el-api>
-        <google-api-client>1.23.0</google-api-client>
         <h2>1.4.199</h2>
         <hibernate-jpa-2.2-api>1.0.0.Beta1</hibernate-jpa-2.2-api>
         <hibernate-validator>5.2.5.Final</hibernate-validator>
@@ -137,11 +136,6 @@
                 <groupId>javax.el</groupId>
                 <artifactId>el-api</artifactId>
                 <version>${el-api}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.api-client</groupId>
-                <artifactId>google-api-client</artifactId>
-                <version>${google-api-client}</version>
             </dependency>
             <dependency>
                 <groupId>com.h2database</groupId>
@@ -392,6 +386,11 @@
                 <groupId>br.com.caelum.stella</groupId>
                 <artifactId>caelum-stella-core</artifactId>
                 <version>${stella.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.api-client</groupId>
+                <artifactId>google-api-client</artifactId>
+                <version>2.0.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
