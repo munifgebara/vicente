@@ -19,11 +19,14 @@ public class BaseConfiguration extends BaseEntity implements Serializable {
     private String countryCode;
     @Column(name = "timezone")
     private String timezone;
+    @Column(name = "language")
+    private String language;
     public static final ThreadLocal<BaseConfiguration> current = ThreadLocal.withInitial(BaseConfiguration::new);
 
     public BaseConfiguration() {
         this.countryCode = "BR";
         this.timezone = "America/Sao_Paulo";
+        this.timezone = "pt-br";
     }
 
     public static void setCurrent(BaseConfiguration config) {
@@ -50,17 +53,26 @@ public class BaseConfiguration extends BaseEntity implements Serializable {
         this.timezone = timezone;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         BaseConfiguration that = (BaseConfiguration) o;
-        return Objects.equals(getCountryCode(), that.getCountryCode()) && Objects.equals(getTimezone(), that.getTimezone());
+        return Objects.equals(getCountryCode(), that.getCountryCode()) && Objects.equals(getTimezone(), that.getTimezone())
+                && Objects.equals(getLanguage(), that.getLanguage());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getCountryCode(), getTimezone());
+        return Objects.hash(super.hashCode(), getCountryCode(), getTimezone(), getLanguage());
     }
 }
