@@ -54,7 +54,7 @@ public class BaseConfiguration extends BaseEntity implements Serializable {
     }
 
     public String getLanguage() {
-        return language;
+        return language != null ? language : "pt-br";
     }
 
     public void setLanguage(String language) {
