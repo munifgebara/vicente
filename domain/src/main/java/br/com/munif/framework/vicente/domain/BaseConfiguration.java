@@ -26,7 +26,7 @@ public class BaseConfiguration extends BaseEntity implements Serializable {
     public BaseConfiguration() {
         this.countryCode = "BR";
         this.timezone = "America/Sao_Paulo";
-        this.timezone = "pt-br";
+        this.language = "pt-br";
     }
 
     public static void setCurrent(BaseConfiguration config) {
