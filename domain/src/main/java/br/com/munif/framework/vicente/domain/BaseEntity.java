@@ -265,7 +265,11 @@ public class BaseEntity implements Serializable {
 
     @JsonGetter
     public String r() {
-        return "" + (isOwner() ? 'O' : '_') + (commonGroup() ? 'G' : '_') + (canRead() ? 'R' : '_') + (canUpdate() ? 'U' : '_') + (canDelete() ? 'D' : '_');
+        try {
+            return "" + (isOwner() ? 'O' : '_') + (commonGroup() ? 'G' : '_') + (canRead() ? 'R' : '_') + (canUpdate() ? 'U' : '_') + (canDelete() ? 'D' : '_');
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     public VicTenancyType getTencyPolicy() {
