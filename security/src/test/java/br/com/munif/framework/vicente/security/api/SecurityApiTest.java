@@ -22,7 +22,6 @@ import br.com.munif.framework.vicente.security.service.TokenService;
 import br.com.munif.framework.vicente.security.service.UserService;
 import br.com.munif.framework.vicente.security.service.profile.OperationFilterService;
 import br.com.munif.framework.vicente.security.service.profile.OperationService;
-import br.com.munif.framework.vicente.security.service.profile.ProfileService;
 import br.com.munif.framework.vicente.security.service.profile.SoftwareService;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -73,8 +72,6 @@ public class SecurityApiTest {
     private SoftwareService softwareService;
     @Autowired
     private OperationFilterService operationFilterService;
-    @Autowired
-    private ProfileService profileService;
 
     private MockMvc restMockMvc;
     private ResultActions tokenRequestWillian;
@@ -354,18 +351,7 @@ public class SecurityApiTest {
         Map<String, Object> responseSoftware = TestUtil.convertStringToMap(reqSoftware);
 
         User user = tokenLucas.getUser();
-        Profile profile = new Profile("Profile teste", user, Sets.newHashSet(
-                new OperationFilter(operationService.findOne(software.getOperation(0).getId()), OperationType.ALLOW),
-                new OperationFilter(operationService.findOne(software.getOperation(1).getId()), OperationType.ALLOW)
-        ));
 
-        ResultActions createRequestProfile = restMockMvc.perform(post("/api/profile")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(profile))
-                .header("Authorization", tokenAdmin.getValue())
-                .contentType(TestUtil.APPLICATION_JSON_UTF8));
-        String reqProfile = createRequestProfile.andReturn().getResponse().getContentAsString();
-        Map<String, Object> responseProfile = TestUtil.convertStringToMap(reqProfile);
 
         Group group = new Group("GROUP LUCAS 2", "GROUP_WILLIAN2");
         String authorization = restMockMvc.perform(post("/api/group")
@@ -415,20 +401,6 @@ public class SecurityApiTest {
                 .contentType(TestUtil.APPLICATION_JSON_UTF8));
         String reqSoftware = createRequestSoftware.andReturn().getResponse().getContentAsString();
         Map<String, Object> responseSoftware = TestUtil.convertStringToMap(reqSoftware);
-
-        User user = tokenJose.getUser();
-        Profile profile = new Profile("Profile teste", user, Sets.newHashSet(
-                new OperationFilter(operationService.findOne(software.getOperation(0).getId()), OperationType.DENY),
-                new OperationFilter(operationService.findOne(software.getOperation(1).getId()), OperationType.DENY)
-        ));
-
-        ResultActions createRequestProfile = restMockMvc.perform(post("/api/profile")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(profile))
-                .header("Authorization", tokenAdmin.getValue())
-                .contentType(TestUtil.APPLICATION_JSON_UTF8));
-        String reqProfile = createRequestProfile.andReturn().getResponse().getContentAsString();
-        Map<String, Object> responseProfile = TestUtil.convertStringToMap(reqProfile);
 
         ResultActions perform = restMockMvc.perform(post("/api/group")
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)

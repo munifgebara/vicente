@@ -1,7 +1,8 @@
 package br.com.munif.framework.vicente.security.domain.profile;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import br.com.munif.framework.vicente.security.domain.Group;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.envers.Audited;
@@ -29,8 +30,8 @@ public class OperationFilter extends BaseEntity {
     private Operation operation;
     @ManyToOne
     @JoinColumn(name = "profile_id")
-    @JsonIgnoreProperties({"filters"})
-    private Profile profile;
+    @JsonIgnore
+    private Group group;
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private OperationType operationType = OperationType.ALLOW;
@@ -52,14 +53,6 @@ public class OperationFilter extends BaseEntity {
     public OperationFilter(Operation operation, OperationType operationType) {
         this.operation = operation;
         this.operationType = operationType;
-    }
-
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
     }
 
     public Operation getOperation() {
@@ -100,5 +93,13 @@ public class OperationFilter extends BaseEntity {
 
     public void setActions(List<RequestAction> actions) {
         this.actions = actions;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }
