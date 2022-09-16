@@ -44,7 +44,7 @@ public class CustomParameterizedException extends RuntimeException {
         this.paramMap.putAll(paramMap);
     }
 
-    public ParameterizedErrorVM getErrorVM() {
-        return new ParameterizedErrorVM(message, paramMap);
+    public ParameterizedError getErrorVM() {
+        return new ParameterizedError(message, paramMap);
     }
 }

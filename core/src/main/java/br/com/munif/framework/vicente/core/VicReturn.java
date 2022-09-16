@@ -17,7 +17,6 @@ public class VicReturn<T> {
     private Integer total;
     private Integer firstResult;
     private Boolean hasMore;
-
     public VicReturn() {
     }
 

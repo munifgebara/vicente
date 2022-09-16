@@ -54,11 +54,9 @@ public class VicThreadScope {
      * If set, time constrains will be ignored in querys
      */
     public static final ThreadLocal<Boolean> ignoreTime = new ThreadLocal<>();
-    /**
-     * If set, time constrains will be ignored in querys
-     */
     public static final ThreadLocal<String> language = new ThreadLocal<>();
-    /**
+    public static final ThreadLocal<String> timezone = new ThreadLocal<>();
+    /**8
      * Map of thread options
      */
     public static final ThreadLocal<Map<String, Boolean>> options = ThreadLocal.withInitial(HashMap::new);
