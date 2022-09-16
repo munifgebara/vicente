@@ -3,6 +3,8 @@
 package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.api.BaseAPI;
+import br.com.munif.framework.vicente.core.VicOperationKey;
+import br.com.munif.framework.vicente.core.VicPublicOperation;
 import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
 import br.com.munif.framework.vicente.security.domain.dto.LoginResponseDto;
@@ -33,12 +35,14 @@ public class TokenApi extends BaseAPI<Token> {
     }
 
     @Transactional
+    @VicPublicOperation
     @RequestMapping(value = "/login/bypassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LoginResponseDto loga(@RequestBody LoginDto login) {
         return tokenService.login(login);
     }
 
     @Transactional
+    @VicPublicOperation
     @RequestMapping(value = "/login/bygoogle", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LoginResponseDto logaGoogle(@RequestBody String token) {
         return tokenService.loginOnGoogle(token);
@@ -63,6 +67,7 @@ public class TokenApi extends BaseAPI<Token> {
     }
 
     @Transactional
+    @VicPublicOperation
     @GetMapping(value = "/recover-password/{id:.+}")
     public ResponseEntity<Void> recoverPassword(@PathVariable("id") String id) {
         tokenService.recoverPassword(id);
@@ -70,6 +75,7 @@ public class TokenApi extends BaseAPI<Token> {
     }
 
     @Transactional
+    @VicPublicOperation
     @GetMapping(value = "/search-ticket/{id:.+}")
     public ResponseEntity<Map> searchTicket(@PathVariable("id") String id) {
         return ResponseEntity.ok(tokenService.searchTicket(id));

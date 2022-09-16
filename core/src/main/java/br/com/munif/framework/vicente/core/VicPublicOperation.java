@@ -4,8 +4,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface VicOperationKey {
-    String value();
-
-    boolean basic() default false;
+public @interface VicPublicOperation {
+    boolean isPublic() default true;
 }
