@@ -6,5 +6,9 @@ public enum PhoneticValues implements PhoneticMethods {
         public PhoneticTranslator getTranslator() {
             return new PortuguesePhonetic();
         }
+    };
+
+    public static PhoneticMethods resolve(String language) {
+        return PT_BR;
     }
 }
