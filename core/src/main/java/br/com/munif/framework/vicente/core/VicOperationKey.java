@@ -7,5 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 public @interface VicOperationKey {
     String value();
 
+    boolean publicRoute() default false;
+
     boolean basic() default false;
 }
