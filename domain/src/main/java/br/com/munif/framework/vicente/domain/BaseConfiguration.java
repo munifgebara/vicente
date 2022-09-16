@@ -5,6 +5,8 @@
  */
 package br.com.munif.framework.vicente.domain;
 
+import br.com.munif.framework.vicente.core.VicThreadScope;
+
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
@@ -30,6 +32,10 @@ public class BaseConfiguration extends BaseEntity implements Serializable {
     }
 
     public static void setCurrent(BaseConfiguration config) {
+        if (VicThreadScope.language.get() == null)
+            VicThreadScope.language.set(config.getLanguage());
+        if (VicThreadScope.timezone.get() == null)
+            VicThreadScope.timezone.set(config.getTimezone());
         current.set(config);
     }
 

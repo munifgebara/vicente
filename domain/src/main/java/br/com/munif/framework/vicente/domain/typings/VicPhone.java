@@ -16,7 +16,7 @@ public class VicPhone extends VicDomain {
     private String regionCode;
 
     public VicPhone() {
-        this.setRegionCode(BaseConfiguration.current.get().getCountryCode());
+        this.setRegionCode(BaseConfiguration.getCurrent().getCountryCode());
     }
 
     public VicPhone(VicPhone other) {
