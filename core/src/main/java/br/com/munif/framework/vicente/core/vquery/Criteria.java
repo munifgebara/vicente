@@ -1,7 +1,9 @@
 package br.com.munif.framework.vicente.core.vquery;
 
 import br.com.munif.framework.vicente.core.phonetics.PhoneticBuilder;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -36,8 +38,8 @@ public class Criteria {
         fieldFn = null;
         valueFn = null;
         phonetic = false;
-        if (!(value instanceof CriteriaField))
-            param = new Param(null, value != null ? value.getClass() : Object.class, field);
+        if (!(getValue() instanceof CriteriaField))
+            param = new Param(null, getValue() != null ? getValue().getClass() : Object.class, field);
     }
 
     public Object getField() {
@@ -58,7 +60,9 @@ public class Criteria {
     }
 
     public Object getValue() {
-        if (this.value instanceof String && this.phonetic) {
+        if (this.value instanceof LinkedHashMap) {
+            return new CriteriaField(((LinkedHashMap<String, String>) this.value).get("value"));
+        } else if (this.value instanceof String && this.phonetic) {
             value = PhoneticBuilder.build().translate(String.valueOf(value));
         }
         return value;
@@ -113,7 +117,7 @@ public class Criteria {
 
     @Override
     public String toString() {
-        return comparisonOperator.getComparation(getField(), value instanceof VEntityQuery || value instanceof CriteriaField || ComparisonOperator.NONE.equals(comparisonOperator) ? getValue() : getParam().getKey(), valueFn);
+        return comparisonOperator.getComparation(getField(), getValue() instanceof VEntityQuery || getValue() instanceof CriteriaField || ComparisonOperator.NONE.equals(comparisonOperator) ? getValue() : getParam().getKey(), getValueFn());
     }
 
     public Param getParam() {

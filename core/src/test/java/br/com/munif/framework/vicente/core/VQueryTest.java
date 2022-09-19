@@ -470,4 +470,12 @@ public class VQueryTest {
         gQuery.setLogicalOperator(LogicalOperator.SIMPLE);
         assertEquals("(I can do whatever I want)", gQuery.toString());
     }
+    @Test
+    public void testToDateCriteriaField() {
+        VQuery gQuery = new VQuery(LogicalOperator.OR, Arrays.asList(
+                new VQuery(new Criteria("name", ComparisonOperator.EQUAL, "19")),
+                new VQuery(new Criteria("startDateTime", ComparisonOperator.EQUAL, new CriteriaField("TO_DATE('19/09/2022', 'DD/MM/YYYY')"))
+        )));
+        System.out.println(gQuery.toStringWithoutParams());
+    }
 }
