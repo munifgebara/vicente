@@ -256,7 +256,7 @@ public class BaseEntity implements Serializable {
                 || ((OTHER_READ | (commonGroup ? GROUP_READ : 0) | (isOwner ? OWNER_READ : 0)) & rights) > 0;
     }
 
-    private boolean canChangeBeingOnlyOi() {
+    public boolean canChangeBeingOnlyOi() {
         VicTenancyPolicy annotation = this.getClass().getAnnotation(VicTenancyPolicy.class);
         VicTenancyType value = annotation != null ? annotation.value() : VicTenancyType.NONE;
         return (VicTenancyType.ONLY_HIERARCHICAL_TOP_DOWN.equals(value) && this.getOi().startsWith(VicThreadScope.oi.get()))
