@@ -14,6 +14,8 @@ public class VQuery {
     private String alias;
     private String[] fields;
 
+    private ParamList params = new ParamList();
+
     public VQuery() {
         this.criteria = new Criteria();
     }
@@ -249,7 +251,12 @@ public class VQuery {
     public ParamList getParams() {
         ParamList params = new ParamList();
         getParams(this, params);
+        params.addAll(this.params);
         return params;
+    }
+
+    public void setParams(ParamList params) {
+        this.params = params;
     }
 
     public void getParams(VQuery vQuery, ParamList params) {

@@ -19,6 +19,10 @@ public class Param {
         onInit(key, value, type);
     }
 
+    public Param(String key, Object value) {
+        onInit(key, value, value.getClass());
+    }
+
     public Param(Object value, Class type) {
         onInit(generateParamId(), value, type);
     }
