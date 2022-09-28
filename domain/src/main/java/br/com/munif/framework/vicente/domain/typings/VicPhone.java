@@ -36,7 +36,9 @@ public class VicPhone extends VicDomain {
 
     public VicPhone(String description, String type, Integer countryCode, String regionCode) {
         this.description = description;
-        this.type = PhoneType.valueOf(type);
+        if (type != null)
+            this.type = PhoneType.valueOf(type);
+        else this.type = PhoneType.CELLPHONE;
         this.countryCode = countryCode;
         this.regionCode = regionCode;
     }
