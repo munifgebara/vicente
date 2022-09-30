@@ -25,6 +25,8 @@ public class Token extends BaseEntity {
 
     @Column(name = "value")
     private String value;
+    @Column(name = "refresh_token")
+    private String refreshToken;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -68,5 +70,13 @@ public class Token extends BaseEntity {
 
     public void setOrganization(Organization organization) {
         this.organization = organization;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
