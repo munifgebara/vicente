@@ -5,6 +5,7 @@ package br.com.munif.framework.vicente.security.service;
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
 import br.com.munif.framework.vicente.core.RightsHelper;
+import br.com.munif.framework.vicente.core.Sets;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
@@ -14,10 +15,10 @@ import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.*;
 import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
 import br.com.munif.framework.vicente.security.domain.dto.LoginResponseDto;
+import br.com.munif.framework.vicente.security.domain.dto.RefreshTokenDto;
 import br.com.munif.framework.vicente.security.domain.exceptions.UserNotFoundException;
 import br.com.munif.framework.vicente.security.service.interfaces.IEmailService;
 import br.com.munif.framework.vicente.security.service.interfaces.ITokenService;
-import br.com.munif.framework.vicente.core.Sets;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
@@ -105,6 +106,11 @@ public class TokenService extends BaseService<Token> implements ITokenService {
             r.message = "Multiple users.";
         }
         return r;
+    }
+
+    @Override
+    public RefreshTokenDto refreshToken(RefreshTokenDto refreshTokenDto) {
+        return null;
     }
 
     @Transactional
