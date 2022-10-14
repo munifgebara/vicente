@@ -57,7 +57,7 @@ public class VicFileUserType implements CompositeUserType {
 
     @Override
     public Class returnedClass() {
-        return VicAddress.class;
+        return VicFile.class;
     }
 
     @Override
