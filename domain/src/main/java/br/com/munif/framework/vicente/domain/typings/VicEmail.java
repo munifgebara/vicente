@@ -10,6 +10,11 @@ public class VicEmail extends VicDomain {
     @Enumerated(EnumType.STRING)
     private SocialNetworking type;
 
+    private Boolean invalidEmail;
+
+    private String invalidEmailReason;
+
+
     public VicEmail() {
 
     }
@@ -31,6 +36,13 @@ public class VicEmail extends VicDomain {
         this.type = type;
     }
 
+    public VicEmail(String description, String type, Boolean invalidEmail, String invalidEmailReason) {
+        this.description = description;
+        this.type = type != null ? SocialNetworking.valueOf(type) : null;
+        this.invalidEmail = invalidEmail;
+        this.invalidEmailReason = invalidEmailReason;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -45,6 +57,22 @@ public class VicEmail extends VicDomain {
 
     public void setType(SocialNetworking type) {
         this.type = type;
+    }
+
+    public Boolean getInvalidEmail() {
+        return invalidEmail;
+    }
+
+    public void setInvalidEmail(Boolean invalidEmail) {
+        this.invalidEmail = invalidEmail;
+    }
+
+    public String getInvalidEmailReason() {
+        return invalidEmailReason;
+    }
+
+    public void setInvalidEmailReason(String invalidEmailReason) {
+        this.invalidEmailReason = invalidEmailReason;
     }
 
     @Override
