@@ -23,7 +23,7 @@ public class BaseConfiguration extends BaseEntity implements Serializable {
     private String timezone;
     @Column(name = "language")
     private String language;
-    public static final ThreadLocal<BaseConfiguration> current = ThreadLocal.withInitial(BaseConfiguration::new);
+    public static final ThreadLocal<Object> current = new ThreadLocal<>();
 
     public BaseConfiguration() {
         this.countryCode = "BR";
@@ -31,7 +31,7 @@ public class BaseConfiguration extends BaseEntity implements Serializable {
         this.language = "pt-br";
     }
 
-    public static void setCurrent(BaseConfiguration config) {
+    public static <E extends BaseConfiguration> void setCurrent(E config) {
         if (VicThreadScope.language.get() == null)
             VicThreadScope.language.set(config.getLanguage());
         if (VicThreadScope.timezone.get() == null)
