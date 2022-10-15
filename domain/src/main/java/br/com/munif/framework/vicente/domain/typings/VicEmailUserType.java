@@ -113,8 +113,8 @@ public class VicEmailUserType implements CompositeUserType {
             final VicEmail object = (VicEmail) value;
             preparedStatement.setString(property + 0, object.getDescription());
             preparedStatement.setString(property + 1, Optional.ofNullable(object.getType()).orElse(SocialNetworking.EMAIL).name());
-            preparedStatement.setBoolean(property + 2, object.getInvalidEmail());
-            preparedStatement.setString(property + 3, object.getInvalidEmailReason());
+            preparedStatement.setBoolean(property + 2, Optional.ofNullable(object.getInvalidEmail()).orElse(false));
+            preparedStatement.setString(property + 3, Optional.ofNullable(object.getInvalidEmailReason()).orElse(""));
 
         }
     }
