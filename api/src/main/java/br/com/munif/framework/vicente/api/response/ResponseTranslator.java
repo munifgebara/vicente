@@ -1,7 +1,6 @@
 package br.com.munif.framework.vicente.api.response;
 
 import br.com.munif.framework.vicente.api.errors.VicError;
-import br.com.munif.framework.vicente.core.VicReturn;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +22,9 @@ public class ResponseTranslator implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (body instanceof VicError || body instanceof byte[])
             return body;
+
+        if (body instanceof NoTranslate)
+            return (((NoTranslate) body).data);
 
         HttpStatus status = HttpStatus.resolve(((ServletServerHttpResponse) response).getServletResponse().getStatus());
         return new VicResponse<>(status.name(), body);
