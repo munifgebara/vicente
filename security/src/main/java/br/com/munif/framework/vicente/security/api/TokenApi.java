@@ -41,6 +41,12 @@ public class TokenApi extends BaseAPI<Token> {
     public LoginResponseDto loga(@RequestBody LoginDto login) {
         return tokenService.login(login);
     }
+    @Transactional
+    @VicPublicOperation
+    @RequestMapping(value = "/login/bytoken", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LoginResponseDto loginByToken() {
+        return tokenService.loginByToken();
+    }
 
     @Transactional
     @VicPublicOperation

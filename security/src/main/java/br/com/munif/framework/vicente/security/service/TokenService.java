@@ -228,4 +228,9 @@ public class TokenService extends BaseService<Token> implements ITokenService {
     public Map changeOrganization(String organizationId) {
         return null;
     }
+
+    @Override
+    public LoginResponseDto loginByToken() {
+        return null;
+    }
 }

@@ -30,4 +30,6 @@ public interface ITokenService extends VicServiceable<Token> {
     Map lostPassword(String ticket, String password);
 
     Map changeOrganization(String organizationId);
+
+    LoginResponseDto loginByToken();
 }
