@@ -1,6 +1,8 @@
 package br.com.munif.framework.vicente.domain.typings;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.math.BigDecimal;
@@ -88,6 +90,7 @@ public class VicMoney extends VicDomain {
         this.recurring = recurring;
     }
 
+    @JsonIgnore
     public Long getCents() {
         return this.amount != null ? this.amount.multiply(BigDecimal.valueOf(100)).longValue() : 0L;
     }
