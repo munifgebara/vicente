@@ -14,6 +14,7 @@ import br.com.munif.framework.vicente.core.vquery.LogicalOperator;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.*;
 import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
+import br.com.munif.framework.vicente.security.domain.dto.LoginResponseAppDto;
 import br.com.munif.framework.vicente.security.domain.dto.LoginResponseDto;
 import br.com.munif.framework.vicente.security.domain.dto.RefreshTokenDto;
 import br.com.munif.framework.vicente.security.domain.exceptions.UserNotFoundException;
@@ -235,7 +236,7 @@ public class TokenService extends BaseService<Token> implements ITokenService {
     }
 
     @Override
-    public LoginResponseDto appLogin(LoginDto login) {
+    public LoginResponseAppDto appLogin(LoginDto login) {
         return null;
     }
 }
