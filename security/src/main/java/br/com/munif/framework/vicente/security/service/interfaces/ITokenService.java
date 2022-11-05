@@ -33,5 +33,5 @@ public interface ITokenService extends VicServiceable<Token> {
 
     LoginResponseDto loginByToken();
 
-    LoginResponseDto integrationToken(LoginDto login);
+    LoginResponseDto appLogin(LoginDto login);
 }

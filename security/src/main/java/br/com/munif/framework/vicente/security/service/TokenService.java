@@ -235,7 +235,7 @@ public class TokenService extends BaseService<Token> implements ITokenService {
     }
 
     @Override
-    public LoginResponseDto integrationToken(LoginDto login) {
+    public LoginResponseDto appLogin(LoginDto login) {
         return null;
     }
 }
