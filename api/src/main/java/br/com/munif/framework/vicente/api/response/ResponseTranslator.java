@@ -23,6 +23,9 @@ public class ResponseTranslator implements ResponseBodyAdvice<Object> {
         if (body instanceof VicError || body instanceof byte[])
             return body;
 
+        if (body instanceof String)
+            return body;
+
         if (body instanceof NoTranslate)
             return (((NoTranslate) body).data);
 
