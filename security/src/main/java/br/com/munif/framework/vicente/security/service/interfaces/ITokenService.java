@@ -4,6 +4,7 @@ import br.com.munif.framework.vicente.application.VicServiceable;
 import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
+import br.com.munif.framework.vicente.security.domain.dto.LoginResponseAppDto;
 import br.com.munif.framework.vicente.security.domain.dto.LoginResponseDto;
 import br.com.munif.framework.vicente.security.domain.dto.RefreshTokenDto;
 
@@ -33,5 +34,5 @@ public interface ITokenService extends VicServiceable<Token> {
 
     LoginResponseDto loginByToken();
 
-    LoginResponseDto appLogin(LoginDto login);
+    LoginResponseAppDto appLogin(LoginDto login);
 }

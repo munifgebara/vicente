@@ -6,6 +6,7 @@ import br.com.munif.framework.vicente.api.BaseAPI;
 import br.com.munif.framework.vicente.core.VicPublicOperation;
 import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
+import br.com.munif.framework.vicente.security.domain.dto.LoginResponseAppDto;
 import br.com.munif.framework.vicente.security.domain.dto.LoginResponseDto;
 import br.com.munif.framework.vicente.security.domain.dto.RefreshTokenDto;
 import br.com.munif.framework.vicente.security.service.interfaces.ITokenService;
@@ -43,7 +44,7 @@ public class TokenApi extends BaseAPI<Token> {
     @Transactional
     @VicPublicOperation
     @RequestMapping(value = "/login/app", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public LoginResponseDto integrationToken(@RequestBody LoginDto login) {
+    public LoginResponseAppDto integrationToken(@RequestBody LoginDto login) {
         return tokenService.appLogin(login);
     }
     @Transactional
