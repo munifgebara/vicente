@@ -32,4 +32,6 @@ public interface ITokenService extends VicServiceable<Token> {
     Map changeOrganization(String organizationId);
 
     LoginResponseDto loginByToken();
+
+    LoginResponseDto integrationToken(LoginDto login);
 }
