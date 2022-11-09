@@ -61,6 +61,7 @@ public class BaseEntity implements Serializable {
     @JsonIgnore
     protected Integer rights;
 
+    @Column(length = 500)
     protected String extra;
 
     protected ZonedDateTime cd;
