@@ -28,7 +28,7 @@ public class BaseConfiguration extends BaseEntity implements Serializable {
     public BaseConfiguration() {
         this.countryCode = "BR";
         this.timezone = "America/Sao_Paulo";
-        this.language = "pt-br";
+        this.language = "pt-BR";
     }
 
     public static <E extends BaseConfiguration> void setCurrent(E config) {
@@ -60,7 +60,7 @@ public class BaseConfiguration extends BaseEntity implements Serializable {
     }
 
     public String getLanguage() {
-        return language != null ? language : "pt-br";
+        return language != null ? language : "pt-BR";
     }
 
     public void setLanguage(String language) {
