@@ -10,6 +10,8 @@ import br.com.munif.framework.vicente.domain.typings.*;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
@@ -19,6 +21,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.Map;
 import java.util.Objects;
 
 import static br.com.munif.framework.vicente.core.RightsHelper.*;
@@ -148,14 +151,6 @@ public class BaseEntity implements Serializable {
         this.rights = rights;
     }
 
-    public String getExtra() {
-        return extra;
-    }
-
-    public void setExtra(String extra) {
-        this.extra = extra;
-    }
-
     public BaseEntity extra(String e) {
         this.extra = e;
         return this;
@@ -279,6 +274,23 @@ public class BaseEntity implements Serializable {
             return VicTenancyType.GROUPS;
         }
         return vtp.value();
+    }
+
+    public Map<String, Object> getExtra() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(this.extra, Map.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public void setExtra(Map<String, Object> metadata) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            this.extra = objectMapper.writeValueAsString(metadata);
+        } catch (JsonProcessingException ignored) {
+        }
     }
 
 }

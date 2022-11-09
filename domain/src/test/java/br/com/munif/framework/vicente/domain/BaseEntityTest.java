@@ -53,8 +53,7 @@ public class BaseEntityTest {
     @Test
     public void testGetExtra() {
         BaseEntity instance = new BaseEntity();
-        String result = instance.getExtra();
-        assertNotNull(result);
+        assertNotNull(instance.getExtra());
     }
 
     @Test
