@@ -6,32 +6,34 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Objects;
 
 public class VicMoney extends VicDomain {
 
     private BigDecimal amount;
     @Enumerated(EnumType.STRING)
-    private VicCurrencyType type;
+    private String locale;
     private VicRecurring recurring;
 
     public VicMoney() {
         this.amount = BigDecimal.ZERO;
-        this.type = VicCurrencyType.BRL;
+        this.locale = "pt-BR";
         this.recurring = VicRecurring.NONE;
     }
 
     public VicMoney(VicMoney other) {
         if (other != null) {
             this.amount = other.amount;
-            this.type = other.type;
+            this.locale = other.locale;
             this.recurring = other.recurring;
         }
     }
 
-    public VicMoney(BigDecimal amount, VicCurrencyType type, VicRecurring recurring) {
+    public VicMoney(BigDecimal amount, String locale, VicRecurring recurring) {
         this.amount = amount;
-        this.type = type;
+        this.locale = locale;
         this.recurring = recurring;
     }
 
@@ -43,23 +45,19 @@ public class VicMoney extends VicDomain {
         this.amount = amount;
     }
 
-    public VicCurrencyType getType() {
-        return type;
+    public String getLocale() {
+        return locale;
     }
 
-    public void setType(VicCurrencyType type) {
-        this.type = type;
-    }
-
-    public void setCurrencyType(String currencyType) {
-        this.setType(VicCurrencyType.valueOf(currencyType));
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
         hash = 23 * hash + Objects.hashCode(this.amount);
-        hash = 23 * hash + Objects.hashCode(this.type);
+        hash = 23 * hash + Objects.hashCode(this.locale);
         hash = 23 * hash + Objects.hashCode(this.recurring);
         return hash;
     }
@@ -76,12 +74,11 @@ public class VicMoney extends VicDomain {
         if (!Objects.equals(this.amount, other.amount)) {
             return false;
         }
-        if (!Objects.equals(this.type, other.type)) {
+        if (!Objects.equals(this.locale, other.locale)) {
             return false;
         }
         return Objects.equals(this.recurring, other.recurring);
     }
-
     public VicRecurring getRecurring() {
         return recurring;
     }

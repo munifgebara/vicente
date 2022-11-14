@@ -18,16 +18,16 @@ import java.util.Optional;
 public class VicMoneyUserType implements CompositeUserType {
     @Override
     public String[] getPropertyNames() {
-        return new String[] {
+        return new String[]{
                 "amount",
-                "type",
+                "locale",
                 "recurring"
         };
     }
 
     @Override
     public Type[] getPropertyTypes() {
-        return new Type[] {
+        return new Type[]{
                 BigDecimalType.INSTANCE,
                 StringType.INSTANCE,
                 StringType.INSTANCE
@@ -40,7 +40,7 @@ public class VicMoneyUserType implements CompositeUserType {
             case 0:
                 return ((VicMoney) component).getAmount();
             case 1:
-                return ((VicMoney) component).getType();
+                return ((VicMoney) component).getLocale();
             case 2:
                 return ((VicMoney) component).getRecurring();
             default:
@@ -56,7 +56,7 @@ public class VicMoneyUserType implements CompositeUserType {
                 ((VicMoney) component).setAmount((BigDecimal) setValue);
                 break;
             case 1:
-                ((VicMoney) component).setCurrencyType((String) setValue);
+                ((VicMoney) component).setLocale((String) setValue);
                 break;
             case 2:
                 ((VicMoney) component).setRecurring(
@@ -91,12 +91,12 @@ public class VicMoneyUserType implements CompositeUserType {
 
     @Override
     public Object nullSafeGet(ResultSet resultSet, String[] names,
-            SharedSessionContractImplementor sharedSessionContractImplementor, Object o)
+                              SharedSessionContractImplementor sharedSessionContractImplementor, Object o)
             throws HibernateException, SQLException {
         final BigDecimal description = resultSet.getBigDecimal(names[0]);
         for (int i = 0; i < names.length; i++) {
             if (resultSet.getObject(names[i]) != null) {
-                return new VicMoney(description, VicCurrencyType.valueOf(resultSet.getString(names[i + 1])),
+                return new VicMoney(description, String.valueOf(resultSet.getString(names[i + 1])),
                         VicRecurring.valueOf(resultSet.getString(names[i + 2])));
             }
         }
@@ -105,7 +105,7 @@ public class VicMoneyUserType implements CompositeUserType {
 
     @Override
     public void nullSafeSet(PreparedStatement preparedStatement, Object value, int property,
-            SharedSessionContractImplementor sharedSessionContractImplementor) throws HibernateException, SQLException {
+                            SharedSessionContractImplementor sharedSessionContractImplementor) throws HibernateException, SQLException {
         if (null == value) {
             preparedStatement.setNull(property + 0, Types.BIGINT);
             preparedStatement.setNull(property + 1, java.sql.Types.VARCHAR);
@@ -114,7 +114,7 @@ public class VicMoneyUserType implements CompositeUserType {
             final VicMoney object = (VicMoney) value;
             preparedStatement.setBigDecimal(property + 0, object.getAmount());
             preparedStatement.setString(property + 1,
-                    Optional.ofNullable(object.getType()).orElse(VicCurrencyType.BRL).name());
+                    Optional.ofNullable(object.getLocale()).orElse("pt-BR"));
             preparedStatement.setString(property + 2,
                     Optional.ofNullable(object.getRecurring()).orElse(VicRecurring.NONE).name());
 
@@ -143,13 +143,13 @@ public class VicMoneyUserType implements CompositeUserType {
 
     @Override
     public Object assemble(Serializable cached, SharedSessionContractImplementor sharedSessionContractImplementor,
-            Object o) throws HibernateException {
+                           Object o) throws HibernateException {
         return cached;
     }
 
     @Override
     public Object replace(Object original, Object o1, SharedSessionContractImplementor sharedSessionContractImplementor,
-            Object o2) throws HibernateException {
+                          Object o2) throws HibernateException {
         return this.deepCopy(original);
     }
 }
