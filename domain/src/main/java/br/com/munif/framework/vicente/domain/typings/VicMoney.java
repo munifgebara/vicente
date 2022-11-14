@@ -116,6 +116,10 @@ public class VicMoney extends VicDomain {
     }
 
     private Currency getCurrencyInstance(String type) {
-        return Currency.getInstance(Locale.forLanguageTag(type));
+        try {
+            return Currency.getInstance(Locale.forLanguageTag(type));
+        } catch (RuntimeException exception) {
+            return Currency.getInstance(Locale.forLanguageTag("pt-BR"));
+        }
     }
 }
