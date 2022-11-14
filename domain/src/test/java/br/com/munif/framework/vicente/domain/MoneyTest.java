@@ -16,7 +16,7 @@ public class MoneyTest {
         VicMoney vicMoney = new VicMoney();
 
         assertSame(BigDecimal.ZERO, vicMoney.getAmount());
-        assertEquals(VicCurrencyType.BRL, vicMoney.getLocale());
+        assertEquals(VicCurrencyType.BRL, vicMoney.getType());
     }
 
     @Test
@@ -24,7 +24,7 @@ public class MoneyTest {
         VicMoney vicMoney = new VicMoney();
         vicMoney.setAmount(BigDecimal.valueOf(1.2));
 
-        assertEquals(VicCurrencyType.BRL, vicMoney.getLocale());
+        assertEquals(VicCurrencyType.BRL, vicMoney.getType());
         assertEquals(BigDecimal.valueOf(1.2), vicMoney.getAmount());
     }
 }

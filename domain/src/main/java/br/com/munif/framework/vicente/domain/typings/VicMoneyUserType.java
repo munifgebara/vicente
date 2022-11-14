@@ -20,7 +20,7 @@ public class VicMoneyUserType implements CompositeUserType {
     public String[] getPropertyNames() {
         return new String[]{
                 "amount",
-                "locale",
+                "type",
                 "recurring"
         };
     }
@@ -40,7 +40,7 @@ public class VicMoneyUserType implements CompositeUserType {
             case 0:
                 return ((VicMoney) component).getAmount();
             case 1:
-                return ((VicMoney) component).getLocale();
+                return ((VicMoney) component).getType();
             case 2:
                 return ((VicMoney) component).getRecurring();
             default:
@@ -56,7 +56,7 @@ public class VicMoneyUserType implements CompositeUserType {
                 ((VicMoney) component).setAmount((BigDecimal) setValue);
                 break;
             case 1:
-                ((VicMoney) component).setLocale((String) setValue);
+                ((VicMoney) component).setType((String) setValue);
                 break;
             case 2:
                 ((VicMoney) component).setRecurring(
@@ -114,7 +114,7 @@ public class VicMoneyUserType implements CompositeUserType {
             final VicMoney object = (VicMoney) value;
             preparedStatement.setBigDecimal(property + 0, object.getAmount());
             preparedStatement.setString(property + 1,
-                    Optional.ofNullable(object.getLocale()).orElse("pt-BR"));
+                    Optional.ofNullable(object.getType()).orElse("pt-BR"));
             preparedStatement.setString(property + 2,
                     Optional.ofNullable(object.getRecurring()).orElse(VicRecurring.NONE).name());
 

@@ -6,34 +6,31 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.Objects;
 
 public class VicMoney extends VicDomain {
 
     private BigDecimal amount;
-    @Enumerated(EnumType.STRING)
-    private String locale;
+    private String type;
     private VicRecurring recurring;
 
     public VicMoney() {
         this.amount = BigDecimal.ZERO;
-        this.locale = "pt-BR";
+        this.type = "pt-BR";
         this.recurring = VicRecurring.NONE;
     }
 
     public VicMoney(VicMoney other) {
         if (other != null) {
             this.amount = other.amount;
-            this.locale = other.locale;
+            this.type = other.type;
             this.recurring = other.recurring;
         }
     }
 
-    public VicMoney(BigDecimal amount, String locale, VicRecurring recurring) {
+    public VicMoney(BigDecimal amount, String type, VicRecurring recurring) {
         this.amount = amount;
-        this.locale = locale;
+        this.type = type;
         this.recurring = recurring;
     }
 
@@ -45,19 +42,19 @@ public class VicMoney extends VicDomain {
         this.amount = amount;
     }
 
-    public String getLocale() {
-        return locale;
+    public String getType() {
+        return type;
     }
 
-    public void setLocale(String locale) {
-        this.locale = locale;
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
         hash = 23 * hash + Objects.hashCode(this.amount);
-        hash = 23 * hash + Objects.hashCode(this.locale);
+        hash = 23 * hash + Objects.hashCode(this.type);
         hash = 23 * hash + Objects.hashCode(this.recurring);
         return hash;
     }
@@ -74,7 +71,7 @@ public class VicMoney extends VicDomain {
         if (!Objects.equals(this.amount, other.amount)) {
             return false;
         }
-        if (!Objects.equals(this.locale, other.locale)) {
+        if (!Objects.equals(this.type, other.type)) {
             return false;
         }
         return Objects.equals(this.recurring, other.recurring);
