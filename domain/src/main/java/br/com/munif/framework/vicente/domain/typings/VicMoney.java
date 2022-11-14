@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.Currency;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -99,11 +100,22 @@ public class VicMoney extends VicDomain {
     @JsonIgnore
     public String getFormatted() {
         if (type == null) return new VicMoney().getFormatted();
-        String[] split = type.split("-");
-        if (split.length > 1)
-            return NumberFormat.getCurrencyInstance(new Locale(split[0], split[1])).format(amount.doubleValue());
-        else if (split.length == 1)
-            return NumberFormat.getCurrencyInstance(new Locale(split[0])).format(amount.doubleValue());
-        return new VicMoney().getFormatted();
+        return NumberFormat.getCurrencyInstance().format(amount.doubleValue());
+    }
+
+    @JsonGetter
+    public String getCode() {
+        if (type == null) return "BRL";
+        return getCurrencyInstance(type).getCurrencyCode();
+    }
+
+    @JsonGetter
+    public String getSymbol() {
+        if (type == null) return "R$";
+        return getCurrencyInstance(type).getCurrencyCode();
+    }
+
+    private Currency getCurrencyInstance(String type) {
+        return Currency.getInstance(Locale.forLanguageTag(type));
     }
 }
