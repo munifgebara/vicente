@@ -1,11 +1,12 @@
 package br.com.munif.framework.vicente.domain.typings;
 
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Objects;
 
 public class VicMoney extends VicDomain {
@@ -26,6 +27,11 @@ public class VicMoney extends VicDomain {
             this.type = other.type;
             this.recurring = other.recurring;
         }
+    }
+
+    public VicMoney(Double amount) {
+        this();
+        this.setAmount(BigDecimal.valueOf(amount));
     }
 
     public VicMoney(BigDecimal amount, String type, VicRecurring recurring) {
@@ -76,6 +82,7 @@ public class VicMoney extends VicDomain {
         }
         return Objects.equals(this.recurring, other.recurring);
     }
+
     public VicRecurring getRecurring() {
         return recurring;
     }
@@ -87,5 +94,16 @@ public class VicMoney extends VicDomain {
     @JsonIgnore
     public Long getCents() {
         return this.amount != null ? this.amount.multiply(BigDecimal.valueOf(100)).longValue() : 0L;
+    }
+
+    @JsonIgnore
+    public String getFormatted() {
+        if (type == null) return new VicMoney().getFormatted();
+        String[] split = type.split("-");
+        if (split.length > 1)
+            return NumberFormat.getCurrencyInstance(new Locale(split[0], split[1])).format(amount.doubleValue());
+        else if (split.length == 1)
+            return NumberFormat.getCurrencyInstance(new Locale(split[0])).format(amount.doubleValue());
+        return new VicMoney().getFormatted();
     }
 }
