@@ -148,7 +148,7 @@ public class ExceptionTranslator {
         ResponseStatus responseStatus = AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class);
         if (responseStatus != null) {
             builder = ResponseEntity.status(responseStatus.value());
-            vicError = new VicError("error.http." + responseStatus.value().value(), responseStatus.reason());
+            vicError = new VicError(ex.getClass().getSimpleName(), ex.getMessage() != null && !ex.getMessage().isEmpty() ? ex.getMessage() : responseStatus.reason());
         } else {
             builder = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
             vicError = new VicError(ErrorConstants.ERR_INTERNAL_SERVER_ERROR, ex.getMessage());
