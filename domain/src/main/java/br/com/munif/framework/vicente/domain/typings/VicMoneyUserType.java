@@ -20,7 +20,7 @@ public class VicMoneyUserType implements CompositeUserType {
     public String[] getPropertyNames() {
         return new String[]{
                 "amount",
-                "type",
+                "code",
                 "recurring"
         };
     }
@@ -30,7 +30,7 @@ public class VicMoneyUserType implements CompositeUserType {
         return new Type[]{
                 BigDecimalType.INSTANCE,
                 StringType.INSTANCE,
-                StringType.INSTANCE
+                StringType.INSTANCE,
         };
     }
 
@@ -40,7 +40,7 @@ public class VicMoneyUserType implements CompositeUserType {
             case 0:
                 return ((VicMoney) component).getAmount();
             case 1:
-                return ((VicMoney) component).getType();
+                return ((VicMoney) component).getCode();
             case 2:
                 return ((VicMoney) component).getRecurring();
             default:
@@ -56,7 +56,7 @@ public class VicMoneyUserType implements CompositeUserType {
                 ((VicMoney) component).setAmount((BigDecimal) setValue);
                 break;
             case 1:
-                ((VicMoney) component).setType((String) setValue);
+                ((VicMoney) component).setCode((String) setValue);
                 break;
             case 2:
                 ((VicMoney) component).setRecurring(
@@ -96,7 +96,8 @@ public class VicMoneyUserType implements CompositeUserType {
         final BigDecimal description = resultSet.getBigDecimal(names[0]);
         for (int i = 0; i < names.length; i++) {
             if (resultSet.getObject(names[i]) != null) {
-                return new VicMoney(description, String.valueOf(resultSet.getString(names[i + 1])),
+                return new VicMoney(description,
+                        String.valueOf(resultSet.getString(names[i + 1])),
                         VicRecurring.valueOf(resultSet.getString(names[i + 2])));
             }
         }
@@ -114,7 +115,7 @@ public class VicMoneyUserType implements CompositeUserType {
             final VicMoney object = (VicMoney) value;
             preparedStatement.setBigDecimal(property + 0, object.getAmount());
             preparedStatement.setString(property + 1,
-                    Optional.ofNullable(object.getType()).orElse("pt-BR"));
+                    Optional.ofNullable(object.getCode()).orElse("BRL"));
             preparedStatement.setString(property + 2,
                     Optional.ofNullable(object.getRecurring()).orElse(VicRecurring.NONE).name());
 

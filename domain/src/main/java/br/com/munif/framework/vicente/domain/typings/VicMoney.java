@@ -3,6 +3,7 @@ package br.com.munif.framework.vicente.domain.typings;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -13,19 +14,19 @@ import java.util.Objects;
 public class VicMoney extends VicDomain {
 
     private BigDecimal amount;
-    private String type;
+    private String code;
     private VicRecurring recurring;
 
     public VicMoney() {
         this.amount = BigDecimal.ZERO;
-        this.type = "pt-BR";
+        this.code = "BRL";
         this.recurring = VicRecurring.NONE;
     }
 
     public VicMoney(VicMoney other) {
         if (other != null) {
             this.amount = other.amount;
-            this.type = other.type;
+            this.code = other.code;
             this.recurring = other.recurring;
         }
     }
@@ -35,9 +36,9 @@ public class VicMoney extends VicDomain {
         this.setAmount(BigDecimal.valueOf(amount));
     }
 
-    public VicMoney(BigDecimal amount, String type, VicRecurring recurring) {
+    public VicMoney(BigDecimal amount, String code, VicRecurring recurring) {
         this.amount = amount;
-        this.type = type;
+        this.code = code;
         this.recurring = recurring;
     }
 
@@ -49,19 +50,27 @@ public class VicMoney extends VicDomain {
         this.amount = amount;
     }
 
-    public String getType() {
-        return type;
+    @JsonSetter
+    public void setType(String type) {
+        if (type != null)
+            try {
+                this.code = getCurrencyInstance(type).getCurrencyCode();
+            } catch (RuntimeException ignored) {}
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public String getCode() {
+        return this.code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
         hash = 23 * hash + Objects.hashCode(this.amount);
-        hash = 23 * hash + Objects.hashCode(this.type);
+        hash = 23 * hash + Objects.hashCode(this.code);
         hash = 23 * hash + Objects.hashCode(this.recurring);
         return hash;
     }
@@ -78,7 +87,7 @@ public class VicMoney extends VicDomain {
         if (!Objects.equals(this.amount, other.amount)) {
             return false;
         }
-        if (!Objects.equals(this.type, other.type)) {
+        if (!Objects.equals(this.code, other.code)) {
             return false;
         }
         return Objects.equals(this.recurring, other.recurring);
@@ -99,20 +108,14 @@ public class VicMoney extends VicDomain {
 
     @JsonIgnore
     public String getFormatted() {
-        if (type == null) return new VicMoney().getFormatted();
+        if (code == null) return new VicMoney().getFormatted();
         return NumberFormat.getCurrencyInstance().format(amount.doubleValue());
     }
 
     @JsonGetter
-    public String getCode() {
-        if (type == null) return "BRL";
-        return getCurrencyInstance(type).getCurrencyCode();
-    }
-
-    @JsonGetter
     public String getSymbol() {
-        if (type == null) return "R$";
-        return getCurrencyInstance(type).getSymbol();
+        if (code == null) return "R$";
+        return Currency.getInstance(code).getSymbol();
     }
 
     private Currency getCurrencyInstance(String type) {
