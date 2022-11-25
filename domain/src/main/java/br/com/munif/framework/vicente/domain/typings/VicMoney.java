@@ -112,7 +112,7 @@ public class VicMoney extends VicDomain {
     @JsonGetter
     public String getSymbol() {
         if (type == null) return "R$";
-        return getCurrencyInstance(type).getCurrencyCode();
+        return getCurrencyInstance(type).getSymbol();
     }
 
     private Currency getCurrencyInstance(String type) {
