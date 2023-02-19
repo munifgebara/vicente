@@ -56,6 +56,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
             return "(1=1)";
         }
         VicTenancyType vtt = getPolicy(domainClass);
+        if (VicTenancyType.NONE.equals(vtt)) return "(1=1)";
         StringBuilder sb = new StringBuilder("(\n");
         if (isVicTemporalEntity) {
             sb.append("(\n");
