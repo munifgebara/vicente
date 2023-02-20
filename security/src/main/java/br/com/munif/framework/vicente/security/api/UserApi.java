@@ -3,6 +3,7 @@
 package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.api.BaseAPI;
+import br.com.munif.framework.vicente.core.VicPublicOperation;
 import br.com.munif.framework.vicente.security.domain.PasswordGenerator;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.domain.dto.ChangePasswordDto;
@@ -73,6 +74,7 @@ public class UserApi extends BaseAPI<User> {
     }
 
     @Transactional
+    @VicPublicOperation
     @PutMapping(value = "/validate", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<ValidateEmailStatus> validate(@RequestBody ValidateEmailDto validateEmailDto) {
         return ResponseEntity.ok(((IUserService) service).validate(validateEmailDto));
