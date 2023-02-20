@@ -100,7 +100,7 @@ public class UserService extends BaseService<User> implements IUserService {
     }
 
     @Override
-    public void validateEmail(ValidateEmailDto validateEmailDto) {
+    public void validate(ValidateEmailDto validateEmailDto) {
 
     }
 

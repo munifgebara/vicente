@@ -72,9 +72,9 @@ public class UserApi extends BaseAPI<User> {
     }
 
     @Transactional
-    @PutMapping(value = "/validate-email", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Void> validateEmail(@RequestBody ValidateEmailDto validateEmailDto) {
-        ((IUserService) service).validateEmail(validateEmailDto);
+    @PutMapping(value = "/validate", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Void> validate(@RequestBody ValidateEmailDto validateEmailDto) {
+        ((IUserService) service).validate(validateEmailDto);
         return ResponseEntity.noContent().build();
     }
 }

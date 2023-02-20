@@ -14,7 +14,7 @@ public interface IUserService extends VicServiceable<User> {
     void assignPrivileges(PrivilegesAssignmentDto privileges);
 
     User updateImage(String id, String imageUrl);
-    void validateEmail(ValidateEmailDto validateEmailDto);
+    void validate(ValidateEmailDto validateEmailDto);
 
     void changePassword(String id, ChangePasswordDto changePasswordDto);
 }
