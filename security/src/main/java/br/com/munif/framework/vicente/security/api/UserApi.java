@@ -75,7 +75,7 @@ public class UserApi extends BaseAPI<User> {
 
     @Transactional
     @VicPublicOperation
-    @PutMapping(value = "/validate", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/validate", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<ValidateEmailStatus> validate(@RequestBody ValidateEmailDto validateEmailDto) {
         return ResponseEntity.ok(((IUserService) service).validate(validateEmailDto));
     }
