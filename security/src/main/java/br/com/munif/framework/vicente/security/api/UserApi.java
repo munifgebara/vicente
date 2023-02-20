@@ -7,6 +7,7 @@ import br.com.munif.framework.vicente.security.domain.PasswordGenerator;
 import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.domain.dto.ChangePasswordDto;
 import br.com.munif.framework.vicente.security.domain.dto.PrivilegesAssignmentDto;
+import br.com.munif.framework.vicente.security.domain.dto.ValidateEmailDto;
 import br.com.munif.framework.vicente.security.service.interfaces.IUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,6 +68,13 @@ public class UserApi extends BaseAPI<User> {
     @PutMapping(value = "/change-password/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Void> changePassword(@PathVariable("id") String id, @RequestBody ChangePasswordDto changePasswordDto) {
         ((IUserService) service).changePassword(id, changePasswordDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Transactional
+    @PutMapping(value = "/validate-email", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Void> validateEmail(@RequestBody ValidateEmailDto validateEmailDto) {
+        ((IUserService) service).validateEmail(validateEmailDto);
         return ResponseEntity.noContent().build();
     }
 }
