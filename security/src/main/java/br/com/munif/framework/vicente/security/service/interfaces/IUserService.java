@@ -5,6 +5,7 @@ import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.domain.dto.ChangePasswordDto;
 import br.com.munif.framework.vicente.security.domain.dto.PrivilegesAssignmentDto;
 import br.com.munif.framework.vicente.security.domain.dto.ValidateEmailDto;
+import br.com.munif.framework.vicente.security.domain.dto.ValidateEmailStatus;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface IUserService extends VicServiceable<User> {
     void assignPrivileges(PrivilegesAssignmentDto privileges);
 
     User updateImage(String id, String imageUrl);
-    void validate(ValidateEmailDto validateEmailDto);
+    ValidateEmailStatus validate(ValidateEmailDto validateEmailDto);
 
     void changePassword(String id, ChangePasswordDto changePasswordDto);
 }

@@ -15,6 +15,7 @@ import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.domain.dto.ChangePasswordDto;
 import br.com.munif.framework.vicente.security.domain.dto.PrivilegesAssignmentDto;
 import br.com.munif.framework.vicente.security.domain.dto.ValidateEmailDto;
+import br.com.munif.framework.vicente.security.domain.dto.ValidateEmailStatus;
 import br.com.munif.framework.vicente.security.domain.exceptions.UserNotFoundException;
 import br.com.munif.framework.vicente.security.domain.exceptions.WrongPasswordException;
 import br.com.munif.framework.vicente.security.repository.UserRepository;
@@ -100,8 +101,8 @@ public class UserService extends BaseService<User> implements IUserService {
     }
 
     @Override
-    public void validate(ValidateEmailDto validateEmailDto) {
-
+    public ValidateEmailStatus validate(ValidateEmailDto validateEmailDto) {
+        return null;
     }
 
     @Override

@@ -8,6 +8,7 @@ import br.com.munif.framework.vicente.security.domain.User;
 import br.com.munif.framework.vicente.security.domain.dto.ChangePasswordDto;
 import br.com.munif.framework.vicente.security.domain.dto.PrivilegesAssignmentDto;
 import br.com.munif.framework.vicente.security.domain.dto.ValidateEmailDto;
+import br.com.munif.framework.vicente.security.domain.dto.ValidateEmailStatus;
 import br.com.munif.framework.vicente.security.service.interfaces.IUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,8 +74,7 @@ public class UserApi extends BaseAPI<User> {
 
     @Transactional
     @PutMapping(value = "/validate", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Void> validate(@RequestBody ValidateEmailDto validateEmailDto) {
-        ((IUserService) service).validate(validateEmailDto);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ValidateEmailStatus> validate(@RequestBody ValidateEmailDto validateEmailDto) {
+        return ResponseEntity.ok(((IUserService) service).validate(validateEmailDto));
     }
 }
