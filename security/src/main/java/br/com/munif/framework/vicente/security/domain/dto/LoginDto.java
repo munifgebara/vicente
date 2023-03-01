@@ -12,6 +12,7 @@ public class LoginDto {
 
     public String login;
     public String password;
+    public String oi;
 
     public LoginDto() {
     }
@@ -19,6 +20,12 @@ public class LoginDto {
     public LoginDto(String login, String password) {
         this.login = login;
         this.password = password;
+    }
+
+    public LoginDto(String login, String password, String oi) {
+        this.login = login;
+        this.password = password;
+        this.oi = oi;
     }
 
     @Override
