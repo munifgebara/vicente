@@ -12,6 +12,8 @@ public class Pessoa<T, U> {
 
     private String nome;
 
+    private Endereco endereco;
+
     public String getNome() {
         return nome;
     }
@@ -28,4 +30,12 @@ public class Pessoa<T, U> {
         return null;
     }
 
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
 }

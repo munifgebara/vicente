@@ -190,7 +190,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
             attrs = vicQuery.getQuery().getFieldsWithAlias();
             joins = vicQuery.getQuery().getJoins();
             alias = vicQuery.getQuery().getAlias();
-            params = vicQuery.getQuery().getParams();
+            params = vicQuery.getQuery().getParams(getDomainClass());
         }
 
         String hql = mountSelectWithWhere(vicQuery, clause, joins, attrs, alias, true);

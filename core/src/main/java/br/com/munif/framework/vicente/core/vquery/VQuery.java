@@ -1,5 +1,8 @@
 package br.com.munif.framework.vicente.core.vquery;
 
+import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -248,9 +251,16 @@ public class VQuery {
         return (alias != null) ? alias + "." : "";
     }
 
+    public ParamList getParams(Class clazz) {
+        ParamList params = new ParamList();
+        getParams(this, params, clazz);
+        params.addAll(this.params);
+        return params;
+    }
+
     public ParamList getParams() {
         ParamList params = new ParamList();
-        getParams(this, params);
+        getParams(this, params, null);
         params.addAll(this.params);
         return params;
     }
@@ -259,12 +269,13 @@ public class VQuery {
         this.params = params;
     }
 
-    public void getParams(VQuery vQuery, ParamList params) {
+    public void getParams(VQuery vQuery, ParamList params, Class clazz) {
         if (vQuery != null) {
             if (vQuery.getCriteria() != null && !ComparisonOperator.NONE.equals(vQuery.getCriteria().getComparisonOperator())) {
-                Object value = vQuery.getCriteria().getValue();
+                Object value = getValueAccodingClass(vQuery, clazz);
+
                 if (value instanceof VEntityQuery) {
-                    getParams(((VEntityQuery) value), params);
+                    getParams(((VEntityQuery) value), params, clazz);
                 } else if (value != null
                         && (value instanceof String
                         || value instanceof Date || value.getClass().isArray())) {
@@ -279,13 +290,40 @@ public class VQuery {
             }
         }
         for (VQuery subQuery : vQuery.getSubQuerys()) {
-            getParams(subQuery, params);
+            getParams(subQuery, params, clazz);
         }
         for (Join join : vQuery.joins) {
             for (CriteriaJoin subQuery : join.getSubQuerys()) {
                 params.addAll(subQuery.getParams());
             }
         }
+    }
+
+    private Object getValueAccodingClass(VQuery vQuery, Class clazz) {
+        Object field = vQuery.getCriteria().getOnlyField();
+        Object value = null;
+        if (field instanceof String) {
+            String fieldString = String.valueOf(field);
+            if (fieldString.contains(getAlias() + ".")) {
+                fieldString = fieldString.replace(getAlias() + ".", "");
+            }
+            String[] levels = fieldString.split("\\.");
+            Field fieldType = null;
+            Class currentClass = clazz;
+            try {
+                for (String level : levels) {
+                    fieldType = ReflectionUtils.findField(currentClass, level);
+                    currentClass = fieldType.getType();
+                }
+            } catch (RuntimeException ignored) {
+            }
+            if (fieldType != null) {
+                value = vQuery.getCriteria().getValue(fieldType.getType());
+            } else {
+                value = vQuery.getCriteria().getValue(clazz);
+            }
+        }
+        return value;
     }
 }
 

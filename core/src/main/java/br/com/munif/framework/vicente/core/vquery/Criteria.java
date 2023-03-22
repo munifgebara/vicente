@@ -3,6 +3,7 @@ package br.com.munif.framework.vicente.core.vquery;
 import br.com.munif.framework.vicente.core.phonetics.PhoneticBuilder;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -45,6 +46,9 @@ public class Criteria {
     public Object getField() {
         return (fieldFn != null ? String.format(fieldFn, field) : field);
     }
+    public Object getOnlyField() {
+        return field;
+    }
 
     public void setField(Object field) {
         this.param.setField(String.valueOf(field));
@@ -60,7 +64,15 @@ public class Criteria {
     }
 
     public Object getValue() {
-        if (this.value instanceof LinkedHashMap) {
+        return getValue(null);
+    }
+
+    public Object getValue(Class clazz) {
+        if (clazz != null) {
+            if (clazz.isEnum()) {
+                return Enum.valueOf(clazz, String.valueOf(value));
+            }
+        } else if (this.value instanceof LinkedHashMap) {
             return new CriteriaField(((LinkedHashMap<String, String>) this.value).get("value"));
         } else if (this.value instanceof String && this.phonetic) {
             value = PhoneticBuilder.build().translate(String.valueOf(value));
