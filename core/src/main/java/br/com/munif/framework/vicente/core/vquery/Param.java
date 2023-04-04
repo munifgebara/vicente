@@ -75,7 +75,8 @@ public class Param {
                 value = String.valueOf(map.get("field"));
             }
         }
-        if (getType().isEnum()) value = Enum.valueOf(getType(), String.valueOf(value).replace("'", ""));
+        if (getType().isEnum() && value != null && value != "null")
+            value = Enum.valueOf(getType(), String.valueOf(value).replace("'", ""));
         return value;
     }
 
