@@ -105,6 +105,10 @@ public class VicMoney extends VicDomain {
     public Long getCents() {
         return this.amount != null ? this.amount.multiply(BigDecimal.valueOf(100)).longValue() : 0L;
     }
+    @JsonIgnore
+    public void setCents(Long cents) {
+        this.amount = BigDecimal.valueOf(cents / 100);
+    }
 
     @JsonIgnore
     public String getFormatted() {
