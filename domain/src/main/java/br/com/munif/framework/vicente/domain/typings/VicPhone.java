@@ -48,6 +48,9 @@ public class VicPhone extends VicDomain {
     }
 
     public void setDescription(String description) {
+        if (description != null) {
+            description = description.replaceAll(" ", "").replaceAll("-", "");
+        }
         this.description = description;
     }
 
