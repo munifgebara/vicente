@@ -69,18 +69,21 @@ public class TokenApi extends BaseAPI<Token> {
     }
 
     @Transactional
+    @VicPublicOperation
     @RequestMapping(value = "/sigin", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LoginResponseDto sigin(@RequestBody LoginDto login) {
         return tokenService.sigin(login);
     }
 
     @Transactional
+    @VicPublicOperation
     @RequestMapping(value = "/logout", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LoginResponseDto logout() {
         return tokenService.logout();
     }
 
     @Transactional
+    @VicPublicOperation
     @RequestMapping(value = "/login/bypassword/{login}/{senha:.+}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LoginResponseDto logaGet(@PathVariable String login, @PathVariable String senha) {
         return loga(new LoginDto(login, senha));
@@ -102,12 +105,14 @@ public class TokenApi extends BaseAPI<Token> {
     }
 
     @Transactional
+    @VicPublicOperation
     @GetMapping(value = "/lost-password/{ticket:.+}/{password:.+}")
     public ResponseEntity<Map> lostPassword(@PathVariable("ticket") String ticket, @PathVariable("password") String password) {
         return ResponseEntity.ok(tokenService.lostPassword(ticket, password));
     }
 
     @Transactional
+    @VicPublicOperation
     @GetMapping(value = "/change-organization/{organizationId:.+}")
     public ResponseEntity<Map> changeOrganization(@PathVariable("organizationId") String organizationId) {
         return ResponseEntity.ok(tokenService.changeOrganization(organizationId));
