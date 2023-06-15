@@ -22,5 +22,18 @@
             <version>3.9</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js</artifactId>
+            <version>22.1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js-scriptengine</artifactId>
+            <version>22.1.0.1</version>
+        </dependency>
+
+
     </dependencies>
+
 </project>

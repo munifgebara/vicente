@@ -2,6 +2,7 @@ package br.com.munif.framework.vicente.core;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -25,7 +26,9 @@ public class VicScriptEngine {
      */
     public static Object eval(String script, Map<String, Object> objects) {
         try {
-            ScriptEngine engine = engineManager.getEngineByName("JavaScript");
+            System.out.println(engineManager.getEngineFactories().stream().map(s->s.getEngineName()).collect(Collectors.toList()));
+         //   ScriptEngine engine = engineManager.getEngineByName("graal.js");
+            ScriptEngine engine = engineManager.getEngineByName("Graal.js");
             if (objects != null) {
                 for (String key : objects.keySet()) {
                     engine.put(key, objects.get(key));
