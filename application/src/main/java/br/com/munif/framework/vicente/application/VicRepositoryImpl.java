@@ -213,9 +213,13 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
                         newQuery.setFirstResult(vicQuery.getFirstResult());
                         newQuery.setMaxResults(vicQuery.getMaxResults());
                         for (Parameter<?> parameter : query.getParameters()) {
-                            Object parameterValue = query.getParameterValue(parameter);
-                            if (parameterValue != null)
-                                newQuery.setParameter(parameter.getName(), parameterValue);
+                            try {
+                                Object parameterValue = query.getParameterValue(parameter);
+                                if (parameterValue != null)
+                                    newQuery.setParameter(parameter.getName(), parameterValue);
+                            } catch (RuntimeException ignored) {
+
+                            }
                         }
                         query = newQuery;
                     }
