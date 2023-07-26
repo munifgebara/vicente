@@ -2,10 +2,7 @@ package br.com.munif.framework.vicente.application;
 
 import br.com.munif.framework.vicente.application.victenancyfields.VicFieldRepository;
 import br.com.munif.framework.vicente.application.victenancyfields.VicFieldValueRepository;
-import br.com.munif.framework.vicente.core.Utils;
-import br.com.munif.framework.vicente.core.VicQuery;
-import br.com.munif.framework.vicente.core.VicScriptEngine;
-import br.com.munif.framework.vicente.core.VicTenancyPolicy;
+import br.com.munif.framework.vicente.core.*;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicField;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldType;
@@ -116,7 +113,12 @@ public abstract class BaseService<T extends BaseEntity> implements VicServiceabl
         if (resource instanceof VicTenancyFieldsBaseEntity) {
             //deleteVicTenancyFields(resource);
         }
-        repository.delete(resource);
+        if (resource.getClass().isAnnotationPresent(VicLogicalRemoval.class)) {
+            resource.setActive(false);
+            repository.save(resource);
+        } else {
+            repository.delete(resource);
+        }
     }
 
     @Transactional
