@@ -94,7 +94,7 @@ public class TokenService extends BaseService<Token> implements ITokenService {
         LoginResponseDto r = new LoginResponseDto();
 
         VQuery vQuery = new VQuery(LogicalOperator.AND, new Criteria(),
-                Collections.singletonList(new VQuery(new Criteria("login", ComparisonOperator.EQUAL, login.login.trim()))));
+                Collections.singletonList(new VQuery(new Criteria("login", ComparisonOperator.EQUAL, login.getLogin().trim()))));
         VicQuery query = new VicQuery();
         query.setQuery(vQuery);
         List<User> findByHql = userService.findByHqlNoTenancy(query);
@@ -139,10 +139,10 @@ public class TokenService extends BaseService<Token> implements ITokenService {
 
     @Transactional
     public LoginResponseDto sigin(LoginDto login) {
-        VicThreadScope.ui.set(login.login);
-        VicThreadScope.gi.set(login.login.replaceAll("\\.", "_"));
-        VicThreadScope.cg.set(login.login.replaceAll("\\.", "_"));
-        VicThreadScope.oi.set(login.login.replaceAll("\\.", "_") + ".");
+        VicThreadScope.ui.set(login.getLogin());
+        VicThreadScope.gi.set(login.getLogin().replaceAll("\\.", "_"));
+        VicThreadScope.cg.set(login.getLogin().replaceAll("\\.", "_"));
+        VicThreadScope.oi.set(login.getLogin().replaceAll("\\.", "_") + ".");
         VicThreadScope.defaultRights.set(RightsHelper.OWNER_READ);
         return createAndLogin(login);
     }
@@ -155,15 +155,15 @@ public class TokenService extends BaseService<Token> implements ITokenService {
 
     @Transactional
     public User createUserByLogin(LoginDto login) {
-        List<User> usersByEmail = userService.findUsersByEmail(login.login);
+        List<User> usersByEmail = userService.findUsersByEmail(login.getLogin());
         if (usersByEmail.size() > 0) {
             return usersByEmail.get(0);
         }
         User u = new User();
-        u.setLogin(login.login);
-        Group group = groupService.createGroupByEmail(login.login);
-        Organization organization = organizationService.createOrganizationByEmail(login.login);
-        u.setPassword(PasswordGenerator.generate(login.password));
+        u.setLogin(login.getLogin());
+        Group group = groupService.createGroupByEmail(login.getLogin());
+        Organization organization = organizationService.createOrganizationByEmail(login.getLogin());
+        u.setPassword(PasswordGenerator.generate(login.getPassword()));
         u.setGroups(Sets.newHashSet(group));
         u.setOrganizations(Collections.singleton(organization));
         u = userService.save(u);
@@ -175,7 +175,7 @@ public class TokenService extends BaseService<Token> implements ITokenService {
         Hibernate.initialize(user.getOrganizations());
         Hibernate.initialize(user.getGroups());
         LoginResponseDto r = new LoginResponseDto();
-        if (!PasswordGenerator.validate(login.password, user.getPassword())) {
+        if (!PasswordGenerator.validate(login.getPassword(), user.getPassword())) {
             r.message = "Wrong Password.";
             return r;
         }
