@@ -6,19 +6,14 @@
 package br.com.munif.framework.vicente.domain;
 
 import br.com.munif.framework.vicente.core.*;
-import br.com.munif.framework.vicente.domain.typings.*;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Map;
@@ -29,21 +24,11 @@ import static br.com.munif.framework.vicente.core.RightsHelper.*;
 /**
  * @author munif
  */
-@MappedSuperclass
-@TypeDefs({
-        @TypeDef(name = "vicaddress", defaultForType = VicAddress.class, typeClass = VicAddressUserType.class),
-        @TypeDef(name = "vicemail", defaultForType = VicEmail.class, typeClass = VicEmailUserType.class),
-        @TypeDef(name = "vicphone", defaultForType = VicPhone.class, typeClass = VicPhoneUserType.class),
-        @TypeDef(name = "vicdocument", defaultForType = VicDocument.class, typeClass = VicDocumentUserType.class),
-        @TypeDef(name = "vicmoney", defaultForType = VicMoney.class, typeClass = VicMoneyUserType.class),
-        @TypeDef(name = "vicfile", defaultForType = VicFile.class, typeClass = VicFileUserType.class),
-})
-public class BaseEntity implements Serializable, IBaseEntity {
+public class MongoEntity implements Serializable, IBaseEntity {
 
     public static boolean useSimpleId = false;
 
     @Id
-    @Column(length = 150)
     protected String id;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -70,10 +55,7 @@ public class BaseEntity implements Serializable, IBaseEntity {
 
     protected Boolean active;
 
-    @Version
-    private Integer version;
-
-    public BaseEntity() {
+    public MongoEntity() {
         init();
     }
 
@@ -92,7 +74,6 @@ public class BaseEntity implements Serializable, IBaseEntity {
         cd = ZonedDateTime.now();
         ud = ZonedDateTime.now();
         active = true;
-        version = null;
     }
 
 
@@ -152,7 +133,7 @@ public class BaseEntity implements Serializable, IBaseEntity {
         this.rights = rights;
     }
 
-    public BaseEntity extra(String e) {
+    public MongoEntity extra(String e) {
         this.extra = e;
         return this;
     }
@@ -181,19 +162,11 @@ public class BaseEntity implements Serializable, IBaseEntity {
         this.active = active;
     }
 
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
 
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 37 * hash + Objects.hashCode(this.id);
-        hash = 37 * hash + Objects.hashCode(this.version);
         return hash;
     }
 
@@ -208,11 +181,8 @@ public class BaseEntity implements Serializable, IBaseEntity {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final BaseEntity other = (BaseEntity) obj;
+        final MongoEntity other = (MongoEntity) obj;
         if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.version, other.version)) {
             return false;
         }
         return true;
@@ -225,7 +195,7 @@ public class BaseEntity implements Serializable, IBaseEntity {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" + "id=" + id + ", oi=" + oi + ", gi=" + gi + ", ui=" + ui + ", rights=" + rights + ", extra=" + extra + ", cd=" + cd + ", ud=" + ud + ", active=" + active + ", version=" + version + '}';
+        return getClass().getSimpleName() + "{" + "id=" + id + ", oi=" + oi + ", gi=" + gi + ", ui=" + ui + ", rights=" + rights + ", extra=" + extra + ", cd=" + cd + ", ud=" + ud + ", active=" + active + '}';
     }
 
     public boolean isOwner() {

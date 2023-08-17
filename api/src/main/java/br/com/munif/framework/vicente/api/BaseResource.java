@@ -11,6 +11,7 @@ import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.BaseEntityHelper;
+import br.com.munif.framework.vicente.domain.IBaseEntity;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,13 +34,13 @@ import java.util.stream.Collectors;
  */
 @RestController
 @Scope("prototype")
-public class BaseResource<T extends BaseEntity> {
+public class BaseResource<T extends IBaseEntity> {
 
-    public BaseService<T> service;
+    public VicServiceable<T> service;
 
-    public BaseResource(VicServiceable service) {
+    public BaseResource(VicServiceable<T> service) {
         if (service instanceof BaseService) {
-            this.service = (BaseService<T>) service;
+            this.service = service;
         }
     }
 
@@ -49,7 +50,7 @@ public class BaseResource<T extends BaseEntity> {
     }
 
     @Transactional
-    protected ResponseEntity<Void> doDelete(String id) {
+    public ResponseEntity<Void> doDelete(String id) {
         T entity = service.loadNoTenancy(id);
         if (entity == null) {
             throw new VicenteNotFoundException("Not found");
@@ -93,7 +94,9 @@ public class BaseResource<T extends BaseEntity> {
                 throw new VicenteRightsException("PUT," + oldEntity.getId() + "," + oldEntity.r());
             }
             beforeUpdate(model.getId(), model);
-            BaseEntityHelper.overwriteJsonIgnoreFields(model, oldEntity);
+            try {
+                BaseEntityHelper.overwriteJsonIgnoreFields((BaseEntity) model, (BaseEntity) oldEntity);
+            } catch (RuntimeException ignored) {}
             entity = service.save(model);
         } else {
             beforeSave(model);

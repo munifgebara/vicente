@@ -6,7 +6,7 @@ import br.com.munif.framework.vicente.domain.BaseEntity;
 import java.util.List;
 import java.util.Map;
 
-public interface VicServiceable<T extends BaseEntity> {
+public interface VicServiceable<T> {
     T loadNoTenancy(String id);
 
     void delete(T entity);
