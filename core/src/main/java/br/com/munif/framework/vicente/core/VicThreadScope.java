@@ -16,6 +16,7 @@ public class VicThreadScope {
      * Current user token
      */
     public static final ThreadLocal<String> token = new InheritableThreadLocal<>();
+    public static final ThreadLocal<String> origin = new InheritableThreadLocal<>();
 
     /**
      * Group identifier, the current groups for operations.
