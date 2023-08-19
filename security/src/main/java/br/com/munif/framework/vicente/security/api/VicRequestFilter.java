@@ -42,7 +42,7 @@ public class VicRequestFilter extends HandlerInterceptorAdapter {
         String requestURI = request.getRequestURI();
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS,HEAD");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, authorization, Connection, group, organization");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, authorization, Connection, group, organization, Origin");
 
         if ("OPTIONS".equalsIgnoreCase(method)) {
             return true;

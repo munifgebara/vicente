@@ -39,9 +39,9 @@ public class BaseResource<T extends IBaseEntity> {
     public VicServiceable<T> service;
 
     public BaseResource(VicServiceable<T> service) {
-        if (service instanceof BaseService) {
-            this.service = service;
-        }
+        this.service = service;
+//        if (service instanceof BaseService) {
+//        }
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -96,7 +96,8 @@ public class BaseResource<T extends IBaseEntity> {
             beforeUpdate(model.getId(), model);
             try {
                 BaseEntityHelper.overwriteJsonIgnoreFields((BaseEntity) model, (BaseEntity) oldEntity);
-            } catch (RuntimeException ignored) {}
+            } catch (RuntimeException ignored) {
+            }
             entity = service.save(model);
         } else {
             beforeSave(model);

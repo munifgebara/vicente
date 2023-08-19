@@ -24,7 +24,7 @@ import static br.com.munif.framework.vicente.core.RightsHelper.*;
 /**
  * @author munif
  */
-public class MongoEntity implements Serializable, IBaseEntity {
+public class SimpleBaseEntity implements Serializable, IBaseEntity {
 
     public static boolean useSimpleId = false;
 
@@ -55,7 +55,7 @@ public class MongoEntity implements Serializable, IBaseEntity {
 
     protected Boolean active;
 
-    public MongoEntity() {
+    public SimpleBaseEntity() {
         init();
     }
 
@@ -133,7 +133,7 @@ public class MongoEntity implements Serializable, IBaseEntity {
         this.rights = rights;
     }
 
-    public MongoEntity extra(String e) {
+    public SimpleBaseEntity extra(String e) {
         this.extra = e;
         return this;
     }
@@ -181,7 +181,7 @@ public class MongoEntity implements Serializable, IBaseEntity {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final MongoEntity other = (MongoEntity) obj;
+        final SimpleBaseEntity other = (SimpleBaseEntity) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
