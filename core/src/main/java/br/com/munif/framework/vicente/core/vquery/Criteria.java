@@ -46,6 +46,7 @@ public class Criteria {
     public Object getField() {
         return (fieldFn != null ? String.format(fieldFn, field) : field);
     }
+
     public Object getOnlyField() {
         return field;
     }
@@ -73,7 +74,10 @@ public class Criteria {
                 return Enum.valueOf(clazz, String.valueOf(value));
             }
         } else if (this.value instanceof LinkedHashMap) {
-            return new CriteriaField(((LinkedHashMap<String, String>) this.value).get("value"));
+            String toReturn = ((LinkedHashMap<String, String>) this.value).get("value");
+            if (toReturn == null)
+                toReturn = ((LinkedHashMap<String, String>) this.value).get("field");
+            return new CriteriaField(toReturn);
         } else if (this.value instanceof String && this.phonetic) {
             value = PhoneticBuilder.build().translate(String.valueOf(value));
         }

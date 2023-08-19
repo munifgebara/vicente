@@ -1,4 +1,4 @@
-package br.com.munif.framework.vicente.api.response;
+package br.com.munif.framework.vicente.core;
 
 public class VicResponse<T> {
 
@@ -6,6 +6,9 @@ public class VicResponse<T> {
     private String code;
     private T data;
 
+
+    public VicResponse() {
+    }
 
     public VicResponse(String code, T data) {
         this.code = code;

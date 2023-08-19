@@ -1,4 +1,4 @@
-package br.com.munif.framework.vicente.api.response;
+package br.com.munif.framework.vicente.core;
 
 public class NoTranslate {
     public Object data;

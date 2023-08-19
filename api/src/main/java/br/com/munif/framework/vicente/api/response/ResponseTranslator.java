@@ -1,6 +1,8 @@
 package br.com.munif.framework.vicente.api.response;
 
 import br.com.munif.framework.vicente.api.errors.VicError;
+import br.com.munif.framework.vicente.core.NoTranslate;
+import br.com.munif.framework.vicente.core.VicResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
