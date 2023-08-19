@@ -55,6 +55,8 @@ public class SimpleBaseEntity implements Serializable, IBaseEntity {
 
     protected Boolean active;
 
+    protected String origin;
+
     public SimpleBaseEntity() {
         init();
     }
@@ -68,6 +70,7 @@ public class SimpleBaseEntity implements Serializable, IBaseEntity {
         gi = stringNull(RightsHelper.getMainGi());
         ui = stringNull(VicThreadScope.ui.get());
         oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";
+        origin = VicThreadScope.origin.get();
         VicTenancyPolicy vtp = this.getClass().getAnnotation(VicTenancyPolicy.class);
         rights = vtp != null ? vtp.rights() : RightsHelper.getScopeDefault();
         extra = "Framework";
@@ -162,6 +165,13 @@ public class SimpleBaseEntity implements Serializable, IBaseEntity {
         this.active = active;
     }
 
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
 
     @Override
     public int hashCode() {

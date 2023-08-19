@@ -146,7 +146,7 @@ public abstract class MongoService<T extends SimpleBaseEntity> implements VicSer
 
     private Query getMainQuery() {
         Query m = new Query();
-//        m = m.addCriteria(Criteria.where("ui").is(VicThreadScope.ui.get()));
+        m = m.addCriteria(Criteria.where("origin").is(VicThreadScope.origin.get()));
         return m;
     }
 
