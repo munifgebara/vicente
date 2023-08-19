@@ -20,6 +20,7 @@ public interface VicServiceable<T> {
     T patchReturning(Map<String, Object> map);
 
     List<T> findByHql(VicQuery query);
+    List<T> findByHqlNoTenancy(VicQuery query);
 
     String draw(String id);
 
