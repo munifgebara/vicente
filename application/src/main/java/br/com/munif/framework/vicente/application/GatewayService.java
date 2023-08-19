@@ -63,7 +63,7 @@ public abstract class GatewayService<T extends SimpleBaseEntity> implements VicS
     private static HttpHeaders getHttpHeaders() {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", VicThreadScope.token.get());
-//        httpHeaders.set("Origin", VicThreadScope.origin.get());
+        httpHeaders.set("Origin", VicThreadScope.origin.get());
 //        httpHeaders.set("group", VicThreadScope.cg.get());
 //        httpHeaders.set("language", VicThreadScope.language.get());
 //        httpHeaders.set("timezone", VicThreadScope.timezone.get());
