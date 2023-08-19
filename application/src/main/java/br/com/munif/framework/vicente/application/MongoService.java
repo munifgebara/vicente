@@ -75,6 +75,10 @@ public abstract class MongoService<T> implements VicServiceable<T> {
     public List<T> findByHql(VicQuery query) {
         return null;
     }
+    @Override
+    public List<T> findByHqlNoTenancy(VicQuery query) {
+        return null;
+    }
 
     @Override
     public String draw(String id) {
