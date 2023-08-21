@@ -1,3 +1,5 @@
+package br.com.munif.framework.vicente.core;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -7,7 +9,7 @@ import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-public class VicObjectMapper extends ObjectMapper{
+public class VicObjectMapper extends ObjectMapper {
 
     public VicObjectMapper() {
         super();
