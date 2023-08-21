@@ -31,7 +31,7 @@ public class SimpleBaseEntity implements Serializable, IBaseEntity {
     @Id
     protected String id;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+//    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected String oi;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -69,7 +69,8 @@ public class SimpleBaseEntity implements Serializable, IBaseEntity {
         }
         gi = stringNull(RightsHelper.getMainGi());
         ui = stringNull(VicThreadScope.ui.get());
-        oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";
+        if (!Objects.equals(VicThreadScope.oi.get(), "1."))
+            oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";
         origin = VicThreadScope.origin.get();
         VicTenancyPolicy vtp = this.getClass().getAnnotation(VicTenancyPolicy.class);
         rights = vtp != null ? vtp.rights() : RightsHelper.getScopeDefault();
