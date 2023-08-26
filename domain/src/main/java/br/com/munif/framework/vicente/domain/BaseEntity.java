@@ -293,5 +293,9 @@ public class BaseEntity implements Serializable, IBaseEntity {
         } catch (JsonProcessingException ignored) {
         }
     }
-
+    public void setOnVicThreadScope() {
+        VicThreadScope.gi.set(this.gi);
+        VicThreadScope.ui.set(this.ui);
+        VicThreadScope.oi.set(this.oi);
+    }
 }

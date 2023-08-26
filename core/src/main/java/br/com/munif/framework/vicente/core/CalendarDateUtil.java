@@ -16,7 +16,7 @@ import static java.util.Calendar.*;
  * @author daniel
  * @author anderson
  */
-public class DataUtil {
+public class CalendarDateUtil {
 
     private static final int[] MONTH_DAYS = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     private static DateFormatSymbols dfs = new DateFormatSymbols(new Locale("pt", "BR"));

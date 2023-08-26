@@ -77,4 +77,60 @@ public class VicThreadScope {
         if (s == null) s = "";
         return s.split("\\.")[0] + ".";
     }
+
+    public class Values {
+        public String cg;
+        public String token;
+        public String origin;
+        public String gi;
+        public String ui;
+        public String oi;
+        public String ip;
+        public String key;
+
+        public Long effectiveTime;
+        public Integer defaultRights;
+        public Boolean ignoreTime;
+        public String language;
+        public String timezone;
+        public Map<String, Boolean> options;
+
+        public Values() {
+            cg = VicThreadScope.cg.get();
+            token = VicThreadScope.token.get();
+            origin = VicThreadScope.origin.get();
+            gi = VicThreadScope.gi.get();
+            ui = VicThreadScope.ui.get();
+            oi = VicThreadScope.oi.get();
+            ip = VicThreadScope.ip.get();
+            key = VicThreadScope.key.get();
+
+            effectiveTime = VicThreadScope.effectiveTime.get();
+            defaultRights = VicThreadScope.defaultRights.get();
+            ignoreTime = VicThreadScope.ignoreTime.get();
+            language = VicThreadScope.language.get();
+            timezone = VicThreadScope.timezone.get();
+            options = VicThreadScope.options.get();
+        }
+
+
+        public Values(String cg, String token, String origin, String gi, String ui, String oi, String ip, String key,
+                      Long effectiveTime, Integer defaultRights, Boolean ignoreTime, String language,
+                      String timezone, Map<String, Boolean> options) {
+            this.cg = cg;
+            this.token = token;
+            this.origin = origin;
+            this.gi = gi;
+            this.ui = ui;
+            this.oi = oi;
+            this.ip = ip;
+            this.key = key;
+            this.effectiveTime = effectiveTime;
+            this.defaultRights = defaultRights;
+            this.ignoreTime = ignoreTime;
+            this.language = language;
+            this.timezone = timezone;
+            this.options = options;
+        }
+    }
 }

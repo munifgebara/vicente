@@ -31,7 +31,7 @@ public class SimpleBaseEntity implements Serializable, IBaseEntity {
     @Id
     protected String id;
 
-//    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected String oi;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -273,6 +273,13 @@ public class SimpleBaseEntity implements Serializable, IBaseEntity {
             this.extra = objectMapper.writeValueAsString(metadata);
         } catch (JsonProcessingException ignored) {
         }
+    }
+
+    public void setOnVicThreadScope() {
+        VicThreadScope.gi.set(this.gi);
+        VicThreadScope.ui.set(this.ui);
+        VicThreadScope.oi.set(this.oi);
+        VicThreadScope.origin.set(this.origin);
     }
 
 }
