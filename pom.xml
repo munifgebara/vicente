@@ -37,7 +37,7 @@
         <mysql-connector-java>5.1.43</mysql-connector-java>
         <reflections>0.9.11</reflections>
         <spring-data-jpa>2.7.1</spring-data-jpa>
-        <spring.boot.version>2.7.1</spring.boot.version>
+        <spring.boot.version>2.7.12</spring.boot.version>
         <spring.version>5.3.21</spring.version>
         <validation-api>2.0.0.Final</validation-api>
         <wix-embedded-mysql>4.2.0</wix-embedded-mysql>
