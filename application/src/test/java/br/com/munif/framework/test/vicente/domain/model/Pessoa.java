@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Entity
 @Audited
-@VicTenancyPolicy(VicTenancyType.COMMUM)
+@VicTenancyPolicy(VicTenancyType.GROUPS)
 public class Pessoa extends VicTenancyFieldsBaseEntity {
 
     //    @NotNull
@@ -31,7 +31,9 @@ public class Pessoa extends VicTenancyFieldsBaseEntity {
     private Date nascimento;
     @Columns(columns = {
             @Column(name = "email_description"),
-            @Column(name = "social")
+            @Column(name = "social"),
+            @Column(name = "invalid"),
+            @Column(name = "reason"),
     })
     private VicEmail vicEmail;
     @Columns(columns = {
@@ -53,12 +55,15 @@ public class Pessoa extends VicTenancyFieldsBaseEntity {
 
     @Columns(columns = {
             @Column(name = "phone_description"),
-            @Column(name = "type")
+            @Column(name = "type"),
+            @Column(name = "phone_country"),
+            @Column(name = "phone_region")
     })
     private VicPhone telefone;
 
     @Columns(columns = {
             @Column(name = "value_amount"),
+            @Column(name = "value_code"),
             @Column(name = "value_currency_type")
     })
     private VicMoney money;

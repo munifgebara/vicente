@@ -17,7 +17,9 @@ public class Telefone extends BaseEntity {
 
     @Columns(columns = {
             @Column(name = "description"),
-            @Column(name = "type")
+            @Column(name = "type"),
+            @Column(name = "country"),
+            @Column(name = "region")
     })
     private VicPhone vicPhone;
 

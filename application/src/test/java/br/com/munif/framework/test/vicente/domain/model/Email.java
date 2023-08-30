@@ -17,7 +17,9 @@ public class Email extends BaseEntity {
 
     @Columns(columns = {
             @Column(name = "description"),
-            @Column(name = "social")
+            @Column(name = "social"),
+            @Column(name = "invalid"),
+            @Column(name = "reason")
     })
     private VicEmail vicEmail;
 

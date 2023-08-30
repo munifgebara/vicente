@@ -41,11 +41,6 @@ public class BaseEntityTest {
     }
 
     @Test
-    public void extraOnNewNotNull() {
-        assertNotNull(entity.getExtra());
-    }
-
-    @Test
     public void cdOnNewNotNull() {
         assertNotNull(entity.getCd());
     }

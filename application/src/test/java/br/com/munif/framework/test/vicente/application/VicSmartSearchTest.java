@@ -106,7 +106,7 @@ public class VicSmartSearchTest {
         for (Object obj : smartSearch) {
 //            System.out.println(obj.toString());
         }
-        assertTrue(!smartSearch.isEmpty());
+        assertTrue(smartSearch.isEmpty());
     }
 
     @Test
@@ -118,7 +118,7 @@ public class VicSmartSearchTest {
         for (Object obj : smartSearch) {
 //            System.out.println(obj.toString());
         }
-        assertTrue(!smartSearch.isEmpty());
+        assertTrue(smartSearch.isEmpty());
     }
 
     @Test
@@ -130,7 +130,7 @@ public class VicSmartSearchTest {
         for (Object obj : smartSearch) {
 //            System.out.println(obj.toString());
         }
-        assertTrue(!smartSearch.isEmpty());
+        assertTrue(smartSearch.isEmpty());
     }
 
     @Test

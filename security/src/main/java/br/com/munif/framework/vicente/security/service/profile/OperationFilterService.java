@@ -5,10 +5,7 @@ package br.com.munif.framework.vicente.security.service.profile;
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
 import br.com.munif.framework.vicente.core.VicQuery;
-import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
-import br.com.munif.framework.vicente.core.vquery.Criteria;
-import br.com.munif.framework.vicente.core.vquery.VEntityQuery;
-import br.com.munif.framework.vicente.core.vquery.VQuery;
+import br.com.munif.framework.vicente.core.vquery.*;
 import br.com.munif.framework.vicente.security.domain.profile.OperationFilter;
 import br.com.munif.framework.vicente.security.domain.profile.RequestAction;
 import br.com.munif.framework.vicente.security.service.interfaces.IOperationFilterService;
@@ -34,13 +31,7 @@ public class OperationFilterService extends BaseService<OperationFilter> impleme
     @Transactional(readOnly = true)
     public OperationFilter findByKeyAndLogin(String key, String login) {
         List<OperationFilter> byHqlNoTenancy = findByHqlNoTenancy(new VicQuery(
-                new VQuery(new Criteria("'" + login + "'", ComparisonOperator.IN, new VEntityQuery(
-                        "obj.profile.users",
-                        "vr",
-                        new Criteria("id", ComparisonOperator.NOT_EQUAL, ""),
-                        "login")))
-                        .and(new Criteria("operation.key", ComparisonOperator.EQUAL, key))
-        ));
+                new VQuery(new Criteria("'" + login + "'", ComparisonOperator.IN, new CriteriaField("gi")))));
         if (byHqlNoTenancy.size() > 0) {
             OperationFilter operationFilter = byHqlNoTenancy.get(byHqlNoTenancy.size() - 1);
             Hibernate.initialize(operationFilter.getActions());

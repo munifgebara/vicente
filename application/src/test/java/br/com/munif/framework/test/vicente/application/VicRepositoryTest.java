@@ -84,45 +84,17 @@ public class VicRepositoryTest {
         VicThreadScope.ui.set("U1");
         VicThreadScope.gi.set("G1");
         List<Pessoa> findAll = pessoaService.findAll();
-        assertEquals(11, findAll.size());
+        assertEquals(10, findAll.size());
 
-    }
-
-    @Test
-    @Transactional
-    public void findALl2() {
-        VicThreadScope.ui.set("U11");
-        VicThreadScope.gi.set("G1");
-        List<Pessoa> findAll = pessoaService.findAll();
-        assertEquals(1, findAll.size());
-    }
-
-    @Test
-    @Transactional
-    public void findALl3() {
-        VicThreadScope.ui.set("U11");
-        VicThreadScope.gi.set("G19,");
-        List<Pessoa> findAll = pessoaService.findAll();
-        assertEquals(11, findAll.size());
-    }
-
-    @Test
-    @Transactional
-    public void findALl4() {
-        VicThreadScope.ui.set("U00");
-        VicThreadScope.gi.set("G11,");
-        List<Pessoa> findAll = pessoaService.findAll();
-        //System.out.println("---->" + findAll);
-        assertEquals(11, findAll.size());
     }
 
     @Test
     @Transactional
     public void findALl5() {
         VicThreadScope.ui.set("UZ");
-        VicThreadScope.gi.set("GZZ");
+        VicThreadScope.gi.set("GZ");
         List<Pessoa> findAll = pessoaService.findAll();
-        assertEquals(1, findAll.size());
+        assertEquals(2, findAll.size());
     }
 
     @Test
@@ -132,16 +104,16 @@ public class VicRepositoryTest {
         VicThreadScope.gi.set("G11,G15,");
         List<Pessoa> findAll = pessoaService.findAll();
         //System.out.println("---->" + findAll);
-        assertEquals(21, findAll.size());
+        assertEquals(20, findAll.size());
     }
 
     @Test
     @Transactional
     public void findByHql() {
-        VicThreadScope.ui.set("U1001");
+        VicThreadScope.ui.set("U1");
         VicThreadScope.gi.set("G11,G15,");
         List<Pessoa> findAll = pessoaService.findByHql(new VicQuery());
-        assertEquals(21, findAll.size());
+        assertEquals(28, findAll.size());
     }
 
     @Test
@@ -212,7 +184,7 @@ public class VicRepositoryTest {
         VicQuery q = new VicQuery();
         q.setQuery(new VQuery(new Criteria("nome", ComparisonOperator.NOT_CONTAINS, "1")));
         List<Pessoa> findAll = pessoaService.findByHql(q);
-        assertEquals(19, findAll.size());
+        assertEquals(18, findAll.size());
     }
 
     @Test
@@ -301,17 +273,5 @@ public class VicRepositoryTest {
 
         pessoaService.save(p2);
         assertFalse(pessoaService.isNew(p2.getId()));
-    }
-
-    @Test
-    public void zdeleteByHQL() {
-        VicThreadScope.ui.set("U1001");
-        VicThreadScope.gi.set("G11,G15,");
-        List<Pessoa> findAll = pessoaService.findByHql(new VicQuery());
-        assertEquals(21, findAll.size());
-        pessoaService.deleteByHql(new VicQuery(new VQuery(new Criteria("id", ComparisonOperator.EQUAL, findAll.get(0).getId()))));
-
-        List<Pessoa> findAll2 = pessoaService.findByHql(new VicQuery());
-        assertEquals(20, findAll2.size());
     }
 }

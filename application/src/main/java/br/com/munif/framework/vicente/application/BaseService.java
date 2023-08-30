@@ -126,7 +126,8 @@ public abstract class BaseService<T extends BaseEntity> implements VicServiceabl
         if (resource != null) {
             resource.setUd(ZonedDateTime.now());
             VicTenancyPolicy vtp = clazz().getAnnotation(VicTenancyPolicy.class);
-            resource.setRights(vtp.rights());
+            if (vtp != null)
+                resource.setRights(vtp.rights());
         }
         T entity = repository.save(resource);
         if (entity instanceof VicTenancyFieldsBaseEntity) {
@@ -174,7 +175,8 @@ public abstract class BaseService<T extends BaseEntity> implements VicServiceabl
 //            BaseEntity.useSimpleId = true;
             T newInstance = clazz().newInstance();
             VicTenancyPolicy vtp = clazz().getAnnotation(VicTenancyPolicy.class);
-            newInstance.setRights(vtp.rights());
+            if (vtp != null)
+                newInstance.setRights(vtp.rights());
             if (newInstance instanceof VicTenancyFieldsBaseEntity) {
                 VicTenancyFieldsBaseEntity n = (VicTenancyFieldsBaseEntity) newInstance;
                 List<VicField> res = vicFieldRepository.findByHql(new VicQuery("obj.clazz='" + clazz().getCanonicalName() + "'", 0, 1000000, "id"));

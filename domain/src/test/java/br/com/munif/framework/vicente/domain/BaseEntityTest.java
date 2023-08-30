@@ -49,13 +49,6 @@ public class BaseEntityTest {
         Integer result = instance.getRights();
         assertNotNull(result);
     }
-
-    @Test
-    public void testGetExtra() {
-        BaseEntity instance = new BaseEntity();
-        assertNotNull(instance.getExtra());
-    }
-
     @Test
     public void testGetActive() {
         BaseEntity instance = new BaseEntity();

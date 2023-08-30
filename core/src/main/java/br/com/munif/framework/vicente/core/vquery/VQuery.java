@@ -301,7 +301,7 @@ public class VQuery {
 
     private Object getValueAccodingClass(VQuery vQuery, Class clazz) {
         Object field = vQuery.getCriteria().getOnlyField();
-        Object value = null;
+        Object value = vQuery.getCriteria().getValue();
         if (field instanceof String) {
             String fieldString = String.valueOf(field);
             if (fieldString.contains(getAlias() + ".")) {

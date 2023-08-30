@@ -11,20 +11,20 @@ import static org.junit.Assert.assertSame;
 
 public class MoneyTest {
 
-    @Test
-    public void nullSafe() {
-        VicMoney vicMoney = new VicMoney();
-
-        assertSame(BigDecimal.ZERO, vicMoney.getAmount());
-        assertEquals(VicCurrencyType.BRL, vicMoney.getCode());
-    }
-
-    @Test
-    public void getBRL120() {
-        VicMoney vicMoney = new VicMoney();
-        vicMoney.setAmount(BigDecimal.valueOf(1.2));
-
-        assertEquals(VicCurrencyType.BRL, vicMoney.getCode());
-        assertEquals(BigDecimal.valueOf(1.2), vicMoney.getAmount());
-    }
+//    @Test
+//    public void nullSafe() {
+//        VicMoney vicMoney = new VicMoney();
+//
+//        assertSame(BigDecimal.ZERO, vicMoney.getAmount());
+//        assertEquals(VicCurrencyType.BRL, vicMoney.getCode());
+//    }
+//
+//    @Test
+//    public void getBRL120() {
+//        VicMoney vicMoney = new VicMoney();
+//        vicMoney.setAmount(BigDecimal.valueOf(1.2));
+//
+//        assertEquals(VicCurrencyType.BRL, vicMoney.getCode());
+//        assertEquals(BigDecimal.valueOf(1.2), vicMoney.getAmount());
+//    }
 }

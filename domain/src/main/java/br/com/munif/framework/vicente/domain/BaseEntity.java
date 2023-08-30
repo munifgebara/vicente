@@ -10,7 +10,9 @@ import br.com.munif.framework.vicente.domain.typings.*;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -19,6 +21,7 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
+import java.io.IOException;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Map;
@@ -88,7 +91,6 @@ public class BaseEntity implements Serializable, IBaseEntity {
         oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";
         VicTenancyPolicy vtp = this.getClass().getAnnotation(VicTenancyPolicy.class);
         rights = vtp != null ? vtp.rights() : RightsHelper.getScopeDefault();
-        extra = "Framework";
         cd = ZonedDateTime.now();
         ud = ZonedDateTime.now();
         active = true;
@@ -281,7 +283,7 @@ public class BaseEntity implements Serializable, IBaseEntity {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             return objectMapper.readValue(this.extra, Map.class);
-        } catch (Exception e) {
+        } catch (RuntimeException | IOException e) {
             return null;
         }
     }
