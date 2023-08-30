@@ -1,10 +1,11 @@
 package br.com.munif.framework.vicente.core;
 
+import java.util.Date;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.util.Date;
-import java.util.Map;
 
 /**
  * Interpretador Javascript para backend
@@ -19,13 +20,15 @@ public class VicScriptEngine {
      * Avalia o valor do script com o contexto de objetos java passados no map e
      * retora um objeto.
      *
-     * @param script  script a ser executado
+     * @param script script a ser executado
      * @param objects objetos java a serem inseridos no contexto javascript
      * @return valor resultante
      */
     public static Object eval(String script, Map<String, Object> objects) {
         try {
-            ScriptEngine engine = engineManager.getEngineByName("JavaScript");
+            System.out.println(engineManager.getEngineFactories().stream().map(s->s.getEngineName()).collect(Collectors.toList()));
+            //   ScriptEngine engine = engineManager.getEngineByName("graal.js");
+            ScriptEngine engine = engineManager.getEngineByName("Graal.js");
             if (objects != null) {
                 for (String key : objects.keySet()) {
                     engine.put(key, objects.get(key));
@@ -42,7 +45,7 @@ public class VicScriptEngine {
      * Avalia o valor do script com o contexto de objetos java passados no map e
      * retora uma data.
      *
-     * @param script  script a ser executado
+     * @param script script a ser executado
      * @param objects objetos java a serem inseridos no contexto javascript
      * @return valor resultante
      */
