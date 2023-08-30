@@ -38,7 +38,7 @@
         <reflections>0.9.11</reflections>
         <spring-data-jpa>2.7.1</spring-data-jpa>
         <spring.boot.version>2.7.1</spring.boot.version>
-        <spring.version>5.3.21</spring.version>
+        <spring.version>5.3.27</spring.version>
         <validation-api>2.0.0.Final</validation-api>
         <wix-embedded-mysql>4.2.0</wix-embedded-mysql>
         <spring-data-r2dbc>1.5.2</spring-data-r2dbc>
