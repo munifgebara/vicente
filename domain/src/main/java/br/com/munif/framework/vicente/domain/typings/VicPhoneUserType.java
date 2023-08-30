@@ -2,6 +2,7 @@ package br.com.munif.framework.vicente.domain.typings;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.type.IntegerType;
 import org.hibernate.type.StringType;
 import org.hibernate.type.Type;
 import org.hibernate.usertype.CompositeUserType;
@@ -17,14 +18,20 @@ public class VicPhoneUserType implements CompositeUserType {
     public String[] getPropertyNames() {
         return new String[]{
                 "description",
-                "type"};
+                "type",
+                "countryCode",
+                "regionCode"
+        };
     }
 
     @Override
     public Type[] getPropertyTypes() {
         return new Type[]{
                 StringType.INSTANCE,
-                StringType.INSTANCE};
+                StringType.INSTANCE,
+                IntegerType.INSTANCE,
+                StringType.INSTANCE
+        };
     }
 
     @Override
@@ -34,6 +41,10 @@ public class VicPhoneUserType implements CompositeUserType {
                 return ((VicPhone) component).getDescription();
             case 1:
                 return ((VicPhone) component).getType();
+            case 2:
+                return ((VicPhone) component).getCountryCode();
+            case 3:
+                return ((VicPhone) component).getRegionCode();
             default:
                 return null;
 
@@ -48,6 +59,11 @@ public class VicPhoneUserType implements CompositeUserType {
                 break;
             case 1:
                 ((VicPhone) component).setType(PhoneType.valueOf((String) setValue));
+            case 2:
+                ((VicPhone) component).setCountryCode((Integer) setValue);
+                break;
+            case 3:
+                ((VicPhone) component).setRegionCode((String) setValue);
                 break;
         }
     }
@@ -78,11 +94,9 @@ public class VicPhoneUserType implements CompositeUserType {
 
     @Override
     public Object nullSafeGet(ResultSet resultSet, String[] names, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException, SQLException {
-        final String description = resultSet.getString(names[0]);
-        for (int i = 0; i < names.length; i++) {
-            if (resultSet.getObject(names[i]) != null) {
-                return new VicPhone(description, resultSet.getString(names[i+1]));
-            }
+        try {
+            return new VicPhone(resultSet.getString(names[0]), resultSet.getString(names[1]), resultSet.getInt(names[2]), resultSet.getString(names[3]));
+        } catch (IndexOutOfBoundsException ignored) {
         }
         return new VicPhone();
     }
@@ -92,10 +106,14 @@ public class VicPhoneUserType implements CompositeUserType {
         if (null == value) {
             preparedStatement.setNull(property + 0, java.sql.Types.VARCHAR);
             preparedStatement.setNull(property + 1, java.sql.Types.VARCHAR);
+            preparedStatement.setNull(property + 2, java.sql.Types.INTEGER);
+            preparedStatement.setNull(property + 3, java.sql.Types.VARCHAR);
         } else {
             final VicPhone object = (VicPhone) value;
             preparedStatement.setString(property + 0, object.getDescription());
-            preparedStatement.setString(property + 1, Optional.of(object.getType()).orElse(PhoneType.LANDLINE).name());
+            preparedStatement.setString(property + 1, Optional.ofNullable(object.getType()).orElse(PhoneType.CELLPHONE).name());
+            preparedStatement.setInt(property + 2, Optional.ofNullable(object.getCountryCode()).orElse(55));
+            preparedStatement.setString(property + 3, Optional.ofNullable(object.getRegionCode()).orElse("BR"));
 
         }
     }
@@ -106,9 +124,8 @@ public class VicPhoneUserType implements CompositeUserType {
             return null;
         }
 
-        final VicPhone recepty = (VicPhone) value;
-        final VicPhone toReturn = new VicPhone(recepty);
-        return toReturn;
+        final VicPhone received = (VicPhone) value;
+        return new VicPhone(received);
     }
 
     @Override

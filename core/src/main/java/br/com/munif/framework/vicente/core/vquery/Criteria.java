@@ -1,7 +1,9 @@
 package br.com.munif.framework.vicente.core.vquery;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import br.com.munif.framework.vicente.core.phonetics.PhoneticBuilder;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -16,13 +18,7 @@ public class Criteria {
     private String fieldFn;
     private String valueFn;
     private Param param;
-
-    private void onInit() {
-        comparisonOperator = ComparisonOperator.EQUAL;
-        fieldFn = null;
-        valueFn = null;
-        param = new Param(null, value.getClass().getSimpleName());
-    }
+    private Boolean phonetic;
 
     public Criteria() {
         field = 1;
@@ -37,11 +33,21 @@ public class Criteria {
         this.comparisonOperator = comparisonOperator;
     }
 
+    private void onInit() {
+        comparisonOperator = ComparisonOperator.EQUAL;
+        fieldFn = null;
+        valueFn = null;
+        phonetic = false;
+        if (!(getValue() instanceof CriteriaField))
+            param = new Param(null, getValue() != null ? getValue().getClass() : Object.class, field);
+    }
+
     public Object getField() {
         return (fieldFn != null ? String.format(fieldFn, field) : field);
     }
 
     public void setField(Object field) {
+        this.param.setField(String.valueOf(field));
         this.field = field;
     }
 
@@ -54,7 +60,12 @@ public class Criteria {
     }
 
     public Object getValue() {
-        return valueFn != null ? String.format(valueFn, value) : value;
+        if (this.value instanceof LinkedHashMap) {
+            return new CriteriaField(((LinkedHashMap<String, String>) this.value).get("value"));
+        } else if (this.value instanceof String && this.phonetic) {
+            value = PhoneticBuilder.build().translate(String.valueOf(value));
+        }
+        return value;
     }
 
     public void setValue(Object value) {
@@ -99,9 +110,14 @@ public class Criteria {
         return this;
     }
 
+    public Criteria addPhonetic() {
+        this.phonetic = true;
+        return this;
+    }
+
     @Override
     public String toString() {
-        return comparisonOperator.getComparation(getField(), value instanceof VEntityQuery ? getValue() : getParam().getKey());
+        return comparisonOperator.getComparation(getField(), getValue() instanceof VEntityQuery || getValue() instanceof CriteriaField || ComparisonOperator.NONE.equals(comparisonOperator) ? getValue() : getParam().getKey(), getValueFn());
     }
 
     public Param getParam() {

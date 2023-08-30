@@ -3,7 +3,8 @@ package br.com.munif.framework.vicente.api.test.apptest.domain;
 import br.com.munif.framework.vicente.api.hateoas.HateosBaseEntity;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 /**
  * @author munif
@@ -12,15 +13,15 @@ import javax.persistence.*;
 @Audited
 public class Book extends HateosBaseEntity {
 
+    @Column(nullable = false)
+    private String name;
+
     public Book() {
     }
 
     public Book(String name) {
         this.name = name;
     }
-
-    @Column(nullable = false)
-    private String name;
 
     public String getName() {
         return name;

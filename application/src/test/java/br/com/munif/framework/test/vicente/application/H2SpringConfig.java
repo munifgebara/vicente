@@ -1,10 +1,6 @@
 package br.com.munif.framework.test.vicente.application;
 
 import br.com.munif.framework.vicente.application.VicRepositoryImpl;
-import com.wix.mysql.EmbeddedMysql;
-import com.wix.mysql.config.MysqldConfig;
-import com.wix.mysql.config.SchemaConfig;
-import com.wix.mysql.distribution.Version;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +57,7 @@ public class H2SpringConfig {
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("br.com.munif.framework.vicente.domain", "br.com.munif.framework.test.vicente.domain",  "br.com.munif.framework.vicente.security.domain");
+        factory.setPackagesToScan("br.com.munif.framework.vicente.domain", "br.com.munif.framework.test.vicente.domain", "br.com.munif.framework.vicente.security.domain");
 
         factory.setDataSource(dataSource);
         factory.setJpaProperties(properties);

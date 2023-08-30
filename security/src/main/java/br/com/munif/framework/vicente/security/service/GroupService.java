@@ -5,10 +5,13 @@ package br.com.munif.framework.vicente.security.service;
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
 import br.com.munif.framework.vicente.core.VicQuery;
+import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
 import br.com.munif.framework.vicente.core.vquery.Criteria;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.Group;
+import br.com.munif.framework.vicente.security.repository.GroupRepository;
+import br.com.munif.framework.vicente.security.service.interfaces.IGroupService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +21,19 @@ import java.util.List;
  * @author GeradorVicente
  */
 @Service
-public class GroupService extends BaseService<Group> {
+public class GroupService extends BaseService<Group> implements IGroupService {
     public GroupService(VicRepository<Group> repository) {
         super(repository);
+    }
+
+    @Transactional
+    public GroupRepository getRepository() {
+        return (GroupRepository) repository;
+    }
+
+    @Transactional
+    public Group getCurrentGroup() {
+        return getRepository().getGroupByCode(VicThreadScope.cg.get());
     }
 
     public Group createGroupByEmail(String email) {

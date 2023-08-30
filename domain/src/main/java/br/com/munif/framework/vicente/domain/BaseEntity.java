@@ -9,11 +9,19 @@ import br.com.munif.framework.vicente.core.*;
 import br.com.munif.framework.vicente.domain.typings.*;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.*;
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
+import java.io.Serializable;
+import java.time.ZonedDateTime;
+import java.util.Map;
 import java.util.Objects;
 
 import static br.com.munif.framework.vicente.core.RightsHelper.*;
@@ -25,39 +33,41 @@ import static br.com.munif.framework.vicente.core.RightsHelper.*;
 @TypeDefs({
         @TypeDef(name = "vicaddress", defaultForType = VicAddress.class, typeClass = VicAddressUserType.class),
         @TypeDef(name = "vicemail", defaultForType = VicEmail.class, typeClass = VicEmailUserType.class),
-        @TypeDef(name = "vicphone", defaultForType = VicPhone.class, typeClass = VicPhoneUserType.class)
+        @TypeDef(name = "vicphone", defaultForType = VicPhone.class, typeClass = VicPhoneUserType.class),
+        @TypeDef(name = "vicdocument", defaultForType = VicDocument.class, typeClass = VicDocumentUserType.class),
+        @TypeDef(name = "vicmoney", defaultForType = VicMoney.class, typeClass = VicMoneyUserType.class),
+        @TypeDef(name = "vicfile", defaultForType = VicFile.class, typeClass = VicFileUserType.class),
 })
-public class BaseEntity {
+public class BaseEntity implements Serializable {
 
     public static boolean useSimpleId = false;
 
     @Id
-    @Column(length = 100)
+    @Column(length = 150)
     protected String id;
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected String oi;
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected String gi;
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     protected String ui;
+
+    @JsonIgnore
+    protected String phonetic;
 
     @JsonIgnore
     protected Integer rights;
 
+    @Column(length = 500)
     protected String extra;
 
-    @JsonIgnore
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    protected Date cd;
+    protected ZonedDateTime cd;
 
-    @JsonIgnore
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    protected Date ud;
+    protected ZonedDateTime ud;
 
-    @JsonIgnore
     protected Boolean active;
 
     @Version
@@ -76,10 +86,11 @@ public class BaseEntity {
         gi = stringNull(RightsHelper.getMainGi());
         ui = stringNull(VicThreadScope.ui.get());
         oi = VicThreadScope.oi.get() != null ? VicThreadScope.oi.get() : "";
-        rights = RightsHelper.getDefault();
+        VicTenancyPolicy vtp = this.getClass().getAnnotation(VicTenancyPolicy.class);
+        rights = vtp != null ? vtp.rights() : RightsHelper.getScopeDefault();
         extra = "Framework";
-        cd = new Date();
-        ud = new Date();
+        cd = ZonedDateTime.now();
+        ud = ZonedDateTime.now();
         active = true;
         version = null;
     }
@@ -117,6 +128,14 @@ public class BaseEntity {
         this.ui = ui;
     }
 
+    public String getPhonetic() {
+        return phonetic;
+    }
+
+    public void setPhonetic(String phonetic) {
+        this.phonetic = phonetic;
+    }
+
     public String getOi() {
         return oi;
     }
@@ -133,32 +152,24 @@ public class BaseEntity {
         this.rights = rights;
     }
 
-    public String getExtra() {
-        return extra;
-    }
-
     public BaseEntity extra(String e) {
         this.extra = e;
         return this;
     }
 
-    public void setExtra(String extra) {
-        this.extra = extra;
-    }
-
-    public Date getCd() {
+    public ZonedDateTime getCd() {
         return cd;
     }
 
-    public void setCd(Date cd) {
+    public void setCd(ZonedDateTime cd) {
         this.cd = cd;
     }
 
-    public Date getUd() {
+    public ZonedDateTime getUd() {
         return ud;
     }
 
-    public void setUd(Date ud) {
+    public void setUd(ZonedDateTime ud) {
         this.ud = ud;
     }
 
@@ -207,6 +218,7 @@ public class BaseEntity {
         return true;
     }
 
+    @JsonGetter
     public String getClassName() {
         return this.getClass().getSimpleName();
     }
@@ -218,7 +230,7 @@ public class BaseEntity {
 
     public boolean isOwner() {
         String token_ui = VicThreadScope.ui.get();
-        return ui != null && token_ui != null && token_ui.equals(ui);
+        return token_ui != null && token_ui.equals(ui);
     }
 
     public boolean commonGroup() {
@@ -227,22 +239,34 @@ public class BaseEntity {
     }
 
     public boolean canDelete() {
-        return ((OTHER_DELETE | (commonGroup() ? GROUP_DELETE : 0) | (isOwner() ? OWNER_DELETE : 0)) & rights) > 0;
+        return canChangeBeingOnlyOi() || ((OTHER_DELETE | (commonGroup() ? GROUP_DELETE : 0) | (isOwner() ? OWNER_DELETE : 0)) & rights) > 0;
     }
 
     public boolean canUpdate() {
-        return ((OTHER_UPDATE | (commonGroup() ? GROUP_UPDATE : 0) | (isOwner() ? OWNER_UPDATE : 0)) & rights) > 0;
+        return canChangeBeingOnlyOi() || ((OTHER_UPDATE | (commonGroup() ? GROUP_UPDATE : 0) | (isOwner() ? OWNER_UPDATE : 0)) & rights) > 0;
     }
 
     public boolean canRead() {
         boolean commonGroup = commonGroup();
         boolean isOwner = isOwner();
-        return ((OTHER_READ | (commonGroup ? GROUP_READ : 0) | (isOwner ? OWNER_READ : 0)) & rights) > 0;
+        return canChangeBeingOnlyOi()
+                || ((OTHER_READ | (commonGroup ? GROUP_READ : 0) | (isOwner ? OWNER_READ : 0)) & rights) > 0;
+    }
+
+    public boolean canChangeBeingOnlyOi() {
+        VicTenancyPolicy annotation = this.getClass().getAnnotation(VicTenancyPolicy.class);
+        VicTenancyType value = annotation != null ? annotation.value() : VicTenancyType.NONE;
+        return (VicTenancyType.ONLY_HIERARCHICAL_TOP_DOWN.equals(value) && this.getOi().startsWith(VicThreadScope.oi.get()))
+                || (VicTenancyType.ONLY_ORGANIZATIONAL.equals(value) && this.getOi().startsWith(VicThreadScope.getTopOi()));
     }
 
     @JsonGetter
     public String r() {
-        return "" + (isOwner() ? 'O' : '_') + (commonGroup() ? 'G' : '_') + (canRead() ? 'R' : '_') + (canUpdate() ? 'U' : '_') + (canDelete() ? 'D' : '_');
+        try {
+            return "" + (isOwner() ? 'O' : '_') + (commonGroup() ? 'G' : '_') + (canRead() ? 'R' : '_') + (canUpdate() ? 'U' : '_') + (canDelete() ? 'D' : '_');
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     public VicTenancyType getTencyPolicy() {
@@ -251,6 +275,23 @@ public class BaseEntity {
             return VicTenancyType.GROUPS;
         }
         return vtp.value();
+    }
+
+    public Map<String, Object> getExtra() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(this.extra, Map.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public void setExtra(Map<String, Object> metadata) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            this.extra = objectMapper.writeValueAsString(metadata);
+        } catch (JsonProcessingException ignored) {
+        }
     }
 
 }

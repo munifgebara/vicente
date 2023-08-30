@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- *
  * @author wmfsystem
  */
 public enum ComparisonOperator {
@@ -19,40 +18,20 @@ public enum ComparisonOperator {
     IN(" in "),
     IN_ELEMENTS(" in elements"),
     IS(" is "),
+    IS_NOT(" is not "),
     BETWEEN(" between "),
     NOT_EQUAL(" <> "),
     NOT_STARTS_WITH(" not like "),
     NOT_ENDS_WITH(" not like "),
     NOT_CONTAINS(" not like "),
     NOT_IN(" not in "),
-    NOT_IS(" not is "),
-    NOT_BETWEEN(" not between ");
+    NOT_BETWEEN(" not between "),
+    NONE("");
 
     public final String comparator;
 
     ComparisonOperator(String comparator) {
         this.comparator = comparator;
-    }
-
-    public String getComparator() {
-        return comparator;
-    }
-
-    public String getComparation(Object field, Object value) {
-        StringBuilder toReturn = new StringBuilder();
-
-        String startsValue = (ComparisonOperator.IN_ELEMENTS.equals(this)) ? "(" : "";
-        String endsValue = (ComparisonOperator.IN_ELEMENTS.equals(this)) ? ")" : "";
-        if (ComparisonOperator.IN_ELEMENTS.equals(this)) {
-            mount(field, toReturn, this);
-            toReturn.append(this.getComparator()).append(startsValue);
-        } else {
-            toReturn = toReturn.append(field).append(this.getComparator()).append(startsValue);
-        }
-
-        mount(value, toReturn);
-
-        return toReturn.toString().concat(endsValue);
     }
 
     public static void mount(Object value, StringBuilder toReturn, ComparisonOperator comparisonOperator) {
@@ -83,6 +62,30 @@ public enum ComparisonOperator {
         } else {
             toReturn.append(value);
         }
+    }
+
+    public String getComparator() {
+        return comparator;
+    }
+
+    public String getComparation(Object field, Object value, String valueFn) {
+        StringBuilder toReturn = new StringBuilder();
+
+        String startsValue = (ComparisonOperator.IN_ELEMENTS.equals(this)) ? "(" : "";
+        String endsValue = (ComparisonOperator.IN_ELEMENTS.equals(this)) ? ")" : "";
+        if (ComparisonOperator.IN_ELEMENTS.equals(this)) {
+            mount(field, toReturn, this);
+            toReturn.append(this.getComparator()).append(startsValue);
+        } else {
+            toReturn = toReturn.append(field).append(this.getComparator()).append(startsValue);
+        }
+
+        StringBuilder valueBuilder = new StringBuilder();
+        mount(value, valueBuilder);
+
+        String finalValue = valueFn != null ? String.format(valueFn, valueBuilder) : valueBuilder.toString();
+
+        return toReturn.toString().concat(finalValue).concat(endsValue);
     }
 
     private void mount(Object value, StringBuilder toReturn) {

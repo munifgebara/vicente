@@ -6,12 +6,11 @@
 package br.com.munif.framework.vicente.domain;
 
 import br.com.munif.framework.vicente.core.VicTenancyType;
-import java.util.Date;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
- *
  * @author munif
  */
 public class BaseEntityTest {
@@ -54,8 +53,7 @@ public class BaseEntityTest {
     @Test
     public void testGetExtra() {
         BaseEntity instance = new BaseEntity();
-        String result = instance.getExtra();
-        assertNotNull(result);
+        assertNotNull(instance.getExtra());
     }
 
     @Test

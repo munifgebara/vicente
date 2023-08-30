@@ -2,6 +2,7 @@ package br.com.munif.framework.vicente.security.config;
 
 import br.com.munif.framework.vicente.security.api.VicRequestFilter;
 import br.com.munif.framework.vicente.security.service.TokenService;
+import br.com.munif.framework.vicente.security.service.profile.OperationFilterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,9 +22,6 @@ import java.util.List;
 @EnableWebMvc
 public class WebConfiguration extends WebMvcConfigurerAdapter implements WebApplicationInitializer {
 
-    @Autowired
-    private TokenService tokenService;
-
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/",
             "classpath:/resources/",
@@ -33,6 +31,10 @@ public class WebConfiguration extends WebMvcConfigurerAdapter implements WebAppl
             "classpath:/webapp/",
             "classpath:/webapp/**"
     };
+    @Autowired
+    private TokenService tokenService;
+    @Autowired
+    private OperationFilterService operationFilterService;
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {

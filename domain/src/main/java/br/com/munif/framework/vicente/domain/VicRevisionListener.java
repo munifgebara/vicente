@@ -12,7 +12,7 @@ public class VicRevisionListener implements RevisionListener {
     public void newRevision(Object o) {
         VicRevisionEntity v = (VicRevisionEntity) o;
         v.setIp("" + VicThreadScope.ip.get());
-        v.setUser("" + VicThreadScope.ui.get());
+        v.setUi("" + VicThreadScope.ui.get());
     }
 
 

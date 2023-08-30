@@ -7,11 +7,10 @@ import br.com.munif.framework.vicente.application.VicRepository;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author munif
  */
 @Service
-public class ConsultorService extends BaseService<Consultor>{
+public class ConsultorService extends BaseService<Consultor> {
     public ConsultorService(VicRepository<Consultor> repository) {
         super(repository);
     }

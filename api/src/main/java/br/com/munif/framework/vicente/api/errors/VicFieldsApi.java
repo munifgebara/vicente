@@ -20,9 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/vicfield")
 public class VicFieldsApi extends BaseAPI<VicField> {
 
-    private final Logger log = LogManager.getLogger(VicFieldsApi.class);
-
     private static final String ENTITY_NAME = "FIELDS";
+    private final Logger log = LogManager.getLogger(VicFieldsApi.class);
 
     public VicFieldsApi(BaseService<VicField> service) {
         super(service);

@@ -1,18 +1,20 @@
 package br.com.munif.framework.test.vicente.domain.model;
 
+import br.com.munif.framework.vicente.core.VicTenancyPolicy;
+import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
-import java.math.BigDecimal;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import java.math.BigDecimal;
 
 /**
  * @author munif
  */
 @Entity
 @Audited
+@VicTenancyPolicy(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN)
 public class Salario extends VicTemporalBaseEntity {
 
     private String nome;
@@ -23,7 +25,7 @@ public class Salario extends VicTemporalBaseEntity {
     }
 
     public Salario(String nome, BigDecimal valor) {
-        BaseEntity.useSimpleId=true;
+        BaseEntity.useSimpleId = true;
         this.nome = nome;
         this.valor = valor;
     }

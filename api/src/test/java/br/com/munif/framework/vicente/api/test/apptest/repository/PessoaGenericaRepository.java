@@ -8,12 +8,10 @@ package br.com.munif.framework.vicente.api.test.apptest.repository;
 
 import br.com.munif.framework.vicente.api.test.apptest.domain.PessoaGenerica;
 import br.com.munif.framework.vicente.application.VicRepository;
-import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author munif
  */
-public interface PessoaGenericaRepository extends VicRepository<PessoaGenerica>{
-    
+public interface PessoaGenericaRepository extends VicRepository<PessoaGenerica> {
+
 }

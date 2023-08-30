@@ -17,8 +17,6 @@ import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicField;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldType;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldValue;
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,51 +26,41 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import static org.junit.Assert.assertNotNull;
-
-import org.springframework.test.web.servlet.ResultActions;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = InformationApp.class)
 public class PessoaGenericaApiTest {
 
     private static final String DEAFAULT_NAME = "Vicente";
-
-    @Autowired
-    private PessoaGenericaRepository repository;
-
-    @Autowired
-    private PessoaGenericaService service;
-
-    @Autowired
-    private MappingJackson2HttpMessageConverter jacksonMessageConverter;
-
-    @Autowired
-    private EntityManager em;
-
-    @Autowired
-    private ExceptionTranslator exceptionTranslator;
-
-    private MockMvc restMockMvc;
-
-    private PessoaGenerica pessoa;
-
     @Autowired
     protected VicFieldService vicFieldService;
-
     @Autowired
     protected VicFieldRepository vicFieldRepository;
+    @Autowired
+    private PessoaGenericaRepository repository;
+    @Autowired
+    private PessoaGenericaService service;
+    @Autowired
+    private MappingJackson2HttpMessageConverter jacksonMessageConverter;
+    @Autowired
+    private EntityManager em;
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+    private MockMvc restMockMvc;
+    private PessoaGenerica pessoa;
     private VicField religiao;
     private VicField time;
 
@@ -185,8 +173,8 @@ public class PessoaGenericaApiTest {
         createEntity.getVicTenancyFields().put("time", new VicFieldValue(time, createEntity.getId(), "Ponte Petra"));
         // Create the Book
         restMockMvc.perform(post("/api/pessoagenerica")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(createEntity)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(createEntity)))
                 .andExpect(status().isCreated());
 
         // Validate the Contato in the database

@@ -5,6 +5,7 @@ package br.com.munif.framework.vicente.security.service;
 import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.application.VicRepository;
 import br.com.munif.framework.vicente.core.RightsHelper;
+import br.com.munif.framework.vicente.core.Sets;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.core.vquery.ComparisonOperator;
@@ -12,41 +13,52 @@ import br.com.munif.framework.vicente.core.vquery.Criteria;
 import br.com.munif.framework.vicente.core.vquery.LogicalOperator;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.*;
-import br.com.munif.framework.vicente.security.dto.LoginDto;
-import br.com.munif.framework.vicente.security.dto.LoginResponseDto;
-
-import java.util.*;
-
-import com.google.common.collect.Sets;
+import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
+import br.com.munif.framework.vicente.security.domain.dto.LoginResponseAppDto;
+import br.com.munif.framework.vicente.security.domain.dto.LoginResponseDto;
+import br.com.munif.framework.vicente.security.domain.dto.RefreshTokenDto;
+import br.com.munif.framework.vicente.security.domain.exceptions.UserNotFoundException;
+import br.com.munif.framework.vicente.security.service.interfaces.IEmailService;
+import br.com.munif.framework.vicente.security.service.interfaces.ITokenService;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author GeradorVicente
  */
 @Service
-public class TokenService extends BaseService<Token> {
+public class TokenService extends BaseService<Token> implements ITokenService {
 
     private final UserService userService;
     private final GroupService groupService;
     private final OrganizationService organizationService;
+    private final IEmailService iEmailService;
 
-    public TokenService(VicRepository<Token> repository, OrganizationService organizationService, GroupService groupService, UserService userService) {
+    public TokenService(VicRepository<Token> repository, OrganizationService organizationService,
+                        GroupService groupService, UserService userService, IEmailService iEmailService) {
         super(repository);
         this.organizationService = organizationService;
         this.groupService = groupService;
         this.userService = userService;
+        this.iEmailService = iEmailService;
     }
 
-    public LoginResponseDto logaGoogle(String token) {
+    public LoginResponseDto loginOnGoogle(String token) {
         LoginResponseDto r = new LoginResponseDto();
         Map verify = GoogleToken.verify(token);
         String email = (String) verify.get("email");
         if (email == null) {
-            r.message = "Usuário não encontrado.";
+            r.message = "User not found.";
             return r;
         }
-        List<User> findByHql = findUsersByEmail(email);
+        List<User> findByHql = userService.findUsersByEmail(email);
 
         if (findByHql.size() == 0) {
             VicThreadScope.gi.set("GOOGLE");
@@ -62,31 +74,23 @@ public class TokenService extends BaseService<Token> {
 
             u.setGroups(new HashSet<>());
             u.getGroups().add(g0);
-            u.setOrganization(o1);
+            u.setOrganizations(Collections.singleton(o1));
 
             u = userService.save(u);
-            r.message = "Usuário criado, Login OK";
+            r.message = "User created, Login OK";
             r.ok = true;
-            r.token = criaToken(u);
+            r.token = createToken(u);
         } else if (findByHql.size() == 1) {
             r.message = "Login OK";
             r.ok = true;
-            r.token = criaToken(findByHql.get(0));
+            r.token = createToken(findByHql.get(0));
         } else {
-            r.message = "Multiplos Usuários";
+            r.message = "Multiple Users.";
         }
         return r;
     }
 
-    @Transactional(readOnly = true)
-    public List<User> findUsersByEmail(String email) {
-        VQuery vQuery = new VQuery(new Criteria("login", ComparisonOperator.EQUAL, email.trim()));
-        VicQuery query = new VicQuery();
-        query.setQuery(vQuery);
-        return userService.findByHqlNoTenancy(query);
-    }
-
-    public LoginResponseDto loga(LoginDto login) {
+    public LoginResponseDto login(LoginDto login) {
         LoginResponseDto r = new LoginResponseDto();
 
         VQuery vQuery = new VQuery(LogicalOperator.AND, new Criteria(),
@@ -95,18 +99,23 @@ public class TokenService extends BaseService<Token> {
         query.setQuery(vQuery);
         List<User> findByHql = userService.findByHqlNoTenancy(query);
         if (findByHql.size() == 0) {
-            r.message = "Usuário não encontrado.";
+            r.message = "User not found.";
             return r;
         } else if (findByHql.size() == 1) {
-            return createTokenToExistentUser(login, findByHql);
+            return createTokenToExistentUser(login, findByHql.get(0));
         } else {
-            r.message = "Multiplos Usuários.";
+            r.message = "Multiple users.";
         }
         return r;
     }
 
+    @Override
+    public RefreshTokenDto refreshToken(RefreshTokenDto refreshTokenDto) {
+        return null;
+    }
+
     @Transactional
-    public Token criaToken(User user) {
+    public Token createToken(User user) {
         Token t = newEntity();
         t.setValue(t.getId());
         t.setUser(user);
@@ -117,13 +126,14 @@ public class TokenService extends BaseService<Token> {
         Token tok = repository.load(VicThreadScope.token.get());
         LoginResponseDto lr = new LoginResponseDto();
         lr.code = 0;
-        lr.message = "Volte sempre";
+        lr.message = "Come back soon.";
         lr.ok = true;
         lr.token = null;
         return lr;
     }
 
-    public Token findUserByToken(String tokenValue) {
+    @Transactional(readOnly = true)
+    public Token findTokenByValue(String tokenValue) {
         return loadNoTenancy(tokenValue);
     }
 
@@ -134,35 +144,99 @@ public class TokenService extends BaseService<Token> {
         VicThreadScope.cg.set(login.login.replaceAll("\\.", "_"));
         VicThreadScope.oi.set(login.login.replaceAll("\\.", "_") + ".");
         VicThreadScope.defaultRights.set(RightsHelper.OWNER_READ);
-        List<User> usersByEmail = findUsersByEmail(login.login);
-        if (usersByEmail.size() == 0) {
-            User u = new User();
-            u.setLogin(login.login);
-            Group group = groupService.createGroupByEmail(login.login);
-            Organization organization = organizationService.createOrganizationByEmail(login.login);
-            u.setPassword(PasswordGenerator.generate(login.password));
-            u.setGroups(Sets.newHashSet(group));
-            u.setOrganization(organization);
-            u = userService.save(u);
-            LoginResponseDto r = new LoginResponseDto();
-            r.message = "Usuário criado, Login OK";
-            r.ok = true;
-            r.token = criaToken(u);
-            return r;
-        } else {
-            return createTokenToExistentUser(login, usersByEmail);
-        }
+        return createAndLogin(login);
     }
 
-    public LoginResponseDto createTokenToExistentUser(LoginDto login, List<User> usersByEmail) {
+    @Transactional
+    public LoginResponseDto createAndLogin(LoginDto login) {
+        User userByLogin = createUserByLogin(login);
+        return createTokenToExistentUser(login, userByLogin);
+    }
+
+    @Transactional
+    public User createUserByLogin(LoginDto login) {
+        List<User> usersByEmail = userService.findUsersByEmail(login.login);
+        if (usersByEmail.size() > 0) {
+            return usersByEmail.get(0);
+        }
+        User u = new User();
+        u.setLogin(login.login);
+        Group group = groupService.createGroupByEmail(login.login);
+        Organization organization = organizationService.createOrganizationByEmail(login.login);
+        u.setPassword(PasswordGenerator.generate(login.password));
+        u.setGroups(Sets.newHashSet(group));
+        u.setOrganizations(Collections.singleton(organization));
+        u = userService.save(u);
+        return u;
+    }
+
+    @Transactional
+    public LoginResponseDto createTokenToExistentUser(LoginDto login, User user) {
+        Hibernate.initialize(user.getOrganizations());
+        Hibernate.initialize(user.getGroups());
         LoginResponseDto r = new LoginResponseDto();
-        if (!PasswordGenerator.validate(login.password, usersByEmail.get(0).getPassword())) {
-            r.message = "Senha inválida.";
+        if (!PasswordGenerator.validate(login.password, user.getPassword())) {
+            r.message = "Wrong Password.";
             return r;
         }
         r.message = "Login OK";
         r.ok = true;
-        r.token = criaToken(usersByEmail.get(0));
+        r.token = createToken(user);
         return r;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Token load(String id) {
+        Token load = super.load(id);
+        Hibernate.initialize(load.getUser().getOrganizations());
+        return load;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Token loadNoTenancy(String id) {
+        Token load = super.loadNoTenancy(id);
+        Hibernate.initialize(load.getUser().getOrganizations());
+        return load;
+    }
+
+    @Override
+    @Transactional
+    public void recoverPassword(String id) {
+        User user = userService.findUserByIdOrEmail(id);
+        if (user != null) {
+            String generatedPassword = RandomStringUtils.randomAlphanumeric(10);
+            user.setPassword(PasswordGenerator.generate(generatedPassword));
+            user = userService.save(user);
+            iEmailService.sendPasswordRecover(user.getLogin(), generatedPassword);
+        } else {
+            throw new UserNotFoundException();
+        }
+    }
+
+    @Override
+    public Map searchTicket(String id) {
+        return null;
+    }
+
+    @Override
+    public Map lostPassword(String ticket, String password) {
+        return null;
+    }
+
+    @Override
+    public Map changeOrganization(String organizationId) {
+        return null;
+    }
+
+    @Override
+    public LoginResponseDto loginByToken() {
+        return null;
+    }
+
+    @Override
+    public LoginResponseAppDto appLogin(LoginDto login) {
+        return null;
     }
 }

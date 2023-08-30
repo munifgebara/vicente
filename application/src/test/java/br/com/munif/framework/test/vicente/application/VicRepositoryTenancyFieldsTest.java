@@ -9,8 +9,6 @@ import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicField;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldType;
 import br.com.munif.framework.vicente.domain.tenancyfields.VicFieldValue;
-import java.util.List;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author munif

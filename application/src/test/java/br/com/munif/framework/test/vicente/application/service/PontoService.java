@@ -6,7 +6,6 @@ import br.com.munif.framework.vicente.application.VicRepository;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author munif
  */
 @Service

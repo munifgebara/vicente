@@ -9,16 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * @author munif
  */
 @RestController
 @RequestMapping("/api/pessoagenerica")
 public class PessoaGenericaApi extends BaseAPI<PessoaGenerica> {
 
-    private final Logger log = LoggerFactory.getLogger(PessoaGenericaApi.class);
-
     private static final String ENTITY_NAME = "PessoaGenerica";
+    private final Logger log = LoggerFactory.getLogger(PessoaGenericaApi.class);
 
     public PessoaGenericaApi(BaseService<PessoaGenerica> service) {
         super(service);

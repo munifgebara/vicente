@@ -1,11 +1,13 @@
 package br.com.munif.framework.test.vicente.domain.model.smartsearch;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import java.math.BigDecimal;
-import java.util.List;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author munif
@@ -21,7 +23,7 @@ public class Produto extends BaseEntity {
 
     @ManyToOne
     private Categoria categoria;
-    
+
     @OneToMany(mappedBy = "produto")
     private List<ItemPedido> itens;
 
@@ -64,7 +66,6 @@ public class Produto extends BaseEntity {
     public String toString() {
         return "Produto{" + "nome=" + nome + ", quantidade=" + quantidade + ", valor=" + valor + '}';
     }
-    
-    
-    
+
+
 }

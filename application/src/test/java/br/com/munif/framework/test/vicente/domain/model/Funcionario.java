@@ -5,7 +5,8 @@ import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 /**
  * @author munif

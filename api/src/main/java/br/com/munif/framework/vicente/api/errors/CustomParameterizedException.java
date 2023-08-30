@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author munif
  * Custom, parameterized exception, which can be translated on the client side.
  * For example:
@@ -45,7 +44,7 @@ public class CustomParameterizedException extends RuntimeException {
         this.paramMap.putAll(paramMap);
     }
 
-    public ParameterizedErrorVM getErrorVM() {
-        return new ParameterizedErrorVM(message, paramMap);
+    public ParameterizedError getErrorVM() {
+        return new ParameterizedError(message, paramMap);
     }
 }

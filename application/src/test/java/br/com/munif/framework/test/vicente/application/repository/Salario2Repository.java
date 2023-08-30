@@ -10,9 +10,8 @@ import br.com.munif.framework.test.vicente.domain.model.Salario;
 import br.com.munif.framework.vicente.application.VicRepository;
 
 /**
- *
  * @author munif
  */
-public interface Salario2Repository extends VicRepository<Salario>{
-    
+public interface Salario2Repository extends VicRepository<Salario> {
+
 }

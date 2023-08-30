@@ -2,11 +2,8 @@ package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.test.apptest.config.ApplicationProperties;
 import br.com.munif.framework.vicente.api.test.apptest.config.DefaultProfileUtil;
-import br.com.munif.framework.vicente.api.test.apptest.domain.Book;
 import br.com.munif.framework.vicente.api.test.apptest.repository.BookRepository;
 import br.com.munif.framework.vicente.application.VicRepositoryImpl;
-import br.com.munif.framework.vicente.core.RightsHelper;
-//import br.com.munif.framework.vicente.security.seed.SeedSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,16 +60,6 @@ public class InformationApp {
         this.env = env;
     }
 
-    @PostConstruct
-    public void initApplication() {
-//        Book teste = new Book("Book Test");
-//        teste.setRights(RightsHelper.getDefault());
-//        teste.setUi("admin@munif.com.br");
-//        teste.setGi("G2");
-//        bookRepository.save(teste);
-//        seedSecurity.seedSecurity();
-    }
-
     public static void main(String[] args) throws UnknownHostException {
         SpringApplication app = new SpringApplication(InformationApp.class);
         DefaultProfileUtil.addDefaultProfile(app);
@@ -93,5 +80,15 @@ public class InformationApp {
                 InetAddress.getLocalHost().getHostAddress(),
                 env.getProperty("remote.server.port"),
                 env.getActiveProfiles());
+    }
+
+    @PostConstruct
+    public void initApplication() {
+//        Book teste = new Book("Book Test");
+//        teste.setRights(RightsHelper.getDefault());
+//        teste.setUi("admin@vicente.com.br");
+//        teste.setGi("G2");
+//        bookRepository.save(teste);
+//        seedSecurity.seedSecurity();
     }
 }

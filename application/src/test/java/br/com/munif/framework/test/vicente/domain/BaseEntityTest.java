@@ -3,13 +3,13 @@ package br.com.munif.framework.test.vicente.domain;
 import br.com.munif.framework.test.vicente.domain.model.Pessoa;
 import br.com.munif.framework.vicente.core.VicThreadScope;
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import br.com.munif.framework.vicente.domain.BaseEntityHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 public class BaseEntityTest {
@@ -18,7 +18,7 @@ public class BaseEntityTest {
 
     @Before
     public void setUp() {
-        BaseEntity.useSimpleId=true;
+        BaseEntity.useSimpleId = true;
         VicThreadScope.ui.set("ZZ");
         VicThreadScope.gi.set("ZZ");
         this.entity = new Pessoa();

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- *
  * @author wmfsystem
  */
 public class Join implements Queryable<Join>, Joinable<Join> {
@@ -18,18 +17,16 @@ public class Join implements Queryable<Join>, Joinable<Join> {
      * Tabela
      */
     private String table;
+    private List<CriteriaJoin> subQuerys = new LinkedList<>();
+
 
     public Join() {
     }
-
-
 
     public Join(String table, JoinType type) {
         this.table = table;
         this.type = type;
     }
-
-    private List<CriteriaJoin> subQuerys = new LinkedList<>();
 
     @Override
     public Join or(Criteria criteria) {

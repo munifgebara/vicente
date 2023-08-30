@@ -3,17 +3,19 @@ package br.com.munif.framework.vicente.security.domain;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author munif
  */
 @Entity
 @Audited
-@Table(name = "vic_org")
+@Table(name = "vic_org", indexes = {
+        @Index(name = "idx_vic_org_oi", columnList = "oi"),
+        @Index(name = "idx_vic_org_ui", columnList = "ui"),
+        @Index(name = "idx_vic_org_gi", columnList = "gi"),
+        @Index(name = "idx_vic_org_rights", columnList = "rights")
+})
 public class Organization extends BaseEntity {
 
     @Column(name = "name")

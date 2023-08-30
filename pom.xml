@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.munif.framework</groupId>
@@ -14,11 +14,10 @@
         <commons-fileupload>1.3.3</commons-fileupload>
         <commons-io>2.5</commons-io>
         <el-api>2.2</el-api>
-        <google-api-client>1.23.0</google-api-client>
         <h2>1.4.199</h2>
         <hibernate-jpa-2.2-api>1.0.0.Beta1</hibernate-jpa-2.2-api>
         <hibernate-validator>5.2.5.Final</hibernate-validator>
-        <hibernate.version>5.2.13.Final</hibernate.version>
+        <hibernate.version>5.5.9.Final</hibernate.version>
         <HikariCP>2.6.3</HikariCP>
         <jackson-annotations>2.9.4</jackson-annotations>
         <jackson-databind>2.9.9</jackson-databind>
@@ -28,22 +27,22 @@
         <javaassist>3.25.0-GA</javaassist>
         <javax.annotation-api>1.3.1</javax.annotation-api>
         <javax.servlet-api>3.1.0</javax.servlet-api>
-        <jaxb-api>2.4.0-b180725.0427</jaxb-api>
+        <jaxb-api>2.3.1</jaxb-api>
         <jaxb-core>2.2.11</jaxb-core>
-        <jaxb-runtime>2.4.0-b180725.0644</jaxb-runtime>
+        <jaxb-runtime>2.3.1</jaxb-runtime>
         <json-path>2.0.0</json-path>
         <jsp-api>2.2</jsp-api>
         <junit>4.12</junit>
         <mockito-core>1.10.19</mockito-core>
         <mysql-connector-java>5.1.43</mysql-connector-java>
-        <mysql-connector-java>5.1.43</mysql-connector-java>
         <reflections>0.9.11</reflections>
-        <spring-data-jpa>2.2.0.RELEASE</spring-data-jpa>
-        <spring.boot.version>2.2.0.RELEASE</spring.boot.version>
-        <spring.version>5.2.0.RELEASE</spring.version>
+        <spring-data-jpa>2.7.1</spring-data-jpa>
+        <spring.boot.version>2.7.1</spring.boot.version>
+        <spring.version>5.3.21</spring.version>
         <validation-api>2.0.0.Final</validation-api>
         <wix-embedded-mysql>4.2.0</wix-embedded-mysql>
-        <spring-data-r2dbc>1.0.0.M1</spring-data-r2dbc>
+        <spring-data-r2dbc>1.5.2</spring-data-r2dbc>
+        <stella.version>2.1.2</stella.version>
     </properties>
 
     <name>Vicente SaaS Framwork</name>
@@ -66,6 +65,27 @@
 
     <dependencyManagement>
         <dependencies>
+<!--            <dependency>-->
+<!--                <groupId>com.oracle.database.r2dbc</groupId>-->
+<!--                <artifactId>oracle-r2dbc</artifactId>-->
+<!--                <version>1.0.0</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.data</groupId>-->
+<!--                <artifactId>spring-data-r2dbc</artifactId>-->
+<!--                <version>${spring-data-r2dbc}</version>-->
+<!--            </dependency>-->
+<!--            &lt;!&ndash;            <dependency>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <groupId>io.r2dbc</groupId>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <artifactId>r2dbc-h2</artifactId>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <version>1.0.0.RC1</version>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <scope>test</scope>&ndash;&gt;-->
+<!--            &lt;!&ndash;            </dependency>&ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-starter-data-r2dbc</artifactId>-->
+<!--                <version>${spring.boot.version}</version>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>domain</artifactId>
@@ -118,16 +138,12 @@
                 <version>${el-api}</version>
             </dependency>
             <dependency>
-                <groupId>com.google.api-client</groupId>
-                <artifactId>google-api-client</artifactId>
-                <version>${google-api-client}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <scope>runtime</scope>
                 <version>${h2}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-envers</artifactId>
@@ -254,6 +270,11 @@
                 <version>${mysql-connector-java}</version>
             </dependency>
             <dependency>
+                <groupId>com.googlecode.libphonenumber</groupId>
+                <artifactId>libphonenumber</artifactId>
+                <version>8.12.51</version>
+            </dependency>
+            <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql-connector-java}</version>
@@ -349,11 +370,7 @@
                 <version>3.1.0.RELEASE</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-r2dbc</artifactId>
-                <version>${spring-data-r2dbc}</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
@@ -364,6 +381,29 @@
                 <artifactId>wix-embedded-mysql</artifactId>
                 <version>${wix-embedded-mysql}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>br.com.caelum.stella</groupId>
+                <artifactId>caelum-stella-core</artifactId>
+                <version>${stella.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>31.1-jre</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.api-client</groupId>
+                <artifactId>google-api-client</artifactId>
+                <version>2.0.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.auth</groupId>
+                <artifactId>google-auth-library-oauth2-http</artifactId>
+                <version>1.9.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -498,46 +538,25 @@
                             </altDeploymentRepository>
                         </configuration>
                     </plugin>
-                    <plugin>
-                        <groupId>com.github.github</groupId>
-                        <artifactId>site-maven-plugin</artifactId>
-                        <version>0.12</version>
-                        <configuration>
-                            <merge>true</merge>
-                            <message>Maven artifacts for ${project.version}</message>  <!-- git commit message -->
-                            <noJekyll>true
-                            </noJekyll>                                  <!-- disable webpage processing -->
-                            <!-- matches distribution management repository url above -->
-                            <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
-                            <branch>refs/heads/mvn-repo</branch>                       <!-- remote branch name -->
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                            <repositoryName>vicente</repositoryName>      <!-- github repo name -->
-                            <repositoryOwner>munifgebara</repositoryOwner>    <!-- github username  -->
-                        </configuration>
-                        <executions>
-                            <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
-                            <execution>
-                                <goals>
-                                    <goal>site</goal>
-                                </goals>
-                                <phase>deploy</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
                 </plugins>
             </build>
 
             <distributionManagement>
                 <repository>
-                    <id>internal.repo</id>
-                    <name>Temporary Staging Repository</name>
-                    <url>file://${project.build.directory}/mvn-repo</url>
+                    <id>github</id>
+                    <name>GitHub OWNER Apache Maven Packages</name>
+                    <url>https://maven.pkg.github.com/willianmarquesfreire/vicente</url>
                 </repository>
             </distributionManagement>
         </profile>
     </profiles>
+    <distributionManagement>
+                <repository>
+                    <id>github</id>
+                    <name>GitHub OWNER Apache Maven Packages</name>
+                    <url>https://maven.pkg.github.com/willianmarquesfreire/vicente</url>
+                </repository>
+            </distributionManagement>
 
 
 </project>

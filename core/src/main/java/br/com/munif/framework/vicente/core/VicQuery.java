@@ -12,9 +12,11 @@ public class VicQuery {
     private static final String DEFAULT_ORDER_BY = "id";
     private String hql = DEFAULT_QUERY;
     private VQuery query;
+    private String entity;
     private int firstResult = 0;
     private int maxResults = -1;
     private String orderBy = DEFAULT_ORDER_BY;
+    private String sortDir = "asc";
 
     public VicQuery() {
     }
@@ -87,4 +89,19 @@ public class VicQuery {
         return "VicQuery{" + "hql=" + hql + ", firstResult=" + firstResult + ", maxResults=" + maxResults + ", orderBy=" + orderBy + '}';
     }
 
+    public String getSortDir() {
+        return sortDir;
+    }
+
+    public void setSortDir(String sortDir) {
+        this.sortDir = sortDir;
+    }
+
+    public String getEntity() {
+        return entity;
+    }
+
+    public void setEntity(String entity) {
+        this.entity = entity;
+    }
 }

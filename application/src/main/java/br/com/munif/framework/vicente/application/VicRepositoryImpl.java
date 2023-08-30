@@ -1,6 +1,8 @@
 package br.com.munif.framework.vicente.application;
 
 import br.com.munif.framework.vicente.core.*;
+import br.com.munif.framework.vicente.core.phonetics.PhoneticBuilder;
+import br.com.munif.framework.vicente.core.phonetics.VicPhoneticPolicy;
 import br.com.munif.framework.vicente.core.vquery.*;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
@@ -9,6 +11,7 @@ import org.hibernate.transform.ResultTransformer;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.util.ReflectionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Parameter;
@@ -57,23 +60,28 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         if (isVicTemporalEntity) {
             sb.append("(\n");
         }
-        sb.append("   (" + alias + ".ui=:ui and mod(" + alias + ".rights/64,8)/4>=1) \n");
+        if (vtt.equals(VicTenancyType.ONLY_HIERARCHICAL_TOP_DOWN)) {
+            sb.append(" (").append(alias).append(".oi like :oi)\n ");
+        } else {
+            sb.append("   (").append(alias).append(".ui=:ui and mod(").append(alias).append(".rights/64,8)/4>=1) \n");
 
-        if (vtt.equals(VicTenancyType.GROUPS) || vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
-            sb.append("or (:gi like concat('%'," + alias + ".gi,',%') and mod(" + alias + ".rights/8,8)/4>=1) \n");
-        }
+            if (vtt.equals(VicTenancyType.GROUPS) || vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
+                sb.append("or (:gi like concat('%',").append(alias).append(".gi,',%') and mod(").append(alias).append(".rights/8,8)/4>=1) \n");
+            }
 
-        if (vtt.equals(VicTenancyType.HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.ORGANIZATIONAL) || vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
-            sb.append("or (" + alias + ".oi like :oi)\n");
+            if (vtt.equals(VicTenancyType.HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.ORGANIZATIONAL)) {
+                sb.append("or (").append(alias).append(".oi like :oi)\n");
+            } else if (vtt.equals(VicTenancyType.GROUPS_AND_HIERARCHICAL_TOP_DOWN) || vtt.equals(VicTenancyType.GROUPS_AND_ORGANIZATIONAL)) {
+                sb.append("and (").append(alias).append(".oi like :oi)\n");
+            }
         }
         if (publics) {
-            sb.append("or (1=1    and    mod(" + alias + ".rights  ,8)/4>=1)\n");
+            sb.append("or (mod(").append(alias).append(".rights  ,8)/4>=1)\n");
         }
         if (isVicTemporalEntity) {
-            sb.append(") and (" + alias + ".startTime<=:et and :et<=" + alias + ".endTime) \n");
+            sb.append(") and (").append(alias).append(".startTime<=:et and :et<=").append(alias).append(".endTime) \n");
         }
-        sb.append(
-                ")");
+        sb.append(") and ").append(alias).append(".active is true");
 
         return sb.toString();
     }
@@ -159,6 +167,12 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
      */
     @Override
     public List<T> findByHql(VicQuery vicQuery) {
+        return getQuery(vicQuery, getDomainClass()).getResultList();
+    }
+
+    @Override
+    public Query getQuery(VicQuery vicQuery, Class clazz) {
+        if (vicQuery.getEntity() == null) vicQuery.setEntity(getDomainClass().getSimpleName());
         if (vicQuery.getMaxResults() == -1) {
             vicQuery.setMaxResults(VicQuery.DEFAULT_QUERY_SIZE);
         }
@@ -178,20 +192,39 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
             params = vicQuery.getQuery().getParams();
         }
 
-        String hql = mountHQL(vicQuery, clause, joins, attrs, alias, true);
-        Query query = entityManager.createQuery(hql);
+        String hql = mountSelectWithWhere(vicQuery, clause, joins, attrs, alias, true);
+        Query query = entityManager.createQuery(hql, clazz);
         query.setFirstResult(vicQuery.getFirstResult());
         query.setMaxResults(vicQuery.getMaxResults());
         setTenancyParameters(query);
         if (params != null) {
             for (Param entry : params) {
-                query.setParameter(entry.getKeyToSearch(), entry.getValueToSearch());
+                try {
+                    query.setParameter(entry.getKeyToSearch(), entry.getValueToSearch());
+                } catch (IllegalArgumentException ex) {
+                    String field = entry.getField().replace(alias + ".", "");
+                    try {
+                        entry.setType(getDomainClass().getDeclaredField(field).getType());
+                        query.setParameter(entry.getKeyToSearch(), entry.getValueToSearch());
+                    } catch (NoSuchFieldException e) {
+                        hql = hql.replace(entry.getKey(), String.valueOf(entry.getValue()));
+                        Query newQuery = entityManager.createQuery(hql, clazz);
+                        newQuery.setFirstResult(vicQuery.getFirstResult());
+                        newQuery.setMaxResults(vicQuery.getMaxResults());
+                        for (Parameter<?> parameter : query.getParameters()) {
+                            Object parameterValue = query.getParameterValue(parameter);
+                            if (parameterValue != null)
+                                newQuery.setParameter(parameter.getName(), parameterValue);
+                        }
+                        query = newQuery;
+                    }
+                }
             }
         }
         if (!VicRepositoryUtil.DEFAULT_ALIAS.equals(attrs)) {
             query = selectAttributes(query);
         }
-        return query.getResultList();
+        return query;
     }
 
     /**
@@ -221,7 +254,7 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
             params = vicQuery.getQuery().getParams();
         }
 
-        String hql = mountHQL(vicQuery, clause, joins, attrs, alias, false);
+        String hql = mountSelectWithWhere(vicQuery, clause, joins, attrs, alias, false);
         Query query = entityManager.createQuery(hql);
         query.setFirstResult(vicQuery.getFirstResult());
         query.setMaxResults(vicQuery.getMaxResults());
@@ -263,17 +296,35 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
                 });
     }
 
-    private String mountHQL(VicQuery vicQuery, String clause, String joins, String attrs, String alias, boolean withTenancy) {
-        return "select " + attrs + " FROM " + getDomainClass().getSimpleName() + " " + alias + " " + joins + " where \n"
+    private String mountSelectWithWhere(VicQuery vicQuery, String clause, String joins, String attrs, String alias, boolean withTenancy) {
+        return mountSelect(joins, attrs, alias, vicQuery.getEntity()) + mountWhere(vicQuery, clause, joins, attrs, alias, withTenancy, true);
+    }
+
+    private String mountDeleteWithWhere(VicQuery vicQuery, String clause, String joins, String attrs, String alias) {
+        return mountDelete(alias) + mountWhere(vicQuery, clause, joins, attrs, alias, true, false);
+    }
+
+    private String mountSelect(String joins, String attrs, String alias, String entity) {
+        return "select " + attrs + " FROM " + (entity == null ? getDomainClass().getSimpleName() : entity) + " " + alias + " " + joins + " ";
+    }
+
+    private String mountDelete(String alias) {
+        return "delete FROM " + getDomainClass().getSimpleName() + " " + alias + " ";
+    }
+
+    private String mountWhere(VicQuery vicQuery, String clause, String joins, String attrs, String alias, boolean withTenancy, boolean withOrder) {
+        return " where \n"
                 + "(" + clause + ") "
                 + (withTenancy ? " and (" + geTenancyHQL(true, alias) + ") " : "") +
-                " ORDER BY " + alias + "." + vicQuery.getOrderBy() + " , " + alias + ".id asc";
+                (withOrder ? " ORDER BY " + alias + "." + vicQuery.getOrderBy() + " " + vicQuery.getSortDir() : "");
     }
 
     @Override
     public void patch(Map<String, Object> map) {
         SetUpdateQuery setUpdate = VicRepositoryUtil.getSetUpdate(map);
-        String str = " update " + getDomainClass().getSimpleName() + " " + VicRepositoryUtil.DEFAULT_ALIAS + " set " + setUpdate + " where " + VicRepositoryUtil.DEFAULT_ALIAS + ".id = '" + map.get("id") + "' and " + geTenancyHQL(false, VicRepositoryUtil.DEFAULT_ALIAS);
+        String str = " update " + getDomainClass().getSimpleName() + " " + VicRepositoryUtil.DEFAULT_ALIAS + " set "
+                + setUpdate + " where " + VicRepositoryUtil.DEFAULT_ALIAS + ".id = '" + map.get("id") + "' and "
+                + geTenancyHQL(false, VicRepositoryUtil.DEFAULT_ALIAS);
         Query query = entityManager.createQuery(str);
         for (Param param : setUpdate.getParams()) {
             query.setParameter(param.getKeyToSearch(), param.getValue());
@@ -308,6 +359,35 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
     }
 
     @Override
+    public <S extends T> S save(S entity) {
+        setPhoneticField(entity);
+        return super.save(entity);
+    }
+
+    private <S extends T> void setPhoneticField(S entity) {
+        Class<T> domainClass = this.getDomainClass();
+        boolean assignableFromBaseEntity = BaseEntity.class.isAssignableFrom(domainClass);
+        if (assignableFromBaseEntity) {
+            VicPhoneticPolicy vicPhoneticPolicy = domainClass.getAnnotation(VicPhoneticPolicy.class);
+            if (vicPhoneticPolicy != null) {
+                String field = vicPhoneticPolicy.field();
+                try {
+                    Field declaredField = domainClass.getDeclaredField(field);
+                    declaredField.setAccessible(true);
+                    Object declaredFieldValue = declaredField.get(entity);
+                    Field phonetic = ReflectionUtils.findField(domainClass, vicPhoneticPolicy.phoneticField());
+                    phonetic.setAccessible(true);
+                    String translatedValue = PhoneticBuilder.build().translate(String.valueOf(declaredFieldValue));
+                    phonetic.set(entity, translatedValue);
+
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
     public T load(String id) {
         VicQuery vicQuery = new VicQuery(new VQuery(new Criteria("id", ComparisonOperator.EQUAL, id)), 1);
         List<T> byHql = findByHql(vicQuery);
@@ -325,5 +405,42 @@ public class VicRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository
         query.setParameter("id", id);
         Long singleResult = (Long) query.getSingleResult();
         return singleResult <= 0;
+    }
+
+    @Override
+    public void deleteByHQL(VicQuery vicQuery) {
+        if (vicQuery.getMaxResults() == -1) {
+            vicQuery.setMaxResults(VicQuery.DEFAULT_QUERY_SIZE);
+        }
+
+        String clause = (vicQuery.getHql() != null ? vicQuery.getHql() : "1=1")
+                .concat(" and ")
+                .concat((vicQuery.getQuery() != null ? vicQuery.getQuery().toString() : "1=1"));
+
+        String joins = "";
+        String attrs = VicRepositoryUtil.DEFAULT_ALIAS;
+        String alias = VicRepositoryUtil.DEFAULT_ALIAS;
+        ParamList params = null;
+        if (vicQuery.getQuery() != null) {
+            attrs = vicQuery.getQuery().getFieldsWithAlias();
+            joins = vicQuery.getQuery().getJoins();
+            alias = vicQuery.getQuery().getAlias();
+            params = vicQuery.getQuery().getParams();
+        }
+
+        String hql = mountDeleteWithWhere(vicQuery, clause, joins, attrs, alias);
+        Query query = entityManager.createQuery(hql);
+        query.setFirstResult(vicQuery.getFirstResult());
+        query.setMaxResults(vicQuery.getMaxResults());
+        setTenancyParameters(query);
+        if (params != null) {
+            for (Param entry : params) {
+                query.setParameter(entry.getKeyToSearch(), entry.getValueToSearch());
+            }
+        }
+        if (!VicRepositoryUtil.DEFAULT_ALIAS.equals(attrs)) {
+            query = selectAttributes(query);
+        }
+        query.executeUpdate();
     }
 }

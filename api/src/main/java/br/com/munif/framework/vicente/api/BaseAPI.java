@@ -5,7 +5,7 @@
  */
 package br.com.munif.framework.vicente.api;
 
-import br.com.munif.framework.vicente.application.BaseService;
+import br.com.munif.framework.vicente.application.VicServiceable;
 import br.com.munif.framework.vicente.core.ReflectionUtil;
 import br.com.munif.framework.vicente.core.VicQuery;
 import br.com.munif.framework.vicente.core.VicReturn;
@@ -17,12 +17,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -32,9 +32,9 @@ import java.util.stream.Collectors;
 @Scope("prototype")
 public class BaseAPI<T extends BaseEntity> {
 
-    public final BaseService<T> service;
+    public VicServiceable<T> service;
 
-    public BaseAPI(BaseService<T> service) {
+    public BaseAPI(VicServiceable service) {
         this.service = service;
     }
 
@@ -53,11 +53,6 @@ public class BaseAPI<T extends BaseEntity> {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(value = "/async/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Mono<ResponseEntity<Void>> asyncDelete(@PathVariable String id) {
-        return service.asyncMono(delete(id));
-    }
-
     @Transactional
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -71,21 +66,10 @@ public class BaseAPI<T extends BaseEntity> {
         return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/async", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public Mono<ResponseEntity<T>> asyncSave(@RequestBody @Valid T model) {
-        return service.asyncMono(save(model));
-    }
-
     @Transactional
     @PutMapping(value = "", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<T> updateWithoutId(@RequestBody @Valid T model) {
         return doUpdate(model);
-    }
-
-    @PutMapping(value = "/async", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Mono<ResponseEntity<T>> asyncUpdateWithoutId(@RequestBody @Valid T model) {
-        return service.asyncMono(doUpdate(model));
     }
 
     @Transactional
@@ -93,11 +77,6 @@ public class BaseAPI<T extends BaseEntity> {
     public ResponseEntity<T> updateWithId(@PathVariable("id") String id, @RequestBody @Valid T model) {
         model.setId(id);
         return doUpdate(model);
-    }
-
-    @PutMapping(value = "/async/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Mono<ResponseEntity<T>> asyncUpdateWithId(@PathVariable("id") String id, @RequestBody @Valid T model) {
-        return service.asyncMono(updateWithId(id, model));
     }
 
     @Transactional
@@ -108,21 +87,11 @@ public class BaseAPI<T extends BaseEntity> {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping(value = "/async/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Mono<ResponseEntity<Void>> asyncPatch(@PathVariable("id") String id, @RequestBody @Valid Map model) {
-        return service.asyncMono(patch(id, model));
-    }
-
     @Transactional
     @PatchMapping(value = "/returning/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity patchReturning(@PathVariable("id") String id, @RequestBody @Valid Map model) {
         model.put("id", id);
         return ResponseEntity.ok(service.patchReturning(model));
-    }
-
-    @PatchMapping(value = "/async/returning/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Mono<ResponseEntity> asyncPatchReturning(@PathVariable("id") String id, @RequestBody @Valid Map model) {
-        return service.asyncMono(patchReturning(id, model));
     }
 
     private ResponseEntity<T> doUpdate(T model) {
@@ -151,20 +120,10 @@ public class BaseAPI<T extends BaseEntity> {
         return getVicReturnByQuery(query);
     }
 
-    @GetMapping(value = "/async", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Mono<ResponseEntity<VicReturn<T>>> asyncFindHQL(HttpServletRequest request, VicQuery query) {
-        return service.asyncMono(findHQL(request, query));
-    }
-
     @Transactional
     @PostMapping(value = "/vquery", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<VicReturn<T>> findVQuery(@RequestBody VicQuery query) {
         return getVicReturnByQuery(query);
-    }
-
-    @PostMapping(value = "/async/vquery", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Mono<ResponseEntity<VicReturn<T>>> asyncFindVQuery(@RequestBody VicQuery query) {
-        return service.asyncMono(findVQuery(query));
     }
 
     @Transactional
@@ -178,20 +137,20 @@ public class BaseAPI<T extends BaseEntity> {
         int maxResults = query.getMaxResults();
         query.setMaxResults(maxResults + 1);
         query.setHql(query.getHql().replace("\"", ""));
-        List<T> result = service.findByHql(query);
+        Set<T> result = new LinkedHashSet<>(service.findByHql(query));
         boolean hasMore = result.size() > maxResults;
         if (hasMore) {
             result.remove(maxResults);
         }
         if (query.getQuery() != null && query.getQuery().getFields() != null) {
             String[] fields = query.getQuery().getFields();
-            List<Map<String, Object>> collect = result.stream().map(s -> getFields(fields, s)).collect(Collectors.toList());
+            Set<Map<String, Object>> collect = result.stream().map(s -> getFields(fields, s)).collect(Collectors.toSet());
             return ResponseEntity.ok(new VicReturn(collect, collect.size(), query.getFirstResult(), hasMore));
         }
         return ResponseEntity.ok(new VicReturn<T>(result, result.size(), query.getFirstResult(), hasMore));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity load(@PathVariable String id, @RequestParam(required = false) String fields) {
         T view = service.loadNoTenancy(id);
@@ -216,16 +175,6 @@ public class BaseAPI<T extends BaseEntity> {
         return ResponseEntity.ok(service.isNew(id));
     }
 
-    @GetMapping(value = "/async/is-new/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Mono<ResponseEntity> asyncIsNew(@PathVariable String id) {
-        return service.asyncMono(isNew(id));
-    }
-
-    @GetMapping(value = "/async/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Mono<ResponseEntity> asyncLoad(@PathVariable String id, @RequestParam(required = false) String fields) {
-        return service.asyncMono(load(id, fields));
-    }
-
     private Map<String, Object> getFields(String fields, T view) {
         String[] split = fields.split(",");
         return getFields(split, view);
@@ -243,20 +192,9 @@ public class BaseAPI<T extends BaseEntity> {
         return ResponseEntity.ok(svg);
     }
 
-    @ResponseBody
-    @GetMapping(value = "/async/draw/{id}", produces = "image/svg+xml")
-    public Mono<ResponseEntity<String>> asyncDraw(@PathVariable String id) {
-        return service.asyncMono(draw(id));
-    }
-
     @GetMapping(value = "/new", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<T> initialState() {
         return ResponseEntity.ok(service.newEntity());
-    }
-
-    @GetMapping(value = "/async/new", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Mono<ResponseEntity<T>> asyncInitialState() {
-        return service.asyncMono(initialState());
     }
 
     public int getDefaultSize() {

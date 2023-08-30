@@ -1,24 +1,33 @@
 package br.com.munif.framework.vicente.security.domain;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
+import br.com.munif.framework.vicente.security.domain.profile.OperationFilter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 /**
  * @author munif
  */
 @Entity
 @Audited
-@Table(name = "vic_group")
+@Table(name = "vic_group", indexes = {
+        @Index(name = "idx_vic_group_oi", columnList = "oi"),
+        @Index(name = "idx_vic_group_ui", columnList = "ui"),
+        @Index(name = "idx_vic_group_gi", columnList = "gi"),
+        @Index(name = "idx_vic_group_rights", columnList = "rights")
+})
 public class Group extends BaseEntity {
 
     @Column(name = "name")
     private String name;
     @Column(name = "code")
     private String code;
+    @OneToMany(mappedBy = "group", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @JsonIgnoreProperties({"profile"})
+    private Set<OperationFilter> filters;
 
     public Group() {
     }
@@ -44,4 +53,11 @@ public class Group extends BaseEntity {
         this.code = code;
     }
 
+    public Set<OperationFilter> getFilters() {
+        return filters;
+    }
+
+    public void setFilters(Set<OperationFilter> filters) {
+        this.filters = filters;
+    }
 }

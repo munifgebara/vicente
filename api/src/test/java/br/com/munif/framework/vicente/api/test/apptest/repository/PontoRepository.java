@@ -8,12 +8,10 @@ package br.com.munif.framework.vicente.api.test.apptest.repository;
 
 import br.com.munif.framework.vicente.api.test.apptest.domain.Ponto;
 import br.com.munif.framework.vicente.application.VicRepository;
-import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author munif
  */
-public interface PontoRepository extends VicRepository<Ponto>{
-    
+public interface PontoRepository extends VicRepository<Ponto> {
+
 }

@@ -13,7 +13,6 @@ import br.com.munif.framework.vicente.api.test.apptest.repository.InformationRep
 import br.com.munif.framework.vicente.api.test.apptest.service.InformationService;
 import br.com.munif.framework.vicente.core.RightsHelper;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,18 +22,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
-import org.springframework.test.web.servlet.MvcResult;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.Assert.assertNotEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @RunWith(SpringRunner.class)
@@ -50,7 +48,7 @@ public class InformationApiTest {
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-//    @Autowired
+    //    @Autowired
 //    private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
     @Autowired
     private EntityManager em;
@@ -149,7 +147,7 @@ public class InformationApiTest {
         List<Information> all = repository.findAll();
 
         restMockMvc.perform(delete("/api/information/" + all.get(1).getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                        .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isForbidden());
     }
 
@@ -159,7 +157,7 @@ public class InformationApiTest {
         myOwnership();
         List<Information> all = repository.findAllNoTenancy();
         restMockMvc.perform(get("/api/information/" + all.get(0).getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                        .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isForbidden());
     }
 
@@ -169,7 +167,7 @@ public class InformationApiTest {
         myOwnership();
         List<Information> all = repository.findAll();
         restMockMvc.perform(get("/api/information/" + all.get(1).getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                        .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
     }
 
@@ -179,7 +177,7 @@ public class InformationApiTest {
         myOwnership();
         List<Information> all = repository.findAll();
         restMockMvc.perform(delete("/api/information/" + all.get(2).getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                        .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNoContent());
     }
 

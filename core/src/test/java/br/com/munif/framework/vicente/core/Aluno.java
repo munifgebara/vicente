@@ -6,10 +6,9 @@
 package br.com.munif.framework.vicente.core;
 
 /**
- *
  * @author munif
  */
-public class Aluno extends Pessoa <Long,String> {
+public class Aluno extends Pessoa<Long, String> {
 
     private String ra;
 

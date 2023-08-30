@@ -3,8 +3,8 @@
 package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.api.BaseAPI;
-import br.com.munif.framework.vicente.application.BaseService;
 import br.com.munif.framework.vicente.security.domain.Organization;
+import br.com.munif.framework.vicente.security.service.interfaces.IOrganizationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/organization")
 public class OrganizationApi extends BaseAPI<Organization> {
 
-    private final Logger log = LogManager.getLogger(OrganizationApi.class);
     private static final String ENTITY_NAME = "organization";
+    private final Logger log = LogManager.getLogger(OrganizationApi.class);
 
-    public OrganizationApi(BaseService<Organization> service) {
+    public OrganizationApi(IOrganizationService service) {
         super(service);
     }
 

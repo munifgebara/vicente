@@ -6,10 +6,9 @@
 package br.com.munif.framework.vicente.core;
 
 /**
- *
  * @author munif
  */
-public class Pessoa<T,U> {
+public class Pessoa<T, U> {
 
     private String nome;
 
@@ -20,11 +19,12 @@ public class Pessoa<T,U> {
     public void setNome(String nome) {
         this.nome = nome;
     }
-    
-    public T getT(){
+
+    public T getT() {
         return null;
     }
-    public U getU(){
+
+    public U getU() {
         return null;
     }
 

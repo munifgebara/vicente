@@ -5,13 +5,14 @@
  */
 package br.com.munif.framework.vicente.core;
 
+import org.junit.Test;
+
 import java.lang.reflect.Field;
 import java.util.List;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
- *
  * @author munif
  */
 public class UtilsTest {
@@ -39,14 +40,14 @@ public class UtilsTest {
     @Test
     public void testInferGenericType_Class() {
         Class<?> inferGenericType = Utils.inferGenericType(Aluno.class);
-        assertEquals(Long.class,inferGenericType);
-        
+        assertEquals(Long.class, inferGenericType);
+
     }
 
     @Test
     public void testInferGenericType_Class_int() {
-        Class<?> inferGenericType = Utils.inferGenericType(Aluno.class,1);
-        assertEquals(String.class,inferGenericType);
+        Class<?> inferGenericType = Utils.inferGenericType(Aluno.class, 1);
+        assertEquals(String.class, inferGenericType);
 
     }
 

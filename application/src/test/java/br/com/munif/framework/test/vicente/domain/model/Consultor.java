@@ -5,7 +5,10 @@ import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.VicTemporalEntity.VicTemporalBaseEntity;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 /**
  * @author munif
@@ -18,6 +21,9 @@ public class Consultor extends VicTemporalBaseEntity {
     @Column(nullable = false)
     private String nome;
 
+    @Enumerated(EnumType.STRING)
+    private Tipo tipo;
+
     public String getNome() {
         return nome;
     }
@@ -25,6 +31,12 @@ public class Consultor extends VicTemporalBaseEntity {
     public void setNome(String nome) {
         this.nome = nome;
     }
-    
-    
+
+    public Tipo getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(Tipo tipo) {
+        this.tipo = tipo;
+    }
 }

@@ -2,6 +2,7 @@ package br.com.munif.framework.vicente.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -129,6 +130,24 @@ public class Utils {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+
+    /**
+     * @return null safe set
+     */
+    public static Set<Field> findFields(Class<?> classs, Class<? extends Annotation> ann) {
+        Set<Field> set = new HashSet<>();
+        Class<?> c = classs;
+        while (c != null) {
+            for (Field field : c.getDeclaredFields()) {
+                if (field.isAnnotationPresent(ann)) {
+                    set.add(field);
+                }
+            }
+            c = c.getSuperclass();
+        }
+        return set;
     }
 
     public static String firstCapital(String s) {

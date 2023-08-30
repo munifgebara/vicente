@@ -7,18 +7,14 @@ import br.com.munif.framework.vicente.application.VicRepository;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author munif
  */
 @Service
-public class PessoaGenericaService extends BaseService<PessoaGenerica>{
-    
+public class PessoaGenericaService extends BaseService<PessoaGenerica> {
+
     public PessoaGenericaService(VicRepository<PessoaGenerica> repository) {
         super(repository);
     }
-    
-    
-    
-    
-    
+
+
 }

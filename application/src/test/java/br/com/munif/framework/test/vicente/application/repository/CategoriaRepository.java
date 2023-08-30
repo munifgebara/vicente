@@ -10,9 +10,8 @@ import br.com.munif.framework.test.vicente.domain.model.smartsearch.Categoria;
 import br.com.munif.framework.vicente.application.VicRepository;
 
 /**
- *
  * @author munif
  */
-public interface CategoriaRepository extends VicRepository<Categoria>{
-    
+public interface CategoriaRepository extends VicRepository<Categoria> {
+
 }

@@ -7,11 +7,10 @@ import br.com.munif.framework.vicente.security.domain.User;
 import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author GeradorVicente
  */
 @SuppressWarnings("unused")
 @Repository
-public interface UserRepository extends VicRepository<User>{
-    
+public interface UserRepository extends VicRepository<User> {
+    User getUserByLogin(String login);
 }

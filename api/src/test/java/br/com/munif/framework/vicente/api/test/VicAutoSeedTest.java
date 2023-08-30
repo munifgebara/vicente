@@ -11,10 +11,10 @@ import br.com.munif.framework.vicente.api.test.apptest.domain.Carro;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
- *
  * @author munif
  */
 public class VicAutoSeedTest {
@@ -81,12 +81,12 @@ public class VicAutoSeedTest {
 
     @org.junit.Test
     public void testSubLists() {
-        List<List> subLists = VicAutoSeed.subLists(2, 3, Arrays.asList(new String[]{"A","B","C","D","E"}));
+        List<List> subLists = VicAutoSeed.subLists(2, 3, Arrays.asList(new String[]{"A", "B", "C", "D", "E"}));
         assertEquals(20, subLists.size());
-        assertTrue(subLists.contains(Arrays.asList(new String[]{"B","C"})));
-        assertTrue(subLists.contains(Arrays.asList(new String[]{"B","C","D"})));
-        assertTrue(subLists.contains(Arrays.asList(new String[]{"A","B"})));
-        assertTrue(subLists.contains(Arrays.asList(new String[]{"C","D","E"})));
+        assertTrue(subLists.contains(Arrays.asList(new String[]{"B", "C"})));
+        assertTrue(subLists.contains(Arrays.asList(new String[]{"B", "C", "D"})));
+        assertTrue(subLists.contains(Arrays.asList(new String[]{"A", "B"})));
+        assertTrue(subLists.contains(Arrays.asList(new String[]{"C", "D", "E"})));
     }
 
 

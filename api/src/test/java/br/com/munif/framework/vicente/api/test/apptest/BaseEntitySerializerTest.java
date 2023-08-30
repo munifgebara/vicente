@@ -7,10 +7,7 @@
 package br.com.munif.framework.vicente.api.test.apptest;
 
 import br.com.munif.framework.vicente.api.errors.ExceptionTranslator;
-import br.com.munif.framework.vicente.api.test.apptest.api.BookApi;
-import br.com.munif.framework.vicente.api.test.apptest.api.PessoaGenericaApi;
-import br.com.munif.framework.vicente.api.test.apptest.api.PontoApi;
-import br.com.munif.framework.vicente.api.test.apptest.api.SalarioApi;
+import br.com.munif.framework.vicente.api.test.apptest.api.*;
 import br.com.munif.framework.vicente.api.test.apptest.domain.Book;
 import br.com.munif.framework.vicente.api.test.apptest.domain.PessoaGenerica;
 import br.com.munif.framework.vicente.api.test.apptest.domain.Ponto;
@@ -24,9 +21,6 @@ import br.com.munif.framework.vicente.api.test.apptest.service.PessoaGenericaSer
 import br.com.munif.framework.vicente.api.test.apptest.service.PontoService;
 import br.com.munif.framework.vicente.api.test.apptest.service.SalarioService;
 import br.com.munif.framework.vicente.core.VicThreadScope;
-
-import static org.mockito.Mockito.*;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,9 +42,6 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -87,9 +78,6 @@ public class BaseEntitySerializerTest {
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-//    @Autowired
-//    private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
     @Autowired
     private EntityManager em;
 
@@ -97,44 +85,18 @@ public class BaseEntitySerializerTest {
     private ExceptionTranslator exceptionTranslator;
 
     private MockMvc restMockMvcBook;
+    private MockMvc restMockMvcBookResource;
     private MockMvc restMockMvcPessoa;
+    private MockMvc restMockMvcPessoaResource;
     private MockMvc restMockMvcPonto;
+    private MockMvc restMockMvcPontoResource;
     private MockMvc restMockMvcSalario;
+    private MockMvc restMockMvcSalarioResource;
 
     private Book book;
     private Ponto ponto;
     private Salario salario;
     private PessoaGenerica pessoa;
-
-    @Before
-    public void setup() {
-        VicThreadScope.gi.set("GRUPO");
-        VicThreadScope.ui.set("USUARIO");
-        VicThreadScope.oi.set("1.");
-        VicThreadScope.ip.set("127.0.0.1");
-        MockitoAnnotations.initMocks(this);
-
-        final BookApi bookAPi = new BookApi(bookService);
-        this.restMockMvcBook = MockMvcBuilders.standaloneSetup(bookAPi)
-                .setControllerAdvice(exceptionTranslator)
-                .setMessageConverters(jacksonMessageConverter).build();
-//
-        final PessoaGenericaApi pessoaGenericaApi = new PessoaGenericaApi(pessoaGenericaService);
-        this.restMockMvcPessoa = MockMvcBuilders.standaloneSetup(pessoaGenericaApi)
-                .setControllerAdvice(exceptionTranslator)
-                .setMessageConverters(jacksonMessageConverter).build();
-
-        final PontoApi pontoApi = new PontoApi(pontoService);
-        this.restMockMvcPonto = MockMvcBuilders.standaloneSetup(pontoApi)
-                .setControllerAdvice(exceptionTranslator)
-                .setMessageConverters(jacksonMessageConverter).build();
-
-        final SalarioApi salarioApi = new SalarioApi(salarioService);
-        this.restMockMvcSalario = MockMvcBuilders.standaloneSetup(salarioApi)
-                .setControllerAdvice(exceptionTranslator)
-                .setMessageConverters(jacksonMessageConverter).build();
-
-    }
 
     public static Book createBook() {
         Book book = new Book();
@@ -161,6 +123,58 @@ public class BaseEntitySerializerTest {
         ponto.setEntrada(ZonedDateTime.now());
         ponto.setSaida(ZonedDateTime.now());
         return ponto;
+    }
+
+    @Before
+    public void setup() {
+        VicThreadScope.gi.set("GRUPO");
+        VicThreadScope.ui.set("USUARIO");
+        VicThreadScope.oi.set("1.");
+        VicThreadScope.ip.set("127.0.0.1");
+        MockitoAnnotations.initMocks(this);
+
+        final BookApi bookAPi = new BookApi(bookService);
+        this.restMockMvcBook = MockMvcBuilders.standaloneSetup(bookAPi)
+                .setControllerAdvice(exceptionTranslator)
+                .setMessageConverters(jacksonMessageConverter).build();
+
+        final BookResource bookResource = new BookResource(bookService);
+        this.restMockMvcBookResource = MockMvcBuilders.standaloneSetup(bookResource)
+                .setControllerAdvice(exceptionTranslator)
+                .setMessageConverters(jacksonMessageConverter).build();
+
+        final PessoaGenericaApi pessoaGenericaApi = new PessoaGenericaApi(pessoaGenericaService);
+        this.restMockMvcPessoa = MockMvcBuilders.standaloneSetup(pessoaGenericaApi)
+                .setControllerAdvice(exceptionTranslator)
+                .setMessageConverters(jacksonMessageConverter).build();
+
+        final PessoaResource pessoaResource = new PessoaResource(pessoaGenericaService);
+        this.restMockMvcPessoaResource = MockMvcBuilders.standaloneSetup(pessoaResource)
+                .setControllerAdvice(exceptionTranslator)
+                .setMessageConverters(jacksonMessageConverter).build();
+
+        final PontoApi pontoApi = new PontoApi(pontoService);
+        this.restMockMvcPonto = MockMvcBuilders.standaloneSetup(pontoApi)
+                .setControllerAdvice(exceptionTranslator)
+                .setMessageConverters(jacksonMessageConverter).build();
+
+
+        final PontoResource pontoResource = new PontoResource(pontoService);
+        this.restMockMvcPontoResource = MockMvcBuilders.standaloneSetup(pontoResource)
+                .setControllerAdvice(exceptionTranslator)
+                .setMessageConverters(jacksonMessageConverter).build();
+
+        final SalarioApi salarioApi = new SalarioApi(salarioService);
+        this.restMockMvcSalario = MockMvcBuilders.standaloneSetup(salarioApi)
+                .setControllerAdvice(exceptionTranslator)
+                .setMessageConverters(jacksonMessageConverter).build();
+
+        final SalarioResource salarioResource = new SalarioResource(salarioService);
+        this.restMockMvcSalarioResource = MockMvcBuilders.standaloneSetup(salarioResource)
+                .setControllerAdvice(exceptionTranslator)
+                .setMessageConverters(jacksonMessageConverter).build();
+
+
     }
 
     private List<Book> findAll() {
@@ -192,23 +206,23 @@ public class BaseEntitySerializerTest {
     public void getOne() throws Exception {
         // Initialize the database
         restMockMvcBook.perform(post("/api/books")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.book)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.book)))
                 .andExpect(status().isCreated());
 
         restMockMvcPonto.perform(post("/api/ponto")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.ponto)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.ponto)))
                 .andExpect(status().isCreated());
 
         restMockMvcPessoa.perform(post("/api/pessoagenerica")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.pessoa)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.pessoa)))
                 .andExpect(status().isCreated());
 
         restMockMvcSalario.perform(post("/api/salario")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.salario)))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.salario)))
                 .andExpect(status().isCreated());
 
         ResultActions perform = restMockMvcBook.perform(get("/api/books/{id}", book.getId()).param("fields", "id"));
@@ -238,54 +252,54 @@ public class BaseEntitySerializerTest {
     @Transactional
     public void getOneAsync() throws Exception {
         // Initialize the database
-        restMockMvcBook.perform(post("/api/books")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.book)))
+        restMockMvcBookResource.perform(post("/api/book-resource")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.book)))
                 .andExpect(status().isCreated());
 
-        restMockMvcPonto.perform(post("/api/ponto")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.ponto)))
+        restMockMvcPontoResource.perform(post("/api/ponto-resource")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.ponto)))
                 .andExpect(status().isCreated());
 
-        restMockMvcPessoa.perform(post("/api/pessoagenerica")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.pessoa)))
+        restMockMvcPessoaResource.perform(post("/api/pessoa-resource")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.pessoa)))
                 .andExpect(status().isCreated());
 
-        restMockMvcSalario.perform(post("/api/salario")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(this.salario)))
+        restMockMvcSalarioResource.perform(post("/api/salario-resource")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(this.salario)))
                 .andExpect(status().isCreated());
 
-        ResultActions perform = restMockMvcBook.perform(get("/api/books/async/{id}", book.getId()).param("fields", "id"));
-        ResultActions perform1 = restMockMvcSalario.perform(get("/api/salario/async/{id}", salario.getId()).param("fields", "id"));
-        ResultActions perform2 = restMockMvcPessoa.perform(get("/api/pessoagenerica/async/{id}", pessoa.getId()).param("fields", "id"));
-        ResultActions perform3 = restMockMvcPonto.perform(get("/api/ponto/async/{id}", ponto.getId()).param("fields", "id"));
+        ResultActions perform = restMockMvcBookResource.perform(get("/api/book-resource/{id}", book.getId()).param("fields", "id"));
+        ResultActions perform1 = restMockMvcSalarioResource.perform(get("/api/salario-resource/{id}", salario.getId()).param("fields", "id"));
+        ResultActions perform2 = restMockMvcPessoaResource.perform(get("/api/pessoa-resource/{id}", pessoa.getId()).param("fields", "id"));
+        ResultActions perform3 = restMockMvcPontoResource.perform(get("/api/ponto-resource/{id}", ponto.getId()).param("fields", "id"));
 
         MvcResult mvcResult = perform.andReturn();
         MvcResult mvcResult1 = perform1.andReturn();
         MvcResult mvcResult2 = perform2.andReturn();
         MvcResult mvcResult3 = perform3.andReturn();
 
-        restMockMvcBook.perform(asyncDispatch(mvcResult))
+        restMockMvcBookResource.perform(asyncDispatch(mvcResult))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.id").value(book.getId()))
                 .andExpect(jsonPath("$.name").doesNotExist());
-        restMockMvcSalario.perform(asyncDispatch(mvcResult1))
+        restMockMvcSalarioResource.perform(asyncDispatch(mvcResult1))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.id").value(salario.getId()))
                 .andExpect(jsonPath("$.name").doesNotExist());
-        restMockMvcPessoa.perform(asyncDispatch(mvcResult2))
+        restMockMvcPessoaResource.perform(asyncDispatch(mvcResult2))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.id").value(pessoa.getId()))
                 .andExpect(jsonPath("$.name").doesNotExist());
-        restMockMvcPonto.perform(asyncDispatch(mvcResult3))
+        restMockMvcPontoResource.perform(asyncDispatch(mvcResult3))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.id").value(ponto.getId()))
                 .andExpect(jsonPath("$.name").doesNotExist());
     }

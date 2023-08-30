@@ -3,14 +3,11 @@ package br.com.munif.framework.vicente.security.domain;
 import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author munif
@@ -18,7 +15,12 @@ import java.util.Set;
 @Entity
 @Audited
 @VicTenancyPolicy(VicTenancyType.COMMUM)
-@Table(name = "vic_user")
+@Table(name = "vic_user", indexes = {
+        @Index(name = "idx_vic_user_oi", columnList = "oi"),
+        @Index(name = "idx_vic_user_ui", columnList = "ui"),
+        @Index(name = "idx_vic_user_gi", columnList = "gi"),
+        @Index(name = "idx_vic_user_rights", columnList = "rights")
+})
 public class User extends BaseEntity {
 
     @Column(name = "login", unique = true)
@@ -28,9 +30,10 @@ public class User extends BaseEntity {
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Group> groups;
-    @ManyToOne
-    @JoinColumn(name = "org_id")
-    private Organization organization;
+    @ManyToMany
+    private Set<Organization> organizations;
+    @Column(name = "image_url")
+    private String imageUrl;
 
     public User() {
     }
@@ -60,16 +63,20 @@ public class User extends BaseEntity {
         return groups;
     }
 
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
+    }
+
     public Group getGroupByIndex(int index) {
         return (Group) getGroups().toArray()[index];
     }
 
     public Group getFirstGroup() {
-        return getGroups().stream().findFirst().orElse(null);
+        return getGroups().stream().min(Comparator.comparing(BaseEntity::getId)).orElse(null);
     }
 
-    public void setGroups(Set<Group> groups) {
-        this.groups = groups;
+    public Organization getFirstOrganization() {
+        return getOrganizations().stream().min(Comparator.comparing(BaseEntity::getId)).orElse(null);
     }
 
     public void assignGroups(Collection<Group> groups) {
@@ -77,32 +84,47 @@ public class User extends BaseEntity {
         this.groups.addAll(groups);
     }
 
-    public Organization getOrganization() {
-        return organization;
+    public void assignOrganizations(Collection<Organization> organizations) {
+        if (this.organizations == null) this.organizations = new HashSet<>();
+        this.organizations.addAll(organizations);
     }
 
-    public void setOrganization(Organization organization) {
-        this.organization = organization;
+    public Set<Organization> getOrganizations() {
+        return organizations;
     }
 
-    public String stringGrupos() {
+    public void setOrganizations(Set<Organization> organizations) {
+        this.organizations = organizations;
+    }
+
+    public String stringGroups() {
         if (this.getGroups() == null) {
             return null;
         }
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (Group g : this.getGroups()) {
-            s += g.getCode() + ",";
+            s.append(g.getCode()).append(",");
         }
-
-        return s;
-
+        return s.toString();
     }
 
-    public String stringOrganizacao() {
-        if (organization == null) {
+    public String stringGroupByEmail() {
+        return this.login.replaceAll("\\.", "_");
+    }
+
+    public String stringOrganization() {
+        if (organizations == null) {
             return null;
         }
-        return getOrganization().getCode();
+        return Objects.requireNonNull(getOrganizations().stream().findFirst().orElse(null)).getCode();
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
 }

@@ -10,9 +10,8 @@ import br.com.munif.framework.test.vicente.domain.model.Pessoa;
 import br.com.munif.framework.vicente.application.VicRepository;
 
 /**
- *
  * @author munif
  */
-public interface PessoaRepository extends VicRepository<Pessoa>{
-    
+public interface PessoaRepository extends VicRepository<Pessoa> {
+
 }

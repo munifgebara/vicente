@@ -1,6 +1,5 @@
 package br.com.munif.framework.vicente.core.vquery;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -14,6 +13,8 @@ public class VQuery {
     private Boolean useDistinct = Boolean.FALSE;
     private String alias;
     private String[] fields;
+
+    private ParamList params = new ParamList();
 
     public VQuery() {
         this.criteria = new Criteria();
@@ -99,14 +100,14 @@ public class VQuery {
         return joinStr.toString();
     }
 
+    public void setJoins(List<Join> joins) {
+        this.joins = joins;
+    }
+
     public String getJoinsWithoutParam() {
         StringBuilder joinStr = new StringBuilder();
         mountJoins(this, joinStr);
         return replaceParams(joinStr.toString());
-    }
-
-    public void setJoins(List<Join> joins) {
-        this.joins = joins;
     }
 
     private void searchUseDistinct(VQuery vQuery, Map<String, Boolean> map) {
@@ -239,41 +240,52 @@ public class VQuery {
         return alias == null ? "obj" : alias;
     }
 
-    public String getAliasWithDot() {
-        return (alias != null) ? alias + "." : "";
-    }
-
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public String getAliasWithDot() {
+        return (alias != null) ? alias + "." : "";
     }
 
     public ParamList getParams() {
         ParamList params = new ParamList();
         getParams(this, params);
+        params.addAll(this.params);
         return params;
+    }
+
+    public void setParams(ParamList params) {
+        this.params = params;
     }
 
     public void getParams(VQuery vQuery, ParamList params) {
         if (vQuery != null) {
-            if (vQuery.getCriteria() != null) {
-                StringBuilder toReturn = new StringBuilder();
+            if (vQuery.getCriteria() != null && !ComparisonOperator.NONE.equals(vQuery.getCriteria().getComparisonOperator())) {
                 Object value = vQuery.getCriteria().getValue();
                 if (value instanceof VEntityQuery) {
                     getParams(((VEntityQuery) value), params);
-                } else {
+                } else if (value != null
+                        && (value instanceof String
+                        || value instanceof Date || value.getClass().isArray())) {
+                    StringBuilder toReturn = new StringBuilder();
                     ComparisonOperator.mount(value, toReturn, vQuery.getCriteria().getComparisonOperator());
-                    vQuery.getCriteria().getParam().setType(value.getClass().getSimpleName());
                     params.add(vQuery.getCriteria().getParam().setBuilderValue(toReturn.toString()));
+                } else if (!(value instanceof CriteriaField)) {
+                    if (value != null) vQuery.getCriteria().getParam().setType(value.getClass());
+                    else vQuery.getCriteria().getParam().setType(Object.class);
+                    params.add(vQuery.getCriteria().getParam().setBuilderValue(value));
                 }
             }
-            for (VQuery subQuery : vQuery.getSubQuerys()) {
-                getParams(subQuery, params);
-            }
-            for (Join join : vQuery.joins) {
-                for (CriteriaJoin subQuery : join.getSubQuerys()) {
-                    params.addAll(subQuery.getParams());
-                }
+        }
+        for (VQuery subQuery : vQuery.getSubQuerys()) {
+            getParams(subQuery, params);
+        }
+        for (Join join : vQuery.joins) {
+            for (CriteriaJoin subQuery : join.getSubQuerys()) {
+                params.addAll(subQuery.getParams());
             }
         }
     }
 }
+

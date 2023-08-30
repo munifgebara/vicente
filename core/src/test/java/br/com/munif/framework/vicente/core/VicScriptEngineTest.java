@@ -13,26 +13,25 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 /**
- *
  * @author munif
  */
 public class VicScriptEngineTest {
-    
+
     public VicScriptEngineTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -42,10 +41,10 @@ public class VicScriptEngineTest {
      */
     @Test
     public void testEval() {
-        Map<String,Double> valores=new HashMap<>();
+        Map<String, Double> valores = new HashMap<>();
         valores.put("x", 10.0);
         valores.put("y", 20.0);
-        
+
         String script = ""
                 + "function dobro(a){"
                 + "return 2*a;"
@@ -62,5 +61,5 @@ public class VicScriptEngineTest {
         assertEquals(expResult, result);
     }
 
-    
+
 }

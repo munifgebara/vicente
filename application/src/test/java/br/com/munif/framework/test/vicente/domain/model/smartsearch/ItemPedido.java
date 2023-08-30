@@ -1,10 +1,11 @@
 package br.com.munif.framework.test.vicente.domain.model.smartsearch;
 
 import br.com.munif.framework.vicente.domain.BaseEntity;
-import java.math.BigDecimal;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import java.math.BigDecimal;
 
 /**
  * @author munif
@@ -60,7 +61,7 @@ public class ItemPedido extends BaseEntity {
 
     @Override
     public String toString() {
-        return "ItemPedido{" +pedido.getId()+ " quantidade=" + quantidade + ", valorUnitario=" + valorUnitario + '}';
+        return "ItemPedido{" + pedido.getId() + " quantidade=" + quantidade + ", valorUnitario=" + valorUnitario + '}';
     }
 
 }

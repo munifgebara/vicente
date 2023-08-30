@@ -7,21 +7,32 @@
 package br.com.munif.framework.vicente.security.api;
 
 import br.com.munif.framework.vicente.api.errors.ErrorConstants;
+import br.com.munif.framework.vicente.core.Sets;
 import br.com.munif.framework.vicente.core.VicThreadScope;
+import br.com.munif.framework.vicente.core.VicThreadScopeOptions;
 import br.com.munif.framework.vicente.security.SecurityApp;
 import br.com.munif.framework.vicente.security.domain.Group;
 import br.com.munif.framework.vicente.security.domain.Token;
-import br.com.munif.framework.vicente.security.dto.LoginDto;
-import br.com.munif.framework.vicente.security.dto.PrivilegesAssignmentDto;
+import br.com.munif.framework.vicente.security.domain.User;
+import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
+import br.com.munif.framework.vicente.security.domain.dto.PrivilegesAssignmentDto;
+import br.com.munif.framework.vicente.security.domain.profile.*;
 import br.com.munif.framework.vicente.security.seed.SeedSecurity;
 import br.com.munif.framework.vicente.security.service.TokenService;
 import br.com.munif.framework.vicente.security.service.UserService;
+import br.com.munif.framework.vicente.security.service.profile.OperationFilterService;
+import br.com.munif.framework.vicente.security.service.profile.OperationService;
+import br.com.munif.framework.vicente.security.service.profile.SoftwareService;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,12 +40,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.doesNotHave;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -43,6 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SecurityApp.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SecurityApiTest {
 
     public static final String DEAFAULT_NAME = "The Book";
@@ -50,20 +59,30 @@ public class SecurityApiTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
     @Autowired
+    private Environment environment;
+    @Autowired
     private TokenService tokenService;
     @Autowired
     private UserService userService;
     @Autowired
+    private OperationService operationService;
+    @Autowired
     private SeedSecurity seedSecurity;
+    @Autowired
+    private SoftwareService softwareService;
+    @Autowired
+    private OperationFilterService operationFilterService;
 
     private MockMvc restMockMvc;
     private ResultActions tokenRequestWillian;
     private ResultActions tokenRequestJose;
     private ResultActions tokenRequestLucas;
+    private ResultActions tokenRequestAdmin;
 
     private Token tokenWillian;
     private Token tokenJose;
     private Token tokenLucas;
+    private Token tokenAdmin;
 
     @Before
     public void setup() throws Exception {
@@ -79,6 +98,13 @@ public class SecurityApiTest {
                 .build();
 
         seedSecurity.seedSecurity();
+
+        tokenRequestAdmin = restMockMvc.perform(post("/api/token/sigin")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(new LoginDto("admin@vicente.com.br", "qwe123"))));
+        Map<String, Object> tokenMapAdmin = TestUtil.convertStringToMap(tokenRequestAdmin.andReturn().getResponse().getContentAsString());
+        Map tokenAdmin = (Map) tokenMapAdmin.get("token");
+        this.tokenAdmin = tokenService.load((String) tokenAdmin.get("value"));
 
         tokenRequestWillian = restMockMvc.perform(post("/api/token/sigin")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -103,17 +129,17 @@ public class SecurityApiTest {
     }
 
     @Test
-    public void loginByPasswordSeederAdmin() throws Exception {
+    public void testBloginByPasswordSeederAdmin() throws Exception {
         System.out.println("");
         ResultActions tokenRequest = restMockMvc.perform(post("/api/token/login/bypassword")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(new LoginDto("admin@munif.com.br", "qwe123"))));
+                .content(TestUtil.convertObjectToJsonBytes(new LoginDto("admin@vicente.com.br", "qwe123"))));
         tokenRequest.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.ok").value(Boolean.TRUE))
                 .andExpect(jsonPath("$.message").value("Login OK"))
                 .andExpect(jsonPath("$.code").value(0))
-                .andExpect(jsonPath("$.token.user.login").value("admin@munif.com.br"))
+                .andExpect(jsonPath("$.token.user.login").value("admin@vicente.com.br"))
                 .andExpect(jsonPath("$.token.user.password").doesNotExist());
         Map<String, Object> tokenMap = TestUtil.convertStringToMap(tokenRequest.andReturn().getResponse().getContentAsString());
         Map token = (Map) tokenMap.get("token");
@@ -122,7 +148,7 @@ public class SecurityApiTest {
     }
 
     @Test
-    public void siginNewUser() throws Exception {
+    public void testCsiginNewUser() throws Exception {
         tokenRequestWillian.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.ok").value(Boolean.TRUE))
@@ -133,8 +159,8 @@ public class SecurityApiTest {
     }
 
     @Test
-    public void removeOrganizationFromNewUser() throws Exception {
-        ResultActions tokenRequest = restMockMvc.perform(delete("/api/organization/" + tokenWillian.getUser().getOrganization().getId())
+    public void testDremoveOrganizationFromNewUser() throws Exception {
+        ResultActions tokenRequest = restMockMvc.perform(delete("/api/organization/" + Objects.requireNonNull(tokenWillian.getUser().getOrganizations().stream().findFirst().orElse(null)).getId())
                 .header("Authorization", tokenWillian.getValue())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8));
         tokenRequest.andExpect(status().isForbidden())
@@ -142,7 +168,7 @@ public class SecurityApiTest {
     }
 
     @Test
-    public void removeGroupFromNewUser() throws Exception {
+    public void testEremoveGroupFromNewUser() throws Exception {
         ResultActions tokenRequest = restMockMvc.perform(delete("/api/group/" + tokenWillian.getUser().getFirstGroup().getId())
                 .header("Authorization", tokenWillian.getValue())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8));
@@ -151,7 +177,7 @@ public class SecurityApiTest {
     }
 
     @Test
-    public void createAndRemoveNewGroupFromNewUser() throws Exception {
+    public void testFcreateAndRemoveNewGroupFromNewUser() throws Exception {
         Group group = new Group("MY NEW GROUP", "MY_NEW_GROUP");
         ResultActions createRequest = restMockMvc.perform(post("/api/group")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -172,7 +198,7 @@ public class SecurityApiTest {
     }
 
     @Test
-    public void permissionsWillianJoseAtNewGroup() throws Exception {
+    public void testGpermissionsWillianJoseAtNewGroup() throws Exception {
         Group group = new Group("NEW WILLIAN GROUP", "NEW_WILLIAN_GROUP");
         ResultActions createRequest = restMockMvc.perform(post("/api/group")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -194,7 +220,7 @@ public class SecurityApiTest {
     }
 
     @Test
-    public void permissionsOfWillianAtJoseMainGroup() throws Exception {
+    public void testHpermissionsOfWillianAtJoseMainGroup() throws Exception {
         ResultActions req1 = restMockMvc.perform(get("/api/group/" + tokenJose.getUser().getFirstGroup().getId())
                 .header("Authorization", tokenLucas.getValue())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8));
@@ -224,7 +250,7 @@ public class SecurityApiTest {
     }
 
     @Test
-    public void createRepeatedGroupToJose() throws Exception {
+    public void testIcreateRepeatedGroupToJose() throws Exception {
         Group group = new Group("GROUP LUCAS", "GROUP_LUCAS");
         ResultActions createRequest = restMockMvc.perform(post("/api/group")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -268,7 +294,7 @@ public class SecurityApiTest {
     }
 
     @Test
-    public void assignGroupsFromWillianToJose() throws Exception {
+    public void testFassignGroupsFromWillianToJose() throws Exception {
         Group group = new Group("GROUP WILLIAN 2", "GROUP_WILLIAN2");
         ResultActions createRequest = restMockMvc.perform(post("/api/group")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -307,6 +333,112 @@ public class SecurityApiTest {
         Map map = collect.get(0);
         assertEquals(group.getName(), map.get("name"));
         assertEquals(group.getCode(), map.get("code"));
+    }
+
+    @Test
+    public void testKrequestAnotherOnRequest() throws Exception {
+        Software software = new Software("Mine", Sets.newHashSet(
+                new Operation("GroupApi_load"),
+                new Operation("UserApi_teste2"))
+        );
+
+        ResultActions createRequestSoftware = restMockMvc.perform(post("/api/software")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(software))
+                .header("Authorization", tokenAdmin.getValue())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8));
+        String reqSoftware = createRequestSoftware.andReturn().getResponse().getContentAsString();
+        Map<String, Object> responseSoftware = TestUtil.convertStringToMap(reqSoftware);
+
+        User user = tokenLucas.getUser();
+
+
+        Group group = new Group("GROUP LUCAS 2", "GROUP_WILLIAN2");
+        String authorization = restMockMvc.perform(post("/api/group")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(group))
+                .header("Authorization", tokenLucas.getValue())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)).andReturn().getResponse().getContentAsString();
+        Map<String, Object> newGroup = TestUtil.convertStringToMap(authorization);
+
+        List<OperationFilter> allNoTenancy = operationFilterService.findAllNoTenancy();
+        for (OperationFilter operationFilter : allNoTenancy) {
+            operationFilter.setActions(Arrays.asList(
+                    new ForwardRequest("http://127roskjdfaskldnomeerradonaoexistenteup-wmfteste/" + newGroup.get("id"), HttpMethod.PUT)
+            ));
+            operationFilterService.save(operationFilter);
+        }
+
+        VicThreadScopeOptions.ENABLE_FORWARD_REQUEST_EXCEPTION.setValue(true);
+
+        restMockMvc.perform(get("/api/group/" + newGroup.get("id"))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .header("Authorization", tokenLucas.getValue())
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.message").value("error.badRequest"));
+
+        VicThreadScopeOptions.ENABLE_FORWARD_REQUEST_EXCEPTION.setValue(false);
+
+        restMockMvc.perform(get("/api/group/" + newGroup.get("id"))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .header("Authorization", tokenLucas.getValue())
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.message").doesNotExist());
+
+    }
+
+    @Test
+    public void testLoperationsAllowNotAllow() throws Exception {
+        Software software = new Software("Mine", Sets.newHashSet(
+                new Operation("GroupApi_save"),
+                new Operation("UserApi_teste2")
+        ));
+
+        ResultActions createRequestSoftware = restMockMvc.perform(post("/api/software")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(software))
+                .header("Authorization", tokenAdmin.getValue())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8));
+        String reqSoftware = createRequestSoftware.andReturn().getResponse().getContentAsString();
+        Map<String, Object> responseSoftware = TestUtil.convertStringToMap(reqSoftware);
+
+        ResultActions perform = restMockMvc.perform(post("/api/group")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .header("Authorization", tokenJose.getValue())
+                        .content(TestUtil.convertObjectToJsonBytes(new Group("aaaaaaa1", "aaaaaaa1")))
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.message").value("error.notAllowed"));
+
+        List<OperationFilter> allNoTenancy = operationFilterService.findAllNoTenancy();
+        for (OperationFilter operationFilter : allNoTenancy) {
+            OperationFilter op = operationFilterService.loadNoTenancy(operationFilter.getId());
+            op.setOperationType(OperationType.ALLOW);
+            op = operationFilterService.save(op);
+        }
+
+        restMockMvc.perform(post("/api/group")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(new Group("aaaaaaa3", "aaaaaaa3")))
+                        .header("Authorization", tokenJose.getValue())
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.message").doesNotExist());
+
+        for (OperationFilter operationFilter : allNoTenancy) {
+            OperationFilter op = operationFilterService.loadNoTenancy(operationFilter.getId());
+            op.setActions(Collections.singletonList(
+                    new ForwardRequest("http://localhost:3000", HttpMethod.POST)
+            ));
+            op = operationFilterService.save(op);
+        }
+//        VicThreadScopeOptions.ENABLE_FORWARD_REQUEST_EXCEPTION.setValue(true);
+//        ResultActions authorization = restMockMvc.perform(post("/api/group")
+//                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+//                .header("Authorization", tokenJose.getValue())
+//                .content(TestUtil.convertObjectToJsonBytes(new Group("aaaaaaa2", "aaaaaaa2")))
+//                .contentType(TestUtil.APPLICATION_JSON_UTF8))
+//                .andExpect(jsonPath("$.message").doesNotExist());
+//        String contentAsString = authorization.andReturn().getResponse().getContentAsString();
+
     }
 
 }

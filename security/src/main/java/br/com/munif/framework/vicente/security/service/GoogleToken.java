@@ -5,11 +5,11 @@
  */
 package br.com.munif.framework.vicente.security.service;
 
-import com.google.api.client.googleapis.apache.GoogleApacheHttpTransport;
+import com.google.api.client.googleapis.apache.v2.GoogleApacheHttpTransport;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -30,7 +30,7 @@ public class GoogleToken {
         Map<String, Object> response = new HashMap();
 
         try {
-            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(GoogleApacheHttpTransport.newTrustedTransport(), new JacksonFactory())
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(GoogleApacheHttpTransport.newTrustedTransport(), new GsonFactory())
                     // Specify the CLIENT_ID of the app that accesses the backend:
                     .setAudience(Collections.singletonList(CLIENT_ID))
                     // Or, if multiple clients access the backend:

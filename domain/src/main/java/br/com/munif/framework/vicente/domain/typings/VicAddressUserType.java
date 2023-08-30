@@ -17,8 +17,8 @@ public class VicAddressUserType implements CompositeUserType {
     public String[] getPropertyNames() {
         return new String[]{
                 "zipCode",
-                "premisseType",
-                "premisse",
+                "premiseType",
+                "premise",
                 "number",
                 "information",
                 "neighbourhood",
@@ -55,9 +55,9 @@ public class VicAddressUserType implements CompositeUserType {
             case 0:
                 return ((VicAddress) component).getZipCode();
             case 1:
-                return ((VicAddress) component).getPremisseType();
+                return ((VicAddress) component).getPremiseType();
             case 2:
-                return ((VicAddress) component).getPremisse();
+                return ((VicAddress) component).getPremise();
             case 3:
                 return ((VicAddress) component).getNumber();
             case 4:
@@ -91,10 +91,10 @@ public class VicAddressUserType implements CompositeUserType {
                 ((VicAddress) component).setZipCode((String) setValue);
                 break;
             case 1:
-                ((VicAddress) component).setPremisseType((String) setValue);
+                ((VicAddress) component).setPremiseType((String) setValue);
                 break;
             case 2:
-                ((VicAddress) component).setPremisse((String) setValue);
+                ((VicAddress) component).setPremise((String) setValue);
                 break;
             case 3:
                 ((VicAddress) component).setNumber((String) setValue);
@@ -188,8 +188,8 @@ public class VicAddressUserType implements CompositeUserType {
         } else {
             final VicAddress object = (VicAddress) value;
             preparedStatement.setString(property + 0, object.getZipCode());
-            preparedStatement.setString(property + 1, object.getPremisseType());
-            preparedStatement.setString(property + 2, object.getPremisse());
+            preparedStatement.setString(property + 1, object.getPremiseType());
+            preparedStatement.setString(property + 2, object.getPremise());
             preparedStatement.setString(property + 3, object.getNumber());
             preparedStatement.setString(property + 4, object.getInformation());
             preparedStatement.setString(property + 5, object.getNeighbourhood());

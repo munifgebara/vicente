@@ -3,10 +3,13 @@ package br.com.munif.framework.vicente.core;
 import br.com.munif.framework.vicente.core.vquery.*;
 import org.junit.Test;
 
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class VQueryTest {
 
@@ -39,10 +42,11 @@ public class VQueryTest {
     }
 
     @Test
-    public void constructorLogicalOperatorCriteriaSubQuerys3() {
+    public void testValueFn() {
         vQuery = new VQuery(LogicalOperator.AND, new Criteria(), Arrays.asList(new VQuery(new Criteria("nome", ComparisonOperator.EQUAL, "Willian"))));
-        vQuery = vQuery.and(new Criteria("idade", ComparisonOperator.GREATER, 20));
-        assertEquals("((nome = 'Willian') AND (idade > 20))", vQuery.toStringWithoutParams());
+        vQuery.getCriteria().setFieldFn("upper(%s)");
+        vQuery.getCriteria().setValueFn("upper(%s)");
+        assertEquals("(upper(1) = upper(1)) AND ((nome = 'Willian'))", vQuery.toStringWithoutParams());
     }
 
     @Test
@@ -56,6 +60,13 @@ public class VQueryTest {
     public void constructorLogicalOperatorCriteria2() {
         vQuery = new VQuery(LogicalOperator.AND, new Criteria("nome", ComparisonOperator.EQUAL, "Willian"));
         assertEquals("nome = 'Willian'", vQuery.toStringWithoutParams());
+    }
+
+    @Test
+    public void testInElements() {
+        vQuery = new VQuery(LogicalOperator.AND, new Criteria("item", ComparisonOperator.IN_ELEMENTS, new CriteriaField("obj.list")));
+        ParamList params = vQuery.getParams();
+        assertEquals("'item' in elements(obj.list)", vQuery.toString());
     }
 
     @Test
@@ -193,10 +204,10 @@ public class VQueryTest {
                 .and(new Criteria("campo15", ComparisonOperator.NOT_ENDS_WITH, "texto"))
                 .and(new Criteria("campo16", ComparisonOperator.NOT_CONTAINS, "texto"))
                 .and(new Criteria("campo17", ComparisonOperator.NOT_IN, new String[]{"A", "Z"}))
-                .and(new Criteria("campo18", ComparisonOperator.NOT_IS, "texto"))
+                .and(new Criteria("campo18", ComparisonOperator.IS_NOT, "texto"))
                 .and(new Criteria("campo19", ComparisonOperator.NOT_BETWEEN, new String[]{"texto1", "texto2", "texto3"}));
 
-        assertEquals("((1 = 1) AND (campo1 = 'texto') AND (campo2 < 'texto') AND (campo3 > 'texto') AND (campo4 >= 'texto') AND (campo5 <= 'texto') AND (campo6 like 'texto%') AND (campo7 like '%texto%') AND (campo8 in ('texto1','texto2','texto3')) AND ('texto' in elements(elementos)) AND (campo10 is 'texto') AND (campo11 between 'A' and 'Z') AND (campo12 <> 'texto') AND (campo13 <> 'texto') AND (campo14 not like 'texto%') AND (campo15 not like '%texto') AND (campo16 not like '%texto%') AND (campo17 not in ('A','Z')) AND (campo18 not is 'texto') AND (campo19 not between 'texto1' and 'texto2'))", vQuery.toStringWithoutParams());
+        assertEquals("((1 = 1) AND (campo1 = 'texto') AND (campo2 < 'texto') AND (campo3 > 'texto') AND (campo4 >= 'texto') AND (campo5 <= 'texto') AND (campo6 like 'texto%') AND (campo7 like '%texto%') AND (campo8 in ('texto1','texto2','texto3')) AND ('texto' in elements(elementos)) AND (campo10 is 'texto') AND (campo11 between 'A' and 'Z') AND (campo12 <> 'texto') AND (campo13 <> 'texto') AND (campo14 not like 'texto%') AND (campo15 not like '%texto') AND (campo16 not like '%texto%') AND (campo17 not in ('A','Z')) AND (campo18 is not 'texto') AND (campo19 not between 'texto1' and 'texto2'))", vQuery.toStringWithoutParams());
     }
 
     @Test
@@ -219,10 +230,10 @@ public class VQueryTest {
                 .and(new Criteria("campo15", ComparisonOperator.NOT_ENDS_WITH, 15))
                 .and(new Criteria("campo16", ComparisonOperator.NOT_CONTAINS, 16))
                 .and(new Criteria("campo17", ComparisonOperator.NOT_IN, new Integer[]{17, 18}))
-                .and(new Criteria("campo18", ComparisonOperator.NOT_IS, 19))
+                .and(new Criteria("campo18", ComparisonOperator.IS_NOT, 19))
                 .and(new Criteria("campo19", ComparisonOperator.NOT_BETWEEN, new Integer[]{20, 21, 22}));
 
-        assertEquals("((1 = 1) AND (campo1 = 1) AND (campo2 < 2) AND (campo3 > 3) AND (campo4 >= 4) AND (campo5 <= 5) AND (campo6 like 6) AND (campo7 like 7) AND (campo8 in (1,2,3)) AND (1 in elements(elementos)) AND (campo10 is 9) AND (campo11 between 10 and 11) AND (campo12 <> 12) AND (campo13 <> 13) AND (campo14 not like 14) AND (campo15 not like 15) AND (campo16 not like 16) AND (campo17 not in (17,18)) AND (campo18 not is 19) AND (campo19 not between 20 and 21))", vQuery.toStringWithoutParams());
+        assertEquals("((1 = 1) AND (campo1 = 1) AND (campo2 < 2) AND (campo3 > 3) AND (campo4 >= 4) AND (campo5 <= 5) AND (campo6 like 6) AND (campo7 like 7) AND (campo8 in (1,2,3)) AND (1 in elements(elementos)) AND (campo10 is 9) AND (campo11 between 10 and 11) AND (campo12 <> 12) AND (campo13 <> 13) AND (campo14 not like 14) AND (campo15 not like 15) AND (campo16 not like 16) AND (campo17 not in (17,18)) AND (campo18 is not 19) AND (campo19 not between 20 and 21))", vQuery.toStringWithoutParams());
     }
 
     @Test
@@ -250,10 +261,10 @@ public class VQueryTest {
                 .and(new Criteria("campo15", ComparisonOperator.NOT_ENDS_WITH, new Date(1518291786286L)))
                 .and(new Criteria("campo16", ComparisonOperator.NOT_CONTAINS, new Date(1518291786286L)))
                 .and(new Criteria("campo17", ComparisonOperator.NOT_IN, new Date[]{new Date(1519291786286L), new Date(1518291786286L)}))
-                .and(new Criteria("campo18", ComparisonOperator.NOT_IS, new Date(1518291786286L)))
+                .and(new Criteria("campo18", ComparisonOperator.IS_NOT, new Date(1518291786286L)))
                 .and(new Criteria("campo19", ComparisonOperator.NOT_BETWEEN, new Date[]{new Date(1518291786286L), new Date(1519299799286L)}));
 
-        assertEquals("((1 = 1) AND (campo1 = '2018/02/10 17:43:06') AND (campo2 < '2018/02/10 17:43:06') AND (campo3 > '2018/02/10 17:43:06') AND (campo4 >= '2018/02/10 17:43:06') AND (campo5 <= '2018/02/10 17:43:06') AND (campo6 like '2018/02/10 17:43:06') AND (campo7 like '2018/02/10 17:43:06') AND (campo8 in ('2018/02/10 17:43:06','2018/02/10 17:43:06','2018/02/10 17:43:06')) AND ('2018/02/10 17:43:06' in elements(elementos)) AND (campo10 is '2018/02/10 17:43:06') AND (campo11 between '2018/02/10 17:43:06' and '2018/02/22 08:43:19') AND (campo12 <> '2018/02/10 17:43:06') AND (campo13 <> '2018/02/10 17:43:06') AND (campo14 not like '2018/02/10 17:43:06') AND (campo15 not like '2018/02/10 17:43:06') AND (campo16 not like '2018/02/10 17:43:06') AND (campo17 not in ('2018/02/22 06:29:46','2018/02/10 17:43:06')) AND (campo18 not is '2018/02/10 17:43:06') AND (campo19 not between '2018/02/10 17:43:06' and '2018/02/22 08:43:19'))", vQuery.toStringWithoutParams());
+        assertEquals("((1 = 1) AND (campo1 = '2018/02/10 17:43:06') AND (campo2 < '2018/02/10 17:43:06') AND (campo3 > '2018/02/10 17:43:06') AND (campo4 >= '2018/02/10 17:43:06') AND (campo5 <= '2018/02/10 17:43:06') AND (campo6 like '2018/02/10 17:43:06') AND (campo7 like '2018/02/10 17:43:06') AND (campo8 in ('2018/02/10 17:43:06','2018/02/10 17:43:06','2018/02/10 17:43:06')) AND ('2018/02/10 17:43:06' in elements(elementos)) AND (campo10 is '2018/02/10 17:43:06') AND (campo11 between '2018/02/10 17:43:06' and '2018/02/22 08:43:19') AND (campo12 <> '2018/02/10 17:43:06') AND (campo13 <> '2018/02/10 17:43:06') AND (campo14 not like '2018/02/10 17:43:06') AND (campo15 not like '2018/02/10 17:43:06') AND (campo16 not like '2018/02/10 17:43:06') AND (campo17 not in ('2018/02/22 06:29:46','2018/02/10 17:43:06')) AND (campo18 is not '2018/02/10 17:43:06') AND (campo19 not between '2018/02/10 17:43:06' and '2018/02/22 08:43:19'))", vQuery.toStringWithoutParams());
     }
 
     @Test
@@ -276,10 +287,10 @@ public class VQueryTest {
                 .and(new Criteria("campo15", ComparisonOperator.NOT_ENDS_WITH, Boolean.TRUE))
                 .and(new Criteria("campo16", ComparisonOperator.NOT_CONTAINS, Boolean.FALSE))
                 .and(new Criteria("campo17", ComparisonOperator.NOT_IN, new Boolean[]{Boolean.TRUE, Boolean.FALSE}))
-                .and(new Criteria("campo18", ComparisonOperator.NOT_IS, Boolean.TRUE))
+                .and(new Criteria("campo18", ComparisonOperator.IS_NOT, Boolean.TRUE))
                 .and(new Criteria("campo19", ComparisonOperator.NOT_BETWEEN, new Boolean[]{Boolean.TRUE, Boolean.FALSE}));
 
-        assertEquals("((1 = 1) AND (campo1 = true) AND (campo2 < false) AND (campo3 > true) AND (campo4 >= false) AND (campo5 <= true) AND (campo6 like true) AND (campo7 like false) AND (campo8 in (true,false)) AND (true in elements(elementos)) AND (campo10 is false) AND (campo11 between true and false) AND (campo12 <> true) AND (campo13 <> false) AND (campo14 not like true) AND (campo15 not like true) AND (campo16 not like false) AND (campo17 not in (true,false)) AND (campo18 not is true) AND (campo19 not between true and false))", vQuery.toStringWithoutParams());
+        assertEquals("((1 = 1) AND (campo1 = true) AND (campo2 < false) AND (campo3 > true) AND (campo4 >= false) AND (campo5 <= true) AND (campo6 like true) AND (campo7 like false) AND (campo8 in (true,false)) AND (true in elements(elementos)) AND (campo10 is false) AND (campo11 between true and false) AND (campo12 <> true) AND (campo13 <> false) AND (campo14 not like true) AND (campo15 not like true) AND (campo16 not like false) AND (campo17 not in (true,false)) AND (campo18 is not true) AND (campo19 not between true and false))", vQuery.toStringWithoutParams());
     }
 
     @Test
@@ -309,6 +320,23 @@ public class VQueryTest {
                         )
                 );
         assertEquals("(((sexo in ('M','F')) AND (idade in (1,2,3))) OR (subitems in (select obj from OutraTabela obj where (1 = 1))) OR (id in (select hist.id as id from Historico hist where (hist.id = id))))", vQuery.toStringWithoutParams());
+    }
+
+    @Test
+    public void testVEntityQueryIn2() {
+        vQuery = new VQuery(new Criteria("sexo", ComparisonOperator.IN, new String[]{"M", "F"}))
+                .and(new Criteria("idade", ComparisonOperator.IN, new Integer[]{1, 2, 3}))
+                .or(new Criteria("subitems", ComparisonOperator.IN, new VEntityQuery("OutraTabela")))
+                .or(new Criteria("id", ComparisonOperator.IN,
+                                new VEntityQuery(
+                                        "Historico",
+                                        "hist",
+                                        LogicalOperator.AND,
+                                        Collections.singletonList(new VQuery(new Criteria("id", ComparisonOperator.EQUAL, new CriteriaField("id")))),
+                                        "id")
+                        )
+                );
+        assertEquals("(((sexo in ('M','F')) AND (idade in (1,2,3))) OR (subitems in (select obj from OutraTabela obj where (1 = 1))) OR (id in (select hist.id as id from Historico hist where (1 = 1) AND ((id = id)))))", vQuery.toStringWithoutParams());
     }
 
     @Test
@@ -404,4 +432,50 @@ public class VQueryTest {
         assertEquals("(((name like 'munif%') OR (name like 'vicente%') OR (name like 'duda%')) AND (name like '%gebara%'))", gQuery.toStringWithoutParams());
     }
 
+    @Test
+    public void testFluent5WithPhonetic() {
+        VQuery gQuery = new VQuery(new Criteria("name", ComparisonOperator.STARTS_WITH, "willian").addPhonetic());
+        assertEquals("(name like 'VILIAN%')", gQuery.toStringWithoutParams());
+    }
+
+    @Test
+    public void testFluentNull() {
+        VQuery gQuery = new VQuery(new Criteria("name", ComparisonOperator.EQUAL, null).addPhonetic());
+        assertEquals("(name = null)", gQuery.toStringWithoutParams());
+    }
+
+    @Test
+    public void testFluentNull2() {
+        VQuery gQuery = new VQuery(new Criteria("name", ComparisonOperator.EQUAL, null).addPhonetic());
+        assertNull(gQuery.getParams().get(0).getValueToSearch());
+    }
+
+    @Test
+    public void testFluentLocalDate() {
+        VQuery gQuery = new VQuery(new Criteria("name", ComparisonOperator.EQUAL, LocalDate.now()).addPhonetic());
+        assertEquals(LocalDate.now(), gQuery.getParams().get(0).getValueToSearch());
+    }
+
+    @Test
+    public void testLocalDateStr1() {
+        LocalDate parse = LocalDate.parse("2020-09-01");
+        VQuery gQuery = new VQuery(new Criteria("name", ComparisonOperator.EQUAL, "2020-09-01"));
+        gQuery.getParams().get(0).setType(LocalDate.class);
+        assertEquals(parse, gQuery.getParams().get(0).getValueToSearch());
+    }
+
+    @Test
+    public void testNone() {
+        VQuery gQuery = new VQuery(new Criteria("I can do whatever I want", ComparisonOperator.NONE, ""));
+        gQuery.setLogicalOperator(LogicalOperator.SIMPLE);
+        assertEquals("(I can do whatever I want)", gQuery.toString());
+    }
+    @Test
+    public void testToDateCriteriaField() {
+        VQuery gQuery = new VQuery(LogicalOperator.OR, Arrays.asList(
+                new VQuery(new Criteria("name", ComparisonOperator.EQUAL, "19")),
+                new VQuery(new Criteria("startDateTime", ComparisonOperator.EQUAL, new CriteriaField("TO_DATE('19/09/2022', 'DD/MM/YYYY')"))
+        )));
+        System.out.println(gQuery.toStringWithoutParams());
+    }
 }

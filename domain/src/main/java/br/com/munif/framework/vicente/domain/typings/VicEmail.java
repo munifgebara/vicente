@@ -8,7 +8,12 @@ public class VicEmail extends VicDomain {
 
     private String description;
     @Enumerated(EnumType.STRING)
-    private SocialNetworking social;
+    private SocialNetworking type;
+
+    private Boolean invalidEmail;
+
+    private String invalidEmailReason;
+
 
     public VicEmail() {
 
@@ -17,18 +22,30 @@ public class VicEmail extends VicDomain {
     public VicEmail(VicEmail other) {
         if (other != null) {
             this.description = other.description;
-            this.social = other.social;
+            this.type = other.type;
         }
     }
 
-    public VicEmail(String description, String social) {
+    public VicEmail(String description, String type) {
         this.description = description;
-        this.social = SocialNetworking.valueOf(social);
+        this.type = type != null ? SocialNetworking.valueOf(type) : null;
     }
 
-    public VicEmail(String description, SocialNetworking social) {
+    public VicEmail(String description) {
         this.description = description;
-        this.social = social;
+        this.type = SocialNetworking.EMAIL;
+    }
+
+    public VicEmail(String description, SocialNetworking type) {
+        this.description = description;
+        this.type = type;
+    }
+
+    public VicEmail(String description, String type, Boolean invalidEmail, String invalidEmailReason) {
+        this.description = description;
+        this.type = type != null ? SocialNetworking.valueOf(type) : null;
+        this.invalidEmail = invalidEmail;
+        this.invalidEmailReason = invalidEmailReason;
     }
 
     public String getDescription() {
@@ -39,23 +56,35 @@ public class VicEmail extends VicDomain {
         this.description = description;
     }
 
-    public SocialNetworking getSocial() {
-        return social;
+    public SocialNetworking getType() {
+        return type;
     }
 
-    public void setSocial(SocialNetworking social) {
-        this.social = social;
+    public void setType(SocialNetworking type) {
+        this.type = type;
     }
 
-    public Boolean isValid() {
-        return this.getSocial().isValid(this.getDescription());
+    public Boolean getInvalidEmail() {
+        return invalidEmail;
+    }
+
+    public void setInvalidEmail(Boolean invalidEmail) {
+        this.invalidEmail = invalidEmail;
+    }
+
+    public String getInvalidEmailReason() {
+        return invalidEmailReason;
+    }
+
+    public void setInvalidEmailReason(String invalidEmailReason) {
+        this.invalidEmailReason = invalidEmailReason;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
         hash = 23 * hash + Objects.hashCode(this.description);
-        hash = 23 * hash + Objects.hashCode(this.social);
+        hash = 23 * hash + Objects.hashCode(this.type);
         return hash;
     }
 
@@ -71,7 +100,7 @@ public class VicEmail extends VicDomain {
         if (!Objects.equals(this.description, other.description)) {
             return false;
         }
-        if (!Objects.equals(this.social, other.social)) {
+        if (!Objects.equals(this.type, other.type)) {
             return false;
         }
         return true;
@@ -81,7 +110,7 @@ public class VicEmail extends VicDomain {
     public String toString() {
         return "VicEmail{" +
                 "description='" + description + '\'' +
-                ", social='" + social + '\'' +
+                ", social='" + type + '\'' +
                 '}';
     }
 }

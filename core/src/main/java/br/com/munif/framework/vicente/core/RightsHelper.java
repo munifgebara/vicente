@@ -34,12 +34,20 @@ public class RightsHelper {
     public static final int ALL_READ = 0b100100100; //292
     public static final int OWNER_READ_UPDATE = 0b110000000; //384
     public static final int OWNER_ALL = 0b111000000; //448
+    public static final int DEFAULT = OWNER_READ + OWNER_UPDATE + OWNER_DELETE + GROUP_READ;
+    public static final int ALL_UPDATE = OWNER_UPDATE + GROUP_UPDATE + OTHER_UPDATE; //292
+    public static final int ALL_DELETE = OWNER_DELETE + GROUP_DELETE + OTHER_DELETE; //292
+    public static final int ALL = ALL_READ + ALL_UPDATE + ALL_DELETE;
 
-    public static int getDefault() {
+    public static int getScopeDefault() {
         if (VicThreadScope.defaultRights.get() != null) {
             return VicThreadScope.defaultRights.get();
         }
-        return OWNER_READ + OWNER_UPDATE + OWNER_DELETE + GROUP_READ;
+        return getDefault();
+    }
+
+    public static int getDefault() {
+        return DEFAULT;
     }
 
     public static int getNOT_READT() {

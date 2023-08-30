@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.munif.framework.vicente.security.dto;
+package br.com.munif.framework.vicente.security.domain.dto;
 
 /**
  * @author munif

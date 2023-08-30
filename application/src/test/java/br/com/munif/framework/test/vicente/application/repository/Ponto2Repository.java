@@ -10,9 +10,8 @@ import br.com.munif.framework.test.vicente.domain.model.Ponto;
 import br.com.munif.framework.vicente.application.VicRepository;
 
 /**
- *
  * @author munif
  */
-public interface Ponto2Repository extends VicRepository<Ponto>{
-    
+public interface Ponto2Repository extends VicRepository<Ponto> {
+
 }
