@@ -29,13 +29,9 @@ public class VicField extends BaseEntity {
     private String validationScript;
     @Column(name = "default_value_script")
     private String defaultValueScript;
-    @Column(name = "options")
+    @Column(name = "options", length = 2000)
     private String options;
-    @Column(name = "option_value_field")
-    private String optionValueField;
-    @Column(name = "option_label_field")
-    private String optionLabelField;
-    @Column(name = "options_collection")
+    @Column(name = "options_collection", length = 2000)
     private String optionsCollection;
     @Column(name = "visualization_order")
     private Double visualizationOrder;
@@ -56,8 +52,6 @@ public class VicField extends BaseEntity {
         this.validationScript = validationScript;
         this.defaultValueScript = defaultValueScript;
         this.options = options;
-        this.optionValueField = optionValueField;
-        this.optionLabelField = optionLabelField;
         this.optionsCollection = optionsCollection;
         this.visualizationOrder = visualizationOrder;
         this.fieldGroup = fieldGroup;
@@ -126,22 +120,6 @@ public class VicField extends BaseEntity {
 
     public void setOptions(String options) {
         this.options = options;
-    }
-
-    public String getOptionValueField() {
-        return optionValueField;
-    }
-
-    public void setOptionValueField(String optionValueField) {
-        this.optionValueField = optionValueField;
-    }
-
-    public String getOptionLabelField() {
-        return optionLabelField;
-    }
-
-    public void setOptionLabelField(String optionLabelField) {
-        this.optionLabelField = optionLabelField;
     }
 
     public String getOptionsCollection() {

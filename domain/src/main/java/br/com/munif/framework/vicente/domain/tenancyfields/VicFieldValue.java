@@ -19,7 +19,7 @@ public class VicFieldValue extends BaseEntity {
     private VicField vicField;
     @Column(name = "entity_id")
     private String entityId;
-    @Column(name = "text_value")
+    @Column(name = "text_value", length = 2000)
     private String textValue;
     @Column(name = "number_value")
     private BigDecimal numberValue;
@@ -99,7 +99,8 @@ public class VicFieldValue extends BaseEntity {
                 return logicValue;
             case NUMBER:
                 return numberValue;
-            case SELECTION:
+            case SELECT:
+            case MULTI_SELECT:
             case TEXT:
                 return textValue;
         }
@@ -121,7 +122,8 @@ public class VicFieldValue extends BaseEntity {
                     numberValue = new BigDecimal(value.toString());
                 }
                 break;
-            case SELECTION:
+            case SELECT:
+            case MULTI_SELECT:
             case TEXT:
                 textValue = (String) value;
                 break;
