@@ -9,9 +9,12 @@ import java.util.Locale;
 public class ThreadScopeDate {
 
     public static String getLongFormat(ZonedDateTime startDateTime) {
-        return startDateTime.withZoneSameInstant(getZoneId())
+        return startDateTime
+                .withSecond(0)
+                .withZoneSameInstant(getZoneId())
                 .format(getDateTimeFormatter()
-                        .withLocale(getLocale()));
+                        .withLocale(getLocale()))
+                .replaceAll("min00s", "");
     }
 
     public static Locale getLocale() {
@@ -19,7 +22,7 @@ public class ThreadScopeDate {
     }
 
     public static DateTimeFormatter getDateTimeFormatter() {
-        return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG);
+        return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL);
     }
 
     public static ZoneId getZoneId() {
