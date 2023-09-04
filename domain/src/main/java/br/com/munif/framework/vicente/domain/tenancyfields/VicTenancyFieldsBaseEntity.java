@@ -14,19 +14,19 @@ import java.util.Map;
 public class VicTenancyFieldsBaseEntity extends BaseEntity {
 
     @Transient
-    private final Map<String, VicFieldValue> vicTenancyFields;
+    private final Map<String, VicFieldValue> customFields;
 
     public VicTenancyFieldsBaseEntity() {
         super();
-        vicTenancyFields = new HashMap<>();
+        customFields = new HashMap<>();
     }
 
-    public Map<String, VicFieldValue> getVicTenancyFields() {
-        return vicTenancyFields;
+    public Map<String, VicFieldValue> getCustomFields() {
+        return customFields;
     }
 
     @Override
     public String toString() {
-        return super.toString() + "{" + "VicTenancyFields=" + vicTenancyFields + '}';
+        return super.toString() + "{" + "VicTenancyFields=" + customFields + '}';
     }
 }

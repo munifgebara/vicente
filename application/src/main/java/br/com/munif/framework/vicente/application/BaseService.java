@@ -182,9 +182,9 @@ public abstract class BaseService<T extends BaseEntity> implements VicServiceabl
                 List<VicField> res = vicFieldRepository.findByHql(new VicQuery("obj.clazz='" + clazz().getCanonicalName() + "'", 0, 1000000, "id"));
                 for (VicField vf : res) {
                     if (vf.getFieldType().equals(VicFieldType.DATE)) {
-                        n.getVicTenancyFields().put(vf.getName(), new VicFieldValue(vf, newInstance.getId(), VicScriptEngine.evalForDate(vf.getDefaultValueScript(), null)));
+                        n.getCustomFields().put(vf.getName(), new VicFieldValue(vf, newInstance.getId(), VicScriptEngine.evalForDate(vf.getDefaultValueScript(), null)));
                     } else {
-                        n.getVicTenancyFields().put(vf.getName(), new VicFieldValue(vf, newInstance.getId(), VicScriptEngine.eval(vf.getDefaultValueScript(), null)));
+                        n.getCustomFields().put(vf.getName(), new VicFieldValue(vf, newInstance.getId(), VicScriptEngine.eval(vf.getDefaultValueScript(), null)));
                     }
                 }
             }
@@ -222,8 +222,8 @@ public abstract class BaseService<T extends BaseEntity> implements VicServiceabl
 
     private void saveVicTenancyFields(T resource) {
         VicTenancyFieldsBaseEntity r = (VicTenancyFieldsBaseEntity) resource;
-        for (String s : r.getVicTenancyFields().keySet()) {
-            VicFieldValue vfv = r.getVicTenancyFields().get(s);
+        for (String s : r.getCustomFields().keySet()) {
+            VicFieldValue vfv = r.getCustomFields().get(s);
             vfv.setEntityId(r.getId());
             vicFieldValueRepository.save(vfv);
         }
@@ -231,8 +231,8 @@ public abstract class BaseService<T extends BaseEntity> implements VicServiceabl
 
     private void deleteVicTenancyFields(T resource) {
         VicTenancyFieldsBaseEntity r = (VicTenancyFieldsBaseEntity) resource;
-        for (String s : r.getVicTenancyFields().keySet()) {
-            VicFieldValue vfv = r.getVicTenancyFields().get(s);
+        for (String s : r.getCustomFields().keySet()) {
+            VicFieldValue vfv = r.getCustomFields().get(s);
             vicFieldValueRepository.delete(vfv);
         }
     }
@@ -249,9 +249,9 @@ public abstract class BaseService<T extends BaseEntity> implements VicServiceabl
         }
         VicTenancyFieldsBaseEntity r = (VicTenancyFieldsBaseEntity) resource;
         List<VicFieldValue> res = vicFieldValueRepository.findByHql(new VicQuery("obj.entityId='" + r.getId() + "'", 0, 1000000, "id"));
-        r.getVicTenancyFields().clear();
+        r.getCustomFields().clear();
         for (VicFieldValue v : res) {
-            r.getVicTenancyFields().put(v.getVicField().getName(), v);
+            r.getCustomFields().put(v.getVicField().getName(), v);
         }
     }
 

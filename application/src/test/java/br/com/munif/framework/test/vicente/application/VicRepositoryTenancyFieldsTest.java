@@ -75,19 +75,19 @@ public class VicRepositoryTenancyFieldsTest {
 
         Pessoa px = pessoaService.newEntity();
         px.setNome("Pessoa X");
-        px.getVicTenancyFields().put("time", new VicFieldValue(time, px.getId(), "COXA"));
+        px.getCustomFields().put("time", new VicFieldValue(time, px.getId(), "COXA"));
         pessoaService.save(px);
 
         Pessoa pz = pessoaService.newEntity();
         pz.setNome("Pessoa Z");
-        pz.getVicTenancyFields().put("time", new VicFieldValue(time, pz.getId(), "Vasco da Gama"));
+        pz.getCustomFields().put("time", new VicFieldValue(time, pz.getId(), "Vasco da Gama"));
         pessoaService.save(pz);
 
         VicThreadScope.ui.set("UXT");
         VicThreadScope.gi.set("GXT");
         Pessoa py = pessoaService.newEntity();
         py.setNome("Pessoa Y");
-        py.getVicTenancyFields().put("religião", new VicFieldValue(religiao, py.getId(), "Católica"));
+        py.getCustomFields().put("religião", new VicFieldValue(religiao, py.getId(), "Católica"));
         pessoaService.save(py);
 
     }
@@ -131,7 +131,7 @@ public class VicRepositoryTenancyFieldsTest {
         VicThreadScope.ui.set("UZT");
         VicThreadScope.gi.set("GZT");
         Pessoa p = pessoaService.newEntity();
-        assertEquals("novo", p.getVicTenancyFields().get("time").getValue());
+        assertEquals("novo", p.getCustomFields().get("time").getValue());
     }
 
     @Test
@@ -140,7 +140,7 @@ public class VicRepositoryTenancyFieldsTest {
         VicThreadScope.ui.set("UXT");
         VicThreadScope.gi.set("GXT");
         Pessoa p = pessoaService.newEntity();
-        assertEquals("sem", p.getVicTenancyFields().get("religião").getValue());
+        assertEquals("sem", p.getCustomFields().get("religião").getValue());
     }
 
 }

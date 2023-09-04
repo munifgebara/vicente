@@ -111,12 +111,12 @@ public class PessoaGenericaApiTest {
 
         PessoaGenerica px = service.newEntity();
         px.setNome("PessoaGenerica X");
-        px.getVicTenancyFields().put("time", new VicFieldValue(time, px.getId(), "COXA"));
+        px.getCustomFields().put("time", new VicFieldValue(time, px.getId(), "COXA"));
         service.save(px);
 
         PessoaGenerica pz = service.newEntity();
         pz.setNome("PessoaGenerica Z");
-        pz.getVicTenancyFields().put("time", new VicFieldValue(time, pz.getId(), "Vasco da Gama"));
+        pz.getCustomFields().put("time", new VicFieldValue(time, pz.getId(), "Vasco da Gama"));
         service.save(pz);
 
         VicThreadScope.ui.set("UXT");
@@ -124,7 +124,7 @@ public class PessoaGenericaApiTest {
         VicThreadScope.oi.set("2.");
         PessoaGenerica py = service.newEntity();
         py.setNome("PessoaGenerica Y");
-        py.getVicTenancyFields().put("religião", new VicFieldValue(religiao, py.getId(), "Católica"));
+        py.getCustomFields().put("religião", new VicFieldValue(religiao, py.getId(), "Católica"));
         service.save(py);
 
     }
@@ -170,7 +170,7 @@ public class PessoaGenericaApiTest {
 
         int databaseSizeBeforeCreate = count();
         PessoaGenerica createEntity = createEntity();
-        createEntity.getVicTenancyFields().put("time", new VicFieldValue(time, createEntity.getId(), "Ponte Petra"));
+        createEntity.getCustomFields().put("time", new VicFieldValue(time, createEntity.getId(), "Ponte Petra"));
         // Create the Book
         restMockMvc.perform(post("/api/pessoagenerica")
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
