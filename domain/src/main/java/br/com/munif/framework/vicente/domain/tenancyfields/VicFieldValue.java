@@ -13,6 +13,7 @@ import java.util.Date;
 @Entity
 @Audited
 @Table(name = "vic_field_value")
+@VicTenancyPolicy(value = VicTenancyType.ONLY_HIERARCHICAL_TOP_DOWN)
 public class VicFieldValue extends BaseEntity {
 
     @ManyToOne

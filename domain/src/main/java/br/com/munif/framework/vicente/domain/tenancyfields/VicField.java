@@ -12,6 +12,7 @@ import java.util.Objects;
 @Entity
 @Audited
 @Table(name = "vic_field")
+@VicTenancyPolicy(value = VicTenancyType.ONLY_HIERARCHICAL_TOP_DOWN)
 public class VicField extends BaseEntity {
 
     @Column(name = "clazz")
