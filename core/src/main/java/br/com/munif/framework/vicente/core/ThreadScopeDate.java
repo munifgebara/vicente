@@ -9,20 +9,30 @@ import java.util.Locale;
 public class ThreadScopeDate {
 
     public static String getLongFormat(ZonedDateTime startDateTime) {
-        return startDateTime.withZoneSameInstant(getZoneId())
+        return startDateTime
+                .withSecond(0)
+                .withZoneSameInstant(getZoneId())
                 .format(getDateTimeFormatter()
-                        .withLocale(getLocale()));
+                        .withLocale(getLocale()))
+                .replaceAll("min00s", "");
     }
 
     public static Locale getLocale() {
-        return Locale.forLanguageTag(VicThreadScope.language.get());
+        String language = VicThreadScope.language.get();
+        if (language == null || language.isEmpty()) {
+            language = "pt-BR";
+        }
+        return Locale.forLanguageTag(language);
     }
 
     public static DateTimeFormatter getDateTimeFormatter() {
-        return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG);
+        return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL);
     }
 
     public static ZoneId getZoneId() {
-        return ZoneId.of(VicThreadScope.timezone.get());
+        String s = VicThreadScope.timezone.get();
+        if (s == null || s.isEmpty())
+            s = "America/Sao_Paulo";
+        return ZoneId.of(s);
     }
 }
