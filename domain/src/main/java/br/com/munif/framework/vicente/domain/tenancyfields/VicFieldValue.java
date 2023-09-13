@@ -1,5 +1,6 @@
 package br.com.munif.framework.vicente.domain.tenancyfields;
 
+import br.com.munif.framework.vicente.core.CalendarDateUtil;
 import br.com.munif.framework.vicente.core.VicTenancyPolicy;
 import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.BaseEntity;
@@ -7,6 +8,8 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -113,7 +116,7 @@ public class VicFieldValue extends BaseEntity {
     public void setValue(Object value) {
         switch (vicField.getFieldType()) {
             case DATE:
-                dateValue = (Date) value;
+                dateValue = CalendarDateUtil.StringToDate(value.toString(), "yyyy-MM-dd HH:mm:ss");
                 break;
             case LOGIC:
                 logicValue = (Boolean) value;

@@ -368,7 +368,7 @@ public class CalendarDateUtil {
      * @return data do tipo DATE.
      */
     public static Date StringToDate(String data, String pattern) {
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
         try {
             return format.parse(data);
         } catch (ParseException ex) {
