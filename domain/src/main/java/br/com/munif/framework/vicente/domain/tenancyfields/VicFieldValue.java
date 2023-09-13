@@ -1,5 +1,7 @@
 package br.com.munif.framework.vicente.domain.tenancyfields;
 
+import br.com.munif.framework.vicente.core.VicTenancyPolicy;
+import br.com.munif.framework.vicente.core.VicTenancyType;
 import br.com.munif.framework.vicente.domain.BaseEntity;
 import org.hibernate.envers.Audited;
 
