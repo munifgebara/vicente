@@ -7,7 +7,6 @@ public class VicSocial extends VicDomain {
     private String instagramId;
     private String linkedinId;
     private String facebookId;
-
     private String twitterId;
 
 
@@ -20,6 +19,15 @@ public class VicSocial extends VicDomain {
         this.linkedinId = linkedinId;
         this.facebookId = facebookId;
         this.twitterId = twitterId;
+    }
+
+    public VicSocial(VicSocial copy) {
+        if (copy != null) {
+            this.instagramId = copy.instagramId;
+            this.linkedinId = copy.linkedinId;
+            this.facebookId = copy.facebookId;
+            this.twitterId = copy.twitterId;
+        }
     }
 
     public String getInstagramId() {

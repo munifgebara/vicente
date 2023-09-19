@@ -40,6 +40,7 @@ import static br.com.munif.framework.vicente.core.RightsHelper.*;
         @TypeDef(name = "vicdocument", defaultForType = VicDocument.class, typeClass = VicDocumentUserType.class),
         @TypeDef(name = "vicmoney", defaultForType = VicMoney.class, typeClass = VicMoneyUserType.class),
         @TypeDef(name = "vicfile", defaultForType = VicFile.class, typeClass = VicFileUserType.class),
+        @TypeDef(name = "vicsocial", defaultForType = VicSocial.class, typeClass = VicSocialUserType.class),
 })
 public class BaseEntity implements Serializable, IBaseEntity {
 
