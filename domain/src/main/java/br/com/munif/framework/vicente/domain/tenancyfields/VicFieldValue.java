@@ -8,8 +8,6 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -25,6 +23,8 @@ public class VicFieldValue extends BaseEntity {
     private VicField vicField;
     @Column(name = "entity_id")
     private String entityId;
+    @Column(name = "parent_id")
+    private String parentId;
     @Column(name = "text_value", length = 2000)
     private String textValue;
     @Column(name = "number_value")
@@ -95,6 +95,14 @@ public class VicFieldValue extends BaseEntity {
 
     public void setLogicValue(Boolean logicValue) {
         this.logicValue = logicValue;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 
     public Object getValue() {
