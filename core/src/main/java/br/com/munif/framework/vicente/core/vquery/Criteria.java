@@ -80,6 +80,7 @@ public class Criteria {
             return new CriteriaField(toReturn);
         } else if (this.value instanceof String && this.phonetic) {
             value = PhoneticBuilder.build().translate(String.valueOf(value));
+            this.phonetic = false;
         }
         return value;
     }

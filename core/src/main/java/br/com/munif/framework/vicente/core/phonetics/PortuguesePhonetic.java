@@ -32,7 +32,7 @@ public class PortuguesePhonetic implements PhoneticTranslator {
     public String translate(String str) {
         PortuguesePhonetic phonetic = new PortuguesePhonetic();
         try {
-            return phonetic.encode(str.toUpperCase()).trim();
+            return phonetic.encode(str.toUpperCase().trim()).trim();
         } catch (Exception e) {
             e.printStackTrace();
         }

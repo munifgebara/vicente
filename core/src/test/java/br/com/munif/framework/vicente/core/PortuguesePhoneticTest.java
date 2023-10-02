@@ -175,17 +175,18 @@ public class PortuguesePhoneticTest {
 
     @Test
     public void testNomeY() throws EncoderException {
+        assertEncode("LUIS ATZORI BATISTA", "LUIZ ATZORI BATISTA");
+        assertEncode("LUIS", "LUIZ");
+        assertEncode("LUIS ", "LUIZ");
+        assertEncode("LUIZA ", "LUIZA");
+        assertEncode("LUIZA", "LUIZA");
+        assertEncode("LUIZ ", "LUIZ");
+        assertEncode("LUIZ", "LUIZ");
         assertEncode("GIOVANNA YASMIN RIBEIRO", "JIOVANNA IASMIN RIBEIRO");
         assertEncode("YASMIN ATZORI BATISTA", "IASMIN ATZORI BATISTA");
         assertEncode("GIOVANNA IASMIN RIBEIRO", "JIOVANNA IASMIN RIBEIRO");
         assertEncode("IASMIN ATZORI BATISTA", "IASMIN ATZORI BATISTA");
         assertEncode("GIOVANNA", "JIOVANNA");
-        assertEncode("LUIS ", "LUIZ");
-        assertEncode("LUIS", "LUIZ");
-        assertEncode("LUIZA ", "LUIZA");
-        assertEncode("LUIZA", "LUIZA");
-        assertEncode("LUIZ ", "LUIZ");
-        assertEncode("LUIZ", "LUIZ");
         assertEncode("MARCOS ANTONIO OUTLOOK", "MARKOZ ANTONIO OUTLOOK");
         assertEncode("MARCOS ", "MARKOZ");
         assertEncode("MARCOS", "MARKOZ");
@@ -196,6 +197,29 @@ public class PortuguesePhoneticTest {
     private void assertEncode(String before, String after) throws EncoderException {
         PortuguesePhonetic encoder = new PortuguesePhonetic();
         String encoded = encoder.encode(before);
+        String message = before + " should encode to " + after + " but encoded to " + encoded;
+        MatcherAssert.assertThat(message, encoded.equals(after.toUpperCase()));
+    }
+
+
+    @Test
+    public void jossanaTest() throws EncoderException{
+        assertTranslate("Jos", "Joz");
+        assertTranslate("Jos ", "Joz");
+        assertTranslate("Joss ", "Jos");
+        assertTranslate("Joss", "Jos");
+        assertTranslate("Jossana", "Josana");
+        assertTranslate("Ales", "Alez");
+        assertTranslate("Ales ", "Alez");
+        assertTranslate("Aless", "Ales");
+        assertTranslate("Aless ", "Ales");
+        assertTranslate("Jossana Teste 03", "JOSANA TESTE 03");
+        assertTranslate("Alessandra Teste 03", "ALESANDRA TESTE 03");
+    }
+
+    private void assertTranslate(String before, String after) throws EncoderException {
+        PortuguesePhonetic encoder = new PortuguesePhonetic();
+        String encoded = encoder.translate(before);
         String message = before + " should encode to " + after + " but encoded to " + encoded;
         MatcherAssert.assertThat(message, encoded.equals(after.toUpperCase()));
     }
