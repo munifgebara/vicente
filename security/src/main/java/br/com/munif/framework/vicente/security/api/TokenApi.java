@@ -5,10 +5,7 @@ package br.com.munif.framework.vicente.security.api;
 import br.com.munif.framework.vicente.api.BaseAPI;
 import br.com.munif.framework.vicente.core.VicPublicOperation;
 import br.com.munif.framework.vicente.security.domain.Token;
-import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
-import br.com.munif.framework.vicente.security.domain.dto.LoginResponseAppDto;
-import br.com.munif.framework.vicente.security.domain.dto.LoginResponseDto;
-import br.com.munif.framework.vicente.security.domain.dto.RefreshTokenDto;
+import br.com.munif.framework.vicente.security.domain.dto.*;
 import br.com.munif.framework.vicente.security.service.interfaces.ITokenService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,6 +36,12 @@ public class TokenApi extends BaseAPI<Token> {
     @VicPublicOperation
     @RequestMapping(value = "/login/bypassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LoginResponseDto loga(@RequestBody LoginDto login) {
+        return tokenService.login(login);
+    }
+    @Transactional
+    @VicPublicOperation
+    @RequestMapping(value = "/login/integration", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public LoginResponseDto loga(@RequestBody IntegrationLoginDto login) {
         return tokenService.login(login);
     }
     @Transactional

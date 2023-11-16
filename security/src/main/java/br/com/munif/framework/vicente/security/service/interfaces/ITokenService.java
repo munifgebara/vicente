@@ -3,10 +3,7 @@ package br.com.munif.framework.vicente.security.service.interfaces;
 import br.com.munif.framework.vicente.application.VicServiceable;
 import br.com.munif.framework.vicente.security.domain.Token;
 import br.com.munif.framework.vicente.security.domain.User;
-import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
-import br.com.munif.framework.vicente.security.domain.dto.LoginResponseAppDto;
-import br.com.munif.framework.vicente.security.domain.dto.LoginResponseDto;
-import br.com.munif.framework.vicente.security.domain.dto.RefreshTokenDto;
+import br.com.munif.framework.vicente.security.domain.dto.*;
 
 import java.util.Map;
 
@@ -14,6 +11,7 @@ public interface ITokenService extends VicServiceable<Token> {
     LoginResponseDto loginOnGoogle(String token);
 
     LoginResponseDto login(LoginDto login);
+    LoginResponseDto login(IntegrationLoginDto login);
     RefreshTokenDto refreshToken(RefreshTokenDto refreshTokenDto);
 
     Token createToken(User user);

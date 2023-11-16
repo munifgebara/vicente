@@ -13,10 +13,7 @@ import br.com.munif.framework.vicente.core.vquery.Criteria;
 import br.com.munif.framework.vicente.core.vquery.LogicalOperator;
 import br.com.munif.framework.vicente.core.vquery.VQuery;
 import br.com.munif.framework.vicente.security.domain.*;
-import br.com.munif.framework.vicente.security.domain.dto.LoginDto;
-import br.com.munif.framework.vicente.security.domain.dto.LoginResponseAppDto;
-import br.com.munif.framework.vicente.security.domain.dto.LoginResponseDto;
-import br.com.munif.framework.vicente.security.domain.dto.RefreshTokenDto;
+import br.com.munif.framework.vicente.security.domain.dto.*;
 import br.com.munif.framework.vicente.security.domain.exceptions.UserNotFoundException;
 import br.com.munif.framework.vicente.security.service.interfaces.IEmailService;
 import br.com.munif.framework.vicente.security.service.interfaces.ITokenService;
@@ -107,6 +104,11 @@ public class TokenService extends BaseService<Token> implements ITokenService {
             r.message = "Multiple users.";
         }
         return r;
+    }
+
+    @Override
+    public LoginResponseDto login(IntegrationLoginDto login) {
+        return null;
     }
 
     @Override
