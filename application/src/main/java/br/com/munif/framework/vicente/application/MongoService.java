@@ -95,42 +95,48 @@ public abstract class MongoService<T extends SimpleBaseEntity> implements VicSer
 
     private static Criteria getCriteria(VQuery subQuery) {
         String field = String.valueOf(subQuery.getCriteria().getField());
-        field = field.replaceAll("\\(","");
-        field = field.replaceAll("\\)","");
-        field = field.replaceAll("upper","");
-        field = field.replaceAll("lower","");
+        field = field.replaceAll("\\(", "");
+        field = field.replaceAll("\\)", "");
+        field = field.replaceAll("upper", "");
+        field = field.replaceAll("lower", "");
         Criteria where = Criteria.where(field);
+        Object value = getValue(subQuery);
+        boolean regex;
+        if (value instanceof String) {
+            regex = true;
+        }
         switch (subQuery.getCriteria().getComparisonOperator()) {
             case GREATER_EQUAL:
-                where = where.gte(getValue(subQuery));
+                where = where.gte(value);
                 break;
             case GREATER:
-                where = where.gt(getValue(subQuery));
+                where = where.gt(value);
                 break;
             case LOWER_EQUAL:
-                where = where.lte(getValue(subQuery));
+                where = where.lte(value);
                 break;
             case LOWER:
-                where = where.lt(getValue(subQuery));
+                where = where.lt(value);
                 break;
             case CONTAINS:
-                where = where.regex(String.valueOf(getValue(subQuery)));
+                where = where.regex(".*" + value + ".*", "i");
                 break;
             case NOT_CONTAINS:
-                where = where.not().regex(String.valueOf(getValue(subQuery)));
+                where = where.not().regex(String.valueOf(value), "i");
                 break;
             case STARTS_WITH:
-                where = where.regex("/^" + getValue(subQuery) + "/");
+                where = where.regex("/^" + value + "/", "i");
                 break;
             case ENDS_WITH:
-                where = where.regex("/" + getValue(subQuery) + "/");
+                where = where.regex("/" + value + "/", "i");
                 break;
             case NOT_EQUAL:
-                where = where.not().is(getValue(subQuery));
+                where = where.not().is(value);
                 break;
             default:
-                where = where.is(getValue(subQuery));
+                where = where.is(value);
         }
+
         return where;
     }
 
